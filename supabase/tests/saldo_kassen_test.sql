@@ -8,7 +8,7 @@ select tests.opret_bodekasse() as kasse \gset
 select tests.opret_medlem_med_login(:'kasse', 'Anna', true) as anna \gset
 select tests.opret_medlem_med_login(:'kasse', 'Bo') as bo \gset
 select tests.opret_medlem_med_login(:'kasse', 'Carl') as carl \gset
-select private.seneste_saeson(:'kasse') as s1 \gset
+select (select seneste_saeson_id from public.bodekasse_saeson where bodekasse_id = :'kasse') as s1 \gset
 
 -- Sæson 1
 select tests.giv_bode(:'bo', :'anna', 50);                          -- Anna bears 50
@@ -45,7 +45,7 @@ update public.saeson set afsluttet = now() where id = :'s1';
 insert into public.saeson (bodekasse_id, navn) values (:'kasse', 'Sæson 2');
 select tests.giv_bode(:'anna', :'bo', 15);                          -- Bo bears 15
 insert into public.indbetaling (bodekasse_id, saeson_id, medlem_id, beloeb, registreret_af)
-values (:'kasse', private.seneste_saeson(:'kasse'), :'carl', 20, :'anna');  -- Carl paid 20
+values (:'kasse', (select seneste_saeson_id from public.bodekasse_saeson where bodekasse_id = :'kasse'), :'carl', 20, :'anna');  -- Carl paid 20
 
 select tests.log_ind_som_medlem(:'carl');
 

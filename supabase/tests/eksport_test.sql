@@ -12,11 +12,14 @@ select tests.opret_medlem(:'kasse', 'Carl') as carl \gset
 
 -- Sæson 1: a Bøde for "For sent", an Engangsbøde, a creation Gebyr, an Anke
 -- Gebyr, an Indbetaling and a Hævning.
-select tests.opret_bodekategori(:'anna', 'For sent', 50) as for_sent \gset
+select tests.log_ind_som_medlem(:'anna');
+select public.opdater_indstillinger(gen_random_uuid(), :'kasse', '{"oprettelsesgebyr_til": true, "oprettelsesgebyr": 25}');
+select public.opret_bodekategori(gen_random_uuid(), :'kasse', 'For sent', 50) ->> 'bodekategori_id' as for_sent \gset
+select id as gebyr1 from public.gebyr where bodekategori_id = :'for_sent' \gset
+select tests.log_ud();
 select tests.giv_bode(:'anna', :'bo', 50, :'for_sent') as bode1 \gset
 select tests.giv_bode(:'bo', :'carl', 75) as engang \gset
 select tests.anke(:'bode1', 'modtager_vandt') as anke1 \gset
-select private.opret_gebyr(:'kasse', :'anna', 'oprettelse', 25, :'for_sent') as gebyr1 \gset
 select private.opret_gebyr(:'kasse', :'bo', 'anke', 10, :'anke1') as gebyr2 \gset
 
 select tests.log_ind_som_medlem(:'anna');

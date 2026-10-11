@@ -18,9 +18,9 @@ select tests.giv_bode(:'mads', :'emil') as bode \gset
 select tests.opret_bodekategori(:'mads', 'For sent', 50) as kat \gset
 -- Kasper: a creation Gebyr (as if he made a Bødekategori); Lucas: an Indbetaling.
 insert into public.gebyr (bodekasse_id, saeson_id, medlem_id, art, beloeb, bodekategori_id)
-values (:'a', private.seneste_saeson(:'a'), :'kasper', 'oprettelse', 25, :'kat');
+values (:'a', (select seneste_saeson_id from public.bodekasse_saeson where bodekasse_id = :'a'), :'kasper', 'oprettelse', 25, :'kat');
 insert into public.indbetaling (bodekasse_id, saeson_id, medlem_id, beloeb, registreret_af)
-values (:'a', private.seneste_saeson(:'a'), :'lucas', 50, :'mads');
+values (:'a', (select seneste_saeson_id from public.bodekasse_saeson where bodekasse_id = :'a'), :'lucas', 50, :'mads');
 -- Viktor is added through the RPC (so he has a 'medlem_tilfoejet' entry).
 select tests.log_ind_som_medlem(:'mads');
 select (public.tilfoej_medlem(gen_random_uuid(), :'a', 'Viktor', 'viktor@test.dk'))->>'medlem_id' as viktor \gset

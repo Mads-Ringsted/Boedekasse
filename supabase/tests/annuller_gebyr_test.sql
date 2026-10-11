@@ -8,7 +8,7 @@ select plan(9);
 select tests.opret_bodekasse() as kasse \gset
 select tests.opret_medlem_med_login(:'kasse', 'Anna', true) as anna \gset
 select tests.opret_medlem_med_login(:'kasse', 'Bo') as bo \gset
-select private.seneste_saeson(:'kasse') as s1 \gset
+select (select seneste_saeson_id from public.bodekasse_saeson where bodekasse_id = :'kasse') as s1 \gset
 
 -- Bo created "For sent" and paid a 25 kr creation Gebyr.
 select tests.opret_bodekategori(:'bo', 'For sent', 50) as for_sent \gset

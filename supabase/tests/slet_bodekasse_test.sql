@@ -17,10 +17,10 @@ select tests.giv_bode(:'mads', :'jonas', 50, :'kat') as bode \gset
 select tests.giv_bode(:'jonas', :'sebastian') as bode2 \gset
 select tests.anke(:'bode') as anke \gset
 insert into public.gebyr (bodekasse_id, saeson_id, medlem_id, art, beloeb, anke_id)
-values (:'a', private.seneste_saeson(:'a'), :'jonas', 'anke', 37, :'anke');
-insert into public.indbetaling (bodekasse_id, saeson_id, medlem_id, beloeb, registreret_af)
-values (:'a', private.seneste_saeson(:'a'), :'jonas', 50, :'mads');
-select private.tilfoej_haendelse(:'a', :'mads', 'test', '{}'::jsonb, null, null, null, null, null);
+values (:'a', (select seneste_saeson_id from public.bodekasse_saeson where bodekasse_id = :'a'), :'jonas', 'anke', 37, :'anke');
+select tests.log_ind_som_medlem(:'mads');
+select public.registrer_indbetaling(gen_random_uuid(), :'a', :'jonas', 50);
+select tests.log_ud();
 
 -- Not an Admin.
 select tests.log_ind_som_medlem(:'jonas');

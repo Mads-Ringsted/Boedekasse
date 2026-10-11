@@ -11,7 +11,7 @@ select tests.opret_medlem_med_login(:'kasse', 'Carl') as carl \gset
 select tests.opret_medlem_med_login(:'kasse', 'Dorte') as dorte \gset
 select tests.opret_medlem(:'kasse', 'Eva') as eva \gset
 select tests.opret_medlem_med_login(:'kasse', 'Udo') as udo \gset
-select private.seneste_saeson(:'kasse') as s1 \gset
+select (select seneste_saeson_id from public.bodekasse_saeson where bodekasse_id = :'kasse') as s1 \gset
 
 -- Sæson 1
 select tests.giv_bode(:'bo', :'anna', 100) as b_anna \gset
