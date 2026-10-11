@@ -1,0 +1,473 @@
+<meta charset="utf-8">
+<title>Bødekasse Design System</title>
+<!--
+  PROTOTYPE, throwaway. Answers "Design system" (Mads-Ringsted/Boedekasse#12):
+  three radically different looks for Bødekasse, switchable via #A / #B / #C and the floating bar.
+  Each look renders the same sample components (amount display, list row, primary button,
+  tab bar, bottom sheet) in light and dark, with its token set listed underneath.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Nunito:wght@500;600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,500,1,0&display=block">
+<style>
+/* Layout: page chrome is a quiet neutral lab bench; the two phones are the subject, tokens listed below them. */
+:root {
+  --bg: #F3F4F6; --fg: #15171C; --muted: #5E6370; --line: #D9DCE2; --card: #FFFFFF;
+  --sw-bg: #15171C; --sw-fg: #F3F4F6;
+  --chrome-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #0E1013; --fg: #E8EAEE; --muted: #9AA0AC; --line: #2A2E36; --card: #171A1F; --sw-bg: #F3F4F6; --sw-fg: #15171C; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #0E1013; --fg: #E8EAEE; --muted: #9AA0AC; --line: #2A2E36; --card: #171A1F; --sw-bg: #F3F4F6; --sw-fg: #15171C; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--chrome-font); }
+.wrap { max-width: 1100px; margin: 0 auto; padding-inline: 16px; padding-block: 24px 120px; display: flex; flex-direction: column; gap: 28px; }
+.intro { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; justify-content: space-between; }
+.intro h1 { margin: 0; font-size: 22px; text-wrap: balance; }
+.intro p { margin: 6px 0 0; color: var(--muted); max-width: 62ch; line-height: 1.45; font-size: 14px; }
+.eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--card); gap: 2px; }
+.seg button { font: inherit; font-size: 13px; border: 0; background: transparent; color: var(--fg); padding: 6px 14px; border-radius: 999px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+.seg button:focus-visible, .sw button:focus-visible { outline: 2px solid #4D7CFE; outline-offset: 2px; }
+
+.stage { display: flex; flex-wrap: wrap; gap: 32px; justify-content: center; }
+.shot { display: flex; flex-direction: column; gap: 10px; align-items: center; width: min(375px, 100%); }
+.phone { position: relative; width: 100%; height: 780px; border-radius: 44px; overflow: hidden; border: 10px solid #0A0A0B; box-shadow: 0 20px 50px rgba(0,0,0,.18); background: var(--p-bg); color: var(--p-text); font-family: var(--p-font); }
+@media (max-width: 440px) { .phone { border-width: 6px; border-radius: 36px; height: 740px; } }
+
+.tokens { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.tokens h2 { margin: 0 0 4px; font-size: 18px; grid-column: 1 / -1; }
+.tokens .pitch { grid-column: 1 / -1; margin: 0; color: var(--muted); line-height: 1.5; max-width: 75ch; }
+.tk { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.sw-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { display: flex; flex-direction: column; gap: 4px; width: 74px; }
+.chip i { display: block; height: 40px; border-radius: 8px; border: 1px solid var(--line); }
+.chip span { font-family: var(--mono); font-size: 10.5px; color: var(--muted); overflow-wrap: anywhere; }
+.chip b { font-size: 11px; font-weight: 600; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 13px; align-items: baseline; }
+.kv dt { color: var(--muted); font-family: var(--mono); font-size: 11.5px; }
+.kv dd { margin: 0; min-width: 0; }
+.typesample { display: flex; flex-direction: column; gap: 6px; border: 1px dashed var(--line); border-radius: 10px; padding: 12px; overflow: hidden; }
+.typesample div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.typesample small { font-family: var(--mono); font-size: 10.5px; color: var(--muted); margin-left: 8px; font-weight: 400; letter-spacing: 0; }
+.ask { grid-column: 1 / -1; border-top: 1px solid var(--line); padding-top: 14px; font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+
+/* Floating variant switcher (prototype chrome, not part of the design) */
+.sw { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 50; display: flex; align-items: center; gap: 4px; background: var(--sw-bg); color: var(--sw-fg); border-radius: 999px; padding: 6px; box-shadow: 0 10px 30px rgba(0,0,0,.35); font-family: var(--mono); font-size: 13px; }
+.sw button { font: inherit; background: transparent; color: inherit; border: 0; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 18px; }
+.sw button:hover { background: color-mix(in srgb, var(--sw-fg) 15%, transparent); }
+.sw .lbl { padding: 0 10px; white-space: nowrap; min-width: 128px; text-align: center; }
+
+/* ---------- shared phone bits ---------- */
+.phone svg { display: block; flex: none; }
+.scr { position: absolute; inset: 0; display: flex; flex-direction: column; }
+.status { height: 44px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 26px; font-size: 14px; font-weight: 600; font-family: -apple-system, system-ui, sans-serif; }
+.status .dots { display: flex; gap: 4px; align-items: center; }
+.status .dots i { width: 16px; height: 9px; border-radius: 2px; background: currentColor; opacity: .85; }
+.body { flex: 1; overflow: hidden; min-height: 0; }
+.num { font-variant-numeric: tabular-nums; }
+.scrim { position: absolute; inset: 0; background: rgba(0,0,0,.45); }
+.ms { font-family: "Material Symbols Rounded"; font-weight: normal; font-style: normal; line-height: 1; letter-spacing: normal; text-transform: none; white-space: nowrap; direction: ltr; -webkit-font-smoothing: antialiased; font-variation-settings: "FILL" 1, "wght" 500; display: inline-block; }
+
+/* ---------- A: Kasse ---------- */
+.v-A .body { padding: 4px 16px 0; display: flex; flex-direction: column; gap: 22px; }
+.a-head { display: flex; justify-content: space-between; align-items: center; }
+.a-box { display: flex; align-items: center; gap: 6px; font-size: 17px; font-weight: 600; }
+.a-iconbtn { width: 36px; height: 36px; border-radius: 50%; background: var(--p-surface); display: grid; place-items: center; color: var(--p-text); }
+.a-hero { background: var(--p-main); color: var(--p-on-main); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 4px; }
+.a-hero .lab { font-size: 14px; opacity: .85; }
+.a-hero .amt { font-size: 44px; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; }
+.a-hero .sub { font-size: 13px; opacity: .85; }
+.a-hero .btns { display: flex; gap: 8px; margin-top: 14px; }
+.a-pill { border-radius: 999px; padding: 10px 18px; font-size: 15px; font-weight: 600; }
+.a-pill.white { background: #fff; color: #1A2A8F; }
+.a-pill.ghost { background: rgba(255,255,255,.18); color: #fff; }
+.a-stats { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--p-surface); border-radius: 14px; padding: 12px 4px; }
+.a-stats div { display: flex; flex-direction: column; gap: 2px; align-items: center; font-size: 12px; color: var(--p-muted); }
+.a-stats b { color: var(--p-text); font-size: 15px; font-weight: 600; }
+.a-sec { display: flex; flex-direction: column; gap: 8px; }
+.a-sec h3 { margin: 0; font-size: 20px; font-weight: 600; }
+.a-group { background: var(--p-surface); border-radius: 14px; overflow: hidden; }
+.a-row { display: flex; align-items: center; gap: 12px; padding: 11px 14px; }
+.a-row + .a-row { border-top: 1px solid var(--p-line); }
+.a-av { width: 38px; height: 38px; border-radius: 50%; background: var(--p-main-soft); color: var(--p-main-ink); display: grid; place-items: center; font-weight: 600; font-size: 15px; flex: none; }
+.a-row .t { flex: 1; min-width: 0; }
+.a-row .t div { font-size: 15px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.a-row .t small { display: block; font-size: 13px; color: var(--p-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.a-row .amt { font-size: 15px; font-weight: 600; }
+.pos { color: var(--p-pos); }
+.a-tab { flex: none; display: grid; grid-template-columns: repeat(5, 1fr); align-items: end; padding: 8px 6px 26px; background: var(--p-surface); border-top: 1px solid var(--p-line); }
+.a-tab div { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10.5px; color: var(--p-muted); }
+.a-tab div.on { color: var(--p-main-ink); }
+.a-fab { width: 56px; height: 56px; border-radius: 50%; background: var(--p-main); color: var(--p-on-main); display: grid; place-items: center; margin-top: -26px; box-shadow: 0 6px 16px color-mix(in srgb, var(--p-main) 45%, transparent); }
+.a-sheet { position: absolute; left: 0; right: 0; bottom: 0; height: 80%; background: var(--p-bg); border-radius: 24px 24px 0 0; display: flex; flex-direction: column; }
+.a-grab { width: 38px; height: 5px; border-radius: 3px; background: var(--p-line); margin: 8px auto 4px; }
+.a-sheet .hd { display: flex; justify-content: space-between; align-items: center; padding: 6px 16px 10px; }
+.a-sheet .hd h3 { margin: 0; font-size: 20px; font-weight: 600; }
+.a-sheet .in { flex: 1; overflow: hidden; padding: 0 16px; display: flex; flex-direction: column; gap: 18px; }
+.a-label { font-size: 13px; color: var(--p-muted); font-weight: 500; }
+.a-people { display: flex; gap: 12px; overflow: hidden; padding: 6px 0 0 6px; }
+.a-person { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12.5px; position: relative; }
+.a-person .a-av { width: 52px; height: 52px; font-size: 18px; }
+.a-person.sel .a-av { box-shadow: 0 0 0 2.5px var(--p-bg), 0 0 0 4.5px var(--p-main); }
+.a-check { position: absolute; top: 34px; right: -2px; width: 20px; height: 20px; border-radius: 50%; background: var(--p-main); color: var(--p-on-main); display: grid; place-items: center; border: 2px solid var(--p-bg); }
+.a-radio { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--p-line); display: grid; place-items: center; flex: none; }
+.a-radio.on { background: var(--p-main); border-color: var(--p-main); color: var(--p-on-main); }
+.a-new { color: var(--p-main-ink); }
+.a-cta { margin: 10px 16px 30px; background: var(--p-main); color: var(--p-on-main); border-radius: 999px; padding: 16px; text-align: center; font-size: 17px; font-weight: 600; }
+
+/* ---------- B: Konsol ---------- */
+.v-B .body { padding: 2px 16px 0; display: flex; flex-direction: column; gap: 16px; }
+.b-top { display: flex; align-items: center; justify-content: space-between; padding: 6px 0 2px; }
+.b-box { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; border: 1px solid var(--p-line); border-radius: 6px; padding: 5px 8px 5px 6px; background: var(--p-surface); }
+.b-logo { width: 20px; height: 20px; border-radius: 4px; background: var(--p-main); color: var(--p-on-main); display: grid; place-items: center; font-size: 11px; font-weight: 700; font-family: var(--p-mono); }
+.b-me { width: 30px; height: 30px; border-radius: 6px; background: var(--p-surface-2); border: 1px solid var(--p-line); display: grid; place-items: center; font-size: 13px; font-weight: 600; }
+.v-B h2 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -.01em; }
+.b-stats { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--p-line); border-radius: 6px; background: var(--p-surface); overflow: hidden; }
+.b-stats > div { padding: 12px; display: flex; flex-direction: column; gap: 4px; }
+.b-stats > div:nth-child(odd) { border-right: 1px solid var(--p-line); }
+.b-stats > div:nth-child(-n+2) { border-bottom: 1px solid var(--p-line); }
+.b-stats span { font-size: 12px; color: var(--p-muted); }
+.b-stats b { font-family: var(--p-mono); font-size: 20px; font-weight: 500; letter-spacing: -.02em; }
+.b-stats .hl b { color: var(--p-main-ink); font-size: 28px; }
+.b-btns { display: flex; gap: 8px; }
+.b-btn { flex: 1; text-align: center; border-radius: 6px; padding: 9px 12px; font-size: 14px; font-weight: 500; border: 1px solid var(--p-line); background: var(--p-surface); }
+.b-btn.pri { background: var(--p-main); color: var(--p-on-main); border-color: color-mix(in srgb, var(--p-main) 70%, #000); }
+.b-sechd { display: flex; justify-content: space-between; align-items: baseline; }
+.b-sechd h3 { margin: 0; font-size: 14px; font-weight: 600; }
+.b-sechd a { font-size: 13px; color: var(--p-muted); }
+.b-list { border-top: 1px solid var(--p-line); }
+.b-row { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--p-line); font-size: 14px; }
+.b-row .t { min-width: 0; }
+.b-row .t div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.b-row .t small { display: block; color: var(--p-muted); font-size: 12px; margin-top: 1px; }
+.b-tag { font-family: var(--p-mono); font-size: 10px; letter-spacing: .04em; border: 1px solid var(--p-line); border-radius: 4px; padding: 2px 5px; color: var(--p-muted); width: 58px; text-align: center; }
+.b-tag.in { color: var(--p-main-ink); border-color: color-mix(in srgb, var(--p-main) 50%, transparent); }
+.b-row .amt { font-family: var(--p-mono); font-size: 13px; }
+.b-tab { flex: none; display: grid; grid-template-columns: repeat(4, 1fr); padding: 8px 0 26px; border-top: 1px solid var(--p-line); background: var(--p-bg); }
+.b-tab div { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: var(--p-muted); }
+.b-tab div.on { color: var(--p-text); }
+.b-tab div.on svg { color: var(--p-main-ink); }
+.b-sheet { position: absolute; left: 0; right: 0; bottom: 0; height: 78%; background: var(--p-surface); border-top: 1px solid var(--p-line); border-radius: 12px 12px 0 0; display: flex; flex-direction: column; }
+.b-sheet .hd { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--p-line); }
+.b-sheet .hd h3 { margin: 0; font-size: 16px; font-weight: 600; }
+.b-sheet .in { flex: 1; overflow: hidden; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.b-lab { font-size: 13px; font-weight: 500; }
+.b-input { border: 1px solid var(--p-line); border-radius: 6px; padding: 8px 10px; font-size: 14px; color: var(--p-muted); background: var(--p-bg); }
+.b-opts { border: 1px solid var(--p-line); border-radius: 6px; overflow: hidden; }
+.b-opt { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 8px 10px; font-size: 14px; }
+.b-opt + .b-opt { border-top: 1px solid var(--p-line); }
+.b-opt small { font-family: var(--p-mono); color: var(--p-muted); font-size: 12px; }
+.b-cb { width: 16px; height: 16px; border-radius: 4px; border: 1px solid color-mix(in srgb, var(--p-muted) 70%, transparent); display: grid; place-items: center; }
+.b-cb.on { background: var(--p-main); border-color: var(--p-main); color: var(--p-on-main); }
+.b-foot { border-top: 1px solid var(--p-line); padding: 12px 16px 30px; display: flex; flex-direction: column; gap: 10px; }
+.b-sum { display: flex; justify-content: space-between; font-family: var(--p-mono); font-size: 12.5px; color: var(--p-muted); }
+.b-sum b { color: var(--p-text); font-weight: 500; }
+
+/* ---------- C: Hippo ---------- */
+.v-C .body { padding: 2px 18px 0; display: flex; flex-direction: column; gap: 18px; }
+.c-head { display: flex; justify-content: space-between; align-items: center; }
+.c-head h2 { margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -.01em; }
+.c-box { display: inline-flex; align-items: center; gap: 4px; border: 2px solid var(--p-ink); border-radius: 999px; padding: 4px 8px 4px 12px; font-size: 13px; font-weight: 800; background: var(--p-surface); }
+.c-card { border: 2px solid var(--p-ink); border-radius: 22px; box-shadow: 3px 3px 0 var(--p-ink); background: var(--p-surface); }
+.c-hero { background: var(--p-main); color: var(--p-on-main); padding: 18px 20px; display: flex; justify-content: space-between; align-items: end; gap: 12px; }
+.c-hero .lab { font-size: 15px; font-weight: 800; opacity: .9; }
+.c-hero .amt { font-size: 48px; font-weight: 900; line-height: 1; letter-spacing: -.02em; margin-top: 4px; }
+.c-btn { border: 2px solid var(--p-ink); border-radius: 16px; box-shadow: 3px 3px 0 var(--p-ink); padding: 10px 16px; font-weight: 900; font-size: 15px; background: var(--p-surface); color: var(--p-text); white-space: nowrap; }
+.c-sec { display: flex; flex-direction: column; gap: 10px; }
+.c-sec h3 { margin: 0; font-size: 19px; font-weight: 900; }
+.c-board { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.c-mem { padding: 10px 12px; display: flex; align-items: center; gap: 10px; border-radius: 18px; box-shadow: 2px 2px 0 var(--p-ink); }
+.c-mem .t { min-width: 0; }
+.c-mem .t div { font-weight: 800; font-size: 14px; }
+.c-mem .t small { font-weight: 800; font-size: 13px; color: var(--p-muted); }
+.c-mem.top { background: var(--p-surface-2); }
+.c-av { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--p-ink); display: grid; place-items: center; font-weight: 900; font-size: 16px; color: #2A1416; flex: none; position: relative; }
+.c-crown { position: absolute; top: -12px; right: -8px; font-size: 18px; color: #F5B800; }
+.c-feed { display: flex; flex-direction: column; gap: 8px; }
+.c-item { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 18px; background: var(--p-surface); border: 2px solid var(--p-ink); }
+.c-item .t { flex: 1; min-width: 0; font-size: 14px; font-weight: 700; }
+.c-item .t small { display: block; color: var(--p-muted); font-weight: 600; font-size: 12.5px; margin-top: 2px; }
+.c-amt { font-weight: 900; font-size: 15px; white-space: nowrap; }
+.c-tabwrap { position: absolute; left: 18px; right: 18px; bottom: 22px; }
+.c-tab { display: grid; grid-template-columns: repeat(5, 1fr); align-items: center; padding: 8px; border-radius: 26px; border: 2px solid var(--p-ink); background: var(--p-surface); box-shadow: 3px 3px 0 var(--p-ink); }
+.c-tab span { justify-self: center; font-size: 26px; color: var(--p-muted); }
+.c-tab span.on { color: var(--p-main); }
+.c-tab .plus { width: 48px; height: 48px; border-radius: 50%; background: var(--p-main); color: var(--p-on-main); display: grid; place-items: center; border: 2px solid var(--p-ink); font-size: 30px; }
+.v-C .body { padding-bottom: 100px; }
+.c-sheet { position: absolute; left: 0; right: 0; bottom: 0; height: 82%; background: var(--p-bg); border-radius: 28px 28px 0 0; border-top: 2px solid var(--p-ink); display: flex; flex-direction: column; }
+.c-sheet .hd { padding: 18px 20px 8px; display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+.c-sheet .hd h3 { margin: 0; font-size: 24px; font-weight: 900; line-height: 1.15; }
+.c-x { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--p-ink); display: grid; place-items: center; background: var(--p-surface); font-size: 20px; flex: none; }
+.c-sheet .in { flex: 1; overflow: hidden; padding: 6px 20px; display: flex; flex-direction: column; gap: 16px; }
+.c-pick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px 8px; }
+.c-pick div { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 13px; font-weight: 800; position: relative; }
+.c-pick .c-av { width: 56px; height: 56px; font-size: 20px; }
+.c-pick .sel .c-av { box-shadow: 0 0 0 3px var(--p-bg), 0 0 0 6px var(--p-main); }
+.c-tick { position: absolute; top: 38px; right: 6px; width: 22px; height: 22px; border-radius: 50%; background: var(--p-main); color: var(--p-on-main); border: 2px solid var(--p-ink); display: grid; place-items: center; font-size: 15px; }
+.c-q { font-size: 15px; font-weight: 900; }
+.c-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.c-chip { border: 2px solid var(--p-ink); border-radius: 999px; padding: 7px 12px; font-size: 14px; font-weight: 800; background: var(--p-surface); }
+.c-chip.on { background: var(--p-main); color: var(--p-on-main); }
+.c-chip.dash { border-style: dashed; background: transparent; color: var(--p-muted); }
+.c-cta { margin: 8px 20px 30px; background: var(--p-main); color: var(--p-on-main); text-align: center; font-size: 18px; padding: 15px; }
+</style>
+
+<div class="wrap">
+  <div class="intro">
+    <div>
+      <div class="eyebrow">Prototype · Design system ticket</div>
+      <h1>Bødekasse design system</h1>
+      <p>Three looks for the same two screens: the home screen and the "Giv bøde" bottom sheet. Flip with the bar at the bottom (or ← →), check both modes, and say what to keep from each.</p>
+    </div>
+    <div class="seg" role="group" aria-label="Phone mode">
+      <button type="button" id="m-light" data-mode="light">Lys</button>
+      <button type="button" id="m-dark" data-mode="dark">Mørk</button>
+    </div>
+  </div>
+  <div class="stage">
+    <div class="shot"><div class="phone" id="p1"></div><span class="eyebrow">Hjem</span></div>
+    <div class="shot"><div class="phone" id="p2"></div><span class="eyebrow">Giv bøde · bottom sheet</span></div>
+  </div>
+  <section class="tokens" id="tokens" aria-live="polite"></section>
+</div>
+
+<nav class="sw" aria-label="Prototype variant">
+  <button type="button" id="prev" aria-label="Previous variant">←</button>
+  <span class="lbl" id="lbl">A · Kasse</span>
+  <button type="button" id="next" aria-label="Next variant">→</button>
+</nav>
+
+<script>
+// Lucide 0.460 icon paths, inlined
+const LU = {
+  house: '<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  plus: '<path d="M5 12h14"/><path d="M12 5v14"/>',
+  receipt: '<path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/>',
+  settings: '<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
+  chevR: '<path d="m9 18 6-6-6-6"/>',
+  chevD: '<path d="m6 9 6 6 6-6"/>',
+  x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  wallet: '<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>',
+  trophy: '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  list: '<path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/>',
+  more: '<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',
+  search: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>'
+};
+const ic = (n, s = 22, w = 2) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${LU[n]}</svg>`;
+const ms = (n, s) => `<span class="ms" style="font-size:${s}px" aria-hidden="true">${n}</span>`;
+const kr = n => `${n < 0 ? '−' : ''}${Math.abs(n).toLocaleString('da-DK')} kr.`;
+
+// Sample content (made-up example data)
+const BOX = 'Fredagsbaren';
+const ME = { name: 'Mads', saldo: 145 };
+const KASSE = { indbetalt: 4320, haevet: 1200, ubetalt: 865 };
+const FEED = [
+  { kind: 'BØDE', who: 'Jonas → Mads', what: 'For sent', when: 'I dag 18:42', amt: 20, ini: 'J' },
+  { kind: 'GEBYR', who: 'Sofie', what: 'Ny Bødekategori: Telefon på bordet', when: 'I dag 17:10', amt: 25, ini: 'S' },
+  { kind: 'IND', who: 'Emil', what: 'Indbetaling', when: 'I går', amt: -200, ini: 'E' },
+  { kind: 'BØDE', who: 'Ida → Frederik', what: 'Glemt at svare i gruppen', when: 'I går', amt: 10, ini: 'I' },
+  { kind: 'GEBYR', who: 'Jonas', what: 'Konkurrence: Bowling, 4. plads', when: 'Tor. 3. okt.', amt: 35, ini: 'J' }
+];
+const MEMBERS = [
+  { n: 'Jonas', s: 310, h: '#FFB86B' }, { n: 'Mads', s: 145, h: '#8FD3FF' }, { n: 'Frederik', s: 95, h: '#B9F18C' },
+  { n: 'Ida', s: 60, h: '#FFA3C7' }, { n: 'Sofie', s: 0, h: '#D2B8FF' }, { n: 'Emil', s: -20, h: '#FFE27A' }
+];
+const KAT = [
+  { n: 'For sent', p: 20, on: true }, { n: 'Glemt at svare i gruppen', p: 10 }, { n: 'Telefon på bordet', p: 15 },
+  { n: 'Spildt øl', p: 25 }, { n: 'Udeblevet uden afbud', p: 50 }
+];
+const PICKED = ['Jonas', 'Frederik'];
+
+const status = () => `<div class="status"><span>9:41</span><span class="dots"><i></i></span></div>`;
+
+// ---------- Variant A: Kasse ----------
+const A = {
+  name: 'Kasse',
+  pitch: 'Closest to MobilePay. One strong blue, the Saldo big on a coloured card, iOS-style grouped lists, and a raised + button in the middle of the tab bar for giving a Bøde.',
+  font: 'System font (SF Pro on iPhone; nothing to download, feels native)',
+  icons: 'Lucide, 2px stroke, 22–24px',
+  lib: 'Own components in plain CSS, plus Vaul for the bottom sheet',
+  type: [['Amount', 44, 700, '145 kr.'], ['Title', 20, 600, 'Seneste'], ['Body', 15, 500, 'Jonas → Mads'], ['Caption', 13, 400, 'For sent · I dag 18:42']],
+  radius: 'card 20 · list group 14 · sheet 24 · buttons pill',
+  extra: 'Shadows only on the + button. Separators are 1px lines inside grouped lists.',
+  tokens: {
+    light: { main: '#3355FF', 'on-main': '#FFFFFF', 'main-ink': '#2A47E0', 'main-soft': '#E6EBFF', bg: '#F2F3F8', surface: '#FFFFFF', 'surface-2': '#E9EBF3', text: '#0E1220', muted: '#636A7E', line: '#E1E4ED', pos: '#0E9F64', neg: '#E5484D' },
+    dark: { main: '#4A68FF', 'on-main': '#FFFFFF', 'main-ink': '#8DA2FF', 'main-soft': '#1C2552', bg: '#0A0C12', surface: '#151924', 'surface-2': '#1D2231', text: '#F1F3F9', muted: '#9298AB', line: '#252A39', pos: '#3DD68C', neg: '#FF6369' }
+  },
+  fonts: { font: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif', mono: 'ui-monospace, monospace' },
+  home: () => `${status()}<div class="body">
+    <div class="a-head"><div class="a-box">${BOX} ${ic('chevD', 18)}</div><div class="a-iconbtn">${ic('settings', 19)}</div></div>
+    <div class="a-hero"><span class="lab">Din saldo</span><span class="amt num">${kr(ME.saldo)}</span><span class="sub">Du skylder kassen</span>
+      <div class="btns"><span class="a-pill white">Indbetal</span><span class="a-pill ghost">Mine bøder</span></div></div>
+    <div class="a-stats"><div><b class="num">${kr(KASSE.indbetalt)}</b>Indbetalt</div><div><b class="num">${kr(KASSE.haevet)}</b>Hævet</div><div><b class="num">${kr(KASSE.ubetalt)}</b>Ubetalt</div></div>
+    <div class="a-sec"><h3>Seneste</h3><div class="a-group">${FEED.slice(0, 4).map(f => `
+      <div class="a-row"><div class="a-av">${f.kind === 'IND' ? ic('wallet', 18) : f.kind === 'GEBYR' ? ic('receipt', 18) : f.ini}</div>
+      <div class="t"><div>${f.who}</div><small>${f.what} · ${f.when}</small></div>
+      <div class="amt num ${f.amt < 0 ? 'pos' : ''}">${f.amt < 0 ? '+' + kr(-f.amt) : kr(f.amt)}</div></div>`).join('')}</div></div>
+  </div>
+  <div class="a-tab"><div class="on">${ic('house')}Hjem</div><div>${ic('users')}Medlemmer</div><div><span class="a-fab">${ic('plus', 28, 2.5)}</span>Giv bøde</div><div>${ic('list')}Kategorier</div><div>${ic('more')}Mere</div></div>`,
+  sheet: () => `${A.home()}<div class="scrim"></div><div class="a-sheet"><div class="a-grab"></div>
+    <div class="hd"><h3>Giv bøde</h3><div class="a-iconbtn">${ic('x', 18)}</div></div>
+    <div class="in">
+      <div class="a-label">Hvem</div>
+      <div class="a-people">${MEMBERS.filter(m => m.n !== 'Mads').map(m => `<div class="a-person ${PICKED.includes(m.n) ? 'sel' : ''}"><div class="a-av">${m.n[0]}</div>${PICKED.includes(m.n) ? `<span class="a-check">${ic('check', 12, 3.5)}</span>` : ''}${m.n}</div>`).join('')}</div>
+      <div class="a-label">Hvad</div>
+      <div class="a-group">${KAT.slice(0, 4).map(k => `<div class="a-row"><div class="t"><div>${k.n}</div></div><span class="amt num">${kr(k.p)}</span><span class="a-radio ${k.on ? 'on' : ''}">${k.on ? ic('check', 14, 3) : ''}</span></div>`).join('')}
+        <div class="a-row a-new">${ic('plus', 20)}<div class="t"><div>Ny Bødekategori</div><small>Koster et Gebyr på 25 kr.</small></div></div></div>
+    </div>
+    <div class="a-cta">Giv 2 bøder · ${kr(40)}</div></div>`
+};
+
+// ---------- Variant B: Konsol ----------
+const B = {
+  name: 'Konsol',
+  pitch: 'Closest to Supabase. Neutral greys carry the page; green appears only on the main action, active states and money coming in. Dense rows with hairlines, every amount in a monospace font, small square corners.',
+  font: 'Geist for text, Geist Mono for amounts and tags',
+  icons: 'Lucide, 1.5px stroke, 20px',
+  lib: 'shadcn/ui (Radix primitives + Tailwind), the same building blocks Supabase Studio uses',
+  type: [['Amount', 28, 500, '145 kr.', true], ['Title', 18, 600, 'Oversigt'], ['Body', 14, 400, 'Jonas gav Mads en bøde'], ['Caption', 12, 400, 'I dag 18:42']],
+  radius: '6 everywhere · tags 4 · sheet 12',
+  extra: 'No shadows. Borders and hairlines do all the separating.',
+  tokens: {
+    light: { main: '#3ECF8E', 'on-main': '#06291A', 'main-ink': '#15935A', 'main-soft': '#E3F8EE', bg: '#FAFAFA', surface: '#FFFFFF', 'surface-2': '#F1F1F1', text: '#171717', muted: '#707070', line: '#E3E3E3', pos: '#15935A', neg: '#E5484D' },
+    dark: { main: '#3ECF8E', 'on-main': '#06291A', 'main-ink': '#3ECF8E', 'main-soft': '#13281D', bg: '#121212', surface: '#1A1A1A', 'surface-2': '#232323', text: '#EDEDED', muted: '#8F8F8F', line: '#2E2E2E', pos: '#3ECF8E', neg: '#FF6369' }
+  },
+  fonts: { font: '"Geist", system-ui, sans-serif', mono: '"Geist Mono", ui-monospace, monospace' },
+  home: () => `${status()}<div class="body">
+    <div class="b-top"><div class="b-box"><span class="b-logo">F</span>${BOX}${ic('chevD', 16, 1.5)}</div><div class="b-me">M</div></div>
+    <h2>Oversigt</h2>
+    <div class="b-stats"><div class="hl"><span>Din saldo</span><b class="num">${kr(ME.saldo)}</b></div><div><span>Ubetalt i alt</span><b class="num">${kr(KASSE.ubetalt)}</b></div><div><span>Indbetalt</span><b class="num">${kr(KASSE.indbetalt)}</b></div><div><span>Hævet</span><b class="num">${kr(KASSE.haevet)}</b></div></div>
+    <div class="b-btns"><span class="b-btn pri">Giv bøde</span><span class="b-btn">Indbetaling</span></div>
+    <div class="b-sechd"><h3>Aktivitet</h3><a>Se alle</a></div>
+    <div class="b-list">${FEED.map(f => `<div class="b-row"><span class="b-tag ${f.kind === 'IND' ? 'in' : ''}">${f.kind === 'IND' ? 'INDBET.' : f.kind}</span>
+      <div class="t"><div>${f.who} · ${f.what}</div><small>${f.when}</small></div><span class="amt num ${f.amt < 0 ? 'pos' : ''}">${f.amt < 0 ? '+' + kr(-f.amt) : kr(f.amt)}</span></div>`).join('')}</div>
+  </div>
+  <div class="b-tab"><div class="on">${ic('house', 20, 1.5)}Oversigt</div><div>${ic('users', 20, 1.5)}Medlemmer</div><div>${ic('receipt', 20, 1.5)}Bøder</div><div>${ic('settings', 20, 1.5)}Indstillinger</div></div>`,
+  sheet: () => `${B.home()}<div class="scrim"></div><div class="b-sheet">
+    <div class="hd"><h3>Giv bøde</h3>${ic('x', 18, 1.5)}</div>
+    <div class="in">
+      <span class="b-lab">Medlemmer</span>
+      <div class="b-input" style="display:flex;gap:8px;align-items:center">${ic('search', 15, 1.5)}Søg medlem</div>
+      <div class="b-opts">${MEMBERS.filter(m => m.n !== 'Mads').slice(0, 4).map(m => `<div class="b-opt"><span class="b-cb ${PICKED.includes(m.n) ? 'on' : ''}">${PICKED.includes(m.n) ? ic('check', 11, 3) : ''}</span>${m.n}<small class="num">saldo ${kr(m.s)}</small></div>`).join('')}</div>
+      <span class="b-lab">Bødekategori</span>
+      <div class="b-opts">${KAT.slice(0, 3).map(k => `<div class="b-opt"><span class="b-cb ${k.on ? 'on' : ''}">${k.on ? ic('check', 11, 3) : ''}</span>${k.n}<small class="num">${kr(k.p)}</small></div>`).join('')}
+        <div class="b-opt" style="color:var(--p-main-ink)">${ic('plus', 16, 1.5)}Ny Bødekategori<small>+25 kr. gebyr</small></div></div>
+    </div>
+    <div class="b-foot"><div class="b-sum"><span>2 medlemmer × 1 kategori</span><b class="num">${kr(40)}</b></div>
+      <div class="b-btns"><span class="b-btn">Annuller</span><span class="b-btn pri">Giv 2 bøder</span></div></div></div>`
+};
+
+// ---------- Variant C: Hippo ----------
+const C = {
+  name: 'Hippo',
+  pitch: 'Playful. Warm coral, heavy rounded type, chunky cards with an ink border and an offset shadow. The home screen leads with who owes the most, and the tab bar floats above the content.',
+  font: 'Nunito (800–900 for headings and amounts)',
+  icons: 'Material Symbols Rounded, filled',
+  lib: 'Own components + Tailwind; Vaul for the bottom sheet',
+  type: [['Amount', 48, 900, '145 kr.'], ['Title', 22, 900, 'Hvem skylder mest?'], ['Body', 15, 700, 'Jonas gav Mads en bøde'], ['Caption', 13, 600, 'For sent · I dag']],
+  radius: 'card 22 · button 16 · sheet 28 · chips pill',
+  extra: '2px ink border with a 3px offset shadow on cards and buttons. Each Medlem gets their own avatar colour.',
+  tokens: {
+    light: { main: '#E8434C', 'on-main': '#FFFFFF', 'main-ink': '#C9303A', 'main-soft': '#FFE1DA', bg: '#FFF5F0', surface: '#FFFFFF', 'surface-2': '#FFE6DC', text: '#2A1416', muted: '#8A6A68', line: '#EBD3CB', ink: '#2A1416', pos: '#1E9E6A', neg: '#E8434C' },
+    dark: { main: '#FF5A62', 'on-main': '#2A0A0D', 'main-ink': '#FF8A90', 'main-soft': '#3A1E22', bg: '#170E10', surface: '#24171A', 'surface-2': '#352227', text: '#FFF1EE', muted: '#C2A3A0', line: '#4A3135', ink: '#000000', pos: '#4FD39A', neg: '#FF5A62' }
+  },
+  fonts: { font: '"Nunito", ui-rounded, system-ui, sans-serif', mono: '"Nunito", ui-rounded, sans-serif' },
+  home: () => `${status()}<div class="body">
+    <div class="c-head"><h2>Hej ${ME.name}</h2><span class="c-box">${BOX} ${ms('expand_more', 18)}</span></div>
+    <div class="c-card c-hero"><div><div class="lab">Du skylder</div><div class="amt num">${kr(ME.saldo)}</div></div><span class="c-btn">Betal</span></div>
+    <div class="c-sec"><h3>Hvem skylder mest?</h3><div class="c-board">${MEMBERS.slice(0, 4).map((m, i) => `
+      <div class="c-card c-mem ${i === 0 ? 'top' : ''}"><div class="c-av" style="background:${m.h}">${m.n[0]}${i === 0 ? `<span class="c-crown">${ms('crown', 18)}</span>` : ''}</div><div class="t"><div>${m.n}</div><small class="num">${kr(m.s)}</small></div></div>`).join('')}</div></div>
+    <div class="c-sec"><h3>Seneste</h3><div class="c-feed">${FEED.slice(0, 2).map(f => `
+      <div class="c-item"><div class="c-av" style="background:${MEMBERS.find(m => m.n[0] === f.ini).h}">${f.ini}</div><div class="t">${f.who}<small>${f.what}</small></div><span class="c-amt num ${f.amt < 0 ? 'pos' : ''}">${f.amt < 0 ? '+' + kr(-f.amt) : kr(f.amt)}</span></div>`).join('')}</div></div>
+  </div>
+  <div class="c-tabwrap"><div class="c-tab">${ms('home', 26).replace('class="ms"', 'class="ms on"')}${ms('group', 26)}<span class="plus">${ms('add', 30)}</span>${ms('emoji_events', 26)}${ms('settings', 26)}</div></div>`,
+  sheet: () => `${C.home()}<div class="scrim"></div><div class="c-sheet">
+    <div class="hd"><h3>Hvem skal have en bøde?</h3><span class="c-x">${ms('close', 20)}</span></div>
+    <div class="in">
+      <div class="c-pick">${MEMBERS.filter(m => m.n !== 'Mads').slice(0, 4).map(m => `<div class="${PICKED.includes(m.n) ? 'sel' : ''}"><span class="c-av" style="background:${m.h}">${m.n[0]}</span>${PICKED.includes(m.n) ? `<span class="c-tick">${ms('check', 15)}</span>` : ''}${m.n}</div>`).join('')}</div>
+      <div class="c-q">For hvad?</div>
+      <div class="c-chips">${KAT.map(k => `<span class="c-chip ${k.on ? 'on' : ''}">${k.n} · ${kr(k.p)}</span>`).join('')}<span class="c-chip dash">+ Ny kategori (25 kr. gebyr)</span></div>
+    </div>
+    <div class="c-btn c-cta">Giv 2 bøder · ${kr(40)}</div></div>`
+};
+
+const V = { A, B, C };
+const KEYS = Object.keys(V);
+let cur = 'A';
+let mode = null;
+
+function hostDark() {
+  const t = document.documentElement.getAttribute('data-theme');
+  if (t) return t === 'dark';
+  return matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
+function applyTokens(el, v) {
+  const t = v.tokens[mode];
+  for (const [k, val] of Object.entries(t)) el.style.setProperty('--p-' + k, val);
+  if (!t.ink) el.style.setProperty('--p-ink', t.line);
+  el.style.setProperty('--p-font', v.fonts.font);
+  el.style.setProperty('--p-mono', v.fonts.mono);
+  el.style.colorScheme = mode;
+}
+
+function renderTokens(v) {
+  const sw = (name, hex) => `<div class="chip"><i style="background:${hex}"></i><b>${name}</b><span>${hex}</span></div>`;
+  const t = v.tokens[mode];
+  const typeRows = v.type.map(([n, s, w, txt, mono]) => `<div style="font-family:${mono ? v.fonts.mono : v.fonts.font};font-size:${Math.min(s, 40)}px;font-weight:${w};color:var(--fg)">${txt}<small>${n} ${s}/${w}</small></div>`).join('');
+  document.getElementById('tokens').innerHTML = `
+    <h2>${cur} · ${v.name}</h2>
+    <p class="pitch">${v.pitch}</p>
+    <div class="tk"><span class="eyebrow">Main colour (${mode === 'dark' ? 'mørk' : 'lys'})</span><div class="sw-row">${sw('main', t.main)}${sw('on-main', t['on-main'])}${sw('main-ink', t['main-ink'])}${sw('main-soft', t['main-soft'])}</div>
+      <span class="eyebrow">Semantic</span><div class="sw-row">${sw('pos', t.pos)}${sw('neg', t.neg)}</div></div>
+    <div class="tk"><span class="eyebrow">Neutrals (${mode === 'dark' ? 'mørk' : 'lys'})</span><div class="sw-row">${sw('bg', t.bg)}${sw('surface', t.surface)}${sw('surface-2', t['surface-2'])}${sw('line', t.line)}${sw('muted', t.muted)}${sw('text', t.text)}</div></div>
+    <div class="tk"><span class="eyebrow">Type scale</span><div class="typesample">${typeRows}</div></div>
+    <div class="tk"><span class="eyebrow">Choices</span><dl class="kv">
+      <dt>font</dt><dd>${v.font}</dd><dt>icons</dt><dd>${v.icons}</dd><dt>components</dt><dd>${v.lib}</dd>
+      <dt>radius</dt><dd>${v.radius}</dd><dt>spacing</dt><dd>4-pt scale: 4 · 8 · 12 · 16 · 24 · 32</dd><dt>depth</dt><dd>${v.extra}</dd></dl></div>
+    <div class="ask">To decide: which main colour, which font, which icon set, and which component approach. Mixing is fine, e.g. "B's structure with A's blue".</div>`;
+}
+
+function render() {
+  const v = V[cur];
+  for (const [id, fn] of [['p1', 'home'], ['p2', 'sheet']]) {
+    const el = document.getElementById(id);
+    el.className = 'phone v-' + cur;
+    applyTokens(el, v);
+    el.innerHTML = `<div class="scr">${v[fn]()}</div>`;
+  }
+  renderTokens(v);
+  document.getElementById('lbl').textContent = `${cur} · ${v.name}`;
+  document.getElementById('m-light').setAttribute('aria-pressed', mode === 'light');
+  document.getElementById('m-dark').setAttribute('aria-pressed', mode === 'dark');
+}
+
+function go(d) {
+  cur = KEYS[(KEYS.indexOf(cur) + d + KEYS.length) % KEYS.length];
+  try { history.replaceState(null, '', '#' + cur); } catch (e) { location.hash = cur; }
+  render();
+}
+
+const h = (location.hash || '').slice(1).toUpperCase();
+if (KEYS.includes(h)) cur = h;
+mode = hostDark() ? 'dark' : 'light';
+document.getElementById('prev').onclick = () => go(-1);
+document.getElementById('next').onclick = () => go(1);
+document.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => { mode = b.dataset.mode; render(); });
+addEventListener('keydown', e => {
+  if (e.target.closest && e.target.closest('input, textarea, [contenteditable]')) return;
+  if (e.key === 'ArrowLeft') go(-1);
+  if (e.key === 'ArrowRight') go(1);
+});
+addEventListener('hashchange', () => { const k = location.hash.slice(1).toUpperCase(); if (KEYS.includes(k) && k !== cur) { cur = k; render(); } });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(render);
+render();
+</script>
