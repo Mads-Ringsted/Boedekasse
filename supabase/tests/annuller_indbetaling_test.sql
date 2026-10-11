@@ -3,7 +3,7 @@
 -- past Sæson. The row stays (greyed, struck through) but stops counting.
 begin;
 \ir _hjaelpere.psql
-select plan(7);
+select plan(8);
 
 select tests.opret_bodekasse() as kasse \gset
 select tests.opret_medlem_med_login(:'kasse', 'Anna', true) as anna \gset
@@ -29,6 +29,11 @@ select results_eq(
   format($$ values ('indbetaling_annulleret', %L::uuid, %L::uuid, null::uuid, %L, 80, 'Forkert person') $$,
          :'anna', :'bo', :'i1'),
   'the annulment adds its own feed row, not pointing at the Indbetaling as its subject');
+
+select results_eq(
+  $$ select art, annulleret is not null, annulleret_note from public.aktivitet order by id $$,
+  $$ values ('indbetaling', true, 'Forkert person'), ('indbetaling_annulleret', false, null) $$,
+  'the feed shows the Indbetaling struck through and the annulment as a plain new row');
 
 select throws_ok(
   format($$ select public.annuller_indbetaling(gen_random_uuid(), %L) $$, :'i1'),
