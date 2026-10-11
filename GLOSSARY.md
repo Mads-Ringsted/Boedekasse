@@ -29,7 +29,7 @@ A Bødekategori given to a specific Medlem by another Medlem. Keeps the price th
 _Avoid_: Penalty, charge
 
 **Gebyr** (Fee):
-A charge the Bødekasse imposes itself rather than one Medlem giving another, e.g. for creating a Bødekategori, losing an Anke, or placing in a Konkurrence.
+A charge the Bødekasse imposes itself rather than one Medlem giving another, e.g. for creating a Bødekategori, filing an Anke, or placing in a Konkurrence.
 _Avoid_: Afgift, ankebøde
 
 **Frikøb** (Buy-out):
@@ -37,7 +37,7 @@ A one-off payment that exempts a Medlem from Bøder for the rest of the calendar
 _Avoid_: Amnesti, amnesty
 
 **Anke** (Appeal):
-A Medlem's challenge of a Bøde they received.
+A Medlem's challenge of a Bøde they received. Filing one always costs a Gebyr (a random amount between 1 kr and twice the Bøde's price). The other Medlemmer decide the outcome; whoever loses bears the Bøde, so a won Anke moves it to the Medlem who gave it.
 _Avoid_: Klage, dispute
 
 **Konkurrence** (Competition):
