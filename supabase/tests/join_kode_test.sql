@@ -1,18 +1,19 @@
--- The join code is readable only by the box's Admins.
+-- The join code: made by an Admin (forny_join_kode), readable only by the
+-- box's Admins.
 begin;
 \ir _hjaelpere.psql
 select plan(5);
 
-select matches(private.ny_join_kode(), '^[A-HJKMNP-Z2-9]{6}$',
-  'a new join code is 6 characters with no look-alikes');
-
 select tests.opret_bodekasse() as kasse \gset
 select tests.opret_medlem_med_login(:'kasse', 'Admin Anna', true) as anna \gset
 select tests.opret_medlem_med_login(:'kasse', 'Menig Mikkel') as mikkel \gset
-insert into public.bodekasse_kode (bodekasse_id, kode) values (:'kasse', 'T3ST99');
 
 select tests.log_ind_som_medlem(:'anna');
-select results_eq($$ select kode from public.bodekasse_kode $$, $$ values ('T3ST99') $$,
+select public.forny_join_kode(gen_random_uuid(), :'kasse') ->> 'kode' as kode \gset
+
+select matches(:'kode'::text, '^[A-HJKMNP-Z2-9]{6}$',
+  'a new join code is 6 characters with no look-alikes');
+select results_eq($$ select kode from public.bodekasse_kode $$, format($$ values (%L) $$, :'kode'),
   'an Admin reads the join code');
 
 select tests.log_ind_som_medlem(:'mikkel');

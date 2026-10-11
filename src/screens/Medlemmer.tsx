@@ -161,7 +161,11 @@ function MedlemLinje({
             </span>
           )}
         </span>
-        {!m.loggetInd && <span className="medlem-linje__under">{t('medlemmer.ikkeLoggetInd')}</span>}
+        {!m.loggetInd && (
+          <span className="medlem-linje__under">
+            {t(m.kontoSlettet ? 'medlemmer.kontoSlettet' : 'medlemmer.ikkeLoggetInd')}
+          </span>
+        )}
       </span>
       {beloeb}
     </button>

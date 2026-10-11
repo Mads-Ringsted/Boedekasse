@@ -6,6 +6,7 @@ const jonas: Profil = {
   navn: 'Jonas Holm',
   erAdmin: false,
   loggetInd: true,
+  kontoSlettet: false,
   udmeldt: false,
   saldo: 120,
   boederOgGebyrer: 200,
@@ -42,6 +43,10 @@ describe('profilVisning (what a Medlem profile shows)', () => {
       'admin',
       'ikkeLoggetInd',
     ]);
+  });
+
+  it('tags a Medlem whose login was deleted as Konto slettet, not as not logged in yet', () => {
+    expect(profilVisning({ ...jonas, loggetInd: false, kontoSlettet: true }, 'mads').tags).toEqual(['kontoSlettet']);
   });
 
   it('tags an Udmeldt and offers no Giv bøde (they are out of Giv bøder)', () => {

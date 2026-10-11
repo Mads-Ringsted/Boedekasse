@@ -12,7 +12,7 @@ export interface MedlemmerData {
 /** Everything Medlemmer shows: every Medlem with what they owe (active and Udmeldte), and the code for Admins. */
 export async function hentMedlemmer(bodekasseId: string, medlemId: string, erAdmin: boolean): Promise<MedlemmerData> {
   const [medlemmer, saldi, kode] = await Promise.all([
-    supabase.from('medlem').select('id, navn, er_admin, user_id, udmeldt').eq('bodekasse_id', bodekasseId),
+    supabase.from('medlem').select('id, navn, er_admin, user_id, udmeldt, konto_slettet').eq('bodekasse_id', bodekasseId),
     supabase.from('medlem_saldo').select('medlem_id, saldo').eq('bodekasse_id', bodekasseId),
     erAdmin ? hentJoinKode(bodekasseId) : Promise.resolve(null),
   ]);

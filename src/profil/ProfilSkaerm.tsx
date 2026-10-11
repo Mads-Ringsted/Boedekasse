@@ -27,6 +27,7 @@ const saldoKlasse = (v: ProfilVisning) =>
 const TAGS: Record<ProfilTag, Tag> = {
   admin: { tekst: t('profil.tag.admin'), tone: 'blaa' },
   ikkeLoggetInd: { tekst: t('profil.tag.ikkeLoggetInd'), tone: 'graa' },
+  kontoSlettet: { tekst: t('profil.tag.kontoSlettet'), tone: 'graa' },
   udmeldt: { tekst: t('profil.tag.udmeldt'), tone: 'graa' },
 };
 

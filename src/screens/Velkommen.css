@@ -54,7 +54,7 @@
 }
 
 .velkommen__kort--opret .velkommen__ikon {
-  background: rgb(255 255 255 / 0.18);
+  background: color-mix(in srgb, var(--color-on-accent) 18%, transparent);
   color: inherit;
 }
 

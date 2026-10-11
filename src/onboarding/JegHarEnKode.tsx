@@ -13,7 +13,7 @@ import './JegHarEnKode.css';
 interface JegHarEnKodeProps {
   onBack: () => void;
   /** You are a Medlem of the box now; open it. */
-  onJoined: (bodekasseId: string) => Promise<void>;
+  onTilmeldt: (bodekasseId: string) => Promise<void>;
 }
 
 interface FundetKasse {
@@ -30,7 +30,7 @@ type Opslag =
   | { status: 'fejl'; fejl: string };
 
 /** Six code boxes; the box found; your name; then that box's Hjem. */
-export function JegHarEnKode({ onBack, onJoined }: JegHarEnKodeProps) {
+export function JegHarEnKode({ onBack, onTilmeldt }: JegHarEnKodeProps) {
   const { load } = useMedlemskaber();
   const [kode, setKode] = useState('');
   const [fokus, setFokus] = useState(false);
@@ -76,7 +76,7 @@ export function JegHarEnKode({ onBack, onJoined }: JegHarEnKodeProps) {
       setBusy(false);
       return;
     }
-    await onJoined((data as { bodekasse_id: string }).bodekasse_id);
+    await onTilmeldt((data as { bodekasse_id: string }).bodekasse_id);
   }
 
   return (

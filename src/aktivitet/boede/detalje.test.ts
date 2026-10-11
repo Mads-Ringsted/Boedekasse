@@ -26,7 +26,9 @@ const boede = (over: Partial<Boede> = {}): Boede => ({
   annullering: null,
   gebyr: 0,
   afgjort: null,
+  aendret: null,
   ankeGebyr: null,
+  ankeGebyrId: null,
   ...over,
 });
 
@@ -94,6 +96,20 @@ describe('the Bøde detail sheet', () => {
     ]);
     expect(detaljeRaekker(b, ctx, nu)[2]).toEqual({ label: 'Afgjort af', vaerdi: 'Jonas · i går' });
     expect(detaljeRaekker({ ...b, baererId: 'emil' }, ctx, nu)[1]).toEqual({ label: 'Betales nu af', vaerdi: 'Dig' });
+  });
+
+  it('after a changed verdict: keeps who decided first, and shows who changed it', () => {
+    const b = boede({
+      ankeId: 'a1',
+      afgoerelse: 'giver_vandt',
+      afgoerelseAendret: true,
+      afgjort: { tid: '2026-10-10T19:00:00Z', afId: 'jonas', afNavn: 'Jonas Holm' },
+      aendret: { tid: '2026-10-11T14:00:00Z', afId: 'kasper', afNavn: 'Kasper Nørgaard' },
+    });
+    expect(detaljeRaekker(b, ctx, nu).slice(2)).toEqual([
+      { label: 'Afgjort af', vaerdi: 'Jonas · i går' },
+      { label: 'Ændret af', vaerdi: 'Kasper · i dag' },
+    ]);
   });
 
   it('shows how long the receiver can still appeal', () => {

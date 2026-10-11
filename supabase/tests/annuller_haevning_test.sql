@@ -49,7 +49,7 @@ select throws_ok(
 
 -- In a Pause the ended Sæson is still the latest, so annulling works.
 select tests.log_ud();
-select private.seneste_saeson(:'kasse') as s1 \gset
+select (select seneste_saeson_id from public.bodekasse_saeson where bodekasse_id = :'kasse') as s1 \gset
 update public.saeson set afsluttet = now() where id = :'s1';
 select tests.log_ind_som_medlem(:'anna');
 select public.annuller_haevning(gen_random_uuid(), :'h3');

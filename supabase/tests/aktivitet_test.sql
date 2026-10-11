@@ -7,7 +7,7 @@ select plan(10);
 select tests.opret_bodekasse('Kasse A') as kasse \gset
 select tests.opret_medlem_med_login(:'kasse', 'Jonas Holm') as jonas \gset
 select tests.opret_medlem_med_login(:'kasse', 'Emil Bach') as emil \gset
-select tests.opret_medlem_med_login(:'kasse', 'Kasper Nørgaard') as kasper \gset
+select tests.opret_medlem_med_login(:'kasse', 'Kasper Nørgaard', true) as kasper \gset
 select tests.opret_bodekategori(:'jonas', 'For sent', 50) as for_sent \gset
 select tests.opret_bodekategori(:'jonas', 'Spildt drikke', 20) as spildt \gset
 
@@ -71,14 +71,11 @@ select results_eq(
   'an Engangsbøde shows its reason as the name, and its Gebyr');
 
 -- ---------- An annulled thing stays in the feed, marked ----------
-select tests.log_ud();
-insert into public.haevning (bodekasse_id, saeson_id, beloeb, formaal, registreret_af)
-values (:'kasse', private.seneste_saeson(:'kasse'), 300, 'Julefrokost', :'jonas')
-returning id as haevning \gset
-select private.tilfoej_haendelse(:'kasse', :'jonas', 'haevet', '{"beloeb": 300}',
-                                 p_ref_tabel => 'haevning', p_ref_id => :'haevning') as haevet_id \gset
-update public.haevning set annulleret = now(), annulleret_af = :'kasper', annulleret_note = 'Forkert beløb'
- where id = :'haevning';
+select tests.log_ind_som_medlem(:'kasper');
+select public.registrer_indbetaling(gen_random_uuid(), :'kasse', :'kasper', 300);
+select public.haev(gen_random_uuid(), :'kasse', 300, 'Julefrokost') ->> 'haevning_id' as haevning \gset
+select id as haevet_id from public.aktivitet where ref_id = :'haevning' \gset
+select public.annuller_haevning(gen_random_uuid(), :'haevning', 'Forkert beløb');
 
 select tests.log_ind_som_medlem(:'emil');
 select results_eq(
@@ -97,7 +94,7 @@ select public.opret_bodekategori(gen_random_uuid(), :'kasse', 'Bandeord', 10) ->
 select public.ret_bodekategori(gen_random_uuid(), :'bandeord', 'Bandeord', 15, null);
 select tests.log_ud();
 insert into public.gebyr (bodekasse_id, saeson_id, medlem_id, art, beloeb, bodekategori_id)
-values (:'kasse', private.seneste_saeson(:'kasse'), :'kasper', 'oprettelse', 25, :'bandeord');
+values (:'kasse', (select seneste_saeson_id from public.bodekasse_saeson where bodekasse_id = :'kasse'), :'kasper', 'oprettelse', 25, :'bandeord');
 
 select tests.log_ind_som_medlem(:'emil');
 select results_eq(
@@ -112,12 +109,12 @@ select results_eq(
 -- A Konkurrence row holds every Gebyr it charged, annulled ones marked.
 select tests.log_ud();
 insert into public.konkurrence (bodekasse_id, saeson_id, titel, oprettet_af)
-values (:'kasse', private.seneste_saeson(:'kasse'), 'Bowling', :'jonas') returning id as bowling \gset
+values (:'kasse', (select seneste_saeson_id from public.bodekasse_saeson where bodekasse_id = :'kasse'), 'Bowling', :'jonas') returning id as bowling \gset
 select private.tilfoej_haendelse(:'kasse', :'jonas', 'konkurrence', '{}',
                                  p_ref_tabel => 'konkurrence', p_ref_id => :'bowling') as bowling_id \gset
 insert into public.gebyr (bodekasse_id, saeson_id, medlem_id, art, beloeb, konkurrence_id, annulleret, annulleret_af)
-values (:'kasse', private.seneste_saeson(:'kasse'), :'emil', 'fravaer', 40, :'bowling', null, null),
-       (:'kasse', private.seneste_saeson(:'kasse'), :'kasper', 'placering', 20, :'bowling', now(), :'jonas');
+values (:'kasse', (select seneste_saeson_id from public.bodekasse_saeson where bodekasse_id = :'kasse'), :'emil', 'fravaer', 40, :'bowling', null, null),
+       (:'kasse', (select seneste_saeson_id from public.bodekasse_saeson where bodekasse_id = :'kasse'), :'kasper', 'placering', 20, :'bowling', now(), :'jonas');
 
 select tests.log_ind_som_medlem(:'emil');
 select results_eq(

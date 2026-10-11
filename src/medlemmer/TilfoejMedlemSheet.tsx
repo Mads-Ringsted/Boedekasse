@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { fornavn } from '../giv/navne.ts';
 import { looksLikeEmail, normalizeEmail } from '../auth/input.ts';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { delInvitation } from '../bodekasse/delInvitation.ts';
@@ -30,7 +31,7 @@ export function TilfoejMedlemSheet({ open, onOpenChange, kode, onTilfoejet }: Ti
   // One ID per Medlem being added, so "Prøv igen" never adds them twice.
   const [klientId, setKlientId] = useState(() => crypto.randomUUID());
 
-  const fornavn = navn.trim().split(/\s+/)[0] ?? '';
+  const fornavnet = fornavn(navn);
   const kanTilfoeje = navn.trim() !== '' && looksLikeEmail(email) && !busy;
 
   function skift(aaben: boolean) {
@@ -72,7 +73,7 @@ export function TilfoejMedlemSheet({ open, onOpenChange, kode, onTilfoejet }: Ti
       title={t('tilfoej.titel')}
       footer={
         <button type="submit" form={FORM_ID} className="felt-knap" disabled={!kanTilfoeje}>
-          {fornavn ? t('tilfoej.knap', { navn: fornavn }) : t('tilfoej.knapUdenNavn')}
+          {fornavnet ? t('tilfoej.knap', { navn: fornavnet }) : t('tilfoej.knapUdenNavn')}
         </button>
       }
     >
@@ -111,7 +112,7 @@ export function TilfoejMedlemSheet({ open, onOpenChange, kode, onTilfoejet }: Ti
         </label>
 
         <p className="felt-note">
-          {fornavn ? t('tilfoej.note', { navn: fornavn }) : t('tilfoej.noteUdenNavn')}
+          {fornavnet ? t('tilfoej.note', { navn: fornavnet }) : t('tilfoej.noteUdenNavn')}
         </p>
         {fejl && (
           <p className="felt-fejl" role="alert">

@@ -8,7 +8,7 @@ select plan(4);
 select tests.opret_bodekasse() as kasse \gset
 select tests.opret_medlem_med_login(:'kasse', 'Anna', true) as anna \gset
 select tests.opret_medlem_med_login(:'kasse', 'Bo') as bo \gset
-select private.seneste_saeson(:'kasse') as s1 \gset
+select (select seneste_saeson_id from public.bodekasse_saeson where bodekasse_id = :'kasse') as s1 \gset
 
 -- Sæson 1: Anna bears 50, pays a 10 kr Gebyr and pays in 20.
 select tests.giv_bode(:'bo', :'anna', 50) as b1 \gset

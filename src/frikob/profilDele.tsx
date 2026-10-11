@@ -19,21 +19,20 @@ function useFrikobStatus(profil: ProfilDelProps['profil']) {
 }
 
 /**
- * "Køb Frikøb" on your own profile, or "Registrér frikøb" (Admin) on an
- * active Medlem's profile. Only while Frikøb is on and a Sæson runs.
+ * "Køb Frikøb" on your own profile, while Frikøb is on and a Sæson runs.
+ * For someone else, an Admin uses "Registrér frikøb" in the Admin actions
+ * sheet (medlem-admin.html).
  */
-export function KoebFrikobKnap({ profil, visning, mig, opdater }: ProfilDelProps) {
+export function KoebFrikobKnap({ profil, visning, opdater }: ProfilDelProps) {
   const status = useFrikobStatus(profil);
   // Each opening mounts a fresh sheet (new one-time ID).
   const [aabning, setAabning] = useState(0);
-  const maa = visning.egen || (mig.erAdmin && !profil.udmeldt);
-  if (!maa || status.status !== 'ready' || !status.data.kanKoebe) return null;
+  if (!visning.egen || status.status !== 'ready' || !status.data.kanKoebe) return null;
   return (
     <>
       <ProfilKnap
         Icon={ShieldCheck}
-        label={t(visning.egen ? 'frikob.titel' : 'frikob.registrerTitel')}
-        under={visning.egen ? undefined : t('profil.kunAdmin')}
+        label={t('frikob.titel')}
         onClick={() => setAabning((n) => n + 1)}
       />
       {aabning > 0 && (

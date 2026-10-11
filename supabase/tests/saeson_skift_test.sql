@@ -2,7 +2,7 @@
 -- an Admin starts the next Sæson. Saldo and Kassen carry over.
 begin;
 \ir _hjaelpere.psql
-select plan(34);
+select plan(35);
 
 select tests.opret_bodekasse() as kasse \gset
 select id as foerste from public.saeson where bodekasse_id = :'kasse' \gset
@@ -181,6 +181,10 @@ select results_eq(
              where saeson_id = %L and art = 'saeson_afsluttet' $$, :'tredje'),
   format($$ values (null::uuid, %L) $$, :'aarets_navn'),
   'a Sæson ended by its date gets a "Sæson ended" entry with no Admin');
+select is(
+  (select tid from public.aktivitet where saeson_id = :'tredje' and art = 'saeson_afsluttet'),
+  ((now() at time zone 'Europe/Copenhagen')::date)::timestamp at time zone 'Europe/Copenhagen',
+  'that entry is dated when the Sæson ended (Copenhagen midnight after its slutdato), not when it was written');
 
 -- ---------- End date and name ----------
 select (now() at time zone 'Europe/Copenhagen')::date as i_dag \gset

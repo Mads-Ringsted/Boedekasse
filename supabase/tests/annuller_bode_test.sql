@@ -85,7 +85,7 @@ select results_eq(
 select tests.log_ud();
 select tests.giv_bode(:'bo', :'carl', 100) as e1 \gset
 insert into public.gebyr (bodekasse_id, saeson_id, medlem_id, art, beloeb, bode_id)
-values (:'kasse', private.seneste_saeson(:'kasse'), :'bo', 'engangsbode', 10, :'e1');
+values (:'kasse', (select seneste_saeson_id from public.bodekasse_saeson where bodekasse_id = :'kasse'), :'bo', 'engangsbode', 10, :'e1');
 select tests.log_ind_som_medlem(:'bo');
 select public.annuller_bode(gen_random_uuid(), :'e1', 'Fejl');
 select results_eq(
@@ -97,11 +97,11 @@ select results_eq(
 -- An Anke Gebyr always stays.
 select tests.log_ud();
 insert into public.gebyr (bodekasse_id, saeson_id, medlem_id, art, beloeb, anke_id)
-values (:'kasse', private.seneste_saeson(:'kasse'), :'carl', 'anke', 37, :'anke3');
+values (:'kasse', (select seneste_saeson_id from public.bodekasse_saeson where bodekasse_id = :'kasse'), :'carl', 'anke', 37, :'anke3');
 select tests.giv_bode(:'bo', :'carl', p_kategori => :'for_sent') as b5 \gset
 select tests.anke(:'b5') as anke5 \gset
 insert into public.gebyr (bodekasse_id, saeson_id, medlem_id, art, beloeb, anke_id)
-values (:'kasse', private.seneste_saeson(:'kasse'), :'carl', 'anke', 12, :'anke5');
+values (:'kasse', (select seneste_saeson_id from public.bodekasse_saeson where bodekasse_id = :'kasse'), :'carl', 'anke', 12, :'anke5');
 select tests.log_ind_som_medlem(:'anna');
 select public.annuller_bode(gen_random_uuid(), :'b5');
 select results_eq(
@@ -120,7 +120,7 @@ select throws_ok(
 
 -- In a Pause the ended Sæson is still the latest, so annulling works.
 select tests.log_ud();
-select private.seneste_saeson(:'kasse') as s1 \gset
+select (select seneste_saeson_id from public.bodekasse_saeson where bodekasse_id = :'kasse') as s1 \gset
 update public.saeson set afsluttet = now() where id = :'s1';
 select tests.log_ind_som_medlem(:'bo');
 select public.annuller_bode(gen_random_uuid(), :'b6');

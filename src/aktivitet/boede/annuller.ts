@@ -14,3 +14,15 @@ export function kanAnnullereBoede(
   if (mig.erAdmin) return true;
   return b.giverId === mig.medlemId && b.ankeId === null;
 }
+
+/**
+ * "Annullér ankegebyr" on the Bøde detail (the rule `annuller_gebyr`
+ * enforces): an Admin, while the Anke Gebyr stands, in the latest Sæson.
+ */
+export function kanAnnullereAnkeGebyr(
+  b: Boede,
+  mig: { medlemId: string; erAdmin: boolean },
+  iSenesteSaeson: boolean,
+): boolean {
+  return mig.erAdmin && iSenesteSaeson && b.ankeGebyrId !== null && b.ankeGebyr !== null;
+}

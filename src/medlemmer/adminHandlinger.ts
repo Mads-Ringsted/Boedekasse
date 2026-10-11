@@ -11,6 +11,7 @@ export interface AdminMedlem {
 
 export type AdminHandling =
   | { art: 'registrerIndbetaling' }
+  | { art: 'registrerFrikob' }
   | { art: 'goerTilAdmin' }
   | { art: 'fjernSomAdmin' }
   | { art: 'retNavn' }
@@ -20,7 +21,7 @@ export type AdminHandling =
   | { art: 'slet'; grund: SletGrund | null };
 
 export interface AdminHandlinger {
-  /** The first group: Registrér indbetaling, role, Ret navn, Ret email. */
+  /** The first group: Registrér indbetaling, Registrér frikøb, role, Ret navn, Ret email. */
   hoved: AdminHandling[];
   /** The red group: Meld ud (or Genoptag) and Slet. */
   farlig: AdminHandling[];
@@ -31,12 +32,15 @@ export interface AdminHandlinger {
  * Your own profile has only Registrér indbetaling and your role (your name has
  * its own pencil, and nobody melder themself ud). An Udmeldt has no role to
  * change and gets Genoptag instead of Meld ud. Ret email only before they log in.
+ * Registrér frikøb (`frikob`: Frikøb is on and a Sæson runs) is for an active
+ * Medlem's profile; on your own, Køb Frikøb is a profile button.
  */
 export function adminHandlinger(
   m: AdminMedlem,
-  { egen, sletGrund }: { egen: boolean; sletGrund: SletGrund | null },
+  { egen, sletGrund, frikob = false }: { egen: boolean; sletGrund: SletGrund | null; frikob?: boolean },
 ): AdminHandlinger {
   const hoved: AdminHandling[] = [{ art: 'registrerIndbetaling' }];
+  if (frikob && !egen && !m.udmeldt) hoved.push({ art: 'registrerFrikob' });
   if (!m.udmeldt) hoved.push({ art: m.erAdmin ? 'fjernSomAdmin' : 'goerTilAdmin' });
   if (!egen) hoved.push({ art: 'retNavn' });
   if (!egen && !m.loggetInd) hoved.push({ art: 'retEmail', email: m.email });

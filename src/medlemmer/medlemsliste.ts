@@ -5,6 +5,7 @@ export interface MedlemRaekke {
   er_admin: boolean;
   user_id: string | null;
   udmeldt: string | null;
+  konto_slettet: string | null;
 }
 
 /** One row of the `medlem_saldo` view. */
@@ -20,6 +21,8 @@ export interface Medlemslinje {
   erAdmin: boolean;
   /** False for a pre-added Medlem who has not logged in yet (dashed avatar). */
   loggetInd: boolean;
+  /** Their login was deleted (Slet konto). */
+  kontoSlettet: boolean;
   /** Your own row (highlighted). */
   egen: boolean;
   /** What they owe in kr; negative = Til gode. */
@@ -38,6 +41,7 @@ export function medlemsliste(medlemmer: MedlemRaekke[], saldi: SaldoRaekke[], mi
       navn: m.navn,
       erAdmin: m.er_admin,
       loggetInd: m.user_id !== null,
+      kontoSlettet: m.konto_slettet !== null,
       egen: m.id === mitId,
       saldo: saldoFor.get(m.id) ?? 0,
     }))

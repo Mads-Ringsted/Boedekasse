@@ -3,6 +3,7 @@ import { ArrowUpRight, CalendarDays, ChevronDown, Tag as TagIkon, Trophy } from 
 import { useLocation, useNavigate } from 'react-router';
 import { Avatar } from '../components/Avatar.tsx';
 import { TagMaerke } from './TagMaerke.tsx';
+import { trykPaaRaekke } from './tryk.ts';
 import type { Ikon, Raekke, Symbol } from './visning.ts';
 
 /** The icon for each `Symbol`. Add one here when a new kind needs it. */
@@ -28,7 +29,7 @@ interface FeedRaekkeProps {
   /** Appended to the second line, e.g. "35 min" for today's rows. */
   tid?: string;
   onAabnBoede: (boedeId: string) => void;
-  /** Admins only: a row with `annullerGebyr` opens "Annullér gebyr". */
+  /** Admins only: a row with `annullerGebyr` (and no Bøde) opens "Annullér gebyr". */
   onAnnullerGebyr?: (raekke: Raekke) => void;
 }
 
@@ -41,7 +42,7 @@ export function FeedRaekke({ raekke, tid, onAabnBoede, onAnnullerGebyr }: FeedRa
   const [aaben, setAaben] = useState(false);
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { boeder, boedeId, link } = raekke;
+  const { boeder } = raekke;
   const linje = [raekke.linje, tid].filter(Boolean).join(' · ');
 
   const indhold = (
@@ -106,19 +107,21 @@ export function FeedRaekke({ raekke, tid, onAabnBoede, onAnnullerGebyr }: FeedRa
     );
   }
 
+  // A Bøde row opens the Bøde (an Anke Gebyr is annulled from its detail sheet).
+  const tryk = trykPaaRaekke(raekke, onAnnullerGebyr !== undefined);
+  const onClick =
+    tryk?.art === 'boede'
+      ? () => onAabnBoede(tryk.boedeId)
+      : tryk?.art === 'gebyr'
+        ? () => onAnnullerGebyr?.(raekke)
+        : tryk?.art === 'link'
+          ? () => void navigate(tryk.link, { state: { fra: pathname } })
+          : null;
+
   return (
     <li className="feed__post">
-      {/* Admins: a Gebyr to annul wins over opening the Bøde (an Anke row has both). */}
-      {raekke.annullerGebyr && onAnnullerGebyr ? (
-        <button type="button" className={klasse} onClick={() => onAnnullerGebyr(raekke)}>
-          {indhold}
-        </button>
-      ) : boedeId ? (
-        <button type="button" className={klasse} onClick={() => onAabnBoede(boedeId)}>
-          {indhold}
-        </button>
-      ) : link ? (
-        <button type="button" className={klasse} onClick={() => void navigate(link, { state: { fra: pathname } })}>
+      {onClick ? (
+        <button type="button" className={klasse} onClick={onClick}>
           {indhold}
         </button>
       ) : (

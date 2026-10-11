@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react';
+import { soegKategorier } from '../kategorier/kategoriListe.ts';
 import { Minus, Plus, Search } from 'lucide-react';
 import type { Kategori } from '../kategorier/hentKategorier.ts';
 import { formatKr, t } from '../strings/index.ts';
@@ -41,8 +42,7 @@ export function KategoriVaelger({
   deaktiveret,
 }: KategoriVaelgerProps) {
   const [soeg, setSoeg] = useState('');
-  const ord = soeg.trim().toLocaleLowerCase('da');
-  const viste = ord ? kategorier.filter((k) => k.navn.toLocaleLowerCase('da').includes(ord)) : kategorier;
+  const viste = soegKategorier(kategorier, soeg);
 
   return (
     <>

@@ -81,6 +81,20 @@
   justify-content: center;
   gap: 6px;
   text-align: center;
+  white-space: nowrap;
+}
+
+/* At 375 px "Registrér indbetaling" and its icon must fit half the row (kassen.html). */
+@media (max-width: 389px) {
+  .kassen__knap {
+    font-size: 14px;
+    gap: 4px;
+  }
+
+  .kassen__knap svg {
+    width: 16px;
+    height: 16px;
+  }
 }
 
 .kassen__knap--primaer {

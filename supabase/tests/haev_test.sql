@@ -63,7 +63,7 @@ select throws_ok(
 
 -- A Pause: the Sæson has ended, and a Hævning still lands in it.
 select tests.log_ud();
-select private.seneste_saeson(:'kasse') as s1 \gset
+select (select seneste_saeson_id from public.bodekasse_saeson where bodekasse_id = :'kasse') as s1 \gset
 update public.saeson set afsluttet = now() where id = :'s1';
 select tests.log_ind_som_medlem(:'anna');
 select public.haev(gen_random_uuid(), :'kasse', 30, 'Pokal') ->> 'haevning_id' as h_pause \gset
