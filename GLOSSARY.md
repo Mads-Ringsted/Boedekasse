@@ -57,3 +57,9 @@ _Avoid_: Transaction, settlement
 **Saldo** (Balance):
 What a Medlem currently owes: their Bøder and Gebyrer minus their Indbetalinger.
 _Avoid_: Debt, gæld
+
+### Corrections
+
+**Annullering** (Annulment):
+Undoing a Bøde, Gebyr, Indbetaling, Hævning or Frikøb after the fact. The record stays in the history marked **Annulleret**, but no longer counts towards anyone's Saldo. Nothing is ever deleted, except a batch of Bøder taken back with Fortryd straight after giving it.
+_Avoid_: Sletning, delete, remove, cancel, refund
