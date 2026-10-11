@@ -19,7 +19,7 @@ A former Medlem an Admin has taken out of the Bødekasse. Their history and any 
 _Avoid_: Slettet, inaktiv, forladt
 
 **Admin**:
-A Medlem who can change a Bødekasse's settings, manage Medlemmer, and register Indbetalinger. The creator is the first Admin.
+A Medlem who can change a Bødekasse's settings, manage Medlemmer, register Indbetalinger, and make Hævninger. The creator is the first Admin.
 _Avoid_: Kasserer, owner, moderator
 
 **Sæson** (Season):
@@ -63,9 +63,17 @@ _Avoid_: Game, spil
 ### Money
 
 **Indbetaling** (Payment):
-Money a Medlem has paid into the Bødekasse.
+Money a Medlem has paid into the Bødekasse. Counts against their whole Saldo, not specific Bøder. Either registered by an Admin or a confirmed Betalingsmelding.
 _Avoid_: Transaction, settlement
 
+**Betalingsmelding** (Payment report):
+A Medlem's own report that they have paid ("Jeg har betalt"). It doesn't count until another Medlem (or, for an Admin's own report, that Admin) confirms it, which turns it into an Indbetaling.
+_Avoid_: Kvittering, claim
+
 **Saldo** (Balance):
-What a Medlem currently owes: their Bøder and Gebyrer minus their Indbetalinger.
+What a Medlem currently owes: their Bøder and Gebyrer minus their Indbetalinger. Can be negative when a Medlem has paid more than they owe (credit, "til gode").
 _Avoid_: Debt, gæld
+
+**Hævning** (Withdrawal):
+Money an Admin takes out of the Bødekasse for a stated purpose. Lowers the box's money, never any Medlem's Saldo.
+_Avoid_: Udbetaling, expense
