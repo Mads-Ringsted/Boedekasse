@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Check } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { delInvitation } from '../../bodekasse/delInvitation.ts';
+import { useGivBoeder } from '../../giv/GivBoederProvider.tsx';
 import { AABN_NY } from '../../kategorier/Kategorier.tsx';
 import { formatKr, t } from '../../strings/index.ts';
 import type { KomIGangPunkt } from './komIGang.ts';
@@ -16,6 +17,7 @@ interface KomIGangKortProps {
 /** The "Kom i gang" checklist on a new box's Hjem. */
 export function KomIGangKort({ punkter, bodekasseNavn, kode }: KomIGangKortProps) {
   const navigate = useNavigate();
+  const { aabn: givBoeder } = useGivBoeder();
   const [kopieret, setKopieret] = useState(false);
 
   function tekst(p: KomIGangPunkt): { titel: string; under?: string } {
@@ -56,6 +58,13 @@ export function KomIGangKort({ punkter, bodekasseNavn, kode }: KomIGangKortProps
       return (
         <button type="button" className={`kom-i-gang__knap${primaer}`} onClick={() => void navigate('/kategorier', { state: AABN_NY })}>
           {t('hjem.opretKategori')}
+        </button>
+      );
+    }
+    if (p.trin === 'boede') {
+      return (
+        <button type="button" className={`kom-i-gang__knap${primaer}`} onClick={() => givBoeder()}>
+          {t('hjem.givBoede')}
         </button>
       );
     }

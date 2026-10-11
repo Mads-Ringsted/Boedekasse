@@ -22,6 +22,12 @@ describe('rpcErrorText (a clear Danish message for a failed save)', () => {
     );
   });
 
+  it('explains why Bøder cannot be given in a Pause', () => {
+    expect(rpcErrorText({ message: 'pause', code: 'P0001', details: '', hint: '' })).toBe(
+      'Sæsonen er slut. Der kan ikke gives bøder i en pause.',
+    );
+  });
+
   it('says "no connection" when the request never got through', () => {
     expect(rpcErrorText({ message: 'TypeError: Failed to fetch', code: '', details: '', hint: '' })).toBe(
       'Ingen forbindelse – prøv igen',

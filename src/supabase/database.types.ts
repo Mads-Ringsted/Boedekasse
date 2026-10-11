@@ -1324,8 +1324,14 @@ isOneToOne: false
 "forny_join_kode":
 { Args: { "p_bodekasse": string,"p_klient_id": string }; Returns: Json
                            },
+"fortryd_batch":
+{ Args: { "p_batch": string,"p_klient_id": string }; Returns: Json
+                           },
 "gendan_bodekategori":
 { Args: { "p_bodekategori": string,"p_klient_id": string }; Returns: Json
+                           },
+"giv_boeder":
+{ Args: { "p_bodekasse": string,"p_klient_id": string,"p_linjer": Json }; Returns: Json
                            },
 "opret_bodekasse":
 { Args: { "p_klient_id": string,"p_mit_navn": string,"p_navn": string }; Returns: Json
