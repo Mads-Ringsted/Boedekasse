@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<title>Anke · Afgørelse</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+button{border:0;margin:0;padding:0;background:none;color:inherit;font:inherit;cursor:pointer;text-align:left}
+a{color:#8AA6FF}a:hover{color:#B7C8FF}
+</style>
+</helmet>
+<div style="width: 393px; height: 852px; position: relative; overflow: hidden; box-sizing: border-box; background: #0A0C12; color: #F1F3F9; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-variant-numeric: tabular-nums">
+
+<div aria-hidden="true" style="padding: 60px 16px 0; display: flex; flex-direction: column; gap: 10px">
+<span style="margin: 0 4px 8px; font-size: 32px; font-weight: 700; letter-spacing: -0.6px">Aktivitet</span>
+<span style="height: 256px; border-radius: 18px; background: #151924"></span>
+</div>
+<div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(0,0,0,0.6)"></div>
+
+<section role="dialog" aria-label="Registrér afgørelse" style="position: absolute; left: 0; right: 0; bottom: 0; top: 250px; border-radius: 22px 22px 0 0; background: #151924; padding: 8px 16px 34px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px">
+<div aria-hidden="true" style="width: 36px; height: 5px; border-radius: 3px; background: #3A4157; margin: 0 auto"></div>
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0 4px">
+<h2 style="margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.3px">Registrér afgørelse</h2>
+<button aria-label="Luk" style="width: 32px; height: 32px; border-radius: 50%; background: #232838; color: #C3C8D6; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+</div>
+
+<div style="border-radius: 18px; background: #1C2232; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+<span style="display: flex; align-items: center; gap: 8px; font-size: 15px"><span style="font-size: 11px; font-weight: 600; color: #FFB547; background: rgba(255,181,71,0.14); padding: 1px 7px; border-radius: 6px">Anket</span>Emil anker Jonas' bøde</span>
+<span style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 17px; font-weight: 600">For sent</span><span style="font-size: 20px; font-weight: 700">50 kr</span></span>
+</div>
+
+<div role="radiogroup" aria-label="Afgørelse" style="display: flex; flex-direction: column; gap: 10px">
+<button role="radio" aria-checked="false" style="border-radius: 18px; background: #1C2232; padding: 14px 16px; display: flex; align-items: center; gap: 12px">
+<span style="width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%; box-shadow: inset 0 0 0 2px #4A5168"></span>
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 600">Bøden står ved magt</span><span style="font-size: 13px; color: #9298AB">Emil betaler de 50 kr</span></span>
+</button>
+<button role="radio" aria-checked="true" style="border-radius: 18px; background: #182650; box-shadow: inset 0 0 0 2px #3B68F5; padding: 14px 16px; display: flex; align-items: center; gap: 12px">
+<span style="width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%; background: #3B68F5; display: flex; align-items: center; justify-content: center"><span style="width: 8px; height: 8px; border-radius: 50%; background: #FFFFFF"></span></span>
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 600">Anken vinder</span><span style="font-size: 13px; color: #B7C8FF">Bøden flyttes til Jonas</span></span>
+</button>
+</div>
+
+<p style="margin: 0; padding: 0 4px; font-size: 13px; color: #9298AB">Ankegebyret på 37 kr betaler Emil uanset afgørelsen.</p>
+
+<button style="margin-top: auto; height: 56px; border-radius: 18px; background: #3B68F5; color: #FFFFFF; font-size: 17px; font-weight: 600; text-align: center">Registrér afgørelse</button>
+</section>
+
+<div aria-hidden="true" style="position: absolute; left: 50%; transform: translateX(-50%); bottom: 8px; width: 134px; height: 5px; border-radius: 3px; background: #F1F3F9"></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":393,"height":852}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
