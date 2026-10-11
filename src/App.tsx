@@ -9,6 +9,7 @@ import { JegHarEnKode } from './onboarding/JegHarEnKode.tsx';
 import { OnboardingProvider, type OnboardingSide } from './onboarding/Onboarding.tsx';
 import { OpretBodekasse } from './onboarding/OpretBodekasse.tsx';
 import { Hjem } from './screens/Hjem.tsx';
+import { Medlemmer } from './screens/Medlemmer.tsx';
 import { Mere } from './screens/Mere.tsx';
 import { Placeholder } from './screens/Placeholder.tsx';
 import { VaelgBodekasse } from './screens/VaelgBodekasse.tsx';
@@ -33,7 +34,7 @@ const router = createBrowserRouter([
       { path: 'mere', element: <Mere /> },
       // Pushed from Mere; each ticket replaces its stand-in.
       { path: 'profil', element: <Placeholder title="skaerm.profil" back={fraMere} /> },
-      { path: 'medlemmer', element: <Placeholder title="mere.medlemmer" back={fraMere} /> },
+      { path: 'medlemmer', element: <Medlemmer /> },
       { path: 'kassen', element: <Placeholder title="mere.kassen" back={fraMere} /> },
       { path: 'anker', element: <Placeholder title="mere.anker" back={fraMere} /> },
       { path: 'konkurrencer', element: <Placeholder title="mere.konkurrencer" back={fraMere} /> },
@@ -106,7 +107,7 @@ function BoxGate() {
   if (side === 'opret') {
     content = <OpretBodekasse onBack={() => setSide(null)} onCreated={aabnNyKasse} />;
   } else if (side === 'kode') {
-    content = <JegHarEnKode onBack={() => setSide(null)} />;
+    content = <JegHarEnKode onBack={() => setSide(null)} onJoined={aabnNyKasse} />;
   } else if (load.status === 'error') {
     content = <StatusScreen message={t('fejl.ukendt')} onRetry={() => void reload()} />;
   } else {

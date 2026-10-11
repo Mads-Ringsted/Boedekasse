@@ -12,6 +12,16 @@ describe('rpcErrorText (a clear Danish message for a failed save)', () => {
     );
   });
 
+  it('explains the Medlemmer and join-code rules', () => {
+    const fejl = (message: string) => rpcErrorText({ message, code: 'P0001', details: '', hint: '' });
+    expect(fejl('email_findes')).toBe('Der er allerede et medlem med den email.');
+    expect(fejl('kode_ukendt')).toBe('Koden findes ikke. Tjek den og prøv igen.');
+    expect(fejl('udmeldt')).toBe('Du er meldt ud af denne Bødekasse. Bed en Admin om at genoptage dig.');
+    expect(rpcErrorText({ message: 'ikke_admin', code: '42501', details: '', hint: '' })).toBe(
+      'Det kan kun en Admin.',
+    );
+  });
+
   it('says "no connection" when the request never got through', () => {
     expect(rpcErrorText({ message: 'TypeError: Failed to fetch', code: '', details: '', hint: '' })).toBe(
       'Ingen forbindelse – prøv igen',

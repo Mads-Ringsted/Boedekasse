@@ -7,6 +7,15 @@ import { t, type PlainStringId } from '../strings/index.ts';
 const BY_KEY: Record<string, PlainStringId> = {
   navn_mangler: 'fejl.navnMangler',
   mit_navn_mangler: 'fejl.mitNavnMangler',
+  // Medlemmer (#51)
+  medlem_navn_mangler: 'fejl.medlemNavnMangler',
+  email_mangler: 'fejl.emailMangler',
+  email_ugyldig: 'fejl.emailUgyldig',
+  email_findes: 'fejl.emailFindes',
+  kode_ukendt: 'fejl.kodeUkendt',
+  udmeldt: 'fejl.udmeldt',
+  ikke_admin: 'fejl.ikkeAdmin',
+  // Bødekategorier (#52)
   kategorinavn_mangler: 'fejl.kategorinavnMangler',
   navn_findes: 'fejl.navnFindes',
   pris_ugyldig: 'fejl.prisUgyldig',
