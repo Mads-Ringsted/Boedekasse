@@ -1,0 +1,110 @@
+.boede-detalje__header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 20px 0;
+  flex-shrink: 0;
+}
+
+.boede-detalje__fra {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.boede-detalje__luk {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.boede-detalje__top {
+  align-self: stretch;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.boede-detalje__navn {
+  margin: 0;
+  min-width: 0;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  overflow-wrap: anywhere;
+}
+
+.boede-detalje__beloeb {
+  flex-shrink: 0;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1;
+  font-variant-numeric: var(--font-numeric);
+}
+
+.boede-detalje__beloeb--annulleret {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+.boede-detalje {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 4px 0;
+}
+
+.boede-detalje__info {
+  margin: 0;
+  border-radius: var(--radius-input);
+  background: var(--color-surface-raised);
+}
+
+.boede-detalje__raekke {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  font-size: 15px;
+}
+
+.boede-detalje__raekke + .boede-detalje__raekke {
+  border-top: 1px solid var(--color-line);
+}
+
+.boede-detalje__raekke dt {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+
+.boede-detalje__raekke dd {
+  margin: 0;
+  min-width: 0;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+/* Later tickets put their buttons here (BOEDE_HANDLINGER). */
+.boede-detalje__handlinger {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.boede-detalje__handlinger:empty {
+  display: none;
+}
+
+.boede-detalje__fejl {
+  margin: 16px 4px 0;
+  font-size: 15px;
+  color: var(--color-danger);
+  text-align: left;
+}
