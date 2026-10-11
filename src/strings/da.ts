@@ -100,6 +100,15 @@ export const da = {
   'hjem.topliste': 'Topliste',
   'hjem.toplisteTom': 'Ingen bøder endnu',
   'hjem.toplisteTomTekst': 'Her ser I, hvem der har fået flest.',
+  'hjem.indbetalt': 'Indbetalt',
+  'hjem.ikkeBetalt': 'I alt ikke betalte bøder',
+  'hjem.duMangler': 'Du mangler at betale',
+  'hjem.duHarTilGode': 'Du har til gode',
+  'hjem.tilGodeTekst': 'Trækkes fra dine næste bøder',
+  'hjem.betal': 'Betal',
+  'hjem.boederIAlt': 'Bøder i alt',
+  'hjem.betalt': 'Betalt {beloeb}',
+  'hjem.toplisteRad': '{navn} · Betalt {beloeb}',
 
   // Bødekategorier
   'kategorier.ny': 'Ny bødekategori',
