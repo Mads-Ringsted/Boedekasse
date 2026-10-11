@@ -6,6 +6,8 @@ import { LogInd } from './auth/LogInd.tsx';
 import { BodekasseProvider, useMedlemskaber } from './bodekasse/BodekasseProvider.tsx';
 import { Indstillinger } from './indstillinger/Indstillinger.tsx';
 import { Kategorier } from './kategorier/Kategorier.tsx';
+import { KonkurrenceDetalje } from './konkurrence/KonkurrenceDetalje.tsx';
+import { Konkurrencer } from './konkurrence/Konkurrencer.tsx';
 import { StatusScreen } from './components/StatusScreen.tsx';
 import { JegHarEnKode } from './onboarding/JegHarEnKode.tsx';
 import { OnboardingProvider, type OnboardingSide } from './onboarding/Onboarding.tsx';
@@ -39,7 +41,8 @@ const router = createBrowserRouter([
       { path: 'medlemmer', element: <Medlemmer /> },
       { path: 'kassen', element: <Placeholder title="mere.kassen" back={fraMere} /> },
       { path: 'anker', element: <Placeholder title="mere.anker" back={fraMere} /> },
-      { path: 'konkurrencer', element: <Placeholder title="mere.konkurrencer" back={fraMere} /> },
+      { path: 'konkurrencer', element: <Konkurrencer /> },
+      { path: 'konkurrencer/:id', element: <KonkurrenceDetalje /> },
       { path: 'indstillinger', element: <Indstillinger /> },
       { path: '*', element: <Hjem /> },
     ],
