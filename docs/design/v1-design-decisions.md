@@ -87,8 +87,8 @@ Changes from the brief:
 The single sheet from the brief ("Udfylder for", "Samme til alle") is replaced by steps in one full-height sheet. A three-part progress bar sits under the header ("1 af 3").
 
 1. **Hvem:** a grid of person tiles. Tap to select (blue tile with a tick). "Vælg alle" at the top. Every Medlem can be selected, including one with a Frikøb. Button: "Næste · 2 valgt".
-2. **Hvad:** one list of Bødekategorier with search. Every Bøde added here goes to **everyone selected**; a line shows who ("Gælder for Jonas og Emil"). Tapping + adds one; a row with a count shows a − / count / + stepper. Footer: "1 bøde til hver · 100 kr i alt" and "Næste".
-3. **Tjek og giv:** one card per person with their Bøder, amounts and total. Tapping a person or "Tilføj bøde" opens a second sheet (**3b**) with the same list for **that person only**. Footer: "5 bøder til 2 personer · 210 kr" and "Giv 5 bøder · 210 kr".
+2. **Hvad:** one list of Bødekategorier with search. Every Bøde added here goes to **everyone selected**; a line shows who ("Gælder for Jonas og Emil"). Tapping + adds one; a row with a count shows a − / count / + stepper. Footer: "1 bøde til hver · 100 kr i alt", then two buttons: **Tilpas pr. person** (secondary, opens step 3) and **Giv 2 bøder · 100 kr** (primary, gives straight away). One Bøde to one person is therefore **5 taps**: + → person → Næste → Bøde → Giv.
+3. **Tjek og giv** (optional, only via "Tilpas pr. person"): one card per person with their Bøder, amounts and total. Tapping a person or "Tilføj bøde" opens a second sheet (**3b**) with the same list for **that person only**. Footer: "5 bøder til 2 personer · 210 kr" and "Giv 5 bøder · 210 kr".
 
 No headings or explainer text inside the steps; each screen does one job.
 
@@ -219,6 +219,6 @@ Logo **2a** is the app icon: an isometric box in three blues (`#8AA6FF` lid, `#3
 ## Placeholders and open questions
 
 - **Placeholders:** the MobilePay Box number "1234 5678", the join code "K7P2QX", the former Medlem "Anders Vang", the new Medlem "Peter Skov", the boxes "Klassen fra 2012" and "Poker-tirsdag", and the description of "For sent".
-- **Tap count for one Bøde** is now 6 (+ → person → Næste → Bøde → Næste → Giv); the brief's target was 4. One option: let step 2's button give the Bøder directly and make step 3 optional, which gives 5 taps.
+- **Tap count for one Bøde** is 5 (decided): step 2 gives directly and step 3 is optional. The brief's 4 would need step 1 to skip "Næste" for a single person, which makes picking several people harder to find.
 - **Does a Frikøbsgebyr count** in a Medlem's "Bøder i alt" on the Topliste? The mock counts it (Oliver's 310 kr).
 - **Light mode** is covered by [tokens.css](tokens.css) rather than a light copy of every mock. Check contrast on a few real screens once they are built.
