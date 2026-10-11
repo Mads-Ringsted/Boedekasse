@@ -294,13 +294,13 @@ const A = {
   pitch: 'Closest to MobilePay. One strong blue, the Saldo big on a coloured card, iOS-style grouped lists, and a raised + button in the middle of the tab bar for giving a Bøde.',
   font: 'System font (SF Pro on iPhone; nothing to download, feels native)',
   icons: 'Lucide, 2px stroke, 22–24px',
-  lib: 'Own components in plain CSS, plus Vaul for the bottom sheet',
+  lib: 'Own components in plain CSS (tokens as CSS variables), Radix primitives for dialog/sheet/menu accessibility',
   type: [['Amount', 44, 700, '145 kr.'], ['Title', 20, 600, 'Seneste'], ['Body', 15, 500, 'Jonas → Mads'], ['Caption', 13, 400, 'For sent · I dag 18:42']],
   radius: 'card 20 · list group 14 · sheet 24 · buttons pill',
   extra: 'Shadows only on the + button. Separators are 1px lines inside grouped lists.',
   tokens: {
-    light: { main: '#3355FF', 'on-main': '#FFFFFF', 'main-ink': '#2A47E0', 'main-soft': '#E6EBFF', bg: '#F2F3F8', surface: '#FFFFFF', 'surface-2': '#E9EBF3', text: '#0E1220', muted: '#636A7E', line: '#E1E4ED', pos: '#0E9F64', neg: '#E5484D' },
-    dark: { main: '#4A68FF', 'on-main': '#FFFFFF', 'main-ink': '#8DA2FF', 'main-soft': '#1C2552', bg: '#0A0C12', surface: '#151924', 'surface-2': '#1D2231', text: '#F1F3F9', muted: '#9298AB', line: '#252A39', pos: '#3DD68C', neg: '#FF6369' }
+    light: { main: '#1E50E6', 'on-main': '#FFFFFF', 'main-ink': '#1A46CC', 'main-soft': '#E4EBFD', bg: '#F2F3F8', surface: '#FFFFFF', 'surface-2': '#E9EBF3', text: '#0E1220', muted: '#636A7E', line: '#E1E4ED', pos: '#0E9F64', neg: '#E5484D' },
+    dark: { main: '#3B68F5', 'on-main': '#FFFFFF', 'main-ink': '#8AA6FF', 'main-soft': '#182650', bg: '#0A0C12', surface: '#151924', 'surface-2': '#1D2231', text: '#F1F3F9', muted: '#9298AB', line: '#252A39', pos: '#3DD68C', neg: '#FF6369' }
   },
   fonts: { font: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif', mono: 'ui-monospace, monospace' },
   home: () => `${status()}<div class="body">
