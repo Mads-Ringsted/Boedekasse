@@ -3,6 +3,8 @@ import { ChevronDown, ChevronRight, Wallet } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { SkiftBodekasseSheet } from '../bodekasse/SkiftBodekasseSheet.tsx';
+import { AfventerKort } from '../betal/AfventerKort.tsx';
+import { BetalSheet } from '../betal/BetalSheet.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Screen } from '../components/Screen.tsx';
 import { useGivBoeder } from '../giv/GivBoederProvider.tsx';
@@ -28,6 +30,9 @@ export function Hjem() {
   const navigate = useNavigate();
   const aabnProfil = useAabnProfil('tab.hjem');
   const [skifter, setSkifter] = useState(false);
+  // Betal: a counter, so each opening mounts a fresh sheet (new one-time ID).
+  const [betaler, setBetaler] = useState(0);
+  const [betalRunde, setBetalRunde] = useState(0);
   const { version } = useGivBoeder();
   const { saeson, pause, version: saesonVersion } = useSaeson();
   const hjem = useHent(
@@ -105,15 +110,16 @@ export function Hjem() {
               <span className="hjem__min-label">{t('hjem.duMangler')}</span>
               <span className="hjem__min-beloeb">{formatKr(status.beloeb)}</span>
             </span>
-            {/* #60 opens the Betal sheet from here. */}
             {status.kanBetale && (
-              <button type="button" className="hjem__betal">
+              <button type="button" className="hjem__betal" onClick={() => setBetaler((n) => n + 1)}>
                 <Wallet size={20} strokeWidth={2} aria-hidden="true" />
                 {t('hjem.betal')}
               </button>
             )}
           </div>
         ))}
+
+      {data && <AfventerKort variant="hjem" opdater={betalRunde + version} onBehandlet={hjem.reload} />}
 
       {data && punkter && <KomIGangKort punkter={punkter} bodekasseNavn={bodekasseNavn} kode={data.kode} />}
 
@@ -139,6 +145,14 @@ export function Hjem() {
       )}
 
       <SkiftBodekasseSheet open={skifter} onOpenChange={setSkifter} />
+      {betaler > 0 && (
+        <BetalSheet
+          key={`betal-${betaler}`}
+          open
+          onOpenChange={(aaben) => !aaben && setBetaler(0)}
+          onAendret={() => setBetalRunde((n) => n + 1)}
+        />
+      )}
     </Screen>
   );
 }
