@@ -1315,7 +1315,9 @@ isOneToOne: false
                 }
           }
           Functions: {
-            [_ in never]: never
+            "opret_bodekasse":
+{ Args: { "p_klient_id": string,"p_mit_navn": string,"p_navn": string }; Returns: Json
+                           }
           }
           Enums: {
             "anke_afgoerelse": "modtager_vandt"|"giver_vandt"|"ikke_afgjort","gebyr_art": "oprettelse"|"engangsbode"|"anke"|"frikob"|"placering"|"fravaer","melding_status": "afventer"|"bekraeftet"|"afvist"|"trukket"
