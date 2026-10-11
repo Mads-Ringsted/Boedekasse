@@ -1,6 +1,5 @@
 .tag-maerke {
   flex-shrink: 0;
-  align-self: center;
   padding: 1px 7px;
   border-radius: var(--radius-tag);
   font-size: 11px;
