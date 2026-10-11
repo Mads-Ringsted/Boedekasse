@@ -1,0 +1,382 @@
+/* Betal sheet (betal.html, betal-afventer.html, betal-uden-box.html) */
+.betal__header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 16px 0;
+  flex-shrink: 0;
+}
+
+.betal__top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-top: -6px;
+}
+
+.betal__top-label {
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.betal__top-beloeb {
+  font-size: 60px;
+  font-weight: 700;
+  letter-spacing: -2px;
+  line-height: 1.1;
+  font-variant-numeric: var(--font-numeric);
+}
+
+.betal__box {
+  margin-top: 22px;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-raised);
+  padding: 14px 14px 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.betal-afventer + .betal__box {
+  margin-top: 12px;
+}
+
+.betal__box-tekst {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.betal__box-label {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.betal__box-nummer {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  font-variant-numeric: var(--font-numeric);
+}
+
+.betal__kopier {
+  flex-shrink: 0;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: var(--color-accent-pale);
+  color: var(--color-accent-pale-text);
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.betal__trin {
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 15px;
+}
+
+.betal__trin li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.betal__trin-nr {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-fill);
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.betal__admins {
+  margin-top: 22px;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-raised);
+  display: flex;
+  flex-direction: column;
+}
+
+.betal-afventer + .betal__admins {
+  margin-top: 12px;
+}
+
+.betal__admins-titel {
+  padding: 14px 16px 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.betal__admins-liste {
+  margin: 0;
+  padding: 0 0 4px;
+  list-style: none;
+}
+
+.betal__admin {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  font-size: 16px;
+}
+
+.betal__admin + .betal__admin {
+  border-top: 1px solid var(--color-line);
+}
+
+.betal__note {
+  margin: 14px 4px 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.betal__beloeb {
+  margin-bottom: 10px;
+  height: 52px;
+  border-radius: var(--radius-input);
+  background: var(--color-surface-raised);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  font-size: 16px;
+}
+
+.betal__beloeb-label {
+  color: var(--color-text-muted);
+}
+
+.betal__beloeb-felt {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+}
+
+.betal__beloeb-input {
+  width: 80px;
+  text-align: right;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  font-variant-numeric: var(--font-numeric);
+  color: var(--color-text);
+  background: none;
+  border: 0;
+  outline: none;
+}
+
+.betal__faerdig {
+  width: 100%;
+  height: var(--size-button);
+  border-radius: var(--radius-button);
+  background: var(--color-fill);
+  font-size: 17px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.betal__fejl {
+  margin: 0 4px 10px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--color-danger);
+}
+
+.betal__fejl-knap {
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+  color: var(--color-danger);
+}
+
+/* The orange "waiting" card, shared by Betal, Hjem and Kassen. */
+.afventer-kort {
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-warning) 35%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.afventer-kort__status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-warning);
+}
+
+.afventer-kort__status--lille {
+  gap: 6px;
+  font-size: 12px;
+}
+
+.afventer-kort__prik {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-warning);
+}
+
+.afventer-kort__status--lille .afventer-kort__prik {
+  width: 7px;
+  height: 7px;
+}
+
+/* Your own report, on Betal and your profile */
+.betal-afventer {
+  margin-top: 22px;
+  background: var(--color-surface-raised);
+  padding: 16px 18px;
+}
+
+.betal-afventer__tekst {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.betal-afventer__titel {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.betal-afventer__under {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.betal-afventer__fortryd {
+  align-self: flex-start;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: var(--color-fill);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.betal-afventer .betal__fejl {
+  margin: 0;
+}
+
+/* Afventer bekræftelse on Hjem (hjem-afventer.html) */
+.afventer-hjem {
+  border-radius: 20px;
+  padding: 14px 16px;
+}
+
+.afventer-hjem__melding {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.afventer-hjem__melding + .afventer-hjem__melding {
+  border-top: 1px solid var(--color-line);
+  padding-top: 12px;
+}
+
+.afventer-hjem__hvem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.afventer-hjem__tekst {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.afventer__titel {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.afventer-hjem__tid {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.afventer-hjem__knapper {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.afventer__afvis,
+.afventer__bekraeft {
+  height: 44px;
+  border-radius: 14px;
+  background: var(--color-fill);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.afventer__bekraeft {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.afventer__afvis:disabled,
+.afventer__bekraeft:disabled {
+  opacity: 0.45;
+}
+
+.afventer__fejl {
+  margin: 0;
+}
+
+/* One slim card per report on Kassen (kassen.html) */
+.afventer-kassen {
+  padding: 12px 12px 12px 16px;
+  gap: 8px;
+}
+
+.afventer-kassen__raekke {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.afventer-kassen__tekst {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.afventer-kassen .afventer__afvis,
+.afventer-kassen .afventer__bekraeft {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 12px;
+  font-size: 14px;
+}

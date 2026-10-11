@@ -36,6 +36,11 @@ const BY_KEY: Record<string, PlainStringId> = {
   beloeb_ugyldig: 'fejl.beloebUgyldig',
   allerede_annulleret: 'fejl.alleredeAnnulleret',
   tidligere_saeson: 'fejl.tidligereSaeson',
+  // Betalingsmelding (#60)
+  melding_afventer: 'fejl.meldingAfventer',
+  egen_melding: 'fejl.egenMelding',
+  ikke_afventer: 'fejl.ikkeAfventer',
+  ikke_din_melding: 'fejl.ikkeDinMelding',
   // Indstillinger (#57)
   indstilling_ugyldig: 'fejl.indstillingUgyldig',
   indstilling_ukendt: 'fejl.indstillingUgyldig',
