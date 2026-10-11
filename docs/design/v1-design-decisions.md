@@ -220,5 +220,5 @@ Logo **2a** is the app icon: an isometric box in three blues (`#8AA6FF` lid, `#3
 
 - **Placeholders:** the MobilePay Box number "1234 5678", the join code "K7P2QX", the former Medlem "Anders Vang", the new Medlem "Peter Skov", the boxes "Klassen fra 2012" and "Poker-tirsdag", and the description of "For sent".
 - **Tap count for one Bøde** is 5 (decided): step 2 gives directly and step 3 is optional. The brief's 4 would need step 1 to skip "Næste" for a single person, which makes picking several people harder to find.
-- **Does a Frikøbsgebyr count** in a Medlem's "Bøder i alt" on the Topliste? The mock counts it (Oliver's 310 kr).
+- **A Frikøbsgebyr counts** in a Medlem's "Bøder i alt" on the Topliste (decided), like any other Gebyr. The mock shows it in Oliver's 310 kr.
 - **Light mode** is covered by [tokens.css](tokens.css) rather than a light copy of every mock. Check contrast on a few real screens once they are built.
