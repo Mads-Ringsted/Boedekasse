@@ -638,6 +638,12 @@ isOneToOne: false
       referencedRelation: "frikob"
       referencedColumns: ["bodekasse_id","id"]
     },{
+      foreignKeyName: "gebyr_bodekasse_id_frikob_id_fkey"
+      columns: ["bodekasse_id","frikob_id"]
+isOneToOne: false
+      referencedRelation: "frikob_aktiv"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
       foreignKeyName: "gebyr_bodekasse_id_konkurrence_id_fkey"
       columns: ["bodekasse_id","konkurrence_id"]
 isOneToOne: false
@@ -1596,6 +1602,104 @@ isOneToOne: false
       referencedColumns: ["bodekasse_id"]
     }
                   ]
+                },"frikob_aktiv": {
+                  Row: {
+                    "bodekasse_id": string | null,"bodekategori_id": string | null,"bodekategori_navn": string | null,"id": string | null,"koebt": string | null,"medlem_id": string | null,"medlem_navn": string | null,"pris": number | null,"registreret_af": string | null,"saeson_id": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "frikob_bodekasse_id_bodekategori_id_fkey"
+      columns: ["bodekasse_id","bodekategori_id"]
+isOneToOne: false
+      referencedRelation: "bodekategori"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
+      foreignKeyName: "frikob_bodekasse_id_bodekategori_id_fkey"
+      columns: ["bodekasse_id","bodekategori_id"]
+isOneToOne: false
+      referencedRelation: "bodekategori_brug"
+      referencedColumns: ["bodekasse_id","bodekategori_id"]
+    },{
+      foreignKeyName: "frikob_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "bodekasse"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "frikob_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "bodekasse_saeson"
+      referencedColumns: ["bodekasse_id"]
+    },{
+      foreignKeyName: "frikob_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "kassen"
+      referencedColumns: ["bodekasse_id"]
+    },{
+      foreignKeyName: "frikob_bodekasse_id_medlem_id_fkey"
+      columns: ["bodekasse_id","medlem_id"]
+isOneToOne: false
+      referencedRelation: "medlem"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
+      foreignKeyName: "frikob_bodekasse_id_medlem_id_fkey"
+      columns: ["bodekasse_id","medlem_id"]
+isOneToOne: false
+      referencedRelation: "medlem_saeson_tal"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "frikob_bodekasse_id_medlem_id_fkey"
+      columns: ["bodekasse_id","medlem_id"]
+isOneToOne: false
+      referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "frikob_bodekasse_id_medlem_id_fkey"
+      columns: ["bodekasse_id","medlem_id"]
+isOneToOne: false
+      referencedRelation: "topliste"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "frikob_bodekasse_id_registreret_af_fkey"
+      columns: ["bodekasse_id","registreret_af"]
+isOneToOne: false
+      referencedRelation: "medlem"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
+      foreignKeyName: "frikob_bodekasse_id_registreret_af_fkey"
+      columns: ["bodekasse_id","registreret_af"]
+isOneToOne: false
+      referencedRelation: "medlem_saeson_tal"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "frikob_bodekasse_id_registreret_af_fkey"
+      columns: ["bodekasse_id","registreret_af"]
+isOneToOne: false
+      referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "frikob_bodekasse_id_registreret_af_fkey"
+      columns: ["bodekasse_id","registreret_af"]
+isOneToOne: false
+      referencedRelation: "topliste"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "frikob_bodekasse_id_saeson_id_fkey"
+      columns: ["bodekasse_id","saeson_id"]
+isOneToOne: false
+      referencedRelation: "saeson"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
+      foreignKeyName: "frikob_bodekasse_id_saeson_id_fkey"
+      columns: ["bodekasse_id","saeson_id"]
+isOneToOne: false
+      referencedRelation: "saeson_status"
+      referencedColumns: ["bodekasse_id","id"]
+    }
+                  ]
                 },"kassen": {
                   Row: {
                     "beloeb": number | null,"bodekasse_id": string | null,"haevet": number | null,"ikke_betalt": number | null,"indbetalt": number | null
@@ -1717,7 +1821,10 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "annuller_indbetaling":
+            "annuller_frikob":
+{ Args: { "p_frikob": string,"p_klient_id": string,"p_note"?: string }; Returns: Json
+                           },
+"annuller_indbetaling":
 { Args: { "p_indbetaling": string,"p_klient_id": string,"p_note"?: string }; Returns: Json
                            },
 "arkiver_bodekategori":
@@ -1737,6 +1844,9 @@ isOneToOne: false
                            },
 "giv_boeder":
 { Args: { "p_bodekasse": string,"p_klient_id": string,"p_linjer": Json }; Returns: Json
+                           },
+"koeb_frikob":
+{ Args: { "p_bodekasse": string,"p_bodekategori": string,"p_klient_id": string,"p_medlem"?: string }; Returns: Json
                            },
 "opdater_indstillinger":
 { Args: { "p_aendringer": Json,"p_bodekasse": string,"p_klient_id": string }; Returns: Json
