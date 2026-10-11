@@ -31,6 +31,10 @@ const BY_KEY: Record<string, PlainStringId> = {
   antal_ugyldig: 'fejl.antalUgyldig',
   fortryd_udloebet: 'fejl.fortrydUdloebet',
   kan_ikke_fortrydes: 'fejl.kanIkkeFortrydes',
+  // Engangsbøde (#58)
+  grund_mangler: 'fejl.grundMangler',
+  grund_for_lang: 'fejl.grundForLang',
+  beloeb_ugyldig: 'fejl.beloebUgyldig',
   // Indstillinger (#57)
   indstilling_ugyldig: 'fejl.indstillingUgyldig',
   indstilling_ukendt: 'fejl.indstillingUgyldig',
