@@ -1,0 +1,58 @@
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  /* 88px in the mock includes a 34px home-indicator area. */
+  height: calc(var(--size-tabbar) - 34px + env(safe-area-inset-bottom));
+  padding: 8px env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  background: var(--color-tabbar);
+  border-top: 1px solid var(--color-line);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: start;
+}
+
+.tabbar__tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.tabbar__tab[aria-current='page'] {
+  color: var(--color-accent-text);
+  font-weight: 600;
+}
+
+.tabbar__fab-slot {
+  display: flex;
+  justify-content: center;
+}
+
+.tabbar__fab {
+  width: var(--size-fab);
+  height: var(--size-fab);
+  margin-top: -30px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 6px var(--color-bg), 0 8px 24px var(--color-accent-shadow);
+}
+
+.tabbar__fab:disabled {
+  background: var(--color-fill-strong);
+  color: var(--color-text-faint);
+  box-shadow: 0 0 0 6px var(--color-bg);
+  cursor: not-allowed;
+}
