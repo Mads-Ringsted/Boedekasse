@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router';
+import { Aktivitet } from './aktivitet/Aktivitet.tsx';
 import { AuthProvider, useAuth } from './auth/AuthProvider.tsx';
 import { LogInd } from './auth/LogInd.tsx';
 import { BodekasseProvider, useMedlemskaber } from './bodekasse/BodekasseProvider.tsx';
@@ -29,7 +30,7 @@ const router = createBrowserRouter([
     element: <AppShell />,
     children: [
       { index: true, element: <Hjem /> },
-      { path: 'aktivitet', element: <Placeholder title="skaerm.aktivitet" /> },
+      { path: 'aktivitet', element: <Aktivitet /> },
       { path: 'kategorier', element: <Kategorier /> },
       { path: 'mere', element: <Mere /> },
       // Pushed from Mere; each ticket replaces its stand-in.

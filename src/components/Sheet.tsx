@@ -40,6 +40,9 @@ interface SheetProps {
 /** The sheet's title, for a custom `header`. */
 export const SheetTitle = Dialog.Title;
 
+/** A button that closes the sheet, for a custom `header`. */
+export const SheetClose = Dialog.Close;
+
 /** The one shared bottom sheet. Built on Radix Dialog for focus and Escape. */
 export function Sheet({
   open,
