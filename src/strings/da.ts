@@ -19,7 +19,6 @@ export const da = {
   'skaerm.aktivitet': 'Aktivitet',
   'skaerm.kategorier': 'Bødekategorier',
   'skaerm.mere': 'Mere',
-  'skaerm.profil': 'Profil',
   'skaerm.kommerSnart': 'Kommer snart',
 
   // Install guide (opened in a Safari tab)
@@ -83,6 +82,7 @@ export const da = {
 
   // Hjem
   'hjem.label': 'Bødekasse',
+  'hjem.dinProfil': 'Din profil',
   'hjem.skift': 'Skift Bødekasse',
   'hjem.iBoedekassen': 'I bødekassen',
   'hjem.komIGang': 'Kom i gang',
@@ -165,6 +165,22 @@ export const da = {
   'mere.admin': 'Admin',
   'mere.skift': 'Skift Bødekasse',
 
+  // Medlem profile (yours and others')
+  'profil.manglerAtBetale': 'Mangler at betale',
+  'profil.mangler': 'Mangler',
+  'profil.tilGode': 'Til gode',
+  'profil.boederOgGebyrer': 'Bøder og gebyrer',
+  'profil.betalt': 'Betalt',
+  'profil.givBoede': 'Giv bøde',
+  'profil.betal': 'Betal',
+  'profil.kunAdmin': 'Kun Admin',
+  'profil.historik': 'Historik',
+  'profil.sletKonto': 'Slet konto',
+  'profil.findesIkke': 'Medlemmet findes ikke i Bødekassen.',
+  'profil.tag.admin': 'Admin',
+  'profil.tag.ikkeLoggetInd': 'Ikke logget ind endnu',
+  'profil.tag.udmeldt': 'Udmeldt',
+
   // Kassen and Registrér indbetaling (#59)
   'kassen.titel': 'Kassen',
   'kassen.haevet': 'Hævet',
@@ -236,6 +252,8 @@ export const da = {
   'indstillinger.saerligeRegler': 'Særlige regler',
   'indstillinger.oprettelsesgebyr': 'Gebyr for ny bødekategori',
   'indstillinger.oprettelsesgebyrNote': 'Den, der opretter en bødekategori, betaler gebyret. Det gælder kun nye bødekategorier, og der er intet gebyr i en pause.',
+  'indstillinger.engangsgebyr': 'Gebyr for engangsbøde',
+  'indstillinger.engangsgebyrNote': 'Den, der giver en engangsbøde, betaler gebyret. Det gælder kun nye engangsbøder.',
   'indstillinger.saesonOgData': 'Sæson og data',
   'indstillinger.beloeb': 'Beløb',
   'indstillinger.beloebUgyldig': 'Beløbet skal være et helt antal kroner over 0.',
@@ -337,6 +355,19 @@ export const da = {
   'giv.fortryd': 'Fortryd',
   'giv.fortrudt': 'Bøderne er fortrudt',
   'giv.denneBoede': 'Giv denne bøde',
+  'giv.engangs.titel': 'Engangsbøde',
+  'giv.engangs.til': 'Til {navne}',
+  'giv.engangs.hvorfor': 'Hvorfor',
+  'giv.engangs.beloeb': 'Beløb',
+  'giv.engangs.beloebLabel': 'Beløb i kr',
+  'giv.engangs.gebyr': 'Du betaler et gebyr på {beloeb}. Frikøb dækker ikke engangsbøder.',
+  'giv.engangs.gebyrHver': 'Du betaler et gebyr på {beloeb} pr. person. Frikøb dækker ikke engangsbøder.',
+  'giv.engangs.udenGebyr': 'Frikøb dækker ikke engangsbøder.',
+  'giv.engangs.tilfoej': 'Tilføj · {beloeb}',
+  'giv.engangs.tilfoejHver': 'Tilføj · {beloeb} til hver',
+  'giv.engangs.tilfoejTom': 'Tilføj',
+  'giv.engangs.fjern': 'Fjern {grund}',
+  'giv.engangs.tag': 'Engangsbøde',
   'fejl.pause': 'Sæsonen er slut. Der kan ikke gives bøder i en pause.',
   'fejl.ingenBoeder': 'Vælg mindst én bøde.',
   'fejl.modtagerUkendt': 'Et af medlemmerne findes ikke i Bødekassen.',
@@ -345,6 +376,8 @@ export const da = {
   'fejl.antalUgyldig': 'Man kan højst give 99 af samme bøde ad gangen.',
   'fejl.fortrydUdloebet': 'Det er for sent at fortryde.',
   'fejl.kanIkkeFortrydes': 'Bøderne kan ikke fortrydes længere.',
+  'fejl.grundMangler': 'Skriv hvorfor.',
+  'fejl.grundForLang': 'Grunden må højst være 100 tegn.',
 
   // Money
   'betaling.harBetalt': '{navn} har betalt {beloeb}',

@@ -6,6 +6,7 @@ import { SkiftBodekasseSheet } from '../bodekasse/SkiftBodekasseSheet.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Screen } from '../components/Screen.tsx';
 import { useGivBoeder } from '../giv/GivBoederProvider.tsx';
+import { useAabnProfil } from '../profil/aabnProfil.ts';
 import { formatKr, t } from '../strings/index.ts';
 import { useHent } from '../supabase/useHent.ts';
 import { hentHjem } from './hjem/hentHjem.ts';
@@ -23,6 +24,7 @@ import './hjem/Hjem.css';
 export function Hjem() {
   const { bodekasseId, bodekasseNavn, medlemId, navn, erAdmin } = useBodekasse();
   const navigate = useNavigate();
+  const aabnProfil = useAabnProfil('tab.hjem');
   const [skifter, setSkifter] = useState(false);
   const { version } = useGivBoeder();
   const hjem = useHent(() => hentHjem(bodekasseId, medlemId, erAdmin), [bodekasseId, medlemId, erAdmin, version]);
@@ -43,8 +45,14 @@ export function Hjem() {
             <ChevronDown className="hjem__chevron" size={20} strokeWidth={2.4} aria-hidden="true" />
           </span>
         </button>
-        {/* #56 makes this open your profile. */}
-        <Avatar navn={navn} egen />
+        <button
+          type="button"
+          className="hjem__avatar"
+          aria-label={t('hjem.dinProfil')}
+          onClick={() => aabnProfil(medlemId)}
+        >
+          <Avatar navn={navn} egen />
+        </button>
       </header>
 
       <button type="button" className="hjem__kasse" onClick={() => void navigate('/kassen')}>
@@ -113,8 +121,7 @@ export function Hjem() {
               <span className="hjem__tom-tekst">{t('hjem.toplisteTomTekst')}</span>
             </div>
           ) : (
-            // #56 passes onVaelg to open a Medlem's profile.
-            <Topliste topliste={topliste} medlemId={medlemId} />
+            <Topliste topliste={topliste} medlemId={medlemId} onVaelg={aabnProfil} />
           )}
         </>
       )}
