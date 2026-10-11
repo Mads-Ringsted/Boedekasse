@@ -5,7 +5,7 @@
 -- until the next Sæson starts.
 begin;
 \ir _hjaelpere.psql
-select plan(25);
+select plan(26);
 
 select tests.opret_bodekasse() as kasse \gset
 select tests.opret_medlem_med_login(:'kasse', 'Anna', true) as anna \gset
@@ -163,9 +163,15 @@ select results_eq(
 select tests.log_ind_som_medlem(:'anna');
 select public.aendr_afgoerelse(gen_random_uuid(), :'a1', 'modtager_vandt');
 select results_eq(
-  format($$ select afgoerelse::text, afgjort_af from public.anke where id = %L $$, :'a1'),
-  format($$ values ('modtager_vandt', %L::uuid) $$, :'anna'),
-  'an Admin can change it too, and becomes the one who decided');
+  format($$ select afgoerelse::text, afgjort_af, afgjort_af_navn, aendret_af, aendret_af_navn, aendret_tid is not null
+              from public.aktivitet_bode where anke_id = %L $$, :'a1'),
+  format($$ values ('modtager_vandt', %L::uuid, 'Dan', %L::uuid, 'Anna', true) $$, :'dan', :'anna'),
+  'an Admin can change it too; the recorder stays, and who last changed it is shown');
+
+select tests.log_ind_som_medlem(:'dan');
+select lives_ok(
+  format($$ select public.aendr_afgoerelse(gen_random_uuid(), %L, 'giver_vandt') $$, :'a1'),
+  'the recorder can still change it after an Admin did');
 
 -- An open Anke has nothing to change yet.
 select tests.giv_bode(:'dan', :'carl', p_kategori => :'for_sent') as b5 \gset

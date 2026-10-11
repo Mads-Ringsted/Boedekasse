@@ -2,7 +2,7 @@
 -- appear at once. Recorder or Admin corrects (running Sæson) or annuls it.
 begin;
 \ir _hjaelpere.psql
-select plan(31);
+select plan(32);
 
 select tests.opret_bodekasse('Kasse A') as kasse \gset
 select tests.opret_medlem_med_login(:'kasse', 'Mads', true) as mads \gset
@@ -137,6 +137,16 @@ select results_eq(
   $$ values ('Emil', 1, 0), ('Frederik', 2, 10), ('Jonas', null::int, 50), ('Kasper', null::int, 50),
             ('Mads', null::int, 50), ('Sebastian', null::int, 50) $$,
   'a correction replaces the result');
+select results_eq(
+  format($$ select m.navn, r.plads, r.annulleret_af, r.annulleret_note
+              from public.konkurrence_resultat r join public.medlem m on m.id = r.medlem_id
+             where r.konkurrence_id = %L and r.annulleret is not null
+             order by r.plads nulls last, m.navn $$, :'bowling'),
+  format($$ values ('Frederik', 1, %1$L::uuid, 'rettet'), ('Jonas', 2, %1$L::uuid, 'rettet'),
+                   ('Kasper', 2, %1$L::uuid, 'rettet'), ('Emil', 4, %1$L::uuid, 'rettet'),
+                   ('Mads', null::int, %1$L::uuid, 'rettet'), ('Sebastian', null::int, %1$L::uuid, 'rettet') $$,
+         :'mads'),
+  'a correction keeps the old placements, annulled with the note "rettet" (nothing is deleted)');
 select results_eq(
   format($$ select count(*) filter (where annulleret is not null and annulleret_note = 'rettet' and annulleret_af = %L),
                    count(*) filter (where annulleret is null)
