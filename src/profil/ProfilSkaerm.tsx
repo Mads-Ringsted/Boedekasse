@@ -96,6 +96,13 @@ function ProfilSkaerm({ medlemId }: { medlemId: string }) {
           <AndensToppen profil={del.profil} visning={del.visning} />
         ))}
 
+      {visning?.overfoert && (
+        <div className="profil__overfoert">
+          <span className="profil__label">{t('profil.overfoert')}</span>
+          <span className="profil__overfoert-beloeb">{visning.overfoert}</span>
+        </div>
+      )}
+
       {del && (
         <div className="profil__knapper">
           {PROFIL_KNAPPER.map((Del, i) => (

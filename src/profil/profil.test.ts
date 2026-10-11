@@ -10,6 +10,7 @@ const jonas: Profil = {
   saldo: 120,
   boederOgGebyrer: 200,
   betalt: 80,
+  overfoert: 0,
 };
 
 describe('profilVisning (what a Medlem profile shows)', () => {
@@ -51,5 +52,15 @@ describe('profilVisning (what a Medlem profile shows)', () => {
 
   it('hides Betal on your own profile at Saldo 0', () => {
     expect(profilVisning({ ...jonas, saldo: 0 }, 'jonas').kanBetale).toBe(false);
+  });
+
+  it('shows what was carried over from last Sæson, and nothing when it was 0', () => {
+    expect(profilVisning(jonas, 'mads').overfoert).toBeNull();
+    expect(profilVisning({ ...jonas, overfoert: 150 }, 'mads').overfoert).toBe('150 kr');
+    expect(profilVisning({ ...jonas, overfoert: 1250 }, 'jonas').overfoert).toBe('1.250 kr');
+  });
+
+  it('shows Til gode carried over from last Sæson as "til gode"', () => {
+    expect(profilVisning({ ...jonas, overfoert: -30 }, 'mads').overfoert).toBe('30 kr til gode');
   });
 });
