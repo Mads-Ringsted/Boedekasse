@@ -2315,6 +2315,9 @@ isOneToOne: false
 "haev":
 { Args: { "p_beloeb": number,"p_bodekasse": string,"p_formaal": string,"p_klient_id": string }; Returns: Json
                            },
+"indgiv_anke":
+{ Args: { "p_bode": string,"p_klient_id": string }; Returns: Json
+                           },
 "koeb_frikob":
 { Args: { "p_bodekasse": string,"p_bodekategori": string,"p_klient_id": string,"p_medlem"?: string }; Returns: Json
                            },

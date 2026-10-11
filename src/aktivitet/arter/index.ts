@@ -1,4 +1,5 @@
 import type { Beskriver } from '../visning.ts';
+import { ankeIndgivet } from './anke.ts';
 import { bodeAnnulleret, gebyrAnnulleret } from './annulleringer.ts';
 import { boederGivet } from './boeder.ts';
 import { frikobAnnulleret, frikobKoebt } from './frikob.ts';
@@ -34,6 +35,7 @@ export const ARTER: Record<string, Beskriver> = {
   indbetaling_annulleret: indbetalingAnnulleret,
   bode_annulleret: bodeAnnulleret,
   gebyr_annulleret: gebyrAnnulleret,
+  anke_indgivet: ankeIndgivet,
   frikob_koebt: frikobKoebt,
   frikob_annulleret: frikobAnnulleret,
   betaling_bekraeftet: betalingBekraeftet,

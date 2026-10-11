@@ -67,4 +67,19 @@ describe('the Bøde detail sheet', () => {
       vaerdi: 'Venter på gruppens afgørelse',
     });
   });
+
+  it('shows how long the receiver can still appeal', () => {
+    expect(detaljeRaekker(boede(), ctx, nu, { msTilbage: 19 * 3_600_000 })).toEqual([
+      { label: 'Givet', vaerdi: 'I dag kl. 15.00' },
+      { label: 'Kan ankes', vaerdi: '19 timer endnu' },
+    ]);
+  });
+
+  it('ends an open Anke on an annulled Bøde as "Bøden annulleret"', () => {
+    const annullering = { tid: '2026-10-11T17:00:00Z', afId: 'kasper', afNavn: 'Kasper Nørgaard', note: null };
+    expect(detaljeRaekker(boede({ ankeId: 'a1', annullering }), ctx, nu)[1]).toEqual({
+      label: 'Anke',
+      vaerdi: 'Bøden annulleret',
+    });
+  });
 });

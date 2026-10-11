@@ -77,6 +77,11 @@ const BY_KEY: Record<string, PlainStringId> = {
   deltager_ukendt: 'fejl.deltagerUkendt',
   // Sæson (#67)
   slutdato_ugyldig: 'saeson.slutdatoFortid',
+  // Anke (#63)
+  anke_slaaet_fra: 'fejl.ankeSlaaetFra',
+  ikke_modtager: 'fejl.ikkeModtager',
+  anke_frist_udloebet: 'fejl.ankeFristUdloebet',
+  anke_findes: 'fejl.ankeFindes',
 };
 
 /**

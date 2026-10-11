@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import { Aktivitet } from './aktivitet/Aktivitet.tsx';
+import { Anker } from './anke/Anker.tsx';
 import { AuthProvider, useAuth } from './auth/AuthProvider.tsx';
 import { LogInd } from './auth/LogInd.tsx';
 import { BodekasseProvider, useMedlemskaber } from './bodekasse/BodekasseProvider.tsx';
@@ -18,7 +19,6 @@ import { Medlemmer } from './screens/Medlemmer.tsx';
 import { Mere } from './screens/Mere.tsx';
 import { ProfilRute } from './profil/ProfilSkaerm.tsx';
 import { TidligereSaeson } from './saeson/TidligereSaeson.tsx';
-import { Placeholder } from './screens/Placeholder.tsx';
 import { VaelgBodekasse } from './screens/VaelgBodekasse.tsx';
 import { Velkommen } from './screens/Velkommen.tsx';
 import { AppShell } from './shell/AppShell.tsx';
@@ -27,8 +27,6 @@ import { isInstalled, readDisplayEnv } from './shell/installed.ts';
 import { Offline, useOnline } from './shell/Offline.tsx';
 import { UpdatePrompt } from './shell/UpdatePrompt.tsx';
 import { t } from './strings/index.ts';
-
-const fraMere = { label: 'tab.mere', to: '/mere' } as const;
 
 /** The screens inside a box. Shown only once a box is open. */
 const router = createBrowserRouter([
@@ -44,7 +42,7 @@ const router = createBrowserRouter([
       { path: 'medlem/:medlemId', element: <ProfilRute /> },
       { path: 'medlemmer', element: <Medlemmer /> },
       { path: 'kassen', element: <Kassen /> },
-      { path: 'anker', element: <Placeholder title="mere.anker" back={fraMere} /> },
+      { path: 'anker', element: <Anker /> },
       { path: 'konkurrencer', element: <Konkurrencer /> },
       { path: 'konkurrencer/:id', element: <KonkurrenceDetalje /> },
       { path: 'indstillinger', element: <Indstillinger /> },

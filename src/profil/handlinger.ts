@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react';
+import { KanAnkesKort } from '../anke/profilDel.tsx';
 import { FrikobKort, KoebFrikobKnap } from '../frikob/profilDele.tsx';
 import { AdminHandlingerKnap } from '../medlemmer/AdminHandlinger.tsx';
 import { BetalKnap, GivBoedeKnap, MinMeldingProfilKort, RegistrerIndbetalingKnap } from './knapper.tsx';
@@ -35,10 +36,10 @@ export const PROFIL_KNAPPER: readonly ProfilDel[] = [GivBoedeKnap, RegistrerIndb
 /**
  * Cards between the buttons and Historik, top to bottom. Use the
  * `.profil__kort` and `.profil__sektion` classes from `Profil.css`.
- * Your own report that afventer (#60), then "Frikøb i sæson …" chips (#65);
- * #63 adds "Kan ankes" (own profile).
+ * Your own report that afventer (#60), "Frikøb i sæson …" chips (#65), then
+ * "Kan ankes" (#63, own profile).
  */
-export const PROFIL_KORT: readonly ProfilDel[] = [MinMeldingProfilKort, FrikobKort];
+export const PROFIL_KORT: readonly ProfilDel[] = [MinMeldingProfilKort, FrikobKort, KanAnkesKort];
 
 /**
  * Small buttons at the top right, beside the back button.
