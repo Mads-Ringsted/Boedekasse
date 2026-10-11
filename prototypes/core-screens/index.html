@@ -1,0 +1,990 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bødekasse Core Screens</title>
+<!--
+  PROTOTYPE, throwaway. Answers "Core screens and navigation" (Mads-Ringsted/Boedekasse#13).
+  One clickable phone mock in look A (from "Design system", #12), with three radically different
+  navigation structures switchable via #A / #B / #C, the floating bar, or the arrow keys:
+    A · Faner           tab bar with a raised + ; home is about you
+    B · Medlemmer først  no tab bar; home is everyone's Saldo; fine from a person
+    C · Én knap          home is one big "Giv bøde"; side menu; 3-step wizard
+  All screens share one in-memory data set (nothing is saved; reload resets).
+-->
+<script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+<style>
+/* Layout: neutral lab bench; the phone is the subject, notes and live state beside it (below it on phones). */
+:root {
+  --bg: #ECEEF3; --fg: #15171C; --muted: #5E6370; --line: #D6DAE2; --card: #FFFFFF;
+  --sw-bg: #15171C; --sw-fg: #F3F4F6; --frame: #0A0A0B;
+  --chrome-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  /* Look A tokens (Design system, #12) */
+  --p-main: #1E50E6; --p-on-main: #FFFFFF; --p-main-ink: #1A46CC; --p-main-soft: #E4EBFD;
+  --p-bg: #F2F3F8; --p-surface: #FFFFFF; --p-text: #0E1220; --p-muted: #636A7E; --p-line: #E1E4ED;
+  --p-green: #0E9F64; --p-red: #E5484D; --p-amber: #B7791F; --p-amber-soft: #FCF1DC;
+  --p-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1013; --fg: #E8EAEE; --muted: #9AA0AC; --line: #2A2E36; --card: #171A1F; --sw-bg: #F3F4F6; --sw-fg: #15171C; --frame: #2A2D33;
+    --p-main: #3B68F5; --p-on-main: #FFFFFF; --p-main-ink: #8AA6FF; --p-main-soft: #182650;
+    --p-bg: #0A0C12; --p-surface: #151924; --p-text: #F1F3F9; --p-muted: #9298AB; --p-line: #252A39;
+    --p-green: #3DD68C; --p-red: #FF6369; --p-amber: #F0B44C; --p-amber-soft: #3A2C12;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1013; --fg: #E8EAEE; --muted: #9AA0AC; --line: #2A2E36; --card: #171A1F; --sw-bg: #F3F4F6; --sw-fg: #15171C; --frame: #2A2D33;
+  --p-main: #3B68F5; --p-on-main: #FFFFFF; --p-main-ink: #8AA6FF; --p-main-soft: #182650;
+  --p-bg: #0A0C12; --p-surface: #151924; --p-text: #F1F3F9; --p-muted: #9298AB; --p-line: #252A39;
+  --p-green: #3DD68C; --p-red: #FF6369; --p-amber: #F0B44C; --p-amber-soft: #3A2C12;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--chrome-font); margin: 0; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: inherit; }
+input { font: inherit; color: inherit; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--p-main); outline-offset: 2px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 16px; padding-block: 24px 110px; display: grid; gap: 28px; grid-template-columns: 1fr; justify-items: center; }
+@media (min-width: 900px) { .wrap { grid-template-columns: 410px minmax(0, 1fr); align-items: start; justify-items: stretch; } }
+
+/* ---------- notes panel (prototype chrome) ---------- */
+.notes { display: flex; flex-direction: column; gap: 18px; min-width: 0; width: 100%; max-width: 640px; }
+.eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.notes h1 { margin: 4px 0 0; font-size: 24px; text-wrap: balance; }
+.notes p { margin: 0; line-height: 1.5; font-size: 14px; color: var(--muted); max-width: 64ch; }
+.notes .box { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.notes dl { display: grid; grid-template-columns: auto 1fr; gap: 8px 14px; margin: 0; font-size: 13.5px; line-height: 1.45; }
+.notes dt { color: var(--muted); font-family: var(--mono); font-size: 11.5px; padding-top: 2px; }
+.notes dd { margin: 0; min-width: 0; }
+.jump { display: flex; flex-wrap: wrap; gap: 6px; }
+.jump button { border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 13px; background: var(--card); }
+.jump button:hover { border-color: var(--fg); }
+.jump button[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.state { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+.state div { display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: var(--muted); }
+.state b { color: var(--fg); font-size: 16px; font-variant-numeric: tabular-nums; }
+.last { font-family: var(--mono); font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+
+/* ---------- floating variant switcher (prototype chrome) ---------- */
+.sw { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 50; display: flex; align-items: center; gap: 4px; background: var(--sw-bg); color: var(--sw-fg); border-radius: 999px; padding: 6px; box-shadow: 0 10px 30px rgba(0,0,0,.35); font-family: var(--mono); font-size: 13px; }
+.sw button { width: 36px; height: 36px; border-radius: 50%; font-size: 18px; text-align: center; }
+.sw button:hover { background: color-mix(in srgb, var(--sw-fg) 15%, transparent); }
+.sw .lbl { padding: 0 10px; white-space: nowrap; min-width: 190px; text-align: center; }
+
+/* ---------- phone ---------- */
+.ph { position: relative; width: min(390px, 100%); height: 800px; max-height: calc(100dvh - 120px); min-height: 600px; border-radius: 44px; overflow: hidden; border: 10px solid var(--frame); box-shadow: 0 20px 50px rgba(0,0,0,.18); background: var(--p-bg); color: var(--p-text); font-family: var(--p-font); font-size: 15px; display: flex; flex-direction: column; }
+@media (max-width: 440px) { .ph { border-width: 6px; border-radius: 34px; } }
+.ph svg { display: block; flex: none; }
+.num, .amt, .big { font-variant-numeric: tabular-nums; }
+.scr { flex: 1; overflow-y: auto; min-height: 0; padding: 14px 16px 24px; display: flex; flex-direction: column; gap: 22px; scrollbar-width: none; }
+.scr::-webkit-scrollbar { display: none; }
+.scr > *, .sheet .in > * { flex-shrink: 0; }
+
+.top { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 36px; }
+.box-btn { display: flex; align-items: center; gap: 6px; font-size: 17px; font-weight: 600; }
+.iconbtn { width: 36px; height: 36px; border-radius: 50%; background: var(--p-surface); display: grid; place-items: center; color: var(--p-text); flex: none; }
+.back { display: flex; align-items: center; gap: 2px; color: var(--p-main-ink); font-size: 16px; font-weight: 500; margin-left: -6px; }
+.title { margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -.01em; }
+.top .title { font-size: 28px; }
+
+.hero { background: var(--p-main); color: var(--p-on-main); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 4px; }
+.hero .lab { font-size: 14px; opacity: .85; }
+.hero .big { font-size: 44px; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; }
+.hero .sub { font-size: 13px; opacity: .85; }
+.hero .btns { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+.pill { border-radius: 999px; padding: 10px 18px; font-size: 15px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; justify-content: center; }
+.pill.white { background: #fff; color: #1A2A8F; }
+.pill.ghost { background: rgba(255,255,255,.18); color: #fff; }
+.pill.main { background: var(--p-main); color: var(--p-on-main); }
+.pill.soft { background: var(--p-main-soft); color: var(--p-main-ink); }
+.pill.plain { background: var(--p-surface); color: var(--p-text); }
+.pill.danger { background: var(--p-surface); color: var(--p-red); }
+.pill[disabled] { opacity: .4; cursor: default; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--p-surface); border-radius: 14px; padding: 12px 4px; }
+.stats > * { display: flex; flex-direction: column; gap: 2px; align-items: center; font-size: 12px; color: var(--p-muted); text-align: center; }
+.stats b { color: var(--p-text); font-size: 15px; font-weight: 600; }
+.stats.four { grid-template-columns: repeat(2, 1fr); row-gap: 14px; }
+
+.sec { display: flex; flex-direction: column; gap: 8px; }
+.sec-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.sec-h h3 { margin: 0; font-size: 20px; font-weight: 600; }
+.sec-h .link, .link { color: var(--p-main-ink); font-size: 15px; font-weight: 500; }
+.cap { font-size: 13px; color: var(--p-muted); font-weight: 500; padding: 0 4px; }
+.group { background: var(--p-surface); border-radius: 14px; overflow: hidden; }
+.row { display: flex; align-items: center; gap: 12px; padding: 11px 14px; width: 100%; min-height: 52px; }
+.row + .row { border-top: 1px solid var(--p-line); }
+.row .t { flex: 1; min-width: 0; }
+.row .t > div { font-size: 15px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row .t > div b { font-weight: 600; }
+.row .t small { display: block; font-size: 13px; color: var(--p-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row .amt { font-size: 15px; font-weight: 600; white-space: nowrap; }
+.row .amt.pos { color: var(--p-green); }
+.row .amt.strike { text-decoration: line-through; color: var(--p-muted); font-weight: 500; }
+.row .chev { color: var(--p-muted); }
+.row.me { background: color-mix(in srgb, var(--p-main-soft) 55%, var(--p-surface)); }
+.row.sel { background: color-mix(in srgb, var(--p-main-soft) 70%, var(--p-surface)); }
+.av { width: 38px; height: 38px; border-radius: 50%; background: var(--p-main-soft); color: var(--p-main-ink); display: grid; place-items: center; font-weight: 600; font-size: 14px; flex: none; }
+.av.lg { width: 52px; height: 52px; font-size: 18px; }
+.av.xl { width: 76px; height: 76px; font-size: 26px; }
+.av.ghost { background: transparent; border: 1.5px dashed var(--p-muted); color: var(--p-muted); }
+.av.icon { background: var(--p-bg); color: var(--p-muted); }
+.av.green { background: color-mix(in srgb, var(--p-green) 16%, transparent); color: var(--p-green); }
+.emo { width: 38px; height: 38px; border-radius: 12px; background: var(--p-bg); display: grid; place-items: center; font-size: 20px; flex: none; }
+.tag { display: inline-flex; align-items: center; gap: 3px; font-size: 11.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; background: var(--p-main-soft); color: var(--p-main-ink); white-space: nowrap; vertical-align: 1px; }
+.tag.amber { background: var(--p-amber-soft); color: var(--p-amber); }
+.tag.grey { background: var(--p-bg); color: var(--p-muted); }
+.tag.green { background: color-mix(in srgb, var(--p-green) 16%, transparent); color: var(--p-green); }
+.check { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--p-line); display: grid; place-items: center; flex: none; color: transparent; }
+.check.on { background: var(--p-main); border-color: var(--p-main); color: var(--p-on-main); }
+.check.sq { border-radius: 7px; }
+
+.field { display: flex; align-items: center; gap: 8px; background: var(--p-surface); border-radius: 12px; padding: 0 12px; height: 44px; color: var(--p-muted); }
+.field input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-size: 16px; color: var(--p-text); height: 100%; }
+.field.lg { height: 52px; }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; background: color-mix(in srgb, var(--p-line) 70%, transparent); border-radius: 10px; padding: 2px; }
+.seg button { padding: 7px 8px; border-radius: 8px; font-size: 13.5px; font-weight: 500; text-align: center; color: var(--p-text); }
+.seg button.on { background: var(--p-surface); box-shadow: 0 1px 3px rgba(0,0,0,.12); font-weight: 600; }
+.chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; background: var(--p-surface); font-size: 14px; font-weight: 500; white-space: nowrap; }
+.chip.on { background: var(--p-main); color: var(--p-on-main); }
+.people { display: flex; gap: 14px; overflow-x: auto; padding: 6px 2px 2px 6px; scrollbar-width: none; }
+.people::-webkit-scrollbar { display: none; }
+.person { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12.5px; position: relative; flex: none; width: 56px; text-align: center; }
+.person.sel .av { box-shadow: 0 0 0 2.5px var(--p-bg), 0 0 0 4.5px var(--p-main); }
+.person .pc { position: absolute; top: 34px; right: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--p-main); color: var(--p-on-main); display: grid; place-items: center; border: 2px solid var(--p-bg); }
+.pgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px 6px; }
+.pgrid .person { width: auto; }
+
+.tabbar { flex: none; display: grid; grid-template-columns: repeat(5, 1fr); align-items: end; padding: 8px 6px 22px; background: var(--p-surface); border-top: 1px solid var(--p-line); }
+.tabbar button { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10.5px; color: var(--p-muted); }
+.tabbar button.on { color: var(--p-main-ink); }
+.fab { width: 56px; height: 56px; border-radius: 50%; background: var(--p-main); color: var(--p-on-main); display: grid; place-items: center; margin: -26px auto 0; box-shadow: 0 6px 16px color-mix(in srgb, var(--p-main) 45%, transparent); }
+.ctabar { flex: none; padding: 10px 16px 24px; background: linear-gradient(to bottom, transparent, var(--p-bg) 30%); }
+.cta { width: 100%; background: var(--p-main); color: var(--p-on-main); border-radius: 999px; padding: 16px; text-align: center; font-size: 17px; font-weight: 600; box-shadow: 0 6px 16px color-mix(in srgb, var(--p-main) 35%, transparent); }
+.cta[disabled] { opacity: .4; box-shadow: none; cursor: default; }
+.cta.sec2 { background: var(--p-surface); color: var(--p-text); box-shadow: none; }
+
+/* sheets */
+.layer { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; justify-content: flex-end; }
+.scrim { position: absolute; inset: 0; background: rgba(0,0,0,.42); }
+.sheet { position: relative; max-height: 92%; background: var(--p-bg); border-radius: 24px 24px 0 0; display: flex; flex-direction: column; animation: up .22s ease-out; }
+.sheet.tall { height: 88%; }
+.grab { width: 38px; height: 5px; border-radius: 3px; background: var(--p-line); margin: 8px auto 2px; flex: none; }
+.sheet .hd { display: flex; justify-content: space-between; align-items: center; padding: 6px 16px 10px; gap: 8px; flex: none; }
+.sheet .hd h3 { margin: 0; font-size: 20px; font-weight: 600; }
+.sheet .in { flex: 1; overflow-y: auto; padding: 4px 16px 16px; display: flex; flex-direction: column; gap: 18px; min-height: 0; scrollbar-width: none; }
+.sheet .in::-webkit-scrollbar { display: none; }
+.sheet .ft { flex: none; padding: 8px 16px 24px; display: flex; flex-direction: column; gap: 8px; }
+.drawer-layer { justify-content: stretch; flex-direction: row; }
+.drawer { position: relative; width: 82%; height: 100%; background: var(--p-bg); padding: 20px 14px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; animation: inl .2s ease-out; }
+@keyframes up { from { transform: translateY(40px); opacity: .4; } }
+@keyframes inl { from { transform: translateX(-40px); opacity: .4; } }
+@media (prefers-reduced-motion: reduce) { .sheet, .drawer { animation: none; } }
+.note { font-size: 13px; color: var(--p-muted); line-height: 1.45; padding: 0 4px; }
+.note.warn { color: var(--p-amber); }
+.callout { background: var(--p-amber-soft); color: var(--p-text); border-radius: 14px; padding: 12px 14px; display: flex; gap: 10px; align-items: center; font-size: 14px; width: 100%; }
+.callout .ic { color: var(--p-amber); }
+.toast { position: absolute; left: 12px; right: 12px; bottom: 96px; z-index: 30; background: var(--p-text); color: var(--p-bg); border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 500; box-shadow: 0 10px 30px rgba(0,0,0,.25); animation: up .2s ease-out; }
+.toast span { flex: 1; }
+.toast button { font-weight: 700; color: color-mix(in srgb, var(--p-main) 60%, var(--p-bg)); }
+
+/* auth */
+.auth { flex: 1; display: flex; flex-direction: column; padding: 40px 22px 28px; gap: 22px; overflow-y: auto; }
+.logo { width: 64px; height: 64px; border-radius: 18px; background: var(--p-main); color: var(--p-on-main); display: grid; place-items: center; }
+.auth h2 { margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -.01em; text-wrap: balance; }
+.auth p { margin: 0; color: var(--p-muted); line-height: 1.45; }
+.steps { display: flex; flex-direction: column; gap: 0; }
+.steps .row { gap: 14px; }
+.stepn { width: 28px; height: 28px; border-radius: 50%; background: var(--p-main-soft); color: var(--p-main-ink); display: grid; place-items: center; font-weight: 700; font-size: 14px; flex: none; }
+.code { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+.code div { height: 56px; border-radius: 12px; background: var(--p-surface); display: grid; place-items: center; font-size: 24px; font-weight: 600; border: 2px solid transparent; }
+.code div.cur { border-color: var(--p-main); }
+.code input { position: absolute; inset: 0; opacity: 0; width: 100%; font-size: 16px; }
+.spacer { flex: 1; }
+
+/* B: kategori tiles */
+.tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.tile { background: var(--p-surface); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 6px; min-height: 96px; position: relative; border: 2px solid transparent; }
+.tile .e { font-size: 26px; line-height: 1; }
+.tile .n { font-size: 14px; font-weight: 600; line-height: 1.25; }
+.tile .p { font-size: 13px; color: var(--p-muted); margin-top: auto; font-variant-numeric: tabular-nums; }
+.tile.on { border-color: var(--p-main); background: color-mix(in srgb, var(--p-main-soft) 60%, var(--p-surface)); }
+.tile .tc { position: absolute; top: 10px; right: 10px; }
+.tile.dash { background: transparent; border: 2px dashed var(--p-line); color: var(--p-main-ink); }
+.rank { font-size: 13px; color: var(--p-muted); width: 18px; text-align: right; font-variant-numeric: tabular-nums; flex: none; }
+.addbtn { width: 34px; height: 34px; border-radius: 50%; background: var(--p-main-soft); color: var(--p-main-ink); display: grid; place-items: center; flex: none; }
+.banner { display: flex; align-items: center; gap: 10px; background: var(--p-amber-soft); border-radius: 14px; padding: 10px 14px; font-size: 14px; font-weight: 500; width: 100%; }
+.banner .ic { color: var(--p-amber); }
+
+/* C: big button */
+.bigbtn { width: 210px; height: 210px; border-radius: 50%; background: var(--p-main); color: var(--p-on-main); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 22px; font-weight: 700; margin: 8px auto 0; box-shadow: 0 16px 40px color-mix(in srgb, var(--p-main) 40%, transparent), inset 0 -6px 0 rgba(0,0,0,.12); }
+.bigbtn:active { transform: scale(.97); }
+.wiz { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.wiz div { height: 4px; border-radius: 2px; background: var(--p-line); }
+.wiz div.on { background: var(--p-main); }
+.wizl { display: flex; justify-content: space-between; font-size: 12px; color: var(--p-muted); margin-top: 6px; }
+.wizl b { color: var(--p-main-ink); }
+
+/* profile */
+.prof { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+.prof h2 { margin: 6px 0 0; font-size: 22px; font-weight: 700; }
+.prof .big { font-size: 40px; font-weight: 700; letter-spacing: -.02em; }
+.acts { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+/* wheel */
+.wheelbox { position: relative; width: 220px; height: 220px; margin: 6px auto; }
+.wheel { width: 100%; height: 100%; border-radius: 50%; background: repeating-conic-gradient(var(--p-main) 0 22.5deg, var(--p-main-soft) 22.5deg 45deg); border: 6px solid var(--p-surface); box-shadow: 0 8px 24px rgba(0,0,0,.15); }
+.wheel.spin { transition: transform 2.6s cubic-bezier(.12,.7,.15,1); }
+@media (prefers-reduced-motion: reduce) { .wheel.spin { transition: none; } }
+.hub { position: absolute; inset: 70px; border-radius: 50%; background: var(--p-surface); display: grid; place-items: center; font-size: 26px; font-weight: 800; font-variant-numeric: tabular-nums; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+.pointer { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 20px solid var(--p-red); z-index: 2; }
+.bigamt { font-size: 40px; font-weight: 700; text-align: center; font-variant-numeric: tabular-nums; }
+.opt { display: flex; gap: 12px; align-items: center; background: var(--p-surface); border-radius: 14px; padding: 14px; border: 2px solid transparent; width: 100%; }
+.opt.on { border-color: var(--p-main); }
+.opt .t { flex: 1; } .opt .t div { font-weight: 600; } .opt .t small { color: var(--p-muted); font-size: 13px; display: block; margin-top: 2px; line-height: 1.35; }
+.toggle { width: 46px; height: 28px; border-radius: 999px; background: var(--p-line); position: relative; flex: none; transition: background .15s; }
+.toggle::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: left .15s; }
+.toggle.on { background: var(--p-green); }
+.toggle.on::after { left: 21px; }
+.val { color: var(--p-muted); font-size: 15px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.empty { text-align: center; color: var(--p-muted); font-size: 14px; padding: 24px 12px; }
+</style>
+
+<div class="wrap">
+  <div class="ph" id="ph"></div>
+  <aside class="notes" id="notes"></aside>
+</div>
+<div class="sw" id="sw"></div>
+
+<script>
+// ---------------- data (in memory; reload resets) ----------------
+const ME = 'm1';
+const TODAY = new Date(2026, 9, 11, 20, 0);
+const MON = ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];
+let seq = 0;
+function seed() {
+  const D = {
+    boxes: [{ id: 'fc', name: 'FC Ølhunde', n: 8 }, { id: 'fam', name: 'Familien Ringsted', n: 5 }],
+    members: [
+      { id: 'm1', name: 'Mads Ringsted', admin: true },
+      { id: 'm2', name: 'Jonas Holm' },
+      { id: 'm3', name: 'Frederik Lund', admin: true },
+      { id: 'm4', name: 'Oliver Krogh', frikob: true },
+      { id: 'm5', name: 'Emil Bach' },
+      { id: 'm6', name: 'Kasper Nørgaard' },
+      { id: 'm7', name: 'Lucas Berg' },
+      { id: 'm8', name: 'Sebastian Juhl', unclaimed: true, email: 'sebastian.juhl@gmail.com' },
+    ],
+    kats: [
+      { id: 'k1', e: '🏃', name: 'For sent til træning', price: 50, uses: 34, by: 'm1', desc: 'Mere end 5 minutter efter start.' },
+      { id: 'k2', e: '📱', name: 'Telefon ved bordet', price: 20, uses: 41, by: 'm3' },
+      { id: 'k3', e: '🧦', name: 'Glemt udstyr', price: 25, uses: 18, by: 'm2' },
+      { id: 'k4', e: '🤬', name: 'Bandeord', price: 10, uses: 57, by: 'm1' },
+      { id: 'k5', e: '🍺', name: 'Ikke drukket op', price: 30, uses: 22, by: 'm5' },
+      { id: 'k6', e: '🎂', name: 'Glemt kage på fødselsdag', price: 100, uses: 3, by: 'm6' },
+      { id: 'k7', e: '💼', name: 'Snak om arbejde', price: 15, uses: 12, by: 'm7' },
+      { id: 'k8', e: '🟨', name: 'Gult kort', price: 40, uses: 9, by: 'm3' },
+      { id: 'k9', e: '🧹', name: 'Ikke ryddet op', price: 25, uses: 7, by: 'm4' },
+      { id: 'k10', e: '⏰', name: 'Glemt at melde afbud', price: 30, uses: 15, by: 'm1' },
+      { id: 'k11', e: '🧢', name: 'Kasket indendørs', price: 10, uses: 2, by: 'm2', archived: true },
+    ],
+    settings: { katGebyr: { on: true, amount: 25 }, engang: 10, anke: { on: true, days: 7 }, frikob: { on: true, amount: 300 }, konk: [0, 10, 25, 35, 40, 45, 50], absent: 50 },
+    konk: [{ id: 'c1', title: 'Bowling', date: '4. okt', group: 'g1' }],
+    ledger: [],
+  };
+  const L = (o) => D.ledger.push({ id: 'e' + (++seq), ...o });
+  L({ kind: 'bode', from: 'm2', to: 'm5', kat: 'k1', amount: 50, ago: 35 });
+  L({ kind: 'bode', from: 'm1', to: 'm2', kat: 'k2', amount: 20, ago: 120 });
+  L({ kind: 'bode', from: 'm3', to: 'm1', kat: 'k4', amount: 10, ago: 300 });
+  L({ kind: 'bode', from: 'm7', to: 'm2', kat: 'k8', amount: 40, ago: 600, status: 'anket' });
+  L({ kind: 'gebyr', to: 'm2', reason: 'Anke-gebyr', amount: 63, ago: 590 });
+  L({ kind: 'bode', from: 'm5', to: 'm1', kat: 'k3', amount: 25, ago: 1500, status: 'anket' });
+  L({ kind: 'gebyr', to: 'm1', reason: 'Anke-gebyr', amount: 31, ago: 1490 });
+  L({ kind: 'gebyr', to: 'm6', reason: 'Ny bødekategori: 🎂 Glemt kage på fødselsdag', amount: 25, ago: 2000 });
+  L({ kind: 'indbetaling', to: 'm5', amount: 200, ago: 2600, by: 'm3' });
+  L({ kind: 'bode', from: 'm7', to: 'm4', kat: 'k1', amount: 50, ago: 3000 });
+  L({ kind: 'bode', from: 'm6', to: 'm2', reason: 'Tabte nøglerne til klubhuset', amount: 40, ago: 4000 });
+  L({ kind: 'gebyr', to: 'm6', reason: 'Engangsbøde til Jonas', amount: 10, ago: 4000 });
+  L({ kind: 'frikob', to: 'm4', amount: 300, ago: 9000 });
+  [['m6', 0], ['m1', 10], ['m2', 25], ['m5', 35], ['m7', 40]].forEach(([m, a], i) => L({ kind: 'gebyr', to: m, reason: `Bowling: ${i + 1}. plads`, amount: a, ago: 10000, group: 'g1' }));
+  ['m3', 'm4', 'm8'].forEach(m => L({ kind: 'gebyr', to: m, reason: 'Bowling: fraværende', amount: 50, ago: 10000, group: 'g1' }));
+  L({ kind: 'haev', by: 'm3', amount: 400, note: 'Depositum til julefrokost', ago: 12000 });
+  L({ kind: 'indbetaling', to: 'm2', amount: 150, ago: 14000, by: 'm1' });
+  L({ kind: 'indbetaling', to: 'm1', amount: 100, ago: 15000, by: 'm3' });
+  L({ kind: 'indbetaling', to: 'm6', amount: 250, ago: 15500, by: 'm1' });
+  L({ kind: 'indbetaling', to: 'm7', amount: 300, ago: 15600, by: 'm1' });
+  L({ kind: 'bode', from: 'm1', to: 'm6', kat: 'k5', amount: 30, ago: 16000 });
+  L({ kind: 'bode', from: 'm2', to: 'm7', kat: 'k2', amount: 20, ago: 16100 });
+  L({ kind: 'bode', from: 'm6', to: 'm3', kat: 'k7', amount: 15, ago: 16200 });
+  L({ kind: 'bode', from: 'm3', to: 'm8', kat: 'k1', amount: 50, ago: 17000 });
+  L({ kind: 'bode', from: 'm2', to: 'm1', kat: 'k10', amount: 30, ago: 18000 });
+  L({ kind: 'bode', from: 'm5', to: 'm7', kat: 'k6', amount: 100, ago: 19000 });
+  L({ kind: 'bode', from: 'm1', to: 'm5', kat: 'k4', amount: 10, ago: 19500 });
+  L({ kind: 'bode', from: 'm4', to: 'm6', kat: 'k9', amount: 25, ago: 20000 });
+  return D;
+}
+let D = seed();
+
+// ---------------- UI state ----------------
+const S = {
+  variant: 'A', role: 'admin',
+  auth: 'in', email: 'mads@eksempel.dk', code: '',
+  stack: [{ s: 'home' }], sheets: [], toast: null,
+  give: null, bTab: 'medlemmer', katQ: '', katSort: 'navn',
+  form: {}, last: 'Prototype loaded',
+};
+
+// ---------------- helpers ----------------
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const kr = (n) => `${Math.round(n).toLocaleString('da-DK')} kr`;
+const ic = (n, s = 22) => `<i data-lucide="${n}" width="${s}" height="${s}"></i>`;
+const mem = (id) => D.members.find(m => m.id === id);
+const first = (id) => id === ME ? 'Dig' : mem(id).name.split(' ')[0];
+const subj = (id) => id === ME ? 'Du' : first(id);
+const firstL = (id) => id === ME ? 'dig' : mem(id).name.split(' ')[0];
+const kat = (id) => D.kats.find(k => k.id === id);
+const isAdmin = (id) => id === ME ? S.role === 'admin' : !!mem(id).admin;
+const initials = (m) => m.name.split(' ').map(w => w[0]).slice(0, 2).join('');
+const av = (id, cls = '') => { const m = mem(id); return `<span class="av ${cls} ${m.unclaimed ? 'ghost' : ''}">${initials(m)}</span>`; };
+const live = () => D.ledger.filter(e => !e.undone);
+const cur = () => S.stack[S.stack.length - 1];
+function when(ago) {
+  if (ago <= 0) return 'Nu';
+  if (ago < 60) return `${Math.round(ago)} min`;
+  if (ago < 1440) return `${Math.floor(ago / 60)} t`;
+  if (ago < 2880) return 'I går';
+  const d = new Date(TODAY - ago * 60000); return `${d.getDate()}. ${MON[d.getMonth()]}`;
+}
+const covered = (e) => e.kind === 'bode' && mem(e.to).frikob && D.settings.frikob.on;
+function saldo(id) {
+  let s = 0;
+  for (const e of live()) {
+    if (['bode', 'gebyr', 'frikob'].includes(e.kind) && e.to === id && !covered(e)) s += e.amount;
+    if (e.kind === 'indbetaling' && e.to === id) s -= e.amount;
+  }
+  return s;
+}
+function totals() {
+  let charged = 0, paid = 0, out = 0;
+  for (const e of live()) {
+    if (['bode', 'gebyr', 'frikob'].includes(e.kind) && !covered(e)) charged += e.amount;
+    if (e.kind === 'indbetaling') paid += e.amount;
+    if (e.kind === 'haev') out += e.amount;
+  }
+  const unpaid = D.members.reduce((a, m) => a + Math.max(0, saldo(m.id)), 0);
+  return { charged, paid, out, inbox: paid - out, unpaid };
+}
+const openAnker = () => live().filter(e => e.kind === 'bode' && e.status === 'anket');
+const activeKats = () => D.kats.filter(k => !k.archived);
+const top5 = () => [...activeKats()].sort((a, b) => b.uses - a.uses).slice(0, 5);
+function sortedKats(q, sort) {
+  const ql = (q || '').toLowerCase();
+  return activeKats().filter(k => !ql || k.name.toLowerCase().includes(ql))
+    .sort((a, b) => sort === 'pris' ? a.price - b.price || a.name.localeCompare(b.name, 'da') : a.name.localeCompare(b.name, 'da'));
+}
+function add(o) { const e = { id: 'e' + (++seq), ago: -seq, ...o }; D.ledger.push(e); return e.id; }
+function bodeLabel(e) { if (e.kat) { const k = kat(e.kat); return `${k.e} ${k.name}`; } return `✍️ ${e.reason}`; }
+
+// ---------------- feed ----------------
+function feedItems(filter) {
+  const out = [], seen = new Set();
+  for (const e of [...live()].sort((a, b) => a.ago - b.ago)) {
+    if (filter && !filter(e)) continue;
+    if (e.group) { if (seen.has(e.group)) continue; seen.add(e.group); out.push({ group: e.group, ago: e.ago, entries: live().filter(x => x.group === e.group) }); }
+    else out.push(e);
+  }
+  return out;
+}
+function feedRow(it, ctx) {
+  if (it.group) {
+    const k = D.konk.find(c => c.group === it.group);
+    const sum = it.entries.reduce((a, e) => a + e.amount, 0);
+    return `<button class="row" data-a="push" data-v="konk"><span class="av icon">${ic('trophy', 20)}</span><span class="t"><div>Konkurrence: <b>${esc(k.title)}</b></div><small>${it.entries.length} gebyrer · ${when(it.ago)}</small></span><span class="amt">${kr(sum)}</span></button>`;
+  }
+  const e = it;
+  if (e.kind === 'bode') {
+    const st = e.status === 'anket' ? ' <span class="tag amber">Anket</span>' : e.status === 'frifundet' ? ' <span class="tag green">Anke vundet</span>' : e.status === 'stadfaestet' ? ' <span class="tag grey">Anke tabt</span>' : '';
+    const cov = covered(e);
+    const title = ctx === e.to ? `Fra <b>${first(e.from)}</b>` : ctx === e.from ? `Til <b>${first(e.to)}</b>` : `<b>${subj(e.from)}</b> gav <b>${firstL(e.to)}</b> en bøde`;
+    return `<button class="row" data-a="sheet" data-v="bode:${e.id}">${av(e.to)}<span class="t"><div>${title}${st}</div><small>${esc(bodeLabel(e))} · ${when(e.ago)}${cov ? ' · Frikøb' : ''}</small></span><span class="amt ${cov ? 'strike' : ''}">${kr(e.amount)}</span></button>`;
+  }
+  if (e.kind === 'gebyr') return `<div class="row">${ctx ? `<span class="av icon">${ic('receipt', 20)}</span>` : av(e.to)}<span class="t"><div>Gebyr${ctx ? '' : ` til <b>${firstL(e.to)}</b>`}</div><small>${esc(e.reason)} · ${when(e.ago)}</small></span><span class="amt">${kr(e.amount)}</span></div>`;
+  if (e.kind === 'frikob') return `<div class="row">${ctx ? `<span class="av icon">${ic('shield-check', 20)}</span>` : av(e.to)}<span class="t"><div><b>${subj(e.to)}</b> købte frikøb</div><small>Dækker almindelige bøder resten af 2026 · ${when(e.ago)}</small></span><span class="amt">${kr(e.amount)}</span></div>`;
+  if (e.kind === 'indbetaling') return `<div class="row">${ctx ? `<span class="av green">${ic('arrow-down-left', 20)}</span>` : av(e.to)}<span class="t"><div><b>${subj(e.to)}</b> indbetalte</div><small>Registreret af ${firstL(e.by)} · ${when(e.ago)}</small></span><span class="amt pos">+${kr(e.amount)}</span></div>`;
+  if (e.kind === 'haev') return `<div class="row"><span class="av icon">${ic('arrow-up-right', 20)}</span><span class="t"><div><b>${subj(e.by)}</b> hævede penge</div><small>${esc(e.note)} · ${when(e.ago)}</small></span><span class="amt">−${kr(e.amount)}</span></div>`;
+  return '';
+}
+const feedGroup = (items, ctx) => items.length ? `<div class="group">${items.map(i => feedRow(i, ctx)).join('')}</div>` : `<div class="empty">Ingen aktivitet endnu</div>`;
+
+// ---------------- shared screens ----------------
+function navTop(title, right = '') {
+  const back = S.stack.length > 1 ? `<button class="back" data-a="back">${ic('chevron-left', 24)}Tilbage</button>` : '<span></span>';
+  return `<div class="top">${back}${right}</div>${title ? `<h1 class="title">${title}</h1>` : ''}`;
+}
+function rootTop(title, right = '') { return `<div class="top"><h1 class="title">${title}</h1>${right}</div>`; }
+function scrTop(title, right) { return S.stack.length > 1 ? navTop(title, right) : rootTop(title, right); }
+
+const SCREENS = {
+  members() {
+    const ms = [...D.members].sort((a, b) => saldo(b.id) - saldo(a.id));
+    const right = isAdmin(ME) ? `<button class="iconbtn" data-a="sheet" data-v="addmember" aria-label="Tilføj medlem">${ic('user-plus', 20)}</button>` : '';
+    return scrTop('Medlemmer', right) + `<div class="group">${ms.map(m => memberRow(m)).join('')}</div>
+      ${isAdmin(ME) ? '' : '<p class="note">Kun Admins kan tilføje Medlemmer.</p>'}`;
+  },
+  member({ id }) {
+    const m = mem(id);
+    const items = feedItems(e => (e.to === id || e.from === id || (e.kind === 'haev' && e.by === id)) && !(e.kind === 'indbetaling' && e.to !== id));
+    const tags = [m.admin || (id === ME && S.role === 'admin') ? '<span class="tag">Admin</span>' : '', m.frikob ? '<span class="tag green">Frikøb 2026</span>' : '', m.unclaimed ? '<span class="tag grey">Ikke logget ind endnu</span>' : ''].join(' ');
+    const acts = [
+      S.variant !== 'B' ? `<button class="pill main" data-a="give" data-v="${id}">${ic('gavel', 18)}Giv bøde</button>` : '',
+      isAdmin(ME) ? `<button class="pill plain" data-a="sheet" data-v="pay:${id}">${ic('banknote', 18)}Registrér indbetaling</button>` : '',
+    ].join('');
+    const anker = id === ME ? live().filter(e => e.kind === 'bode' && e.to === ME && !e.status && e.ago < D.settings.anke.days * 1440 && D.settings.anke.on) : [];
+    return navTop('') + `<div class="prof">${av(id, 'xl')}<h2>${esc(m.name)}${id === ME ? ' (dig)' : ''}</h2><div>${tags}</div>
+        <div class="big ${saldo(id) < 0 ? 'pos' : ''}">${kr(saldo(id))}</div><div class="note">${id === ME ? 'Din saldo' : 'Saldo'}${m.unclaimed ? ` · Tilføjet med ${esc(m.email)}` : ''}</div></div>
+      ${acts ? `<div class="acts">${acts}</div>` : ''}
+      ${anker.length ? `<div class="sec"><span class="cap">Kan ankes (inden for ${D.settings.anke.days} dage)</span><div class="group">${anker.map(e => feedRow(e, ME)).join('')}</div></div>` : ''}
+      <div class="sec"><span class="cap">Historik</span>${feedGroup(items, id)}</div>
+      ${S.variant === 'B' ? '<div style="height:70px"></div>' : ''}`;
+  },
+  kats() {
+    const q = S.katQ, list = sortedKats(q, S.katSort), arch = D.kats.filter(k => k.archived);
+    return scrTop('Bødekategorier', `<button class="iconbtn" data-a="sheet" data-v="newkat" aria-label="Ny bødekategori">${ic('plus', 20)}</button>`) +
+      `<div class="field">${ic('search', 18)}<input id="katq" data-in="katQ" placeholder="Søg" value="${esc(q)}"></div>
+      ${q ? '' : `<div class="sec"><span class="cap">Mest brugt</span><div class="group">${top5().map((k, i) => katRow(k, `<span class="rank">${i + 1}</span>`)).join('')}</div></div>`}
+      <div class="sec"><div class="sec-h"><span class="cap">Alle (${list.length})</span></div>
+        <div class="seg">${['navn', 'pris'].map(s => `<button class="${S.katSort === s ? 'on' : ''}" data-a="katsort" data-v="${s}">${s === 'navn' ? 'Navn' : 'Pris'}</button>`).join('')}</div>
+        <div class="group">${list.map(k => katRow(k)).join('') || '<div class="empty">Ingen bødekategori matcher</div>'}</div></div>
+      ${arch.length ? `<p class="note">${arch.length} arkiveret: ${arch.map(k => esc(k.e + ' ' + k.name)).join(', ')}. Arkiverede kategorier kan ikke gives, men gamle bøder beholder deres navn og pris.</p>` : ''}`;
+  },
+  kasse() {
+    const t = totals(), admin = isAdmin(ME);
+    const flows = feedItems(e => e.kind === 'indbetaling' || e.kind === 'haev');
+    const ms = [...D.members].filter(m => saldo(m.id) > 0).sort((a, b) => saldo(b.id) - saldo(a.id));
+    return scrTop('Kassen') + `<div class="hero"><span class="lab">I kassen</span><span class="big">${kr(t.inbox)}</span><span class="sub">Indbetalt ${kr(t.paid)} · hævet ${kr(t.out)}</span>
+        ${admin ? `<div class="btns"><button class="pill white" data-a="sheet" data-v="pay:">${ic('plus', 18)}Indbetaling</button><button class="pill ghost" data-a="sheet" data-v="haev">Hæv penge</button></div>` : ''}</div>
+      <div class="stats"><div><b>${kr(t.charged)}</b>Bøder og gebyrer</div><div><b>${kr(t.unpaid)}</b>Ubetalt</div><div><b>${ms.length}</b>Skylder</div></div>
+      <div class="sec"><span class="cap">Hvem skylder${admin ? ' · tryk for at registrere' : ''}</span><div class="group">${ms.map(m => memberRow(m, null, admin ? `sheet|pay:${m.id}` : null)).join('')}</div></div>
+      <div class="sec"><span class="cap">Indbetalinger og hævninger</span>${feedGroup(flows)}</div>
+      ${admin ? '' : '<p class="note">Kun Admins registrerer indbetalinger og hæver penge.</p>'}`;
+  },
+  feed() { return scrTop('Aktivitet') + feedGroup(feedItems()); },
+  anker() {
+    const a = openAnker();
+    return scrTop('Åbne anker') + `<p class="note">Gruppen afgør anker sammen. En Medlem, der ikke er en af de to involverede, registrerer udfaldet.</p>` + feedGroup(a);
+  },
+  konk() {
+    return scrTop('Konkurrencer', `<button class="iconbtn" data-a="push" data-v="konknew" aria-label="Ny konkurrence">${ic('plus', 20)}</button>`) +
+      `<div class="group">${D.konk.map(c => { const es = live().filter(e => e.group === c.group); return `<div class="row"><span class="av icon">${ic('trophy', 20)}</span><span class="t"><div>${esc(c.title)}</div><small>${esc(c.date)} · ${es.filter(e => !e.reason.includes('fravær')).length} placeret · ${es.filter(e => e.reason.includes('fravær')).length} fraværende</small></span><span class="amt">${kr(es.reduce((a, e) => a + e.amount, 0))}</span></div>`; }).join('')}</div>
+      <p class="note">Placeringsgebyrer: ${D.settings.konk.map((a, i) => `${i + 1}. ${a} kr`).join(' · ')} · fraværende ${D.settings.absent} kr. Admins ændrer dem under Indstillinger.</p>`;
+  },
+  konknew() {
+    const f = S.form, order = f.order || [];
+    const fee = (i) => D.settings.konk[Math.min(i, D.settings.konk.length - 1)];
+    return navTop('Ny konkurrence') + `<div class="field lg"><input id="ktitle" data-in="form.title" placeholder="Titel, fx Minigolf" value="${esc(f.title || '')}"></div>
+      <div class="field lg">${ic('calendar', 18)}<input id="kdate" data-in="form.date" placeholder="Dato" value="${esc(f.date || '11. okt')}"></div>
+      <div class="sec"><span class="cap">Tryk på Medlemmerne i den rækkefølge, de sluttede</span><div class="group">${D.members.map(m => {
+        const i = order.indexOf(m.id);
+        return `<button class="row ${i >= 0 ? 'sel' : ''}" data-a="konkplace" data-v="${m.id}">${av(m.id)}<span class="t"><div>${esc(m.name)}</div><small>${i >= 0 ? `${i + 1}. plads` : 'Ikke placeret: fraværende'}</small></span><span class="amt">${kr(i >= 0 ? fee(i) : D.settings.absent)}</span></button>`;
+      }).join('')}</div><p class="note">Uafgjort (delt plads) kan rettes bagefter. Ikke med i prototypen.</p></div>
+      <button class="cta" data-a="konksave" ${f.title && order.length ? '' : 'disabled'}>Gem konkurrence</button>`;
+  },
+  admin() {
+    const st = D.settings;
+    if (!isAdmin(ME)) return navTop('Indstillinger') + `<div class="empty">Kun Admins kan ændre indstillinger.</div>`;
+    const tog = (key, on) => `<button class="toggle ${on ? 'on' : ''}" data-a="toggle" data-v="${key}" aria-label="Slå til/fra"></button>`;
+    return scrTop('Indstillinger') + `<div class="sec"><span class="cap">Bødekasse</span><div class="group">
+        <div class="row"><span class="t"><div>Navn</div></span><span class="val">FC Ølhunde</span></div>
+        <button class="row" data-a="push" data-v="members"><span class="t"><div>Medlemmer og roller</div></span><span class="val">${D.members.length}</span><span class="chev">${ic('chevron-right', 18)}</span></button>
+        <button class="row" data-a="push" data-v="konk"><span class="t"><div>Konkurrencer</div></span><span class="val">${D.konk.length}</span><span class="chev">${ic('chevron-right', 18)}</span></button></div></div>
+      <div class="sec"><span class="cap">Særlige regler</span><div class="group">
+        <div class="row"><span class="t"><div>Gebyr for ny bødekategori</div><small>${kr(st.katGebyr.amount)} til den, der opretter</small></span>${tog('kat', st.katGebyr.on)}</div>
+        <div class="row"><span class="t"><div>Gebyr for engangsbøde</div><small>Betales af den, der giver den</small></span><span class="val">${kr(st.engang)}</span></div>
+        <div class="row"><span class="t"><div>Anke</div><small>Frist ${st.anke.days} dage · gebyr 1 kr til 2× bøden</small></span>${tog('anke', st.anke.on)}</div>
+        <div class="row"><span class="t"><div>Frikøb</div><small>${kr(st.frikob.amount)} · dækker almindelige bøder året ud</small></span>${tog('frikob', st.frikob.on)}</div>
+        <button class="row" data-a="push" data-v="konk"><span class="t"><div>Konkurrencegebyrer</div><small>${st.konk.join(' / ')} kr · fraværende ${st.absent} kr</small></span><span class="chev">${ic('chevron-right', 18)}</span></button></div></div>
+      <div class="sec"><span class="cap">Sæson og data</span><div class="group">
+        <button class="row" data-a="toast" data-v="Ny sæson afgøres i ticketen Seasons"><span class="t"><div>Start ny sæson</div></span><span class="chev">${ic('chevron-right', 18)}</span></button>
+        <button class="row" data-a="toast" data-v="Eksport: CSV med alle bøder og indbetalinger"><span class="t"><div>Eksportér data</div></span><span class="chev">${ic('chevron-right', 18)}</span></button></div></div>
+      <div class="group"><button class="row" data-a="logout"><span class="t"><div style="color:var(--p-red)">Log ud</div></span></button></div>`;
+  },
+};
+function memberRow(m, right, act) {
+  const s = saldo(m.id);
+  const sub = [m.id === ME ? 'Dig' : '', isAdmin(m.id) ? 'Admin' : '', m.frikob ? 'Frikøb' : '', m.unclaimed ? 'Ikke logget ind endnu' : ''].filter(Boolean).join(' · ');
+  const [a, v] = (act || `push|member:${m.id}`).split('|');
+  return `<button class="row ${m.id === ME ? 'me' : ''}" data-a="${a}" data-v="${v}">${av(m.id)}<span class="t"><div>${esc(m.name)}</div>${sub ? `<small>${sub}</small>` : ''}</span>${right || `<span class="amt">${kr(s)}</span>`}</button>`;
+}
+function katRow(k, lead = '') {
+  return `<button class="row" data-a="sheet" data-v="kat:${k.id}">${lead}<span class="emo">${k.e}</span><span class="t"><div>${esc(k.name)}</div><small>Brugt ${k.uses} gange</small></span><span class="amt">${kr(k.price)}</span></button>`;
+}
+
+// ---------------- give a Bøde (shared logic) ----------------
+function startGive(pre, preKat) {
+  S.give = { people: pre ? [pre] : [], kats: preKat ? [preKat] : [], q: '', sort: 'navn', engang: null, step: S.variant === 'C' ? (preKat ? 'hvem' : 'hvad') : 'hvad' };
+  if (S.variant === 'A') openSheet({ t: 'give' });
+  else if (S.variant === 'B') {
+    if (!pre) { S.give.step = 'hvem'; }
+    push({ s: 'giveB' });
+  } else push({ s: 'giveC' });
+}
+function giveSum() {
+  const g = S.give; const per = g.kats.reduce((a, k) => a + kat(k).price, 0) + (g.engang ? g.engang.amount : 0);
+  const n = g.people.length * (g.kats.length + (g.engang ? 1 : 0));
+  return { n, total: per * g.people.length, fee: g.engang ? g.people.length * D.settings.engang : 0 };
+}
+function giveCta(label) {
+  const { n, total } = giveSum();
+  const txt = n ? `Giv ${n} ${n === 1 ? 'bøde' : 'bøder'} · ${kr(total)}` : (label || 'Vælg Medlem og bødekategori');
+  return `<button class="cta" data-a="gsubmit" ${n ? '' : 'disabled'}>${txt}</button>`;
+}
+function feeNote() {
+  const { fee } = giveSum();
+  return fee ? `<p class="note warn">Engangsbøder koster dig et gebyr på ${kr(D.settings.engang)} pr. Medlem (${kr(fee)} i alt).</p>` : '';
+}
+function peoplePicker(cls = 'people') {
+  const g = S.give;
+  const ms = [...D.members.filter(m => m.id !== ME), mem(ME)];
+  return `<div class="${cls}">${ms.map(m => { const on = g.people.includes(m.id); return `<button class="person ${on ? 'sel' : ''}" data-a="gp" data-v="${m.id}">${av(m.id, 'lg')}${on ? `<span class="pc">${ic('check', 12)}</span>` : ''}<span>${first(m.id)}</span></button>`; }).join('')}</div>`;
+}
+function katList() {
+  const g = S.give, list = sortedKats(g.q, g.sort);
+  const r = (k) => { const on = g.kats.includes(k.id); return `<button class="row" data-a="gk" data-v="${k.id}"><span class="emo">${k.e}</span><span class="t"><div>${esc(k.name)}</div></span><span class="amt">${kr(k.price)}</span><span class="check sq ${on ? 'on' : ''}">${ic('check', 14)}</span></button>`; };
+  return `<div class="field">${ic('search', 18)}<input id="gq" data-in="give.q" placeholder="Søg i bødekategorier" value="${esc(g.q)}"></div>
+    ${g.q ? '' : `<div class="sec"><span class="cap">Mest brugt</span><div class="chips">${top5().map(k => `<button class="chip ${g.kats.includes(k.id) ? 'on' : ''}" data-a="gk" data-v="${k.id}">${k.e} ${esc(k.name)}</button>`).join('')}</div></div>`}
+    <div class="sec"><div class="seg">${['navn', 'pris'].map(s => `<button class="${g.sort === s ? 'on' : ''}" data-a="gsort" data-v="${s}">${s === 'navn' ? 'Navn' : 'Pris'}</button>`).join('')}</div>
+    <div class="group">${list.map(r).join('')}
+      ${g.engang ? `<button class="row sel" data-a="sheet" data-v="engang"><span class="emo">✍️</span><span class="t"><div>${esc(g.engang.reason)}</div><small>Engangsbøde</small></span><span class="amt">${kr(g.engang.amount)}</span><span class="check sq on">${ic('check', 14)}</span></button>` : ''}
+      <button class="row" data-a="sheet" data-v="newkat"><span class="emo" style="color:var(--p-main-ink)">${ic('plus', 20)}</span><span class="t"><div class="link">Ny bødekategori</div>${D.settings.katGebyr.on ? `<small>Koster ${kr(D.settings.katGebyr.amount)} i gebyr</small>` : ''}</span></button>
+      ${g.engang ? '' : `<button class="row" data-a="sheet" data-v="engang"><span class="emo">✍️</span><span class="t"><div class="link">Engangsbøde</div><small>Skriv selv årsag og beløb · gebyr ${kr(D.settings.engang)}</small></span></button>`}
+    </div></div>`;
+}
+function submitGive() {
+  const g = S.give, ids = [];
+  for (const p of g.people) {
+    for (const k of g.kats) { ids.push(add({ kind: 'bode', from: ME, to: p, kat: k, amount: kat(k).price })); kat(k).uses++; }
+    if (g.engang) { ids.push(add({ kind: 'bode', from: ME, to: p, reason: g.engang.reason, amount: g.engang.amount })); ids.push(add({ kind: 'gebyr', to: ME, reason: `Engangsbøde til ${first(p)}`, amount: D.settings.engang })); }
+  }
+  const { n, total } = giveSum();
+  S.give = null;
+  if (S.variant === 'A') S.sheets = []; else S.stack.pop();
+  toast(`${n} ${n === 1 ? 'bøde' : 'bøder'} givet · ${kr(total)}`, ids);
+}
+
+// ---------------- variant shells ----------------
+const VARIANTS = {
+  A: { name: 'Faner', idea: 'A classic iOS tab bar with a raised + in the middle for Giv bøde. Home is about <b>you</b>: your Saldo, open Anker, then the activity feed.', nav: 'Tab bar: Hjem · Medlemmer · + · Kategorier · Kassen. Settings behind the gear on Hjem; switch Bødekasse by tapping its name.', home: 'Your Saldo (hero card), the box totals, open Anker, latest activity.', taps: '+ → person → kategori → Giv: <b>4 taps</b>, all in one bottom sheet.' },
+  B: { name: 'Medlemmer først', idea: 'No tab bar. Home is the Bødekasse itself: <b>everyone\'s Saldo</b> as a ranked list, with Aktivitet and Kategorier one segment away. You fine <b>from a person</b>: the + on their row opens a grid of kategori tiles.', nav: 'One home with a segmented control; everything else in the menu behind your avatar. Profiles have a sticky "Giv bøde til …".', home: 'Box total, an Anker banner, then Medlemmer ranked by Saldo (you highlighted).', taps: '+ on a row → tile → Giv: <b>3 taps</b>.' },
+  C: { name: 'Én knap', idea: 'Home is <b>one big Giv bøde button</b> and your Saldo. Everything else lives in a side menu. Giving is a 3-step wizard that starts with <b>what happened</b>, then who.', nav: 'Hamburger → side menu with every section. Every section is a pushed screen with Tilbage.', home: 'The button, your Saldo, open Anker, the three latest events.', taps: 'Button → kategori → Næste → person → Næste → Giv: <b>6 taps</b>, but each step is one clear question.' },
+};
+function boxBtn() { return `<button class="box-btn" data-a="sheet" data-v="boxes">FC Ølhunde ${ic('chevron-down', 18)}</button>`; }
+function ankerCard() {
+  const a = openAnker(); if (!a.length) return '';
+  return `<div class="sec"><div class="sec-h"><h3>Åbne anker</h3><span class="tag amber">${a.length}</span></div><div class="group">${a.map(e => feedRow(e)).join('')}</div></div>`;
+}
+
+function homeA() {
+  const t = totals(), s = saldo(ME);
+  return `<div class="top">${boxBtn()}${isAdmin(ME) ? `<button class="iconbtn" data-a="push" data-v="admin" aria-label="Indstillinger">${ic('settings', 20)}</button>` : ''}</div>
+    <div class="hero"><span class="lab">Din saldo</span><span class="big">${kr(s)}</span><span class="sub">Betal på MobilePay 12 34 56 78. En Admin registrerer det.</span>
+      <div class="btns"><button class="pill white" data-a="give">${ic('gavel', 18)}Giv bøde</button><button class="pill ghost" data-a="push" data-v="member:${ME}">Min historik</button></div></div>
+    <button class="stats" data-a="tab" data-v="kasse"><div><b>${kr(t.inbox)}</b>I kassen</div><div><b>${kr(t.unpaid)}</b>Ubetalt</div><div><b>${kr(t.charged)}</b>Bøder i alt</div></button>
+    ${ankerCard()}
+    <div class="sec"><div class="sec-h"><h3>Seneste</h3><button class="link" data-a="push" data-v="feed">Se alt</button></div>${feedGroup(feedItems().slice(0, 8))}</div>`;
+}
+function shellA() {
+  const c = cur();
+  let main;
+  if (c.s === 'home') main = homeA();
+  else main = SCREENS[c.s](c);
+  const root = S.stack[0].s;
+  const tab = (id, icon, label) => `<button class="${root === id ? 'on' : ''}" data-a="tab" data-v="${id}">${ic(icon, 24)}${label}</button>`;
+  return `<div class="scr">${main}</div>
+    <nav class="tabbar">${tab('home', 'home', 'Hjem')}${tab('members', 'users', 'Medlemmer')}<button data-a="give" aria-label="Giv bøde"><span class="fab">${ic('plus', 28)}</span></button>${tab('kats', 'list', 'Kategorier')}${tab('kasse', 'wallet', 'Kassen')}</nav>`;
+}
+function giveSheetA() {
+  return `<div class="hd"><h3>Giv bøde</h3><button class="iconbtn" data-a="close" aria-label="Luk">${ic('x', 20)}</button></div>
+    <div class="in"><div class="sec"><span class="cap">Hvem${S.give.people.length ? ` (${S.give.people.length})` : ''}</span>${peoplePicker()}</div>
+    <div class="sec"><span class="cap">Hvad</span>${katList()}</div>${feeNote()}</div>
+    <div class="ft">${giveCta()}</div>`;
+}
+
+function homeB() {
+  const t = totals(), a = openAnker();
+  const right = `<button class="iconbtn" data-a="sheet" data-v="menu" aria-label="Menu" style="background:var(--p-main-soft);color:var(--p-main-ink);font-weight:600;font-size:14px">${initials(mem(ME))}</button>`;
+  let body = '';
+  if (S.bTab === 'medlemmer') {
+    const ms = [...D.members].sort((x, y) => saldo(y.id) - saldo(x.id));
+    body = `<div class="group">${ms.map((m, i) => `<div class="row ${m.id === ME ? 'me' : ''}"><span class="rank">${i + 1}</span><button style="display:contents" data-a="push" data-v="member:${m.id}">${av(m.id)}<span class="t"><div>${esc(m.name.split(' ')[0])}${m.id === ME ? ' (dig)' : ''}</div><small>${[m.frikob ? 'Frikøb' : '', m.unclaimed ? 'Ikke logget ind' : '', isAdmin(m.id) ? 'Admin' : ''].filter(Boolean).join(' · ') || '&nbsp;'}</small></span><span class="amt">${kr(saldo(m.id))}</span></button><button class="addbtn" data-a="give" data-v="${m.id}" aria-label="Giv ${esc(m.name)} en bøde">${ic('plus', 18)}</button></div>`).join('')}</div>
+      <p class="note">Tryk på + for at give en bøde. Tryk på navnet for at se historik.</p>`;
+  } else if (S.bTab === 'aktivitet') body = feedGroup(feedItems().slice(0, 25));
+  else body = SCREENS.kats().replace(/^[\s\S]*?<\/div>/, '');
+  return `<div class="top">${boxBtn()}${right}</div>
+    <div class="hero" style="padding:16px 18px"><span class="lab">I kassen</span><span class="big" style="font-size:36px">${kr(t.inbox)}</span><span class="sub">Ubetalt ${kr(t.unpaid)} · din saldo ${kr(saldo(ME))}</span></div>
+    ${a.length ? `<button class="banner" data-a="push" data-v="anker"><span class="ic">${ic('scale', 20)}</span><span style="flex:1">${a.length} anker venter på afgørelse</span>${ic('chevron-right', 18)}</button>` : ''}
+    <div class="seg">${[['medlemmer', 'Medlemmer'], ['aktivitet', 'Aktivitet'], ['kategorier', 'Kategorier']].map(([k, l]) => `<button class="${S.bTab === k ? 'on' : ''}" data-a="btab" data-v="${k}">${l}</button>`).join('')}</div>
+    ${body}`;
+}
+function giveB() {
+  const g = S.give;
+  if (g.step === 'hvem') {
+    return navTop('Hvem får en bøde?') + peoplePicker('pgrid') + `<button class="cta" data-a="gstep" data-v="hvad" ${g.people.length ? '' : 'disabled'}>Videre</button>`;
+  }
+  const list = sortedKats(g.q, g.sort);
+  const tile = (k) => { const on = g.kats.includes(k.id); return `<button class="tile ${on ? 'on' : ''}" data-a="gk" data-v="${k.id}"><span class="e">${k.e}</span><span class="n">${esc(k.name)}</span><span class="p">${kr(k.price)}</span>${on ? `<span class="tc check on">${ic('check', 14)}</span>` : ''}</button>`; };
+  const t5 = top5().map(k => k.id);
+  return `<div class="top"><button class="back" data-a="back">${ic('chevron-left', 24)}Annullér</button></div>
+    <div class="sec"><span class="cap">Til</span><div class="chips">${g.people.map(p => `<button class="chip on" data-a="gp" data-v="${p}">${esc(first(p))} ${ic('x', 14)}</button>`).join('')}<button class="chip" data-a="gstep" data-v="hvem">${ic('plus', 16)} Flere</button></div></div>
+    <div class="field">${ic('search', 18)}<input id="gqb" data-in="give.q" placeholder="Søg i bødekategorier" value="${esc(g.q)}"></div>
+    ${g.q ? '' : `<div class="sec"><span class="cap">Mest brugt</span><div class="tiles">${top5().slice(0, 4).map(tile).join('')}</div></div>`}
+    <div class="sec"><div class="sec-h"><span class="cap">Alle</span><div class="seg" style="width:140px">${['navn', 'pris'].map(s => `<button class="${g.sort === s ? 'on' : ''}" data-a="gsort" data-v="${s}">${s === 'navn' ? 'Navn' : 'Pris'}</button>`).join('')}</div></div>
+      <div class="tiles">${list.filter(k => g.q || !t5.slice(0, 4).includes(k.id)).map(tile).join('')}
+        <button class="tile ${g.engang ? 'on' : 'dash'}" data-a="sheet" data-v="engang"><span class="e">✍️</span><span class="n">${g.engang ? esc(g.engang.reason) : 'Engangsbøde'}</span><span class="p">${g.engang ? kr(g.engang.amount) : `Gebyr ${kr(D.settings.engang)}`}</span></button>
+        <button class="tile dash" data-a="sheet" data-v="newkat"><span class="e">${ic('plus', 26)}</span><span class="n">Ny bødekategori</span><span class="p">${D.settings.katGebyr.on ? `Gebyr ${kr(D.settings.katGebyr.amount)}` : 'Gratis'}</span></button></div></div>
+    ${feeNote()}`;
+}
+function shellB() {
+  const c = cur();
+  if (c.s === 'giveB') {
+    const g = S.give;
+    return `<div class="scr">${giveB()}</div>${g.step === 'hvad' ? `<div class="ctabar">${giveCta('Vælg en eller flere bøder')}</div>` : ''}`;
+  }
+  const main = c.s === 'home' ? homeB() : SCREENS[c.s](c);
+  const sticky = c.s === 'member' ? `<div class="ctabar"><button class="cta" data-a="give" data-v="${c.id}">Giv bøde til ${esc(firstL(c.id))}</button></div>` : '';
+  return `<div class="scr">${main}</div>${sticky}`;
+}
+
+function homeC() {
+  const s = saldo(ME), a = openAnker();
+  return `<div class="top"><button class="iconbtn" data-a="sheet" data-v="drawer" aria-label="Menu">${ic('menu', 20)}</button><button class="box-btn" data-a="sheet" data-v="boxes">FC Ølhunde ${ic('chevron-down', 18)}</button><span style="width:36px"></span></div>
+    <button class="bigbtn" data-a="give">${ic('gavel', 44)}Giv bøde</button>
+    <div class="group"><button class="row" data-a="push" data-v="member:${ME}"><span class="t"><div>Din saldo</div><small>Betal på MobilePay 12 34 56 78</small></span><span class="amt" style="font-size:20px">${kr(s)}</span><span class="chev">${ic('chevron-right', 18)}</span></button>
+      ${a.length ? `<button class="row" data-a="push" data-v="anker"><span class="t"><div>Åbne anker</div><small>Venter på gruppens afgørelse</small></span><span class="tag amber">${a.length}</span><span class="chev">${ic('chevron-right', 18)}</span></button>` : ''}</div>
+    <div class="sec"><div class="sec-h"><h3>Seneste</h3><button class="link" data-a="push" data-v="feed">Se alt</button></div>${feedGroup(feedItems().slice(0, 3))}</div>`;
+}
+function giveC() {
+  const g = S.give, steps = ['hvad', 'hvem', 'ok'], i = steps.indexOf(g.step);
+  const head = `<div class="top"><button class="back" data-a="${i === 0 ? 'back' : 'gstep'}" data-v="${steps[i - 1] || ''}">${ic('chevron-left', 24)}${i === 0 ? 'Annullér' : 'Tilbage'}</button><span class="note">Trin ${i + 1} af 3</span></div>
+    <div><div class="wiz">${steps.map((s, j) => `<div class="${j <= i ? 'on' : ''}"></div>`).join('')}</div><div class="wizl">${['Hvad', 'Hvem', 'Bekræft'].map((l, j) => j === i ? `<b>${l}</b>` : `<span>${l}</span>`).join('')}</div></div>`;
+  if (g.step === 'hvad') return head + `<h1 class="title">Hvad er der sket?</h1>` + katList();
+  if (g.step === 'hvem') return head + `<h1 class="title">Hvem skal have den?</h1>` + peoplePicker('pgrid');
+  const lines = [...g.kats.map(k => [`${kat(k).e} ${kat(k).name}`, kat(k).price]), ...(g.engang ? [[`✍️ ${g.engang.reason}`, g.engang.amount]] : [])];
+  return head + `<h1 class="title">Bekræft</h1>
+    <div class="sec"><span class="cap">Til</span><div class="chips">${g.people.map(p => `<span class="chip">${av(p).replace('class="av', 'style="width:24px;height:24px;font-size:10px" class="av')} ${esc(first(p))}</span>`).join('')}</div></div>
+    <div class="sec"><span class="cap">Bøder</span><div class="group">${lines.map(([n, p]) => `<div class="row"><span class="t"><div>${esc(n)}</div></span><span class="amt">${g.people.length > 1 ? `${g.people.length} × ` : ''}${kr(p)}</span></div>`).join('')}
+      <div class="row"><span class="t"><div><b>I alt</b></div></span><span class="amt">${kr(giveSum().total)}</span></div></div></div>${feeNote()}`;
+}
+function shellC() {
+  const c = cur();
+  if (c.s === 'giveC') {
+    const g = S.give;
+    const nxt = g.step === 'hvad' ? `<button class="cta" data-a="gstep" data-v="hvem" ${g.kats.length || g.engang ? '' : 'disabled'}>Næste</button>`
+      : g.step === 'hvem' ? `<button class="cta" data-a="gstep" data-v="ok" ${g.people.length ? '' : 'disabled'}>Næste</button>` : giveCta();
+    return `<div class="scr">${giveC()}</div><div class="ctabar">${nxt}</div>`;
+  }
+  return `<div class="scr">${c.s === 'home' ? homeC() : SCREENS[c.s](c)}</div>`;
+}
+
+// ---------------- auth (shared by all variants) ----------------
+function authScreen() {
+  if (S.auth === 'install') return `<div class="auth"><span class="logo">${ic('piggy-bank', 34)}</span>
+    <h2>Føj Bødekasse til din hjemmeskærm</h2><p>Bødekasse er en app, du installerer fra Safari. Du logger ind inde i appen bagefter.</p>
+    <div class="group steps"><div class="row"><span class="stepn">1</span><span class="t"><div>Tryk på ${ic('share', 16).replace('<i ', '<i style="display:inline-block;vertical-align:-3px" ')} Del nederst i Safari</div></span></div>
+      <div class="row"><span class="stepn">2</span><span class="t"><div>Vælg <b>Føj til hjemmeskærm</b></div></span></div>
+      <div class="row"><span class="stepn">3</span><span class="t"><div>Åbn Bødekasse fra hjemmeskærmen</div></span></div></div>
+    <p class="note">Denne skærm vises kun, når siden åbnes i browseren. Kræver iOS 17.5 eller nyere.</p><span class="spacer"></span>
+    <button class="cta sec2" data-a="go" data-v="email">Prototype: jeg har installeret den →</button></div>`;
+  if (S.auth === 'email') return `<div class="auth"><span class="logo">${ic('piggy-bank', 34)}</span><h2>Log ind</h2><p>Skriv din e-mail, så sender vi dig en 6-cifret kode. Har en Admin tilføjet dig, bruger du den samme e-mail.</p>
+    <div class="field lg">${ic('mail', 18)}<input id="email" data-in="email" type="email" inputmode="email" placeholder="navn@eksempel.dk" value="${esc(S.email)}"></div>
+    <span class="spacer"></span><button class="cta" data-a="go" data-v="code" ${S.email.includes('@') ? '' : 'disabled'}>Send kode</button></div>`;
+  if (S.auth === 'code') {
+    const c = S.code;
+    return `<div class="auth"><button class="back" data-a="go" data-v="email">${ic('chevron-left', 24)}Tilbage</button><h2>Tjek din mail</h2><p>Vi har sendt en kode til <b style="color:var(--p-text)">${esc(S.email)}</b>. Skriv den her.</p>
+      <div class="code">${[0, 1, 2, 3, 4, 5].map(i => `<div class="${i === c.length ? 'cur' : ''}">${c[i] || ''}</div>`).join('')}<input id="code" data-in="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" value="${esc(c)}" aria-label="Kode"></div>
+      <p class="note">Prototype: skriv seks vilkårlige cifre.</p><button class="link" data-a="toast" data-v="Ny kode sendt" style="align-self:flex-start">Send ny kode</button></div>`;
+  }
+  if (S.auth === 'boxes') return `<div class="auth"><h2>Vælg Bødekasse</h2><p>Du er Medlem af ${D.boxes.length} Bødekasser. Du kan altid skifte ved at trykke på navnet øverst.</p>
+    <div class="group">${D.boxes.map(b => `<button class="row" data-a="pickbox" data-v="${b.id}"><span class="av">${b.name[0]}</span><span class="t"><div>${esc(b.name)}</div><small>${b.n} Medlemmer${b.id === 'fam' ? ' · Ny: Frederik tilføjede dig' : ''}</small></span><span class="chev">${ic('chevron-right', 18)}</span></button>`).join('')}</div>
+    <div class="group"><button class="row" data-a="toast" data-v="Opret Bødekasse afgøres i Bødekasse og membership"><span class="av icon">${ic('plus', 20)}</span><span class="t"><div class="link">Opret ny Bødekasse</div></span></button></div>
+    <p class="note">Er du kun Medlem af én Bødekasse, springes denne skærm over.</p></div>`;
+}
+
+// ---------------- sheets ----------------
+function openSheet(o) { S.sheets.push(o); }
+function sheetHtml() {
+  return S.sheets.map((o, i) => {
+    if (o.t === 'drawer') return `<div class="layer drawer-layer" style="z-index:${10 + i}"><div class="scrim" data-a="close"></div>${drawer()}</div>`;
+    const body = SHEETS[o.t](o);
+    return `<div class="layer" style="z-index:${10 + i}"><div class="scrim" data-a="close"></div><div class="sheet ${o.t === 'give' ? 'tall' : ''}"><span class="grab"></span>${body}</div></div>`;
+  }).join('');
+}
+const hd = (t) => `<div class="hd"><h3>${t}</h3><button class="iconbtn" data-a="close" aria-label="Luk">${ic('x', 20)}</button></div>`;
+const SHEETS = {
+  give: () => giveSheetA(),
+  bode({ id }) {
+    const e = D.ledger.find(x => x.id === id), k = e.kat ? kat(e.kat) : null;
+    const mine = e.to === ME, involved = e.to === ME || e.from === ME;
+    const canAnke = mine && !e.status && D.settings.anke.on && e.ago < D.settings.anke.days * 1440;
+    let act = '';
+    if (canAnke) act = `<button class="cta" data-a="sheet" data-v="wheel:${e.id}">Anke bøden</button><p class="note">At anke koster et tilfældigt gebyr mellem 1 kr og ${kr(e.amount * 2)}. Fristen udløber om ${Math.ceil(D.settings.anke.days - e.ago / 1440)} dage.</p>`;
+    else if (e.status === 'anket' && !involved) act = `<button class="cta" data-a="sheet" data-v="verdict:${e.id}">Registrér gruppens afgørelse</button>`;
+    else if (e.status === 'anket') act = `<div class="callout"><span class="ic">${ic('scale', 20)}</span><span>Anket. Gruppen afgør den sammen, og en anden Medlem registrerer udfaldet.</span></div>`;
+    else if (mine && e.ago >= D.settings.anke.days * 1440 && !e.status) act = `<p class="note">Ankefristen på ${D.settings.anke.days} dage er udløbet.</p>`;
+    return hd('Bøde') + `<div class="in"><div class="prof"><span class="emo" style="width:64px;height:64px;font-size:34px;border-radius:18px;background:var(--p-surface)">${k ? k.e : '✍️'}</span><h2>${esc(k ? k.name : e.reason)}</h2>
+      <div class="bigamt">${kr(e.amount)}</div>
+      <div class="note">${e.status === 'frifundet' ? `Flyttet til ${firstL(e.to)} efter vundet anke` : `Fra ${firstL(e.from)} til ${firstL(e.to)}`} · ${when(e.ago)}${k ? '' : ' · Engangsbøde'}</div>
+      <div>${e.status === 'anket' ? '<span class="tag amber">Anket</span>' : ''}${covered(e) ? '<span class="tag green">Dækket af frikøb</span>' : ''}</div></div>${act}</div><div class="ft"></div>`;
+  },
+  wheel(o) {
+    const e = D.ledger.find(x => x.id === o.id);
+    if (!o.phase) return hd('Anke') + `<div class="in"><p class="note" style="font-size:15px">Hjulet bestemmer dit anke-gebyr: mellem 1 kr og ${kr(e.amount * 2)} (2× bøden). Gebyret betales uanset udfaldet. Taber du anken, bærer du også bøden.</p>
+      <div class="wheelbox"><span class="pointer"></span><div class="wheel"></div><div class="hub">?</div></div></div><div class="ft"><button class="cta" data-a="spin">Drej hjulet</button><button class="cta sec2" data-a="close">Fortryd</button></div>`;
+    return hd('Anke') + `<div class="in"><div class="wheelbox"><span class="pointer"></span><div class="wheel spin" id="wheel" style="transform:rotate(${o.phase === 'done' ? o.deg : 0}deg)"></div><div class="hub">${o.phase === 'done' ? kr(o.amount) : '…'}</div></div>
+      ${o.phase === 'done' ? `<p class="note" style="text-align:center;font-size:15px">Dit anke-gebyr er <b>${kr(o.amount)}</b>. Bøden står nu som anket, til gruppen har afgjort den.</p>` : ''}</div>
+      <div class="ft">${o.phase === 'done' ? '<button class="cta" data-a="closeall">Færdig</button>' : ''}</div>`;
+  },
+  verdict(o) {
+    const e = D.ledger.find(x => x.id === o.id);
+    return hd('Gruppens afgørelse') + `<div class="in"><p class="note">${first(e.to)} har anket ${first(e.from) === 'Dig' ? 'din' : first(e.from) + 's'} bøde: ${esc(bodeLabel(e))} (${kr(e.amount)}).</p>
+      ${[['stadfaestet', `Bøden står ved magt`, `${first(e.to)} beholder bøden.`], ['frifundet', 'Anken vinder', `Bøden flyttes til ${firstL(e.from)}, som gav den.`]].map(([v, t, s]) => `<button class="opt ${o.pick === v ? 'on' : ''}" data-a="vpick" data-v="${v}"><span class="check ${o.pick === v ? 'on' : ''}">${ic('check', 14)}</span><span class="t"><div>${t}</div><small>${s}</small></span></button>`).join('')}
+      <p class="note">Anke-gebyret står uanset udfaldet.</p></div><div class="ft"><button class="cta" data-a="vsave" ${o.pick ? '' : 'disabled'}>Gem afgørelse</button></div>`;
+  },
+  kat({ id }) {
+    const k = kat(id), can = k.by === ME || isAdmin(ME);
+    return hd('') + `<div class="in"><div class="prof"><span class="emo" style="width:64px;height:64px;font-size:34px;border-radius:18px;background:var(--p-surface)">${k.e}</span><h2>${esc(k.name)}</h2><div class="bigamt">${kr(k.price)}</div>
+      ${k.desc ? `<p class="note">${esc(k.desc)}</p>` : ''}<p class="note">Oprettet af ${firstL(k.by)} · brugt ${k.uses} gange</p></div>
+      <button class="cta" data-a="givekat" data-v="${k.id}">Giv denne bøde</button>
+      ${can ? `<div class="acts"><button class="pill plain" data-a="sheet" data-v="newkat:${k.id}">${ic('pencil', 16)}Redigér</button><button class="pill danger" data-a="archive" data-v="${k.id}">${ic('archive', 16)}Arkivér</button></div><p class="note" style="text-align:center">Ændret pris gælder kun nye bøder.</p>` : '<p class="note" style="text-align:center">Kun den, der oprettede den, og Admins kan redigere.</p>'}</div><div class="ft"></div>`;
+  },
+  newkat(o) {
+    const f = S.form, edit = o.id ? kat(o.id) : null;
+    const dup = activeKats().some(k => k.id !== o.id && k.name.toLowerCase() === (f.kname || '').trim().toLowerCase());
+    const ok = (f.kname || '').trim() && +f.kprice > 0 && !dup;
+    return hd(edit ? 'Redigér bødekategori' : 'Ny bødekategori') + `<div class="in">
+      <div class="field lg" style="gap:12px"><input id="kemo" data-in="form.kemo" value="${esc(f.kemo || '')}" placeholder="🙂" style="flex:none;width:34px;font-size:22px;text-align:center"><input id="kname" data-in="form.kname" placeholder="Navn, fx Kom for sent" value="${esc(f.kname || '')}"></div>
+      ${dup ? '<p class="note" style="color:var(--p-red)">Der findes allerede en aktiv bødekategori med det navn.</p>' : ''}
+      <div class="field lg"><input id="kprice" data-in="form.kprice" inputmode="numeric" placeholder="Pris" value="${esc(f.kprice || '')}"><span>kr</span></div>
+      <div class="field lg"><input id="kdesc" data-in="form.kdesc" placeholder="Beskrivelse (valgfri)" value="${esc(f.kdesc || '')}"></div>
+      ${!edit && D.settings.katGebyr.on ? `<div class="callout"><span class="ic">${ic('receipt', 20)}</span><span>Det koster dig et gebyr på <b>${kr(D.settings.katGebyr.amount)}</b> at oprette en bødekategori.</span></div>` : ''}
+      ${edit ? '<p class="note">Bøder, der allerede er givet, beholder deres pris.</p>' : '<p class="note">Kategorien kan bruges med det samme af alle.</p>'}</div>
+      <div class="ft"><button class="cta" data-a="katsave" data-v="${o.id || ''}" ${ok ? '' : 'disabled'}>${edit ? 'Gem' : 'Opret'}</button></div>`;
+  },
+  engang() {
+    const f = S.form, ok = (f.ereason || '').trim() && +f.eamount > 0;
+    return hd('Engangsbøde') + `<div class="in"><p class="note">For noget, der ikke har en bødekategori. Du betaler selv et gebyr på ${kr(D.settings.engang)} pr. Medlem, du giver den.</p>
+      <div class="field lg"><input id="ereason" data-in="form.ereason" placeholder="Hvad er der sket?" value="${esc(f.ereason || '')}"></div>
+      <div class="field lg"><input id="eamount" data-in="form.eamount" inputmode="numeric" placeholder="Beløb" value="${esc(f.eamount || '')}"><span>kr</span></div></div>
+      <div class="ft"><button class="cta" data-a="engangsave" ${ok ? '' : 'disabled'}>Tilføj</button>${S.give && S.give.engang ? '<button class="cta sec2" data-a="engangdel">Fjern engangsbøde</button>' : ''}</div>`;
+  },
+  pay(o) {
+    const f = S.form, m = f.pm;
+    return hd('Registrér indbetaling') + `<div class="in"><div class="sec"><span class="cap">Hvem har betalt?</span><div class="group">${[...D.members].sort((a, b) => saldo(b.id) - saldo(a.id)).map(x => `<button class="row ${m === x.id ? 'sel' : ''}" data-a="pm" data-v="${x.id}">${av(x.id)}<span class="t"><div>${esc(x.name)}</div><small>Saldo ${kr(saldo(x.id))}</small></span><span class="check ${m === x.id ? 'on' : ''}">${ic('check', 14)}</span></button>`).join('')}</div></div>
+      <div class="field lg"><input id="pamt" data-in="form.pamt" inputmode="numeric" placeholder="Beløb" value="${esc(f.pamt || '')}"><span>kr</span></div></div>
+      <div class="ft"><button class="cta" data-a="paysave" ${m && +f.pamt > 0 ? '' : 'disabled'}>Registrér ${+f.pamt > 0 ? kr(+f.pamt) : ''}</button></div>`;
+  },
+  haev() {
+    const f = S.form;
+    return hd('Hæv penge') + `<div class="in"><p class="note">Til fx julefrokost. Beløbet trækkes fra kassen, ikke fra nogens saldo. I kassen nu: ${kr(totals().inbox)}.</p>
+      <div class="field lg"><input id="hamt" data-in="form.hamt" inputmode="numeric" placeholder="Beløb" value="${esc(f.hamt || '')}"><span>kr</span></div>
+      <div class="field lg"><input id="hnote" data-in="form.hnote" placeholder="Hvad skal pengene bruges til?" value="${esc(f.hnote || '')}"></div></div>
+      <div class="ft"><button class="cta" data-a="haevsave" ${+f.hamt > 0 && (f.hnote || '').trim() ? '' : 'disabled'}>Hæv</button></div>`;
+  },
+  addmember() {
+    const f = S.form;
+    return hd('Tilføj Medlem') + `<div class="in"><p class="note">Medlemmet kan få bøder med det samme. Når de logger ind med e-mailen, overtager de pladsen.</p>
+      <div class="field lg"><input id="mname" data-in="form.mname" placeholder="Navn" value="${esc(f.mname || '')}"></div>
+      <div class="field lg">${ic('mail', 18)}<input id="mmail" data-in="form.mmail" type="email" placeholder="E-mail" value="${esc(f.mmail || '')}"></div></div>
+      <div class="ft"><button class="cta" data-a="memsave" ${(f.mname || '').trim() && (f.mmail || '').includes('@') ? '' : 'disabled'}>Tilføj</button></div>`;
+  },
+  boxes() {
+    return hd('Skift Bødekasse') + `<div class="in"><div class="group">${D.boxes.map(b => `<button class="row" data-a="pickbox" data-v="${b.id}"><span class="av">${b.name[0]}</span><span class="t"><div>${esc(b.name)}</div><small>${b.n} Medlemmer</small></span>${b.id === 'fc' ? `<span class="check on">${ic('check', 14)}</span>` : ''}</button>`).join('')}</div>
+      <div class="group"><button class="row" data-a="toast" data-v="Opret Bødekasse afgøres i Bødekasse og membership"><span class="av icon">${ic('plus', 20)}</span><span class="t"><div class="link">Opret ny Bødekasse</div></span></button></div></div><div class="ft"></div>`;
+  },
+  menu() {
+    const r = (a, v, icn, l) => `<button class="row" data-a="${a}" data-v="${v}"><span class="av icon">${ic(icn, 20)}</span><span class="t"><div>${l}</div></span><span class="chev">${ic('chevron-right', 18)}</span></button>`;
+    return hd('Mads Ringsted') + `<div class="in"><div class="group">${r('menugo', 'member:' + ME, 'user', 'Min profil og historik')}${r('menugo', 'kasse', 'wallet', 'Kassen og indbetalinger')}${r('menugo', 'anker', 'scale', 'Anker')}${r('menugo', 'konk', 'trophy', 'Konkurrencer')}</div>
+      <div class="group">${isAdmin(ME) ? r('menugo', 'admin', 'settings', 'Indstillinger') : ''}${r('menuboxes', '', 'repeat', 'Skift Bødekasse')}</div>
+      <div class="group"><button class="row" data-a="logout"><span class="t"><div style="color:var(--p-red)">Log ud</div></span></button></div></div><div class="ft"></div>`;
+  },
+};
+function drawer() {
+  const c = S.stack[S.stack.length - 1].s;
+  const r = (v, icn, l, extra = '') => `<button class="row ${c === v.split(':')[0] ? 'sel' : ''}" data-a="drawergo" data-v="${v}"><span style="color:var(--p-main-ink)">${ic(icn, 22)}</span><span class="t"><div>${l}</div></span>${extra}</button>`;
+  const a = openAnker().length;
+  return `<div class="drawer"><div class="prof" style="align-items:flex-start;text-align:left">${av(ME, 'lg')}<h2 style="font-size:18px;margin:4px 0 0">Mads Ringsted</h2><span class="note" style="padding:0">FC Ølhunde · ${S.role === 'admin' ? 'Admin' : 'Medlem'}</span></div>
+    <div class="group">${r('home', 'home', 'Hjem')}${r('feed', 'activity', 'Aktivitet')}${r('members', 'users', 'Medlemmer')}${r('kats', 'list', 'Bødekategorier')}${r('kasse', 'wallet', 'Kassen')}</div>
+    <div class="group">${r('anker', 'scale', 'Anker', a ? `<span class="tag amber">${a}</span>` : '')}${r('konk', 'trophy', 'Konkurrencer')}${isAdmin(ME) ? r('admin', 'settings', 'Indstillinger') : ''}</div>
+    <div class="group"><button class="row" data-a="drawerboxes"><span style="color:var(--p-main-ink)">${ic('repeat', 22)}</span><span class="t"><div>Skift Bødekasse</div></span></button><button class="row" data-a="logout"><span style="color:var(--p-red)">${ic('log-out', 22)}</span><span class="t"><div style="color:var(--p-red)">Log ud</div></span></button></div></div>`;
+}
+
+// ---------------- toast ----------------
+let toastTimer;
+function toast(msg, undo) {
+  S.toast = { msg, undo }; S.last = msg;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { S.toast = null; render(); }, 5000);
+}
+const toastHtml = () => S.toast ? `<div class="toast"><span>${esc(S.toast.msg)}</span>${S.toast.undo ? '<button data-a="undo">Fortryd</button>' : ''}</div>` : '';
+
+// ---------------- navigation ----------------
+function push(o) { S.stack.push(o); }
+function parseScreen(v) { const [s, id] = v.split(':'); return id ? { s, id } : { s }; }
+function resetNav() { S.stack = [{ s: 'home' }]; S.sheets = []; S.give = null; }
+
+// ---------------- actions ----------------
+const ACT = {
+  var(v) { setVariant(v); },
+  role(v) { S.role = v; S.last = `Viewing as ${v === 'admin' ? 'Admin' : 'Medlem'}`; },
+  reset() { seq = 0; D = seed(); resetNav(); S.last = 'Data reset'; },
+  jump(v) { jump(v); },
+  go(v) { S.auth = v; if (v === 'code') S.code = ''; },
+  pickbox(v) { if (v === 'fam') { toast('Prototypen har kun data for FC Ølhunde'); } S.auth = 'in'; S.sheets = []; resetNav(); },
+  tab(v) { S.stack = [{ s: v }]; },
+  push(v) { if (v === 'konknew') S.form = {}; push(parseScreen(v)); },
+  back() { if (cur().s.startsWith('give')) S.give = null; S.stack.pop(); },
+  sheet(v) { const [t, id] = v.split(':'); S.form = (t === 'engang' || t === 'newkat' || t === 'pay') ? sheetForm(t, id) : (t === 'haev' || t === 'addmember' ? {} : S.form); openSheet({ t, id }); },
+  close() { S.sheets.pop(); if (!S.sheets.some(s => s.t === 'give') && S.variant === 'A') S.give = S.sheets.length ? S.give : null; },
+  closeall() { S.sheets = []; },
+  give(v) { S.sheets = []; startGive(v || null); },
+  givekat(v) { S.sheets = []; startGive(null, v); },
+  gp(v) { const p = S.give.people; const i = p.indexOf(v); i >= 0 ? p.splice(i, 1) : p.push(v); if (S.variant === 'B' && S.give.step === 'hvad' && !p.length) S.give.step = 'hvem'; },
+  gk(v) { const k = S.give.kats; const i = k.indexOf(v); i >= 0 ? k.splice(i, 1) : k.push(v); },
+  gsort(v) { S.give.sort = v; },
+  gstep(v) { S.give.step = v; },
+  gsubmit() { submitGive(); },
+  undo() { const ids = S.toast.undo; D.ledger.forEach(e => { if (ids.includes(e.id)) e.undone = true; }); S.toast = null; S.last = `Undid ${ids.length} entries`; },
+  katsort(v) { S.katSort = v; },
+  btab(v) { S.bTab = v; },
+  toggle(v) { const st = D.settings; if (v === 'kat') st.katGebyr.on = !st.katGebyr.on; if (v === 'anke') st.anke.on = !st.anke.on; if (v === 'frikob') st.frikob.on = !st.frikob.on; S.last = `Toggled ${v}`; },
+  toast(v) { toast(v); },
+  logout() { S.auth = 'email'; S.sheets = []; resetNav(); S.code = ''; },
+  spin() {
+    const o = S.sheets[S.sheets.length - 1], e = D.ledger.find(x => x.id === o.id);
+    o.amount = 1 + Math.floor(Math.random() * e.amount * 2); o.deg = 360 * 6 + Math.floor(Math.random() * 360); o.phase = 'spin';
+    e.status = 'anket'; add({ kind: 'gebyr', to: ME, reason: 'Anke-gebyr', amount: o.amount }); S.last = `Anke filed, gebyr ${o.amount} kr`;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setTimeout(() => { const w = document.getElementById('wheel'); if (w) w.style.transform = `rotate(${o.deg}deg)`; }, 40);
+    setTimeout(() => { o.phase = 'done'; render(); }, reduce ? 100 : 2700);
+  },
+  vpick(v) { S.sheets[S.sheets.length - 1].pick = v; },
+  vsave() {
+    const o = S.sheets[S.sheets.length - 1], e = D.ledger.find(x => x.id === o.id);
+    if (o.pick === 'frifundet') { const loser = e.from; e.from = e.to; e.to = loser; }
+    e.status = o.pick; S.sheets = [];
+    toast(o.pick === 'frifundet' ? `Anken vandt. Bøden er flyttet til ${firstL(e.to)}` : `Bøden står ved magt`);
+  },
+  katsave(v) {
+    const f = S.form, name = f.kname.trim(), price = +f.kprice, e = (f.kemo || '').trim() || '🏷️';
+    S.sheets.pop();
+    if (v) { Object.assign(kat(v), { name, price, e, desc: f.kdesc }); S.sheets = []; toast('Bødekategori gemt'); return; }
+    const id = 'k' + (++seq); D.kats.push({ id, e, name, price, uses: 0, by: ME, desc: f.kdesc });
+    if (D.settings.katGebyr.on) add({ kind: 'gebyr', to: ME, reason: `Ny bødekategori: ${e} ${name}`, amount: D.settings.katGebyr.amount });
+    if (S.give) S.give.kats.push(id);
+    toast(`${e} ${name} oprettet${D.settings.katGebyr.on ? ` · gebyr ${kr(D.settings.katGebyr.amount)}` : ''}`);
+  },
+  archive(v) { kat(v).archived = true; S.sheets = []; toast(`${kat(v).name} arkiveret`); },
+  engangsave() { S.give.engang = { reason: S.form.ereason.trim(), amount: +S.form.eamount }; S.sheets.pop(); },
+  engangdel() { S.give.engang = null; S.sheets.pop(); },
+  pm(v) { S.form.pm = v; S.form.pamt = String(Math.max(0, saldo(v))); },
+  paysave() { const f = S.form; add({ kind: 'indbetaling', to: f.pm, amount: +f.pamt, by: ME }); S.sheets = []; toast(`Indbetaling på ${kr(+f.pamt)} fra ${firstL(f.pm)} registreret`); },
+  haevsave() { const f = S.form; add({ kind: 'haev', by: ME, amount: +f.hamt, note: f.hnote.trim() }); S.sheets = []; toast(`${kr(+f.hamt)} hævet`); },
+  memsave() { const f = S.form, id = 'm' + (++seq); D.members.push({ id, name: f.mname.trim(), unclaimed: true, email: f.mmail.trim() }); S.sheets = []; toast(`${f.mname.trim()} tilføjet`); },
+  konkplace(v) { const o = S.form.order = S.form.order || []; const i = o.indexOf(v); i >= 0 ? o.splice(i, 1) : o.push(v); },
+  konksave() {
+    const f = S.form, g = 'g' + (++seq), fee = (i) => D.settings.konk[Math.min(i, D.settings.konk.length - 1)];
+    D.konk.unshift({ id: 'c' + seq, title: f.title.trim(), date: f.date || '11. okt', group: g });
+    D.members.forEach(m => { const i = f.order.indexOf(m.id); add({ kind: 'gebyr', to: m.id, reason: i >= 0 ? `${f.title.trim()}: ${i + 1}. plads` : `${f.title.trim()}: fraværende`, amount: i >= 0 ? fee(i) : D.settings.absent, group: g }); });
+    S.stack.pop(); toast(`${f.title.trim()} gemt · ${D.members.length} gebyrer`);
+  },
+  menugo(v) { S.sheets = []; push(parseScreen(v)); },
+  menuboxes() { S.sheets = [{ t: 'boxes' }]; },
+  drawergo(v) { S.sheets = []; if (v === 'home') resetNav(); else S.stack = [{ s: 'home' }, parseScreen(v)]; },
+  drawerboxes() { S.sheets = [{ t: 'boxes' }]; },
+};
+function sheetForm(t, id) {
+  if (t === 'engang') return S.give && S.give.engang ? { ereason: S.give.engang.reason, eamount: String(S.give.engang.amount) } : {};
+  if (t === 'newkat') { const k = id ? kat(id) : null; return k ? { kemo: k.e, kname: k.name, kprice: String(k.price), kdesc: k.desc || '' } : {}; }
+  if (t === 'pay') return id ? { pm: id, pamt: String(Math.max(0, saldo(id))) } : {};
+  return {};
+}
+
+// ---------------- jumps (notes panel) ----------------
+const JUMPS = [
+  ['install', 'Åbnet i Safari'], ['email', 'Log ind'], ['code', '6-cifret kode'], ['boxes', 'Vælg Bødekasse'],
+  ['home', 'Hjem'], ['give', 'Giv bøde'], ['me', 'Min profil'], ['jonas', 'Jonas\' profil'], ['kats', 'Bødekategorier'],
+  ['kasse', 'Kassen'], ['konk', 'Konkurrencer'], ['admin', 'Indstillinger'], ['anke', 'Anke (hjulet)'], ['verdict', 'Afgør anke'],
+];
+function jump(v) {
+  S.sheets = []; S.give = null; S.toast = null;
+  if (['install', 'email', 'code', 'boxes'].includes(v)) { S.auth = v; if (v === 'code') S.code = '12'; return; }
+  S.auth = 'in'; resetNav();
+  if (v === 'give') startGive(null);
+  else if (v === 'me') push({ s: 'member', id: ME });
+  else if (v === 'jonas') push({ s: 'member', id: 'm2' });
+  else if (['kats', 'kasse'].includes(v)) S.variant === 'A' ? (S.stack = [{ s: v }]) : push({ s: v });
+  else if (['konk', 'admin'].includes(v)) push({ s: v });
+  else if (v === 'anke') { let e = live().find(x => x.kind === 'bode' && x.to === ME && !x.status && x.ago < 7 * 1440); if (!e) e = D.ledger.find(x => x.id === add({ kind: 'bode', from: 'm3', to: ME, kat: 'k4', amount: 10 })); openSheet({ t: 'bode', id: e.id }); }
+  else if (v === 'verdict') { const e = openAnker().find(x => x.to !== ME && x.from !== ME); if (e) openSheet({ t: 'bode', id: e.id }); else toast('Ingen åbne anker mellem andre Medlemmer'); }
+}
+
+// ---------------- notes + switcher ----------------
+function renderNotes() {
+  const V = VARIANTS[S.variant], t = totals();
+  return `<div><span class="eyebrow">Prototype · Core screens and navigation · ${S.variant}</span><h1>${S.variant} · ${V.name}</h1></div>
+    <p style="color:var(--fg)">${V.idea}</p>
+    <div class="box"><dl><dt>Navigation</dt><dd>${V.nav}</dd><dt>Home shows</dt><dd>${V.home}</dd><dt>Giving a Bøde</dt><dd>${V.taps}</dd></dl></div>
+    <div class="box"><span class="eyebrow">Jump to a screen</span><div class="jump">${JUMPS.map(([k, l]) => `<button data-a="jump" data-v="${k}">${l}</button>`).join('')}</div>
+      <span class="eyebrow">View as</span><div class="jump">${['admin', 'medlem'].map(r => `<button aria-pressed="${S.role === r}" data-a="role" data-v="${r}">${r === 'admin' ? 'Admin' : 'Medlem'}</button>`).join('')}<button data-a="reset">Reset data</button></div></div>
+    <div class="box"><span class="eyebrow">Live state</span><div class="state"><div><b>${kr(saldo(ME))}</b>Mads' Saldo</div><div><b>${kr(t.inbox)}</b>I kassen</div><div><b>${kr(t.unpaid)}</b>Ubetalt</div><div><b>${live().filter(e => e.kind === 'bode').length}</b>Bøder</div><div><b>${openAnker().length}</b>Åbne anker</div></div>
+      <div class="last">Last: ${esc(S.last)} · screen: ${S.auth === 'in' ? cur().s + (S.sheets.length ? ' + sheet ' + S.sheets.map(s => s.t).join('/') : '') : 'auth/' + S.auth}</div></div>
+    <p>All three share the same screens (profile, kategorier, Kassen, Anke wheel, settings, login). Only the navigation, the home screen and the Giv bøde flow differ. Flip with ← → or the bar below. Feedback like "B's home with A's tab bar" is the useful kind.</p>`;
+}
+function renderSwitch() {
+  return `<button data-a="cyc" data-v="-1" aria-label="Forrige variant">‹</button><span class="lbl">${S.variant} · ${VARIANTS[S.variant].name}</span><button data-a="cyc" data-v="1" aria-label="Næste variant">›</button>`;
+}
+const KEYS = ['A', 'B', 'C'];
+function setVariant(v) { if (!KEYS.includes(v)) return; S.variant = v; resetNav(); S.toast = null; try { history.replaceState(null, '', '#' + v); } catch (e) { location.hash = v; } }
+ACT.cyc = (d) => setVariant(KEYS[(KEYS.indexOf(S.variant) + +d + KEYS.length) % KEYS.length]);
+
+// ---------------- render ----------------
+function renderApp() {
+  if (S.auth !== 'in') return authScreen() + toastHtml();
+  return ({ A: shellA, B: shellB, C: shellC })[S.variant]() + sheetHtml() + toastHtml();
+}
+let lastKey = '';
+function render() {
+  const f = document.activeElement, fid = f && f.id, sel = f && f.selectionStart;
+  const scr = document.querySelector('.ph .scr'), sin = [...document.querySelectorAll('.ph .sheet .in')].pop();
+  const key = S.variant + JSON.stringify(cur()) + S.auth + S.bTab, skey = S.sheets.map(s => s.t + s.id).join();
+  const st = scr ? scr.scrollTop : 0, sst = sin ? sin.scrollTop : 0;
+  $('#ph').innerHTML = renderApp();
+  $('#notes').innerHTML = renderNotes();
+  $('#sw').innerHTML = renderSwitch();
+  if (window.lucide) lucide.createIcons();
+  const scr2 = document.querySelector('.ph .scr'); if (scr2 && key === lastKey) scr2.scrollTop = st;
+  const sin2 = [...document.querySelectorAll('.ph .sheet .in')].pop(); if (sin2 && skey === render.sk) sin2.scrollTop = sst;
+  lastKey = key; render.sk = skey;
+  if (fid) { const el = document.getElementById(fid); if (el) { el.focus(); try { el.setSelectionRange(sel, sel); } catch (e) { } } }
+}
+document.addEventListener('click', (ev) => {
+  const el = ev.target.closest('[data-a]'); if (!el || el.disabled) return;
+  const a = el.dataset.a; if (!ACT[a]) return;
+  ACT[a](el.dataset.v ?? '', el); render();
+});
+document.addEventListener('input', (ev) => {
+  const k = ev.target.dataset && ev.target.dataset.in; if (!k) return;
+  const parts = k.split('.'); let o = S; for (let i = 0; i < parts.length - 1; i++) o = o[parts[i]];
+  o[parts[parts.length - 1]] = ev.target.value;
+  if (k === 'code') { S.code = ev.target.value.replace(/\D/g, '').slice(0, 6); if (S.code.length === 6) { S.auth = 'boxes'; S.last = 'Logged in with code'; } }
+  render();
+});
+document.addEventListener('keydown', (ev) => {
+  const t = ev.target; if (t.closest && t.closest('input, textarea, [contenteditable]')) return;
+  if (ev.key === 'ArrowLeft') { ACT.cyc(-1); render(); } if (ev.key === 'ArrowRight') { ACT.cyc(1); render(); }
+});
+window.addEventListener('hashchange', () => { const v = location.hash.slice(1); if (KEYS.includes(v) && v !== S.variant) { setVariant(v); render(); } });
+(() => { const v = location.hash.slice(1); if (KEYS.includes(v)) S.variant = v; })();
+render();
+</script>
