@@ -22,6 +22,14 @@ _Avoid_: Slettet, inaktiv, forladt
 A Medlem who can change a Bødekasse's settings, manage Medlemmer, and register Indbetalinger. The creator is the first Admin.
 _Avoid_: Kasserer, owner, moderator
 
+**Sæson** (Season):
+A period in which a Bødekasse is active: Medlemmer give Bøder and Gebyrer arise. An Admin starts it and it ends on its end date or when an Admin ends it; unpaid Saldo carries over into the next one.
+_Avoid_: Season, periode, år
+
+**Pause** (Break):
+The time between one Sæson ending and the next starting. No Bøder or Gebyrer arise, but Indbetalinger and withdrawals still happen.
+_Avoid_: Sæsonpause, break
+
 ### Charges
 
 **Bødekategori** (Rule):
@@ -41,7 +49,7 @@ A charge the Bødekasse imposes itself rather than one Medlem giving another, e.
 _Avoid_: Afgift, ankebøde
 
 **Frikøb** (Buy-out):
-A one-off payment that exempts a Medlem from Bøder for the rest of the calendar year. Never covers Gebyrer.
+A one-off payment that exempts a Medlem from Bøder for the rest of the Sæson. Never covers Gebyrer.
 _Avoid_: Amnesti, amnesty
 
 **Anke** (Appeal):
