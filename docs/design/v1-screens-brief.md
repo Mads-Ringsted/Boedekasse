@@ -11,7 +11,7 @@ Bødekasse is a shared fine box for a group of friends, such as a football team 
 - **Who uses it:** friends on iPhones, often in the middle of a gathering, one-handed, sometimes a few beers in. The moments that matter most are giving a fine fast and seeing who owes what.
 - **Platform:** a web app installed to the iPhone home screen (PWA). It always runs full screen, so design it as a native iOS app with safe areas, a home indicator and no browser chrome.
 - **Language:** the whole UI is Danish. Use the Danish terms below exactly as written.
-- **Mood:** the playful bite of fining your friends, wrapped in the trust of a money app. Think MobilePay's confidence and clarity, with a wink in the copy and the Bøde moments.
+- **Look and feel:** clean, simple and aesthetic. Calm typography, generous spacing, one confident blue and quiet neutrals, with the clarity of MobilePay. The interface uses text and Lucide icons only; any personality comes from the copy and the motion.
 
 ## Brand anchors
 
@@ -104,7 +104,7 @@ Design both states: one Bøde to one person, and the example evening above fille
 ### 7. Aktivitet
 A feed of everything that happened, newest first:
 
-- **Bøder:** "Jonas gav Emil en bøde · 🏃 For sent · 35 min · 50 kr"
+- **Bøder:** "Jonas gav Emil en bøde · For sent · 35 min · 50 kr"
 - **Gebyrer**
 - **Indbetalinger** (green, "+80 kr")
 - **Hævninger**
@@ -114,13 +114,13 @@ A feed of everything that happened, newest first:
 Bøder can carry a status tag: **Anket**, **Anke vundet**, **Anke tabt** or **Frikøb** (amount struck through). Tapping a Bøde opens its detail sheet.
 
 ### 8. Bødekategorier
-Title with a + button, search, "Mest brugt" (top 5), a Navn/Pris switch and the full list. Each row shows emoji, name, price and how many times it has been used. Archived ones are listed in a small line at the bottom.
+Title with a + button, search, "Mest brugt" (top 5), a Navn/Pris switch and the full list. Each row shows name, price and how many times it has been used. Archived ones are listed in a small line at the bottom.
 
-- **Detail sheet:** emoji, name, price, description, creator, use count, a "Giv denne bøde" button, and Redigér/Arkivér for the creator and Admins. Changing the price applies only to new Bøder.
-- **Ny bødekategori sheet:** emoji, name (unique among active ones), price, optional description, and a notice that creating one costs a 25 kr Gebyr (when the Admin has that rule on).
+- **Detail sheet:** name, price, description, creator, use count, a "Giv denne bøde" button, and Redigér/Arkivér for the creator and Admins. Changing the price applies only to new Bøder.
+- **Ny bødekategori sheet:** name (unique among active ones; a Medlem may type an emoji into the name text, so names render as plain text whatever they contain), price, optional description, and a notice that creating one costs a 25 kr Gebyr (when the Admin has that rule on).
 
 ### 9. Bøde detail (bottom sheet)
-Emoji, name, amount, "Fra Frederik til dig · 5 t". Actions depend on who you are:
+Name, amount, "Fra Frederik til dig · 5 t". Actions depend on who you are:
 
 - **Received within 7 days:** "Anke bøden".
 - **Anket, and you are not one of the two involved:** "Registrér gruppens afgørelse".
@@ -128,7 +128,7 @@ Emoji, name, amount, "Fra Frederik til dig · 5 t". Actions depend on who you ar
 
 ### 10. Anke
 1. **Intro:** filing costs a random Gebyr between 1 kr and twice the Bøde, paid whatever the outcome.
-2. **Wheel:** a fortune wheel spins and lands on the Gebyr. This is the app's one big playful moment, so make it fun.
+2. **Wheel:** a wheel spins and lands on the Gebyr. Keep it in the same clean visual language as the rest of the app, with a smooth spin and a clear reveal of the amount.
 3. **Verdict sheet** (recorded by another Medlem): "Bøden står ved magt" or "Anken vinder" (the Bøde moves to the Medlem who gave it).
 
 ### 11. Medlem profile
@@ -168,20 +168,20 @@ List of Konkurrencer (title, date, how many placed or absent, total).
 
 Box **FC Ølhunde**, 8 Medlemmer: Mads Ringsted (Admin, you), Jonas Holm, Frederik Lund (Admin), Oliver Krogh (Frikøb), Emil Bach, Kasper Nørgaard, Lucas Berg, Sebastian Juhl (not logged in yet).
 
-Bødekategorier:
+Bødekategorier (sample names are plain text):
 
 | Bødekategori | Price |
 |---|---|
-| 🏃 For sent | 50 kr |
-| 📱 Telefon ved bordet | 20 kr |
-| 🤬 Bandeord | 10 kr |
-| 🥂 Spildt drikke | 20 kr |
-| 🛋️ Hygge i stedet for træning | 40 kr |
-| 🍺 Ikke drukket op | 30 kr |
-| 🧦 Glemt udstyr | 25 kr |
-| ⏰ Glemt at melde afbud | 30 kr |
-| 🟨 Gult kort | 40 kr |
-| 🎂 Glemt kage på fødselsdag | 100 kr |
+| For sent | 50 kr |
+| Telefon ved bordet | 20 kr |
+| Bandeord | 10 kr |
+| Spildt drikke | 20 kr |
+| Hygge i stedet for træning | 40 kr |
+| Ikke drukket op | 30 kr |
+| Glemt udstyr | 25 kr |
+| Glemt at melde afbud | 30 kr |
+| Gult kort | 40 kr |
+| Glemt kage på fødselsdag | 100 kr |
 
 Box state: I bødekassen 570 kr · indbetalt 870 kr · hævet 300 kr · alle mangler 344 kr · Mads mangler 6 kr.
 
