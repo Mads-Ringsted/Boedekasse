@@ -251,6 +251,11 @@
   padding: 16px 18px;
 }
 
+.betal-afventer--skaerm {
+  margin-top: 0;
+  background: var(--color-surface);
+}
+
 .betal-afventer__tekst {
   display: flex;
   flex-direction: column;

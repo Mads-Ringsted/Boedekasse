@@ -12,14 +12,16 @@ interface MinMeldingKortProps {
   erAdmin: boolean;
   /** Called after Fortryd withdrew the report; reload what you show. */
   onFortrudt: () => void;
+  /** On a screen (your profile) instead of inside the Betal sheet. */
+  paaSkaerm?: boolean;
 }
 
 /**
  * For your own profile: loads your report that afventer and shows
- * `MinMeldingKort`, or nothing when there is none. Change `opdater` to load
- * again (e.g. after the Betal sheet's `onAendret`).
+ * `MinMeldingKort`, or nothing when there is none. It loads again whenever
+ * `opdater` changes (any value; compared with Object.is).
  */
-export function MinAfventendeMelding({ opdater = 0, onFortrudt }: { opdater?: number; onFortrudt?: () => void }) {
+export function MinAfventendeMelding({ opdater, onFortrudt }: { opdater?: unknown; onFortrudt?: () => void }) {
   const { bodekasseId, medlemId, erAdmin } = useBodekasse();
   const hentet = useHent(() => hentMeldinger(bodekasseId), [bodekasseId, opdater]);
   const melding = hentet.status === 'ready' ? minMelding(hentet.data, medlemId) : null;
@@ -29,6 +31,7 @@ export function MinAfventendeMelding({ opdater = 0, onFortrudt }: { opdater?: nu
       key={melding.id}
       melding={melding}
       erAdmin={erAdmin}
+      paaSkaerm
       onFortrudt={() => {
         hentet.reload();
         onFortrudt?.();
@@ -41,7 +44,7 @@ export function MinAfventendeMelding({ opdater = 0, onFortrudt }: { opdater?: nu
  * Your own report that afventer: orange "Afventer" card, "Du har meldt 6 kr
  * betalt", with Fortryd. Shown on the Betal sheet and your own profile.
  */
-export function MinMeldingKort({ melding, erAdmin, onFortrudt }: MinMeldingKortProps) {
+export function MinMeldingKort({ melding, erAdmin, onFortrudt, paaSkaerm = false }: MinMeldingKortProps) {
   const [busy, setBusy] = useState(false);
   const [fejl, setFejl] = useState<string | null>(null);
   // One ID per report, so "Prøv igen" never runs it twice.
@@ -61,7 +64,7 @@ export function MinMeldingKort({ melding, erAdmin, onFortrudt }: MinMeldingKortP
   }
 
   return (
-    <div className="afventer-kort betal-afventer">
+    <div className={`afventer-kort betal-afventer${paaSkaerm ? ' betal-afventer--skaerm' : ''}`}>
       <span className="afventer-kort__status">
         <span className="afventer-kort__prik" aria-hidden="true" />
         {t('betal.afventer')}
