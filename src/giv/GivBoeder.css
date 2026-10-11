@@ -1,0 +1,541 @@
+/* ---------- Giv bøder: shared ---------- */
+.giv {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 8px;
+}
+
+.giv__fremskridt {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px 16px 0;
+}
+
+.giv__fremskridt span {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-fill-strong);
+}
+
+.giv__fremskridt span.giv__fremskridt--naaet {
+  background: var(--color-accent);
+}
+
+.giv__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sheet__footer:has(.giv__footer--skygge) {
+  box-shadow: 0 -12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.giv__primaer,
+.giv__sekundaer {
+  height: var(--size-button);
+  border-radius: var(--radius-button);
+  font-size: 17px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.giv__primaer {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.giv__sekundaer {
+  background: var(--color-fill);
+  font-size: 15px;
+}
+
+.giv__primaer:disabled {
+  opacity: 0.45;
+}
+
+.giv__knapper {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: 10px;
+}
+
+.giv__opsummering {
+  padding: 0 4px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-variant-numeric: var(--font-numeric);
+}
+
+.giv__opsummering strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.giv__opsummering--pr-person {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.giv__fejl {
+  margin: 0;
+  padding: 0 4px;
+  font-size: 14px;
+  color: var(--color-danger);
+  text-align: left;
+}
+
+.giv__fejl--hent {
+  padding: 16px 4px;
+}
+
+.giv__tom {
+  margin: 24px 4px;
+  font-size: 15px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* ---------- Step 1: Hvem ---------- */
+.giv__vaelg-alle {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 4px 12px;
+}
+
+.giv__vaelg-alle button {
+  min-height: var(--size-touch);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-accent-text);
+}
+
+.giv__personer {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.giv-flise {
+  position: relative;
+  height: 112px;
+  border-radius: 20px;
+  background: var(--color-surface-raised);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.giv-flise[aria-pressed='true'] {
+  background: var(--color-accent-pale);
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+  font-weight: 600;
+}
+
+.giv-flise__navn {
+  max-width: 100%;
+  padding: 0 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.giv-flise__flueben {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- Step 2: Hvad (and 3b) ---------- */
+.giv__gaelder {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 4px 0;
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.giv__gaelder strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.giv__stak {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.giv__stak .avatar {
+  box-shadow: 0 0 0 2px var(--color-sheet);
+}
+
+.giv__stak .avatar + .avatar {
+  margin-left: -8px;
+}
+
+.giv-soeg {
+  margin: 18px 0 12px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--color-surface-raised);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  color: var(--color-text-muted);
+}
+
+.giv-soeg input {
+  flex-grow: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+}
+
+.giv-soeg input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.giv-kat-liste {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-radius: 16px;
+  background: var(--color-surface-raised);
+  overflow: hidden;
+}
+
+.giv-kat-liste > li + li {
+  border-top: 1px solid var(--color-line);
+}
+
+.giv-kat {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px 10px 16px;
+  box-sizing: border-box;
+}
+
+.giv-kat--valgt {
+  background: var(--color-surface-selected);
+}
+
+.giv-kat--slukket {
+  opacity: 0.45;
+}
+
+.giv-kat--tom {
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.giv-kat__tekst {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.giv-kat__navn {
+  font-size: 16px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.giv-kat--valgt .giv-kat__navn {
+  font-weight: 600;
+}
+
+.giv-kat__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-variant-numeric: var(--font-numeric);
+}
+
+.giv-kat__stepper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.giv-kat__knap {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-fill-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.giv-kat__knap--plus {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.giv-kat__knap:disabled {
+  opacity: 0.45;
+}
+
+.giv-kat__antal {
+  min-width: 16px;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 700;
+  font-variant-numeric: var(--font-numeric);
+}
+
+.giv-kat__ny {
+  width: 100%;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-accent-text);
+}
+
+/* ---------- Step 3: Tjek og giv ---------- */
+.giv__kort-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 16px;
+}
+
+.giv-kort {
+  border-radius: 20px;
+  background: var(--color-surface-raised);
+  padding: 6px 0 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.giv-kort__top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  text-align: left;
+}
+
+.giv-kort__navn {
+  flex-grow: 1;
+  min-width: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.giv-kort__beloeb {
+  font-size: 17px;
+  font-weight: 700;
+  font-variant-numeric: var(--font-numeric);
+}
+
+.giv-kort__chevron {
+  color: var(--color-text-faint);
+}
+
+.giv-kort__linjer {
+  margin: 0;
+  padding: 2px 16px 0 72px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.giv-kort__linjer li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.giv-kort__linje-beloeb {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+  font-variant-numeric: var(--font-numeric);
+}
+
+.giv-kort__tilfoej {
+  margin: 12px 16px 0 72px;
+  align-self: flex-start;
+  height: 34px;
+  padding: 0 12px 0 8px;
+  border-radius: var(--radius-chip);
+  background: var(--color-accent-pale);
+  color: var(--color-accent-pale-text);
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.giv__total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0 4px;
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.giv__total-beloeb {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text);
+  font-variant-numeric: var(--font-numeric);
+}
+
+/* ---------- Step 3b: one person ---------- */
+.giv-person__header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px 0;
+}
+
+.giv-person__hvem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.giv-person__navne {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.giv-person__kun {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.giv-person__navn {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.giv-person__faerdig {
+  min-height: var(--size-touch);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-accent-text);
+}
+
+/* ---------- Fortryd toast ---------- */
+.fortryd {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: calc(var(--size-tabbar) - 34px + env(safe-area-inset-bottom) + 16px);
+  z-index: 60;
+  border-radius: 16px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  box-shadow: 0 10px 30px rgba(14, 18, 32, 0.3);
+  overflow: hidden;
+}
+
+.fortryd__indhold {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 12px 0 16px;
+  box-sizing: border-box;
+}
+
+.fortryd__flueben {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-success);
+  color: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fortryd__tekst {
+  flex-grow: 1;
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: var(--font-numeric);
+}
+
+.fortryd__knap {
+  min-height: var(--size-touch);
+  padding: 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-accent-pale);
+}
+
+.fortryd__knap:disabled {
+  opacity: 0.6;
+}
+
+.fortryd__spor {
+  height: 3px;
+  background: color-mix(in srgb, var(--color-bg) 18%, transparent);
+}
+
+.fortryd__bar {
+  height: 3px;
+  background: var(--color-accent-pale);
+  transform-origin: left;
+  animation: fortryd-nedtaelling linear forwards;
+}
+
+@keyframes fortryd-nedtaelling {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}

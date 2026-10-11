@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Plus, Search, Tag } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
+import { useGivBoeder } from '../giv/GivBoederProvider.tsx';
 import { Screen } from '../components/Screen.tsx';
 import { formatKr, t } from '../strings/index.ts';
 import { useHent } from '../supabase/useHent.ts';
@@ -25,7 +26,9 @@ export function Kategorier() {
   const { bodekasseId } = useBodekasse();
   const location = useLocation();
   const navigate = useNavigate();
-  const hentet = useHent(() => hentKategorier(bodekasseId), [bodekasseId]);
+  // Reload after Bøder are given or undone: use counts and "Ofte brugt" change.
+  const { version } = useGivBoeder();
+  const hentet = useHent(() => hentKategorier(bodekasseId), [bodekasseId, version]);
   const alle = hentet.status === 'ready' ? hentet.data : null;
 
   const [soeg, setSoeg] = useState('');

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Sheet } from '../components/Sheet.tsx';
+import { useGivBoeder } from '../giv/GivBoederProvider.tsx';
 import { formatKr, t } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
@@ -18,11 +19,13 @@ interface KategoriDetaljeSheetProps {
 
 /**
  * Bødekategori detail: price, tags, description, Oprettet af and Brugt.
+ * "Giv denne bøde" opens Giv bøder with it pre-selected.
  * The creator and Admins get Redigér and Arkivér, or Gendan when archived.
  * Mount it with a new `key` per opening so the one-time ID starts fresh.
  */
 export function KategoriDetaljeSheet({ open, onOpenChange, kategori, onRediger, onAendret }: KategoriDetaljeSheetProps) {
   const mig = useBodekasse();
+  const { aabn: givBoeder } = useGivBoeder();
   const [busy, setBusy] = useState(false);
   const [fejl, setFejl] = useState<string | null>(null);
   const [klientId] = useState(() => crypto.randomUUID());
@@ -73,6 +76,19 @@ export function KategoriDetaljeSheet({ open, onOpenChange, kategori, onRediger, 
           <p className="kategori-detalje__fejl" role="alert">
             {fejl}
           </p>
+        )}
+
+        {!kategori.arkiveret && (
+          <button
+            type="button"
+            className="kategori-detalje__giv"
+            onClick={() => {
+              onOpenChange(false);
+              givBoeder({ kategoriId: kategori.id });
+            }}
+          >
+            {t('giv.denneBoede')}
+          </button>
         )}
 
         {maaRette &&

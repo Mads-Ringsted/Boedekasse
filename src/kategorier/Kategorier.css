@@ -397,6 +397,16 @@
   color: var(--color-danger);
 }
 
+.kategori-detalje__giv {
+  height: 54px;
+  border-radius: var(--radius-button);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 17px;
+  font-weight: 600;
+  text-align: center;
+}
+
 .kategori-detalje__knapper {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

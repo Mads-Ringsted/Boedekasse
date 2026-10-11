@@ -17,16 +17,28 @@ interface SheetProps {
   title: string;
   /** Read by VoiceOver only, when the sheet has no visible intro text. */
   description?: string;
-  /** Full sheets: the left button's text. Defaults to "Annullér". */
-  leadingLabel?: string;
+  /** Full sheets: the left button's content. Defaults to "Annullér". */
+  leadingLabel?: ReactNode;
   /** Full sheets: what the left button does. Defaults to closing. */
   onLeading?: () => void;
+  /** Full sheets: the right side of the header (e.g. Giv bøder's "1 af 3"). */
+  trailing?: ReactNode;
+  /** Stays fixed under the header, above the part that scrolls. */
+  top?: ReactNode;
+  /**
+   * Replaces the default header entirely (Giv step 3b). Put a <SheetTitle>
+   * in it; `title` is then only the fallback for VoiceOver.
+   */
+  header?: ReactNode;
   /** Stays fixed at the bottom, above the home indicator. */
   footer?: ReactNode;
   /** A sheet opened from another sheet sits lower so the one behind shows. */
   stacked?: boolean;
   children: ReactNode;
 }
+
+/** The sheet's title, for a custom `header`. */
+export const SheetTitle = Dialog.Title;
 
 /** The one shared bottom sheet. Built on Radix Dialog for focus and Escape. */
 export function Sheet({
@@ -37,6 +49,9 @@ export function Sheet({
   description,
   leadingLabel,
   onLeading,
+  trailing,
+  top,
+  header,
   footer,
   stacked = false,
   children,
@@ -50,7 +65,12 @@ export function Sheet({
           /* Radix wires up the Description itself; with none, say so explicitly. */
           {...(description ? {} : { 'aria-describedby': undefined })}
         >
-          {height === 'full' ? (
+          {header ? (
+            <>
+              <span className="sheet__grabber" aria-hidden="true" />
+              {header}
+            </>
+          ) : height === 'full' ? (
             <header className="sheet__header sheet__header--full">
               <button
                 type="button"
@@ -60,7 +80,11 @@ export function Sheet({
                 {leadingLabel ?? t('sheet.annuller')}
               </button>
               <Dialog.Title className="sheet__title">{title}</Dialog.Title>
-              <span className="sheet__spacer" aria-hidden="true" />
+              {trailing ? (
+                <span className="sheet__trailing">{trailing}</span>
+              ) : (
+                <span className="sheet__spacer" aria-hidden="true" />
+              )}
             </header>
           ) : (
             <>
@@ -76,6 +100,7 @@ export function Sheet({
           {description && (
             <Dialog.Description className="visually-hidden">{description}</Dialog.Description>
           )}
+          {top}
           <div className="sheet__body">{children}</div>
           {footer && <footer className="sheet__footer">{footer}</footer>}
         </Dialog.Content>

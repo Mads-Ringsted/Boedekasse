@@ -6,6 +6,7 @@ import { supabase } from '../supabase/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import type { Kategori } from './hentKategorier.ts';
 import { parsePris } from './kategoriListe.ts';
+import './Kategorier.css';
 
 interface KategoriFormSheetProps {
   open: boolean;
@@ -14,6 +15,8 @@ interface KategoriFormSheetProps {
   kategori?: Kategori;
   /** Saved; the id of the new or edited Bødekategori. */
   onSaved: (id: string) => void;
+  /** Opened from another sheet (Giv bøder). */
+  stacked?: boolean;
 }
 
 const FORM_ID = 'kategori-form';
@@ -23,7 +26,7 @@ const FORM_ID = 'kategori-form';
  * Beskrivelse. Mount it with a new `key` per opening so the fields and the
  * one-time ID start fresh.
  */
-export function KategoriFormSheet({ open, onOpenChange, kategori, onSaved }: KategoriFormSheetProps) {
+export function KategoriFormSheet({ open, onOpenChange, kategori, onSaved, stacked = false }: KategoriFormSheetProps) {
   const { bodekasseId } = useBodekasse();
   const [navn, setNavn] = useState(kategori?.navn ?? '');
   const [pris, setPris] = useState(kategori ? String(kategori.pris) : '');
@@ -69,6 +72,7 @@ export function KategoriFormSheet({ open, onOpenChange, kategori, onSaved }: Kat
       open={open}
       onOpenChange={onOpenChange}
       height="full"
+      stacked={stacked}
       title={t(kategori ? 'kategori.redigerTitel' : 'kategorier.ny')}
       footer={
         <button type="submit" form={FORM_ID} className="kategori-form__primary" disabled={!kanGemme}>

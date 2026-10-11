@@ -1,20 +1,19 @@
-import { useState } from 'react';
 import { Outlet } from 'react-router';
-import { Sheet } from '../components/Sheet.tsx';
-import { t } from '../strings/index.ts';
+import { GivBoederProvider, useGivBoeder } from '../giv/GivBoederProvider.tsx';
 import { TabBar } from './TabBar.tsx';
 
 /** The installed app: the current screen, the tab bar and Giv bøder. */
 export function AppShell() {
-  const [giving, setGiving] = useState(false);
-
   return (
-    <>
+    <GivBoederProvider>
       <Outlet />
-      <TabBar onGive={() => setGiving(true)} />
-      <Sheet open={giving} onOpenChange={setGiving} height="full" title={t('giv.titel')}>
-        <p className="screen__placeholder">{t('skaerm.kommerSnart')}</p>
-      </Sheet>
-    </>
+      <GivTabBar />
+    </GivBoederProvider>
   );
+}
+
+function GivTabBar() {
+  const { aabn } = useGivBoeder();
+  // #67 passes giveDisabled during a Pause.
+  return <TabBar onGive={() => aabn()} />;
 }

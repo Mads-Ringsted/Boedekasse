@@ -4,6 +4,7 @@ import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { SkiftBodekasseSheet } from '../bodekasse/SkiftBodekasseSheet.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Screen } from '../components/Screen.tsx';
+import { useGivBoeder } from '../giv/GivBoederProvider.tsx';
 import { formatKr, t } from '../strings/index.ts';
 import { useHent } from '../supabase/useHent.ts';
 import { hentHjem } from './hjem/hentHjem.ts';
@@ -13,12 +14,13 @@ import './hjem/Hjem.css';
 
 /**
  * Hjem: header with the box switch, the box card, "Kom i gang" in a new box,
- * and the Topliste. #53 adds the money cards and the real Topliste.
+ * and the Topliste. #54 adds the money cards and the real Topliste.
  */
 export function Hjem() {
   const { bodekasseId, bodekasseNavn, navn, erAdmin } = useBodekasse();
   const [skifter, setSkifter] = useState(false);
-  const hjem = useHent(() => hentHjem(bodekasseId, erAdmin), [bodekasseId, erAdmin]);
+  const { version } = useGivBoeder();
+  const hjem = useHent(() => hentHjem(bodekasseId, erAdmin), [bodekasseId, erAdmin, version]);
   const data = hjem.status === 'ready' ? hjem.data : null;
   const punkter = data && komIGang(data);
 

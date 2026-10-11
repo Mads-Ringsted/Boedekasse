@@ -80,9 +80,18 @@
 
 .sheet__leading {
   justify-self: start;
+  display: flex;
+  align-items: center;
+  gap: 2px;
   min-height: var(--size-touch);
   font-size: 17px;
   color: var(--color-accent-text);
+}
+
+.sheet__trailing {
+  justify-self: end;
+  font-size: 13px;
+  color: var(--color-text-muted);
 }
 
 .sheet__close {

@@ -22,6 +22,15 @@ const BY_KEY: Record<string, PlainStringId> = {
   ikke_tilladt: 'fejl.ikkeTilladt',
   arkiveret: 'fejl.kategoriArkiveret',
   ikke_fundet: 'fejl.ikkeFundet',
+  // Giv bøder and Fortryd (#53)
+  pause: 'fejl.pause',
+  ingen_boeder: 'fejl.ingenBoeder',
+  modtager_ukendt: 'fejl.modtagerUkendt',
+  modtager_udmeldt: 'fejl.modtagerUdmeldt',
+  ikke_dig_selv: 'fejl.ikkeDigSelv',
+  antal_ugyldig: 'fejl.antalUgyldig',
+  fortryd_udloebet: 'fejl.fortrydUdloebet',
+  kan_ikke_fortrydes: 'fejl.kanIkkeFortrydes',
 };
 
 /**
