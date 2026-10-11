@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react';
 import { KanAnkesKort } from '../anke/profilDel.tsx';
 import { FrikobKort, KoebFrikobKnap } from '../frikob/profilDele.tsx';
+import { AdminHandlingerKnap } from '../medlemmer/AdminHandlinger.tsx';
 import { BetalKnap, GivBoedeKnap, MinMeldingProfilKort, RegistrerIndbetalingKnap } from './knapper.tsx';
 import type { Profil, ProfilVisning } from './profil.ts';
 
@@ -42,7 +43,8 @@ export const PROFIL_KORT: readonly ProfilDel[] = [MinMeldingProfilKort, FrikobKo
 
 /**
  * Small buttons at the top right, beside the back button.
- * #69 adds the Admin actions entry (opens "Handlinger for X"; its sheet holds
- * Registrér indbetaling, Registrér frikøb (#65), roles, Ret navn/email, Meld ud, Slet).
+ * Admin actions (#69, `AdminHandlingerKnap`): opens "Handlinger for X" with
+ * Registrér indbetaling, roles, Ret navn/email, Meld ud / Genoptag and Slet.
+ * Registrér frikøb (#65) is a profile button (`KoebFrikobKnap`), not a row here.
  */
-export const PROFIL_TOP: readonly ProfilDel[] = [];
+export const PROFIL_TOP: readonly ProfilDel[] = [AdminHandlingerKnap];

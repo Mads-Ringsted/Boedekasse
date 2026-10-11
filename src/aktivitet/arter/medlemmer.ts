@@ -2,7 +2,7 @@ import { t } from '../../strings/index.ts';
 import { hvem, hvemObjekt } from '../navne.ts';
 import type { Beskriver } from '../visning.ts';
 
-// Medlem entries (#51). #69 adds Udmeldt and Genoptaget here.
+// Medlem entries (#51, #69).
 
 /** 'medlem_tilfoejet': an Admin (aktoer) added the Medlem (modtager). */
 export const medlemTilfoejet: Beskriver = (h, ctx) => ({
@@ -20,5 +20,27 @@ export const medlemTilmeldt: Beskriver = (h, ctx) => ({
   ikon: { slags: 'avatar', navn: h.aktoerNavn ?? '', egen: h.aktoerId === ctx.migId },
   titel: t('aktivitet.medlemTilmeldt', { hvem: hvem(h.aktoerId, h.aktoerNavn, ctx) }),
   linje: t('aktivitet.medlemTilmeldtLinje'),
+  annulleret: false,
+});
+
+/** 'medlem_udmeldt': an Admin (aktoer) meldte the Medlem (modtager) ud. */
+export const medlemUdmeldt: Beskriver = (h, ctx) => ({
+  ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId },
+  titel: t('aktivitet.medlemUdmeldt', {
+    hvem: hvem(h.aktoerId, h.aktoerNavn, ctx),
+    medlem: hvemObjekt(h.modtagerId, h.modtagerNavn, ctx),
+  }),
+  linje: t('aktivitet.medlemUdmeldtLinje'),
+  annulleret: false,
+});
+
+/** 'medlem_genoptaget': an Admin (aktoer) brought the Medlem (modtager) back. */
+export const medlemGenoptaget: Beskriver = (h, ctx) => ({
+  ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId },
+  titel: t('aktivitet.medlemGenoptaget', {
+    hvem: hvem(h.aktoerId, h.aktoerNavn, ctx),
+    medlem: hvemObjekt(h.modtagerId, h.modtagerNavn, ctx),
+  }),
+  linje: t('aktivitet.medlemGenoptagetLinje'),
   annulleret: false,
 });

@@ -31,7 +31,11 @@ async function hentTopliste(bodekasseId: string): Promise<ToplisteRad[]> {
     .maybeSingle();
   if (saeson.error) throw saeson.error;
   const saesonId = saeson.data?.seneste_saeson_id;
-  if (!saesonId) return [];
+  return saesonId ? hentSaesonTopliste(saesonId) : [];
+}
+
+/** One Sæson's Topliste (active Medlemmer, zeros included). Past Sæsoner use it too (#68). */
+export async function hentSaesonTopliste(saesonId: string): Promise<ToplisteRad[]> {
   const { data, error } = await supabase
     .from('topliste')
     .select('medlem_id, navn, boeder_i_alt, indbetalt, plads')
