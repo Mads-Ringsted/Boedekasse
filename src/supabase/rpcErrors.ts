@@ -84,6 +84,12 @@ const BY_KEY: Record<string, PlainStringId> = {
   ikke_modtager: 'fejl.ikkeModtager',
   anke_frist_udloebet: 'fejl.ankeFristUdloebet',
   anke_findes: 'fejl.ankeFindes',
+  // Anke verdict (#64)
+  part_i_anken: 'fejl.partIAnken',
+  afgoerelse_ugyldig: 'fejl.afgoerelseUgyldig',
+  allerede_afgjort: 'fejl.alleredeAfgjort',
+  anke_ikke_afgjort: 'fejl.ankeIkkeAfgjort',
+  samme_afgoerelse: 'fejl.sammeAfgoerelse',
 };
 
 /**

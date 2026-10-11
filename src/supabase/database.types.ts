@@ -1578,7 +1578,7 @@ isOneToOne: false
                   ]
                 },"aktivitet_bode": {
                   Row: {
-                    "afgoerelse": Database["public"]['Enums']["anke_afgoerelse"] | null,"afgoerelse_aendret": boolean | null,"anke_id": string | null,"anket": boolean | null,"annulleret": string | null,"annulleret_af": string | null,"annulleret_af_navn": string | null,"annulleret_note": string | null,"baerer_id": string | null,"batch_id": string | null,"bodekasse_id": string | null,"bodekategori_id": string | null,"engangsbode": boolean | null,"gebyr": number | null,"giver_id": string | null,"giver_navn": string | null,"givet": string | null,"id": string | null,"modtager_id": string | null,"modtager_navn": string | null,"navn": string | null,"pris": number | null,"saeson_id": string | null
+                    "afgjort": string | null,"afgjort_af": string | null,"afgjort_af_navn": string | null,"afgoerelse": Database["public"]['Enums']["anke_afgoerelse"] | null,"afgoerelse_aendret": boolean | null,"anke_gebyr": number | null,"anke_id": string | null,"anket": boolean | null,"annulleret": string | null,"annulleret_af": string | null,"annulleret_af_navn": string | null,"annulleret_note": string | null,"baerer_id": string | null,"batch_id": string | null,"bodekasse_id": string | null,"bodekategori_id": string | null,"engangsbode": boolean | null,"gebyr": number | null,"giver_id": string | null,"giver_navn": string | null,"givet": string | null,"id": string | null,"modtager_id": string | null,"modtager_navn": string | null,"navn": string | null,"pris": number | null,"saeson_id": string | null
                   }
                   ComputedFields: never
                   Relationships: [
@@ -2423,7 +2423,13 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "afslut_saeson":
+            "aendr_afgoerelse":
+{ Args: { "p_afgoerelse": Database["public"]['Enums']["anke_afgoerelse"],"p_anke": string,"p_klient_id": string }; Returns: Json
+                           },
+"afgoer_anke":
+{ Args: { "p_afgoerelse": Database["public"]['Enums']["anke_afgoerelse"],"p_anke": string,"p_klient_id": string }; Returns: Json
+                           },
+"afslut_saeson":
 { Args: { "p_bodekasse": string,"p_klient_id": string }; Returns: Json
                            },
 "annuller_bode":

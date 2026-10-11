@@ -25,6 +25,8 @@ const boede = (over: Partial<Boede> = {}): Boede => ({
   baererId: 'emil',
   annullering: null,
   gebyr: 0,
+  afgjort: null,
+  ankeGebyr: null,
   ...over,
 });
 
@@ -66,6 +68,32 @@ describe('the Bøde detail sheet', () => {
       label: 'Anke',
       vaerdi: 'Venter på gruppens afgørelse',
     });
+  });
+
+  it('shows the Anke Gebyr the receiver pays while the Anke is open', () => {
+    expect(detaljeRaekker(boede({ ankeId: 'a1', anket: true, ankeGebyr: 37 }), { migId: 'jonas' }, nu)).toEqual([
+      { label: 'Givet', vaerdi: 'I dag kl. 15.00' },
+      { label: 'Anke', vaerdi: 'Venter på gruppens afgørelse' },
+      { label: 'Ankegebyr (Emil)', vaerdi: '37 kr' },
+    ]);
+  });
+
+  it('after a verdict: who pays now, who decided and when, and the Anke Gebyr', () => {
+    const b = boede({
+      ankeId: 'a1',
+      afgoerelse: 'modtager_vandt',
+      baererId: 'frederik',
+      afgjort: { tid: '2026-10-10T19:00:00Z', afId: 'jonas', afNavn: 'Jonas Holm' },
+      ankeGebyr: 37,
+    });
+    expect(detaljeRaekker(b, { migId: 'jonas' }, nu).map((r) => [r.label, r.vaerdi])).toEqual([
+      ['Givet', 'I dag kl. 15.00'],
+      ['Betales nu af', 'Frederik'],
+      ['Afgjort af', 'Dig · i går'],
+      ['Ankegebyr (Emil)', '37 kr'],
+    ]);
+    expect(detaljeRaekker(b, ctx, nu)[2]).toEqual({ label: 'Afgjort af', vaerdi: 'Jonas · i går' });
+    expect(detaljeRaekker({ ...b, baererId: 'emil' }, ctx, nu)[1]).toEqual({ label: 'Betales nu af', vaerdi: 'Dig' });
   });
 
   it('shows how long the receiver can still appeal', () => {

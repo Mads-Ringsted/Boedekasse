@@ -27,6 +27,8 @@ const boede = (over: Partial<Boede> = {}): Boede => ({
   baererId: 'emil',
   annullering: null,
   gebyr: 0,
+  afgjort: null,
+  ankeGebyr: null,
   ...over,
 });
 
