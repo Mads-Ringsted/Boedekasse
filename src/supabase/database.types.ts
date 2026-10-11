@@ -1717,7 +1717,13 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "annuller_indbetaling":
+            "annuller_bode":
+{ Args: { "p_bode": string,"p_klient_id": string,"p_note"?: string }; Returns: Json
+                           },
+"annuller_gebyr":
+{ Args: { "p_gebyr": string,"p_klient_id": string,"p_note"?: string }; Returns: Json
+                           },
+"annuller_indbetaling":
 { Args: { "p_indbetaling": string,"p_klient_id": string,"p_note"?: string }; Returns: Json
                            },
 "arkiver_bodekategori":

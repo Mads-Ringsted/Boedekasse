@@ -1,11 +1,14 @@
 import type { ComponentType } from 'react';
 import type { Boede } from '../haendelse.ts';
+import { AnnullerBoede } from './AnnullerBoede.tsx';
 
 /** What every action on the Bøde detail sheet gets. */
 export interface BoedeHandlingProps {
   boede: Boede;
   /** Who is looking. */
   mig: { medlemId: string; erAdmin: boolean };
+  /** The Bøde is from the box's latest Sæson (annulments and verdicts work only there). */
+  iSenesteSaeson: boolean;
   /** Closes the sheet. */
   luk: () => void;
   /** The Bøde changed: reloads the sheet and every feed. */
@@ -24,4 +27,4 @@ export type BoedeHandling = ComponentType<BoedeHandlingProps>;
  * #63 adds "Anke bøden" (first), #62 "Annullér bøde", #64 the verdict ones.
  * Write each in its own file next to this one and add it here.
  */
-export const BOEDE_HANDLINGER: readonly BoedeHandling[] = [];
+export const BOEDE_HANDLINGER: readonly BoedeHandling[] = [AnnullerBoede];

@@ -10,6 +10,7 @@ const ctx = { migId: MIG };
 function boede(over: Partial<Boede> = {}): Boede {
   return {
     id: 'b1',
+    saesonId: 's1',
     batchId: 'batch',
     giverId: JONAS,
     giverNavn: 'Jonas Holm',

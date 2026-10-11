@@ -1,4 +1,4 @@
-import type { Haendelse } from './haendelse.ts';
+import type { Gebyr, Haendelse } from './haendelse.ts';
 
 /**
  * What a feed row shows, as plain data. Each entry kind (`art`) turns a
@@ -19,6 +19,11 @@ export interface Raekke {
   boeder?: BoedeLinje[];
   /** Tapping the row opens this Bøde's detail sheet. */
   boedeId?: string;
+  /**
+   * A Gebyr an Admin may annul from this row (see `annullerbartGebyr`).
+   * For Admins, tapping the row opens "Annullér gebyr".
+   */
+  annullerGebyr?: Gebyr;
 }
 
 /** One Bøde inside an expanded batch row. */
