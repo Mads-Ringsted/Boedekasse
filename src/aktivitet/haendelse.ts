@@ -1,3 +1,4 @@
+import { tilKonkurrence, type Konkurrence } from '../konkurrence/konkurrence.ts';
 import type { Database, Json } from '../supabase/database.types.ts';
 
 type AktivitetRow = Database['public']['Views']['aktivitet']['Row'];
@@ -72,6 +73,8 @@ export interface Haendelse {
   boeder: Boede[];
   /** The Gebyrer the entry's cause charged, annulled ones too. */
   gebyrer: Gebyr[];
+  /** An entry about a Konkurrence (#66): its live state. */
+  konkurrence?: Konkurrence | null;
 }
 
 type Obj = Record<string, unknown>;
@@ -142,5 +145,6 @@ export function tilHaendelse(r: AktivitetRow): Haendelse {
       medlemNavn: str(g.medlem_navn),
       annullering: annullering(g),
     })),
+    konkurrence: r.konkurrence ? tilKonkurrence(r.konkurrence) : null,
   };
 }

@@ -1,3 +1,5 @@
+import type { AktivtFrikob } from '../frikob/frikob.ts';
+import { hentFrikoeb } from '../frikob/hentFrikoeb.ts';
 import { hentKategorier, type Kategori } from '../kategorier/hentKategorier.ts';
 import { kategoriListe } from '../kategorier/kategoriListe.ts';
 import { supabase } from '../supabase/index.ts';
@@ -18,15 +20,18 @@ export interface GivData {
   modtagere: Modtager[];
   /** Active Bødekategorier: "Ofte brugt" first, then A–Å. */
   kategorier: Kategori[];
+  /** Frikøb that block giving a Bødekategori to someone (#65). */
+  frikoeb: AktivtFrikob[];
 }
 
 const dansk = new Intl.Collator('da');
 
 /** What Giv bøder shows: who you can fine and with what. */
 export async function hentGiv(bodekasseId: string, mitMedlemId: string): Promise<GivData> {
-  const [medlemmer, kategorier] = await Promise.all([
+  const [medlemmer, kategorier, frikoeb] = await Promise.all([
     supabase.from('medlem').select('id, navn, user_id, udmeldt').eq('bodekasse_id', bodekasseId),
     hentKategorier(bodekasseId),
+    hentFrikoeb(bodekasseId),
   ]);
   if (medlemmer.error) throw medlemmer.error;
 
@@ -37,5 +42,6 @@ export async function hentGiv(bodekasseId: string, mitMedlemId: string): Promise
   return {
     modtagere: andre.map((m, i) => ({ id: m.id, navn: m.navn, kortNavn: korte[i], loggetInd: m.user_id !== null })),
     kategorier: kategoriListe(kategorier, { soeg: '', sortering: 'navn' }).aktive,
+    frikoeb,
   };
 }

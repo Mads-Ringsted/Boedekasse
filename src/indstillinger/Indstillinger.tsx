@@ -5,6 +5,7 @@ import { BackButton } from '../components/BackButton.tsx';
 import { Screen } from '../components/Screen.tsx';
 import { SaesonRaekker } from '../saeson/SaesonRaekker.tsx';
 import { parsePris } from '../kategorier/kategoriListe.ts';
+import { parsePlaceringer, placeringerTekst } from '../konkurrence/raekkefoelge.ts';
 import { formatKr, t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import { rensMobilePay, type IndstillingAendringer, type Indstillinger as IndstillingerData } from './indstillinger.ts';
@@ -26,6 +27,11 @@ const tjekNavn: Tjek<string> = (tekst) =>
 const tjekMobilePay: Tjek<string | null> = (tekst) => {
   const r = rensMobilePay(tekst);
   return r.ok ? r : { ok: false, fejl: t('fejl.mobilepayUgyldig') };
+};
+
+const tjekPlaceringer: Tjek<number[]> = (tekst) => {
+  const tabel = parsePlaceringer(tekst);
+  return tabel === null ? { ok: false, fejl: t('indstillinger.placeringerUgyldig') } : { ok: true, vaerdi: tabel };
 };
 
 const tjekBeloeb: Tjek<number> = (tekst) => {
@@ -146,7 +152,43 @@ function IndstillingerSkaerm() {
                 retBeloeb('engangsgebyr', t('indstillinger.engangsgebyr'), t('indstillinger.engangsgebyrNote'))
               }
             />
-            {/* #66 Anke, #65 Frikøb, #67 Konkurrencegebyrer go here. */}
+            {/* #63 Anke goes here. */}
+            <SwitchRaekke
+              label={t('indstillinger.frikob')}
+              under={t('indstillinger.frikobPris', { beloeb: formatKr(ind.frikob_pris) })}
+              til={ind.frikob_til}
+              onSkift={(til) => skift({ frikob_til: til })}
+              onAabn={() => retBeloeb('frikob_pris', t('indstillinger.frikob'), t('indstillinger.frikobNote'))}
+            />
+            <SwitchRaekke
+              label={t('indstillinger.konkurrence')}
+              under={t('indstillinger.konkurrenceUnder', {
+                tabel: placeringerTekst(ind.placeringer),
+                fravaer: formatKr(ind.fravaersgebyr),
+              })}
+              til={ind.konkurrence_til}
+              onSkift={(til) => skift({ konkurrence_til: til })}
+              onAabn={() =>
+                aabn<number[]>({
+                  title: t('indstillinger.placeringer'),
+                  label: t('indstillinger.placeringerLabel'),
+                  start: ind.placeringer.join(', '),
+                  enhed: t('kategori.kr'),
+                  note: t('indstillinger.placeringerNote'),
+                  tjek: tjekPlaceringer,
+                  onGem: (placeringer, klientId) => gem({ placeringer }, klientId),
+                })
+              }
+            />
+            {ind.konkurrence_til && (
+              <LinkRaekke
+                label={t('indstillinger.fravaersgebyr')}
+                vaerdi={formatKr(ind.fravaersgebyr)}
+                onClick={() =>
+                  retBeloeb('fravaersgebyr', t('indstillinger.fravaersgebyr'), t('indstillinger.fravaersgebyrNote'))
+                }
+              />
+            )}
           </Gruppe>
 
           <Gruppe titel={t('indstillinger.saesonOgData')}>

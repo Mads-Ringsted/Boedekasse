@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { betalere, dagTekst, forudfyldtBeloeb, kassePoster, type IndbetalingRaekke } from './kassen.ts';
+import { betalere, dagTekst, forudfyldtBeloeb, haevTjek, kassePoster, type HaevningRaekke, type IndbetalingRaekke } from './kassen.ts';
 
 describe('betalere (who an Admin can register an Indbetaling from)', () => {
   const medlemmer = [
@@ -85,6 +85,90 @@ describe('kassePoster (the list of Indbetalinger on Kassen)', () => {
       ['gammel', false],
     ]);
     expect(kan(false).every(([, k]) => k === false)).toBe(true);
+  });
+
+  describe('with Hævninger', () => {
+    const haevning = (r: Partial<HaevningRaekke> & { id: string }): HaevningRaekke => ({
+      saeson_id: 's2',
+      beloeb: 300,
+      formaal: 'Depositum til julefrokost',
+      registreret_af: 'frederik',
+      registreret: '2026-10-10T10:00:00Z',
+      annulleret: null,
+      annulleret_af: null,
+      annulleret_note: null,
+      ...r,
+    });
+    const haevninger = [
+      haevning({ id: 'depositum' }),
+      haevning({
+        id: 'bowling',
+        beloeb: 60,
+        formaal: 'Bowling',
+        saeson_id: 's1',
+        registreret: '2026-03-02T10:00:00Z',
+        annulleret: '2026-03-02T11:00:00Z',
+        annulleret_af: 'frederik',
+        annulleret_note: 'Forkert beløb',
+      }),
+    ];
+
+    it('lists Indbetalinger and Hævninger together, newest first', () => {
+      const poster = kassePoster(rows, { navne, senesteSaesonId: 's2', erAdmin: false }, haevninger);
+      expect(poster.map((p) => p.id)).toEqual(['ny', 'depositum', 'fjernet', 'bowling', 'gammel']);
+    });
+
+    it('gives a Hævning its purpose, who took it out, and any annulment', () => {
+      const poster = kassePoster([], { navne, senesteSaesonId: 's2', erAdmin: true }, haevninger);
+      expect(poster).toEqual([
+        {
+          art: 'haevning',
+          id: 'depositum',
+          formaal: 'Depositum til julefrokost',
+          beloeb: 300,
+          registreretAf: 'Frederik',
+          tid: '2026-10-10T10:00:00Z',
+          annulleret: null,
+          kanAnnulleres: true,
+        },
+        {
+          art: 'haevning',
+          id: 'bowling',
+          formaal: 'Bowling',
+          beloeb: 60,
+          registreretAf: 'Frederik',
+          tid: '2026-03-02T10:00:00Z',
+          annulleret: { af: 'Frederik', tid: '2026-03-02T11:00:00Z', note: 'Forkert beløb' },
+          kanAnnulleres: false,
+        },
+      ]);
+    });
+
+    it('lets only an Admin annul a Hævning from the latest Sæson', () => {
+      const poster = kassePoster([], { navne, senesteSaesonId: 's2', erAdmin: false }, haevninger);
+      expect(poster.every((p) => !p.kanAnnulleres)).toBe(true);
+    });
+  });
+});
+
+describe('haevTjek (the Hæv penge form)', () => {
+  it('is ready with a whole amount up to Kassen and a purpose', () => {
+    expect(haevTjek('300', 'Depositum', 570)).toEqual({ kr: 300, overKassen: false, klar: true });
+    expect(haevTjek('570', 'Depositum', 570)).toEqual({ kr: 570, overKassen: false, klar: true });
+  });
+
+  it('is not ready over Kassen', () => {
+    expect(haevTjek('571', 'Depositum', 570)).toEqual({ kr: 571, overKassen: true, klar: false });
+  });
+
+  it('needs a purpose that is more than spaces', () => {
+    expect(haevTjek('300', '   ', 570).klar).toBe(false);
+  });
+
+  it('needs a whole amount over 0', () => {
+    expect(haevTjek('', 'Øl', 570)).toEqual({ kr: null, overKassen: false, klar: false });
+    expect(haevTjek('0', 'Øl', 570).klar).toBe(false);
+    expect(haevTjek('12,5', 'Øl', 570).klar).toBe(false);
   });
 });
 
