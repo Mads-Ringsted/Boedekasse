@@ -30,7 +30,7 @@
 }
 
 .sheet__footer:has(.giv__footer--skygge) {
-  box-shadow: 0 -12px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 -12px 24px color-mix(in srgb, var(--color-scrim) 30%, transparent);
 }
 
 .giv__primaer,
@@ -475,7 +475,7 @@
   border-radius: 16px;
   background: var(--color-text);
   color: var(--color-bg);
-  box-shadow: 0 10px 30px rgba(14, 18, 32, 0.3);
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--color-scrim) 75%, transparent);
   overflow: hidden;
 }
 
