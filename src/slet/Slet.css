@@ -1,0 +1,101 @@
+/* Slet Bødekasse (slet-boedekasse.html) and Slet konto. */
+.slet__advarsel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 36px 8px 24px;
+  text-align: center;
+}
+
+.slet__ikon {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  background: var(--color-danger-pale);
+  color: var(--color-danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slet__spoergsmaal {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.slet__tekst {
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.slet__link {
+  min-height: var(--size-touch);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-accent-text);
+  text-align: center;
+}
+
+.slet__felt {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.slet__label {
+  padding: 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.slet__input {
+  height: 52px;
+  border: 0;
+  border-radius: var(--radius-input);
+  padding: 0 16px;
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 17px;
+  outline: none;
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--color-danger) 60%, transparent);
+}
+
+.slet__note {
+  margin: 4px 4px 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.slet__fejl {
+  display: block;
+  margin: 12px 4px 0;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--color-danger);
+  text-align: left;
+}
+
+.slet__knap {
+  width: 100%;
+  height: var(--size-button);
+  border-radius: var(--radius-button);
+  background: var(--color-danger-fill);
+  color: var(--color-on-accent);
+  font-size: 17px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.slet__knap:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.slet__knap--naer {
+  margin-top: 20px;
+}
