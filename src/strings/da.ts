@@ -135,6 +135,8 @@ export const da = {
   'kategori.beskrivelsePladsholder': 'Hvornår gives den?',
   'kategori.prisUgyldig': 'Prisen skal være et helt antal kroner over 0.',
   'kategori.opret': 'Opret',
+  'kategori.opretMedGebyr': 'Opret · {beloeb} gebyr',
+  'kategori.gebyrNote': 'At oprette en bødekategori koster dig et gebyr på {beloeb}.',
   'kategori.redigerTitel': 'Redigér bødekategori',
   'kategori.gem': 'Gem',
   'kategori.redigerNote': 'Bøder, der allerede er givet, beholder deres pris.',
@@ -162,6 +164,22 @@ export const da = {
   'mere.indstillinger': 'Indstillinger',
   'mere.admin': 'Admin',
   'mere.skift': 'Skift Bødekasse',
+
+  // Indstillinger (Admin)
+  'indstillinger.bodekasse': 'Bødekasse',
+  'indstillinger.navn': 'Navn',
+  'indstillinger.navnTitel': 'Bødekassens navn',
+  'indstillinger.mobilepay': 'MobilePay Box',
+  'indstillinger.mobilepayLabel': 'Box-nummer',
+  'indstillinger.mobilepayIngen': 'Ikke sat',
+  'indstillinger.mobilepayNote': 'Vises, når et medlem trykker Betal. Lad feltet være tomt, hvis I ikke bruger MobilePay Box.',
+  'indstillinger.saerligeRegler': 'Særlige regler',
+  'indstillinger.oprettelsesgebyr': 'Gebyr for ny bødekategori',
+  'indstillinger.oprettelsesgebyrNote': 'Den, der opretter en bødekategori, betaler gebyret. Det gælder kun nye bødekategorier, og der er intet gebyr i en pause.',
+  'indstillinger.saesonOgData': 'Sæson og data',
+  'indstillinger.beloeb': 'Beløb',
+  'indstillinger.beloebUgyldig': 'Beløbet skal være et helt antal kroner over 0.',
+  'indstillinger.gem': 'Gem',
 
   // Medlemmer, Tilføj Medlem and your own name
   'medlemmer.tilfoej': 'Tilføj Medlem',
@@ -206,6 +224,9 @@ export const da = {
   'fejl.ikkeTilladt': 'Kun den, der oprettede den, eller en Admin kan ændre den.',
   'fejl.kategoriArkiveret': 'Bødekategorien er arkiveret.',
   'fejl.ikkeFundet': 'Den findes ikke længere.',
+  // Indstillinger (#57)
+  'fejl.indstillingUgyldig': 'Værdien er ikke gyldig.',
+  'fejl.mobilepayUgyldig': 'Box-nummeret må kun indeholde tal.',
   'handling.proevIgen': 'Prøv igen',
 
   // Offline
