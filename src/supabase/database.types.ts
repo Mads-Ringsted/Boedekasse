@@ -1257,6 +1257,12 @@ isOneToOne: false
       referencedRelation: "medlem_saldo"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
+      foreignKeyName: "haendelse_bodekasse_id_aktoer_id_fkey"
+      columns: ["bodekasse_id","aktoer_id"]
+isOneToOne: false
+      referencedRelation: "topliste"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
       foreignKeyName: "haendelse_bodekasse_id_fkey"
       columns: ["bodekasse_id"]
 isOneToOne: false
@@ -1291,6 +1297,12 @@ isOneToOne: false
       columns: ["bodekasse_id","modtager_id"]
 isOneToOne: false
       referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "haendelse_bodekasse_id_modtager_id_fkey"
+      columns: ["bodekasse_id","modtager_id"]
+isOneToOne: false
+      referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
       foreignKeyName: "haendelse_bodekasse_id_saeson_id_fkey"
@@ -1329,6 +1341,12 @@ isOneToOne: false
       columns: ["bodekasse_id","annulleret_af"]
 isOneToOne: false
       referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_annulleret_af_fkey"
+      columns: ["bodekasse_id","annulleret_af"]
+isOneToOne: false
+      referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
       foreignKeyName: "bode_bodekasse_id_bodekategori_id_fkey"
@@ -1379,6 +1397,12 @@ isOneToOne: false
       referencedRelation: "medlem_saldo"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
+      foreignKeyName: "bode_bodekasse_id_giver_id_fkey"
+      columns: ["bodekasse_id","giver_id"]
+isOneToOne: false
+      referencedRelation: "topliste"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
       foreignKeyName: "bode_bodekasse_id_modtager_id_fkey"
       columns: ["bodekasse_id","modtager_id"]
 isOneToOne: false
@@ -1395,6 +1419,12 @@ isOneToOne: false
       columns: ["bodekasse_id","modtager_id"]
 isOneToOne: false
       referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_modtager_id_fkey"
+      columns: ["bodekasse_id","modtager_id"]
+isOneToOne: false
+      referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
       foreignKeyName: "bode_bodekasse_id_saeson_id_fkey"
