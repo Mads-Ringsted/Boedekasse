@@ -1720,6 +1720,9 @@ isOneToOne: false
             "afslut_saeson":
 { Args: { "p_bodekasse": string,"p_klient_id": string }; Returns: Json
                            },
+"annuller_indbetaling":
+{ Args: { "p_indbetaling": string,"p_klient_id": string,"p_note"?: string }; Returns: Json
+                           },
 "arkiver_bodekategori":
 { Args: { "p_bodekategori": string,"p_klient_id": string }; Returns: Json
                            },
@@ -1749,6 +1752,9 @@ isOneToOne: false
                            },
 "opret_bodekategori":
 { Args: { "p_beskrivelse"?: string,"p_bodekasse": string,"p_klient_id": string,"p_navn": string,"p_pris": number }; Returns: Json
+                           },
+"registrer_indbetaling":
+{ Args: { "p_beloeb": number,"p_bodekasse": string,"p_klient_id": string,"p_medlem": string,"p_note"?: string }; Returns: Json
                            },
 "ret_bodekategori":
 { Args: { "p_beskrivelse": string,"p_bodekategori": string,"p_klient_id": string,"p_navn": string,"p_pris": number }; Returns: Json

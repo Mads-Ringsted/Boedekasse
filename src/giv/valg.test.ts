@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
+  engangsFor,
   faellesAntal,
+  fjernEngangsAlle,
+  fjernEngangsPerson,
   givLinjer,
   minusAlle,
   minusPerson,
@@ -10,6 +13,8 @@ import {
   plusAlle,
   plusPerson,
   skiftPerson,
+  tilfoejEngangsAlle,
+  tilfoejEngangsPerson,
   vaelgAlle,
   type Regler,
 } from './valg.ts';
@@ -120,5 +125,60 @@ describe('Giv bøder selection (people × Bødekategorier × counts)', () => {
     expect(sum.antal).toBe(3);
     expect(sum.beloeb).toBe(90);
     expect(sum.hver).toBeNull();
+  });
+});
+
+describe('Engangsbøder in the Giv bøder selection', () => {
+  const bryllup = { id: 'e1', grund: 'Kom for sent til bryllup', beloeb: 100 };
+  const noegler = { id: 'e2', grund: 'Glemte nøglerne', beloeb: 30 };
+
+  it('an Engangsbøde added in Hvad goes to everyone picked, next to the Bødekategorier', () => {
+    let valg = vaelgAlle(nytValg(), ['jonas', 'emil']);
+    valg = plusAlle(valg, 'for-sent');
+    valg = tilfoejEngangsAlle(valg, bryllup);
+
+    const sum = opsummer(valg, kategorier);
+    expect(sum.antal).toBe(4);
+    expect(sum.beloeb).toBe(300);
+    expect(sum.engangsboeder).toBe(2);
+    expect(sum.hver).toEqual({ antal: 2, beloeb: 150 });
+    expect(sum.personer[0].linjer.map((l) => [l.navn, l.antal, l.beloeb, l.engangs])).toEqual([
+      ['For sent', 1, 50, false],
+      ['Kom for sent til bryllup', 1, 100, true],
+    ]);
+    expect(givLinjer(valg)).toEqual([
+      { modtager_id: 'jonas', bodekategori_id: 'for-sent', antal: 1 },
+      { modtager_id: 'jonas', grund: 'Kom for sent til bryllup', beloeb: 100 },
+      { modtager_id: 'emil', bodekategori_id: 'for-sent', antal: 1 },
+      { modtager_id: 'emil', grund: 'Kom for sent til bryllup', beloeb: 100 },
+    ]);
+  });
+
+  it('"Tilpas pr. person": an Engangsbøde for one person only, or taken off one person', () => {
+    let valg = vaelgAlle(nytValg(), ['jonas', 'emil']);
+    valg = tilfoejEngangsAlle(valg, bryllup);
+    valg = tilfoejEngangsPerson(valg, 'jonas', noegler);
+    valg = fjernEngangsPerson(valg, 'emil', 'e1');
+
+    expect(engangsFor(valg, 'jonas').map((e) => e.grund)).toEqual(['Kom for sent til bryllup', 'Glemte nøglerne']);
+    expect(engangsFor(valg, 'emil')).toEqual([]);
+    const sum = opsummer(valg, kategorier);
+    expect(sum.hver).toBeNull();
+    expect(sum.personer.map((p) => [p.id, p.antal, p.beloeb])).toEqual([
+      ['jonas', 2, 130],
+      ['emil', 0, 0],
+    ]);
+  });
+
+  it('removing it in Hvad takes it off everyone; un-picking drops it; picking later gives the shared one', () => {
+    let valg = vaelgAlle(nytValg(), ['jonas', 'emil']);
+    valg = tilfoejEngangsAlle(valg, bryllup);
+    valg = skiftPerson(valg, 'emil');
+    valg = skiftPerson(valg, 'kasper');
+    expect(givLinjer(valg).map((l) => l.modtager_id)).toEqual(['jonas', 'kasper']);
+
+    valg = fjernEngangsAlle(valg, 'e1');
+    expect(givLinjer(valg)).toEqual([]);
+    expect(skiftPerson(valg, 'oliver').engangs.oliver).toEqual([]);
   });
 });

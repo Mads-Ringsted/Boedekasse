@@ -11,9 +11,9 @@
  * `Regler.kanFaa` says whether a person may get a Bødekategori at all.
  * Every change for "everyone" skips the pairs it rejects (#65: Frikøb).
  *
- * Extending for #58 (Engangsbøde): add the Engangsbøde lines per person
- * next to `antal`, count them in `opsummer`, and emit them from `givLinjer`
- * as `{ modtager_id, grund, beloeb }`.
+ * Engangsbøder (#58) follow the same two layers: `faellesEngangs` (added in
+ * step 2) and `engangs` per person. Frikøb never covers them, so `Regler`
+ * doesn't apply to them.
  */
 export interface Valg {
   /** Picked people (Medlem ids), in the order they were picked. */
@@ -22,6 +22,17 @@ export interface Valg {
   readonly faelles: Readonly<Record<string, number>>;
   /** Per person id: count per Bødekategori id. Only picked people have an entry. */
   readonly antal: Readonly<Record<string, Readonly<Record<string, number>>>>;
+  /** Step 2 Engangsbøder, meant for everyone picked. */
+  readonly faellesEngangs: readonly Engangsbode[];
+  /** Per person id: the Engangsbøder they get. Only picked people have an entry. */
+  readonly engangs: Readonly<Record<string, readonly Engangsbode[]>>;
+}
+
+/** One Engangsbøde in the selection. `id` is local; the same id for everyone it was added to. */
+export interface Engangsbode {
+  id: string;
+  grund: string;
+  beloeb: number;
 }
 
 export interface Regler {
@@ -43,7 +54,10 @@ export interface PrisKategori {
 }
 
 export interface Linje {
+  /** The Bødekategori id, or the Engangsbøde's local id. */
   kategoriId: string;
+  /** An Engangsbøde: `navn` is its reason, `antal` is 1. */
+  engangs: boolean;
   navn: string;
   pris: number;
   antal: number;
@@ -52,7 +66,7 @@ export interface Linje {
 
 export interface PersonSum {
   id: string;
-  /** In the order of the Bødekategorier passed to `opsummer`. */
+  /** In the order of the Bødekategorier passed to `opsummer`, then the Engangsbøder. */
   linjer: Linje[];
   antal: number;
   beloeb: number;
@@ -63,16 +77,16 @@ export interface Opsummering {
   personer: PersonSum[];
   antal: number;
   beloeb: number;
+  /** How many of the Bøder are Engangsbøder (each costs the giver its Gebyr). */
+  engangsboeder: number;
   /** When everyone gets exactly the same: what each one gets. Else null. */
   hver: { antal: number; beloeb: number } | null;
 }
 
-/** One line of the `giv_boeder` RPC's `p_linjer`. */
-export type GivLinje = {
-  modtager_id: string;
-  bodekategori_id: string;
-  antal: number;
-};
+/** One line of the `giv_boeder` RPC's `p_linjer`: Bødekategori × count, or one Engangsbøde. */
+export type GivLinje =
+  | { modtager_id: string; bodekategori_id: string; antal: number }
+  | { modtager_id: string; grund: string; beloeb: number };
 
 const klem = (n: number) => Math.max(0, Math.min(MAKS_ANTAL, n));
 
@@ -100,6 +114,8 @@ export function nytValg(
     personer: [...personer],
     faelles,
     antal: Object.fromEntries(personer.map((p) => [p, startFor(p, faelles, regler)])),
+    faellesEngangs: [],
+    engangs: Object.fromEntries(personer.map((p) => [p, []])),
   };
 }
 
@@ -111,12 +127,14 @@ export function erValgt(valg: Valg, personId: string): boolean {
 export function skiftPerson(valg: Valg, personId: string, regler: Regler = INGEN_REGLER): Valg {
   if (erValgt(valg, personId)) {
     const { [personId]: _fjernet, ...antal } = valg.antal;
-    return { ...valg, personer: valg.personer.filter((p) => p !== personId), antal };
+    const { [personId]: _fjernetEngangs, ...engangs } = valg.engangs;
+    return { ...valg, personer: valg.personer.filter((p) => p !== personId), antal, engangs };
   }
   return {
     ...valg,
     personer: [...valg.personer, personId],
     antal: { ...valg.antal, [personId]: startFor(personId, valg.faelles, regler) },
+    engangs: { ...valg.engangs, [personId]: valg.faellesEngangs },
   };
 }
 
@@ -127,7 +145,7 @@ export function vaelgAlle(valg: Valg, personIds: readonly string[], regler: Regl
 
 /** Un-picks everyone. */
 export function fravaelgAlle(valg: Valg): Valg {
-  return { ...valg, personer: [], antal: {} };
+  return { ...valg, personer: [], antal: {}, engangs: {} };
 }
 
 /** Step 2's count for a Bødekategori (what its stepper shows). */
@@ -183,13 +201,56 @@ export function minusPerson(valg: Valg, personId: string, kategoriId: string): V
   return skiftEn(valg, personId, kategoriId, -1);
 }
 
+/** The Engangsbøder one person gets. */
+export function engangsFor(valg: Valg, personId: string): readonly Engangsbode[] {
+  return valg.engangs[personId] ?? [];
+}
+
+/** Step 2 Engangsbøde: one to everyone picked (and to anyone picked later). */
+export function tilfoejEngangsAlle(valg: Valg, engangsbode: Engangsbode): Valg {
+  return {
+    ...valg,
+    faellesEngangs: [...valg.faellesEngangs, engangsbode],
+    engangs: Object.fromEntries(valg.personer.map((p) => [p, [...engangsFor(valg, p), engangsbode]])),
+  };
+}
+
+/** Step 2 remove: takes this Engangsbøde off everyone. */
+export function fjernEngangsAlle(valg: Valg, id: string): Valg {
+  return {
+    ...valg,
+    faellesEngangs: valg.faellesEngangs.filter((e) => e.id !== id),
+    engangs: Object.fromEntries(valg.personer.map((p) => [p, engangsFor(valg, p).filter((e) => e.id !== id)])),
+  };
+}
+
+/** Step 3b Engangsbøde: for this person only. */
+export function tilfoejEngangsPerson(valg: Valg, personId: string, engangsbode: Engangsbode): Valg {
+  if (!erValgt(valg, personId)) return valg;
+  return { ...valg, engangs: { ...valg.engangs, [personId]: [...engangsFor(valg, personId), engangsbode] } };
+}
+
+/** Step 3b remove: takes this Engangsbøde off this person only. */
+export function fjernEngangsPerson(valg: Valg, personId: string, id: string): Valg {
+  if (!erValgt(valg, personId)) return valg;
+  return {
+    ...valg,
+    engangs: { ...valg.engangs, [personId]: engangsFor(valg, personId).filter((e) => e.id !== id) },
+  };
+}
+
 /** Totals per person and in all, for the footers, step 3 and the toast. */
 export function opsummer(valg: Valg, kategorier: readonly PrisKategori[]): Opsummering {
   const personer = valg.personer.map((id): PersonSum => {
-    const linjer = kategorier.flatMap((k) => {
+    const linjer = kategorier.flatMap((k): Linje[] => {
       const antal = antalFor(valg, id, k.id);
-      return antal > 0 ? [{ kategoriId: k.id, navn: k.navn, pris: k.pris, antal, beloeb: antal * k.pris }] : [];
+      return antal > 0
+        ? [{ kategoriId: k.id, engangs: false, navn: k.navn, pris: k.pris, antal, beloeb: antal * k.pris }]
+        : [];
     });
+    for (const e of engangsFor(valg, id)) {
+      linjer.push({ kategoriId: e.id, engangs: true, navn: e.grund, pris: e.beloeb, antal: 1, beloeb: e.beloeb });
+    }
     return {
       id,
       linjer,
@@ -203,13 +264,15 @@ export function opsummer(valg: Valg, kategorier: readonly PrisKategori[]): Opsum
     personer,
     antal: personer.reduce((s, p) => s + p.antal, 0),
     beloeb: personer.reduce((s, p) => s + p.beloeb, 0),
+    engangsboeder: valg.personer.reduce((s, p) => s + engangsFor(valg, p).length, 0),
     hver: ens ? { antal: personer[0].antal, beloeb: personer[0].beloeb } : null,
   };
 }
 
-/** The `p_linjer` for `giv_boeder`: one line per person per Bødekategori. */
+/** The `p_linjer` for `giv_boeder`: one line per person per Bødekategori, then one per Engangsbøde. */
 export function givLinjer(valg: Valg): GivLinje[] {
-  return valg.personer.flatMap((p) =>
-    Object.entries(valg.antal[p] ?? {}).map(([k, antal]) => ({ modtager_id: p, bodekategori_id: k, antal })),
-  );
+  return valg.personer.flatMap((p): GivLinje[] => [
+    ...Object.entries(valg.antal[p] ?? {}).map(([k, antal]) => ({ modtager_id: p, bodekategori_id: k, antal })),
+    ...engangsFor(valg, p).map((e) => ({ modtager_id: p, grund: e.grund, beloeb: e.beloeb })),
+  ]);
 }

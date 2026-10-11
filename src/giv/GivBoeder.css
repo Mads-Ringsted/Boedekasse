@@ -539,3 +539,68 @@
     transform: scaleX(0);
   }
 }
+
+/* ---------- Engangsbøde (#58) ---------- */
+.engangs {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 14px;
+}
+
+.engangs__til {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 4px;
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.engangs__til strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.engangs__beloeb {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 0 8px;
+}
+
+.engangs__beloeb-label {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.engangs__beloeb-felt {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.engangs__beloeb-felt input {
+  width: 160px;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 60px;
+  font-weight: 700;
+  letter-spacing: -2px;
+  text-align: right;
+  font-variant-numeric: var(--font-numeric);
+  outline: none;
+}
+
+.engangs__beloeb-felt input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.engangs__beloeb-felt span {
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}

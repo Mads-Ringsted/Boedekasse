@@ -6,6 +6,12 @@
   padding: 0 4px 4px;
 }
 
+.hjem__avatar {
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+}
+
 .hjem__skift {
   min-width: 0;
   display: flex;

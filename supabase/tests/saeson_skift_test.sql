@@ -2,7 +2,7 @@
 -- an Admin starts the next Sæson. Saldo and Kassen carry over.
 begin;
 \ir _hjaelpere.psql
-select plan(32);
+select plan(34);
 
 select tests.opret_bodekasse() as kasse \gset
 select id as foerste from public.saeson where bodekasse_id = :'kasse' \gset
@@ -70,6 +70,20 @@ select throws_ok(
   format($$ select tests.giv(%L, %L, %L) $$, :'kasse', :'emil', :'for_sent'),
   'P0001', 'pause', 'Giv bøder is rejected in a Pause');
 
+select throws_ok(
+  format($$ select public.giv_boeder(gen_random_uuid(), %L, jsonb_build_array(
+             jsonb_build_object('modtager_id', %L::uuid, 'grund', 'Glemte kampen', 'beloeb', 40))) $$,
+         :'kasse', :'emil'),
+  'P0001', 'pause', 'an Engangsbøde is rejected in a Pause');
+
+select tests.log_ind_som_medlem(:'mads');
+select public.registrer_indbetaling(gen_random_uuid(), :'kasse', :'mads', 10) ->> 'indbetaling_id' as pause_betaling \gset
+select results_eq(
+  format($$ select i.saeson_id, k.beloeb from public.indbetaling i join public.kassen k using (bodekasse_id)
+             where i.id = %L $$, :'pause_betaling'),
+  format($$ values (%L::uuid, 30) $$, :'foerste'),
+  'an Indbetaling works in a Pause and gets the ended (latest) Sæson');
+
 select tests.log_ud();
 update public.bodekasse set oprettelsesgebyr_til = true where id = :'kasse';
 select tests.log_ind_som_medlem(:'jonas');
@@ -111,13 +125,13 @@ select results_eq(
   format($$ values ('ikke_afgjort', %L::uuid) $$, :'emil'),
   'an open Anke closes as ikke_afgjort and the receiver bears the Bøde');
 
-select results_eq(
-  format($$ select medlem_id, saldo from public.medlem_saldo where bodekasse_id = %L order by saldo $$, :'kasse'),
-  format($$ values (%L::uuid, 0), (%L::uuid, 30), (%L::uuid, 30) $$, :'mads', :'jonas', :'emil'),
+select set_eq(
+  format($$ select medlem_id, saldo from public.medlem_saldo where bodekasse_id = %L $$, :'kasse'),
+  format($$ values (%L::uuid, -10), (%L::uuid, 30), (%L::uuid, 30) $$, :'mads', :'jonas', :'emil'),
   'Saldo carries over into the new Sæson');
 
 select is(
-  (select beloeb from public.kassen where bodekasse_id = :'kasse'), 20,
+  (select beloeb from public.kassen where bodekasse_id = :'kasse'), 30,
   'Kassen carries over into the new Sæson');
 
 select results_eq(
