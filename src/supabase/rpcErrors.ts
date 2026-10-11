@@ -25,6 +25,8 @@ const BY_KEY: Record<string, PlainStringId> = {
   medlem_har_gebyrer: 'fejl.medlemHarGebyrer',
   medlem_har_indbetalinger: 'fejl.medlemHarIndbetalinger',
   medlem_har_historik: 'fejl.medlemHarHistorik',
+  // Slet Bødekasse (#71)
+  navn_passer_ikke: 'fejl.navnPasserIkke',
   // Bødekategorier (#52)
   kategorinavn_mangler: 'fejl.kategorinavnMangler',
   navn_findes: 'fejl.navnFindes',

@@ -5,6 +5,7 @@ import { BackButton } from '../components/BackButton.tsx';
 import { Screen } from '../components/Screen.tsx';
 import { EksportSheet } from '../eksport/EksportSheet.tsx';
 import { SaesonRaekker } from '../saeson/SaesonRaekker.tsx';
+import { SletBodekasseSheet } from '../slet/SletBodekasseSheet.tsx';
 import { parsePris } from '../kategorier/kategoriListe.ts';
 import { parsePlaceringer, placeringerTekst } from '../konkurrence/raekkefoelge.ts';
 import { formatKr, t } from '../strings/index.ts';
@@ -77,6 +78,12 @@ function IndstillingerSkaerm() {
   const [fejl, setFejl] = useState<string | null>(null);
   const [sheet, setSheet] = useState<{ n: number; open: boolean; indhold: SheetIndhold } | null>(null);
   const [eksport, setEksport] = useState<{ n: number; open: boolean } | null>(null);
+  // Slet Bødekasse: each opening mounts a fresh sheet (new one-time ID).
+  const [sletter, setSletter] = useState(0);
+
+  function aabnEksport() {
+    setEksport((e) => ({ n: (e?.n ?? 0) + 1, open: true }));
+  }
 
   function aabn<V>(indhold: RetIndhold<V>) {
     setSheet((s) => ({ n: (s?.n ?? 0) + 1, open: true, indhold: indhold as unknown as SheetIndhold }));
@@ -263,14 +270,27 @@ function IndstillingerSkaerm() {
             <LinkRaekke
               label={t('eksport.raekke')}
               art="handling"
-              onClick={() => setEksport((e) => ({ n: (e?.n ?? 0) + 1, open: true }))}
+              onClick={aabnEksport}
             />
           </Gruppe>
 
-          {/* #71 Slet Bødekasse: its own <Gruppe> with an art="fare" row. */}
+          <Gruppe>
+            <LinkRaekke art="fare" label={t('sletKasse.raekke')} onClick={() => setSletter((n) => n + 1)} />
+          </Gruppe>
         </>
       )}
 
+      {sletter > 0 && (
+        <SletBodekasseSheet
+          key={sletter}
+          open
+          onOpenChange={(aaben) => !aaben && setSletter(0)}
+          onEksporter={() => {
+            setSletter(0);
+            aabnEksport();
+          }}
+        />
+      )}
       {eksport && (
         <EksportSheet
           key={eksport.n}

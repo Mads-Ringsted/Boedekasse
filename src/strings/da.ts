@@ -490,6 +490,21 @@ export const da = {
   'fejl.medlemHarIndbetalinger': 'Medlemmet har indbetalinger og kan ikke slettes.',
   'fejl.medlemHarHistorik': 'Medlemmet har historik i Bødekassen og kan ikke slettes.',
 
+  // Slet Bødekasse and Slet konto (#71)
+  'sletKasse.raekke': 'Slet Bødekasse',
+  'sletKasse.titel': 'Slet Bødekasse',
+  'sletKasse.spoergsmaal': 'Slet {navn}?',
+  'sletKasse.tekst': 'Alle bøder, betalinger og medlemmer forsvinder for alle {antal}. Det kan ikke fortrydes.',
+  'sletKasse.tekstUdenAntal': 'Alle bøder, betalinger og medlemmer forsvinder for alle. Det kan ikke fortrydes.',
+  'sletKasse.eksporter': 'Eksportér data først',
+  'sletKasse.skriv': 'Skriv "{navn}" for at bekræfte',
+  'sletKasse.knap': 'Slet for alle',
+  'sletKonto.titel': 'Slet konto',
+  'sletKonto.tekst': 'Dit login bliver slettet. Dit navn, dine bøder og din historik bliver i Bødekasserne, så regnskabet passer. Det kan ikke fortrydes.',
+  'sletKonto.knap': 'Slet min konto',
+  'sletKonto.sidsteAdmin': 'Du er eneste Admin i {kasser}. Gør en anden til Admin først, eller slet Bødekassen.',
+  'fejl.navnPasserIkke': 'Navnet passer ikke. Skriv det præcis som Bødekassen hedder.',
+
   // General
   'fejl.ukendt': 'Noget gik galt. Prøv igen.',
   'fejl.navnMangler': 'Skriv et navn til Bødekassen.',

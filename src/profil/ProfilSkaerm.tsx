@@ -11,6 +11,7 @@ import { BackButton } from '../components/BackButton.tsx';
 import { Screen } from '../components/Screen.tsx';
 import { useGivBoeder } from '../giv/GivBoederProvider.tsx';
 import { RetMitNavnSheet } from '../medlemmer/RetMitNavnSheet.tsx';
+import { SletKontoSheet } from '../slet/SletKontoSheet.tsx';
 import { formatKr, t } from '../strings/index.ts';
 import { useHent } from '../supabase/useHent.ts';
 import { useProfilTilbage } from './aabnProfil.ts';
@@ -119,13 +120,21 @@ function ProfilSkaerm({ medlemId }: { medlemId: string }) {
         </>
       )}
 
-      {/* #71 wires Slet konto. */}
-      {visning?.egen && (
-        <button type="button" className="profil__slet-konto">
-          {t('profil.sletKonto')}
-        </button>
-      )}
+      {visning?.egen && <SletKontoKnap />}
     </Screen>
+  );
+}
+
+/** "Slet konto" at the bottom of your own profile. Each opening mounts a fresh sheet. */
+function SletKontoKnap() {
+  const [aabning, setAabning] = useState(0);
+  return (
+    <>
+      <button type="button" className="profil__slet-konto" onClick={() => setAabning((n) => n + 1)}>
+        {t('profil.sletKonto')}
+      </button>
+      {aabning > 0 && <SletKontoSheet key={aabning} open onOpenChange={(aaben) => !aaben && setAabning(0)} />}
+    </>
   );
 }
 
