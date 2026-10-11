@@ -70,7 +70,12 @@ Shown when the link is opened in the browser instead of the installed app. Expla
 Email field, then a "Send kode" button. Next screen: "Tjek din mail", six digit boxes for the 6-digit code (supports iOS one-time-code autofill), and "Send ny kode". A Medlem an Admin has already added logs in with that same email and takes over their spot.
 
 ### 3. Vælg Bødekasse
-Shown after login when you are in more than one box. Each row shows the box name and its number of Medlemmer, with "Opret ny Bødekasse" at the bottom. Skipped when you are in only one box.
+Shown after login when you are in more than one box and this device has no last-used box (otherwise the app reopens the last one). Each row shows the box name and its number of Medlemmer, with "Opret ny Bødekasse" and "Jeg har en kode" at the bottom. Skipped when you are in only one box.
+
+**Velkommen** (in no box yet): two choices, "Opret Bødekasse" and "Jeg har en kode".
+
+- **Opret Bødekasse:** box name and your name in it, then you land on an empty Hjem as its first Admin.
+- **Jeg har en kode:** a 6-character join code and your name, then you land on that box's Hjem.
 
 ### 4. Hjem
 Top to bottom:
@@ -135,7 +140,7 @@ Name, amount, "Fra Frederik til dig · 5 t". Actions depend on who you are:
 Avatar, name, tags (Admin, Frikøb 2026, Ikke logget ind endnu), "Mangler at betale" large, then Bøder og gebyrer next to Betalt. Actions: Giv bøde (pre-selects this person), Betal (on your own profile), and Registrér indbetaling (Admin). On your own profile, a "Kan ankes" section lists Bøder still within the 7-day appeal window. Then the full history.
 
 ### 12. Mere
-Your profile row, then Medlemmer, Kassen og indbetalinger, Anker (with count), Konkurrencer, Indstillinger (Admin), Skift Bødekasse, Log ud.
+Your profile row (your name in this box, editable; "Slet konto" at the bottom of your profile), then Medlemmer, Kassen og indbetalinger, Anker (with count), Konkurrencer, Indstillinger (Admin), Skift Bødekasse, Log ud.
 
 ### 13. Kassen
 Card with "I bødekassen", plus Indbetalt, hævet and mangler. Admin buttons: **Registrér indbetaling** (pick a Medlem, amount pre-filled with what they owe) and **Hæv penge** (amount + purpose, e.g. "Depositum til julefrokost"). Below: the list of Indbetalinger and Hævninger.
@@ -143,13 +148,17 @@ Card with "I bødekassen", plus Indbetalt, hævet and mangler. Admin buttons: **
 ### 14. Medlemmer
 List with what each owes. Admins get "Tilføj Medlem" (name + email; the person can receive Bøder before they ever log in) and can make others Admin.
 
+- **Join code (Admin):** the box's code (e.g. `K7P2QX`) with "Del" (shares an invite text with the code) and "Ny kode" (the old one stops working).
+- **Medlem actions (Admin), on a Medlem's profile:** Gør til Admin / Fjern som Admin, Ret navn, Ret email (only before they've logged in), Meld ud (also when they still owe), and Slet (only for someone who never logged in and has no history). The last Admin can't drop the role.
+- **Tidligere Medlemmer:** udmeldte Medlemmer at the bottom with what they still owe and "Genoptag" (Admin).
+
 ### 15. Konkurrencer
 List of Konkurrencer (title, date, how many placed or absent, total).
 
 **Ny Konkurrence:** title, date, then tap Medlemmer in finishing order. Each row shows its place and Gebyr (0 / 10 / 25 / 35 / 40 / 45 / 50 kr; places beyond 7 pay 50 kr). Unplaced Medlemmer show "Fraværende · 50 kr".
 
 ### 16. Indstillinger (Admin)
-- **Bødekasse:** name, MobilePay Box number, Medlemmer og roller.
+- **Bødekasse:** name, MobilePay Box number, Medlemmer og roller, and "Slet Bødekasse" (type the name to confirm; gone for everyone).
 - **Særlige regler:**
   - Gebyr for ny bødekategori (on/off + 25 kr)
   - Gebyr for engangsbøde (10 kr)
@@ -157,6 +166,8 @@ List of Konkurrencer (title, date, how many placed or absent, total).
   - Frikøb (on/off + 300 kr)
   - Konkurrencegebyrer
 - **Sæson og data:** Start ny sæson, Eksportér data.
+
+A new box starts with every Særlig regel off, except the Engangsbøde Gebyr (on, 10 kr).
 
 ### States to cover
 - Admin vs. ordinary Medlem (Admin-only actions hidden).
