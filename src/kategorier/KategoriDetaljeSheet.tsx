@@ -1,10 +1,15 @@
 import { useState } from 'react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Sheet } from '../components/Sheet.tsx';
+import { hentFrikoeb } from '../frikob/hentFrikoeb.ts';
 import { useGivBoeder } from '../giv/GivBoederProvider.tsx';
+import { navneliste } from '../giv/tekst.ts';
+import { kortNavne } from '../giv/navne.ts';
+import { useSaeson } from '../saeson/SaesonProvider.tsx';
 import { formatKr, t } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
+import { useHent } from '../supabase/useHent.ts';
 import type { Kategori } from './hentKategorier.ts';
 import { kanRette, kortDato } from './kategoriListe.ts';
 
@@ -26,10 +31,16 @@ interface KategoriDetaljeSheetProps {
 export function KategoriDetaljeSheet({ open, onOpenChange, kategori, onRediger, onAendret }: KategoriDetaljeSheetProps) {
   const mig = useBodekasse();
   const { aabn: givBoeder } = useGivBoeder();
+  const { pause } = useSaeson();
   const [busy, setBusy] = useState(false);
   const [fejl, setFejl] = useState<string | null>(null);
   const [klientId] = useState(() => crypto.randomUUID());
   const maaRette = kanRette(kategori, mig);
+  const frikoeb = useHent(
+    () => hentFrikoeb(mig.bodekasseId, { bodekategoriId: kategori.id }),
+    [mig.bodekasseId, kategori.id],
+  );
+  const holdere = frikoeb.status === 'ready' ? kortNavne(frikoeb.data.map((f) => f.medlemNavn)) : [];
 
   async function skift(rpc: 'arkiver_bodekategori' | 'gendan_bodekategori') {
     setBusy(true);
@@ -70,6 +81,12 @@ export function KategoriDetaljeSheet({ open, onOpenChange, kategori, onRediger, 
             <dt>{t('kategori.brugt')}</dt>
             <dd>{kategori.antal === 1 ? t('kategori.gang') : t('kategori.gange', { antal: kategori.antal })}</dd>
           </div>
+          {holdere.length > 0 && (
+            <div className="kategori-detalje__raekke">
+              <dt>{t('kategori.frikob')}</dt>
+              <dd>{navneliste(holdere)}</dd>
+            </div>
+          )}
         </dl>
 
         {fejl && (
@@ -78,7 +95,7 @@ export function KategoriDetaljeSheet({ open, onOpenChange, kategori, onRediger, 
           </p>
         )}
 
-        {!kategori.arkiveret && (
+        {!kategori.arkiveret && !pause && (
           <button
             type="button"
             className="kategori-detalje__giv"

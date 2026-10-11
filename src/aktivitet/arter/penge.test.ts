@@ -73,3 +73,42 @@ describe('the row for annulling an Indbetaling', () => {
     expect(r?.beloeb).toBeUndefined();
   });
 });
+
+describe('a confirmed Betalingsmelding row', () => {
+  const bekraeftet = (over: Partial<Haendelse> = {}) =>
+    haendelse({ art: 'betaling_bekraeftet', data: { navn: 'Kasper Nørgaard', beloeb: 85 }, ...over });
+
+  it('says who paid and who confirmed it, with "+85 kr" in green', () => {
+    expect(beskrivRaekke(bekraeftet(), ctx)).toMatchObject({
+      titel: 'Kasper betalte ind',
+      linje: 'Bekræftet af Frederik',
+      beloeb: { tekst: '+85 kr', tone: 'groen' },
+      ikon: { slags: 'avatar', navn: 'Kasper Nørgaard' },
+      annulleret: false,
+    });
+  });
+
+  it('stays struck through once its Indbetaling is annulled', () => {
+    const r = beskrivRaekke(
+      bekraeftet({ annullering: { tid: '2026-10-11T18:00:00Z', afId: FREDERIK, afNavn: 'Frederik Lund', note: null } }),
+      ctx,
+    );
+    expect(r).toMatchObject({ annulleret: true });
+  });
+});
+
+describe('a rejected Betalingsmelding row', () => {
+  it('says who rejected whose payment and the amount', () => {
+    const r = beskrivRaekke(
+      haendelse({ art: 'betaling_afvist', refTabel: null, refId: null, data: { navn: 'Kasper Nørgaard', beloeb: 50 } }),
+      ctx,
+    );
+    expect(r).toMatchObject({
+      titel: 'Frederik afviste en betaling',
+      linje: 'Fra Kasper · 50 kr',
+      ikon: { slags: 'avatar', navn: 'Frederik Lund' },
+      annulleret: false,
+    });
+    expect(r?.beloeb).toBeUndefined();
+  });
+});

@@ -1,10 +1,12 @@
 import type { Beskriver } from '../visning.ts';
 import { bodeAnnulleret, gebyrAnnulleret } from './annulleringer.ts';
 import { boederGivet } from './boeder.ts';
+import { frikobAnnulleret, frikobKoebt } from './frikob.ts';
 import { bodekategoriArkiveret, bodekategoriOmpriset, bodekategoriOprettet } from './kategorier.ts';
 import { medlemTilfoejet, medlemTilmeldt } from './medlemmer.ts';
-import { indbetaling, indbetalingAnnulleret } from './penge.ts';
-import { bodekasseOprettet, saesonStartet } from './saeson.ts';
+import { konkurrenceAnnulleret, konkurrenceRegistreret } from './konkurrence.ts';
+import { betalingAfvist, betalingBekraeftet, indbetaling, indbetalingAnnulleret } from './penge.ts';
+import { bodekasseOprettet, saesonAfsluttet, saesonStartet } from './saeson.ts';
 
 /**
  * Every feed entry kind the app can show, by `haendelse.art`. An entry of a
@@ -25,8 +27,15 @@ export const ARTER: Record<string, Beskriver> = {
   medlem_tilmeldt: medlemTilmeldt,
   bodekasse_oprettet: bodekasseOprettet,
   saeson_startet: saesonStartet,
+  saeson_afsluttet: saesonAfsluttet,
   indbetaling,
   indbetaling_annulleret: indbetalingAnnulleret,
   bode_annulleret: bodeAnnulleret,
   gebyr_annulleret: gebyrAnnulleret,
+  frikob_koebt: frikobKoebt,
+  frikob_annulleret: frikobAnnulleret,
+  betaling_bekraeftet: betalingBekraeftet,
+  betaling_afvist: betalingAfvist,
+  konkurrence_registreret: konkurrenceRegistreret,
+  konkurrence_annulleret: konkurrenceAnnulleret,
 };

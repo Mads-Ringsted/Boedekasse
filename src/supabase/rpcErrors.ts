@@ -42,10 +42,28 @@ const BY_KEY: Record<string, PlainStringId> = {
   // Annullér Bøder and Gebyrer (#62)
   anket: 'fejl.anket',
   kan_ikke_annulleres: 'fejl.kanIkkeAnnulleres',
+  // Betalingsmelding (#60)
+  melding_afventer: 'fejl.meldingAfventer',
+  egen_melding: 'fejl.egenMelding',
+  ikke_afventer: 'fejl.ikkeAfventer',
+  ikke_din_melding: 'fejl.ikkeDinMelding',
   // Indstillinger (#57)
   indstilling_ugyldig: 'fejl.indstillingUgyldig',
   indstilling_ukendt: 'fejl.indstillingUgyldig',
   mobilepay_ugyldig: 'fejl.mobilepayUgyldig',
+  // Frikøb (#65)
+  har_frikob: 'fejl.harFrikob',
+  frikob_findes: 'fejl.frikobFindes',
+  frikob_slaaet_fra: 'fejl.frikobSlaaetFra',
+  // Konkurrencer (#66)
+  konkurrence_slaaet_fra: 'fejl.konkurrenceSlaaetFra',
+  titel_mangler: 'fejl.titelMangler',
+  titel_for_lang: 'fejl.titelForLang',
+  ingen_placeret: 'fejl.ingenPlaceret',
+  konkurrence_ugyldig: 'fejl.konkurrenceUgyldig',
+  deltager_ukendt: 'fejl.deltagerUkendt',
+  // Sæson (#67)
+  slutdato_ugyldig: 'saeson.slutdatoFortid',
 };
 
 /**

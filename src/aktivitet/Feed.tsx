@@ -33,11 +33,11 @@ export function Feed({ medlemId }: FeedProps) {
   const dage = useMemo(() => {
     const nu = new Date();
     const poster = feed.haendelser.flatMap((h) => {
-      const raekke = beskrivRaekke(h, { migId });
+      const raekke = beskrivRaekke(h, { migId, profilId: medlemId });
       return raekke ? [{ id: h.id, tid: h.tid, raekke, idag: iDag(h.tid, nu) }] : [];
     });
     return iDage(poster, nu);
-  }, [feed.haendelser, migId]);
+  }, [feed.haendelser, migId, medlemId]);
 
   // Load the next page when the end of the list scrolls into view.
   const slut = useRef<HTMLButtonElement>(null);
