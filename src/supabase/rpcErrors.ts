@@ -51,6 +51,13 @@ const BY_KEY: Record<string, PlainStringId> = {
   indstilling_ugyldig: 'fejl.indstillingUgyldig',
   indstilling_ukendt: 'fejl.indstillingUgyldig',
   mobilepay_ugyldig: 'fejl.mobilepayUgyldig',
+  // Konkurrencer (#66)
+  konkurrence_slaaet_fra: 'fejl.konkurrenceSlaaetFra',
+  titel_mangler: 'fejl.titelMangler',
+  titel_for_lang: 'fejl.titelForLang',
+  ingen_placeret: 'fejl.ingenPlaceret',
+  konkurrence_ugyldig: 'fejl.konkurrenceUgyldig',
+  deltager_ukendt: 'fejl.deltagerUkendt',
   // Sæson (#67)
   slutdato_ugyldig: 'saeson.slutdatoFortid',
 };

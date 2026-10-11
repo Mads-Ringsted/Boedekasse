@@ -1,5 +1,6 @@
 import { useState, type ComponentType } from 'react';
-import { ArrowUpRight, CalendarDays, ChevronDown, Tag as TagIkon } from 'lucide-react';
+import { ArrowUpRight, CalendarDays, ChevronDown, Tag as TagIkon, Trophy } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router';
 import { Avatar } from '../components/Avatar.tsx';
 import { TagMaerke } from './TagMaerke.tsx';
 import type { Ikon, Raekke, Symbol } from './visning.ts';
@@ -8,6 +9,7 @@ import type { Ikon, Raekke, Symbol } from './visning.ts';
 const SYMBOLER: Record<Symbol, ComponentType<{ size?: number; strokeWidth?: number }>> = {
   kategori: TagIkon,
   saeson: CalendarDays,
+  trofae: Trophy,
   haevning: ArrowUpRight,
 };
 
@@ -35,7 +37,9 @@ interface FeedRaekkeProps {
  */
 export function FeedRaekke({ raekke, tid, onAabnBoede }: FeedRaekkeProps) {
   const [aaben, setAaben] = useState(false);
-  const { boeder, boedeId } = raekke;
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const { boeder, boedeId, link } = raekke;
   const linje = [raekke.linje, tid].filter(Boolean).join(' · ');
 
   const indhold = (
@@ -104,6 +108,10 @@ export function FeedRaekke({ raekke, tid, onAabnBoede }: FeedRaekkeProps) {
     <li className="feed__post">
       {boedeId ? (
         <button type="button" className={klasse} onClick={() => onAabnBoede(boedeId)}>
+          {indhold}
+        </button>
+      ) : link ? (
+        <button type="button" className={klasse} onClick={() => void navigate(link, { state: { fra: pathname } })}>
           {indhold}
         </button>
       ) : (
