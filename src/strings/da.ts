@@ -11,6 +11,7 @@ export const da = {
   'tab.hjem': 'Hjem',
   'tab.aktivitet': 'Aktivitet',
   'tab.givBoeder': 'Giv bøder',
+  'tab.givBoederPause': 'Giv bøder, slået fra under pause',
   'tab.kategorier': 'Kategorier',
   'tab.mere': 'Mere',
 
@@ -107,6 +108,7 @@ export const da = {
   'hjem.tilGodeTekst': 'Trækkes fra dine næste bøder',
   'hjem.betal': 'Betal',
   'hjem.boederIAlt': 'Bøder i alt',
+  'hjem.boederIAltSaeson': '{saeson} · Bøder i alt',
   'hjem.betalt': 'Betalt {beloeb}',
   'hjem.toplisteRad': '{navn} · Betalt {beloeb}',
 
@@ -258,6 +260,28 @@ export const da = {
   'indstillinger.beloeb': 'Beløb',
   'indstillinger.beloebUgyldig': 'Beløbet skal være et helt antal kroner over 0.',
   'indstillinger.gem': 'Gem',
+
+  // Sæson: end date, Pause and Start ny sæson (#67)
+  'saeson.slutter': '{saeson} slutter',
+  'saeson.ingenSlutdato': 'Ingen dato',
+  'saeson.navn': 'Sæsonens navn',
+  'saeson.navnTitel': 'Omdøb sæsonen',
+  'saeson.start': 'Start ny sæson',
+  'saeson.afslut': 'Afslut sæson nu',
+  'saeson.pause': 'Pause',
+  'saeson.sluttede': '{saeson} sluttede {dato}',
+  'saeson.startKort': 'Start sæson',
+  'saeson.startTitel': 'Start ny sæson?',
+  'saeson.startTekst': '{saeson} slutter nu, og en ny sæson starter. Bøder, gebyrer og topliste starter forfra, mens saldi og kassen fortsætter. Åbne anker lukkes som ikke afgjort. Det kan ikke fortrydes.',
+  'saeson.startTekstPause': 'En ny sæson starter nu. Bøder, gebyrer og topliste starter forfra, mens saldi og kassen fortsætter. Åbne anker lukkes som ikke afgjort. Det kan ikke fortrydes.',
+  'saeson.afslutTitel': 'Afslut sæsonen nu?',
+  'saeson.afslutTekst': '{saeson} slutter med det samme, og I holder pause. Ingen kan give bøder, før en ny sæson starter, men I kan stadig betale. Det kan ikke fortrydes.',
+  'saeson.afslutKnap': 'Afslut sæson',
+  'saeson.slutdatoTitel': 'Sæsonen slutter',
+  'saeson.slutdatoLabel': 'Sidste dag',
+  'saeson.slutdatoNote': 'Sæsonen slutter ved midnat efter denne dag. Derefter holder I pause, til en Admin starter en ny sæson.',
+  'saeson.fjernSlutdato': 'Fjern slutdato',
+  'saeson.slutdatoFortid': 'Datoen må ikke ligge før i dag.',
 
   // Medlemmer, Tilføj Medlem and your own name
   'medlemmer.tilfoej': 'Tilføj Medlem',
@@ -411,6 +435,8 @@ export const da = {
   'aktivitet.annulleredeIndbetaling': '{hvem} annullerede en indbetaling',
   'aktivitet.fra': 'Fra {hvem}',
   'aktivitet.startetAf': 'Startet af {hvem}',
+  'aktivitet.saesonAfsluttet': '{saeson} sluttede',
+  'aktivitet.afsluttetAf': 'Afsluttet af {hvem}',
   'boede.titel': 'Bøde',
   'boede.fraTil': 'Fra {giver} til {modtager} · {siden}',
   'boede.givet': 'Givet',

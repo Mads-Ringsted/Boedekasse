@@ -3,6 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Plus, Wallet } from 'lucide-react';
 import { useGivBoeder } from '../giv/GivBoederProvider.tsx';
 import { RegistrerIndbetalingSheet } from '../kassen/RegistrerIndbetalingSheet.tsx';
+import { useSaeson } from '../saeson/SaesonProvider.tsx';
 import { t } from '../strings/index.ts';
 import type { ProfilDelProps } from './handlinger.ts';
 
@@ -29,10 +30,11 @@ export function ProfilKnap({ label, Icon, primaer = false, under, onClick }: Pro
   );
 }
 
-/** "Giv bøde": opens Giv bøder with this person picked. */
+/** "Giv bøde": opens Giv bøder with this person picked. Hidden in a Pause. */
 export function GivBoedeKnap({ profil, visning }: ProfilDelProps) {
   const { aabn } = useGivBoeder();
-  if (!visning.kanGiveBoede) return null;
+  const { pause } = useSaeson();
+  if (!visning.kanGiveBoede || pause) return null;
   return <ProfilKnap primaer Icon={Plus} label={t('profil.givBoede')} onClick={() => aabn({ medlemId: profil.id })} />;
 }
 
