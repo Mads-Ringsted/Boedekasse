@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Check } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { delInvitation } from '../../bodekasse/delInvitation.ts';
+import { AABN_NY } from '../../kategorier/Kategorier.tsx';
 import { formatKr, t } from '../../strings/index.ts';
 import type { KomIGangPunkt } from './komIGang.ts';
 
@@ -53,7 +54,7 @@ export function KomIGangKort({ punkter, bodekasseNavn, kode }: KomIGangKortProps
     }
     if (p.trin === 'kategorier') {
       return (
-        <button type="button" className={`kom-i-gang__knap${primaer}`} onClick={() => void navigate('/kategorier')}>
+        <button type="button" className={`kom-i-gang__knap${primaer}`} onClick={() => void navigate('/kategorier', { state: AABN_NY })}>
           {t('hjem.opretKategori')}
         </button>
       );

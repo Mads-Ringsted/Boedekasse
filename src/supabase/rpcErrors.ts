@@ -7,6 +7,12 @@ import { t, type PlainStringId } from '../strings/index.ts';
 const BY_KEY: Record<string, PlainStringId> = {
   navn_mangler: 'fejl.navnMangler',
   mit_navn_mangler: 'fejl.mitNavnMangler',
+  kategorinavn_mangler: 'fejl.kategorinavnMangler',
+  navn_findes: 'fejl.navnFindes',
+  pris_ugyldig: 'fejl.prisUgyldig',
+  ikke_tilladt: 'fejl.ikkeTilladt',
+  arkiveret: 'fejl.kategoriArkiveret',
+  ikke_fundet: 'fejl.ikkeFundet',
 };
 
 /**
