@@ -1723,6 +1723,9 @@ isOneToOne: false
 "arkiver_bodekategori":
 { Args: { "p_bodekategori": string,"p_klient_id": string }; Returns: Json
                            },
+"behandl_betalingsmelding":
+{ Args: { "p_bekraeft": boolean,"p_klient_id": string,"p_melding": string }; Returns: Json
+                           },
 "find_bodekasse_med_kode":
 { Args: { "p_kode": string }; Returns: Json
                            },
@@ -1732,11 +1735,17 @@ isOneToOne: false
 "fortryd_batch":
 { Args: { "p_batch": string,"p_klient_id": string }; Returns: Json
                            },
+"fortryd_betalingsmelding":
+{ Args: { "p_klient_id": string,"p_melding": string }; Returns: Json
+                           },
 "gendan_bodekategori":
 { Args: { "p_bodekategori": string,"p_klient_id": string }; Returns: Json
                            },
 "giv_boeder":
 { Args: { "p_bodekasse": string,"p_klient_id": string,"p_linjer": Json }; Returns: Json
+                           },
+"meld_betaling":
+{ Args: { "p_beloeb": number,"p_bodekasse": string,"p_klient_id": string }; Returns: Json
                            },
 "opdater_indstillinger":
 { Args: { "p_aendringer": Json,"p_bodekasse": string,"p_klient_id": string }; Returns: Json
