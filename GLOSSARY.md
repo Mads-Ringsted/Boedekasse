@@ -14,9 +14,21 @@ _Avoid_: Group, team, kasse
 A person in a Bødekasse. May exist as name + email before the person has signed up; signing in with that email claims the spot.
 _Avoid_: User, player, participant
 
+**Udmeldt** (Removed):
+A former Medlem an Admin has taken out of the Bødekasse. Their history and any unpaid Saldo stay in the Bødekasse, and an Admin can bring them back.
+_Avoid_: Slettet, inaktiv, forladt
+
 **Admin**:
-A Medlem who can change a Bødekasse's settings, manage Medlemmer, and register Indbetalinger. The creator is the first Admin.
+A Medlem who can change a Bødekasse's settings, manage Medlemmer, register Indbetalinger, and make Hævninger. The creator is the first Admin.
 _Avoid_: Kasserer, owner, moderator
+
+**Sæson** (Season):
+A period in which a Bødekasse is active: Medlemmer give Bøder and Gebyrer arise. An Admin starts it and it ends on its end date or when an Admin ends it; unpaid Saldo carries over into the next one.
+_Avoid_: Season, periode, år
+
+**Pause** (Break):
+The time between one Sæson ending and the next starting. No Bøder or Gebyrer arise, but Indbetalinger and withdrawals still happen.
+_Avoid_: Sæsonpause, break
 
 ### Charges
 
@@ -37,7 +49,7 @@ A charge the Bødekasse imposes itself rather than one Medlem giving another, e.
 _Avoid_: Afgift, ankebøde
 
 **Frikøb** (Buy-out):
-A one-off payment that exempts a Medlem from Bøder for the rest of the calendar year. Never covers Gebyrer.
+A one-off payment that exempts a Medlem from Bøder for the rest of the Sæson. Never covers Gebyrer.
 _Avoid_: Amnesti, amnesty
 
 **Anke** (Appeal):
@@ -51,12 +63,20 @@ _Avoid_: Game, spil
 ### Money
 
 **Indbetaling** (Payment):
-Money a Medlem has paid into the Bødekasse.
+Money a Medlem has paid into the Bødekasse. Counts against their whole Saldo, not specific Bøder. Either registered by an Admin or a confirmed Betalingsmelding.
 _Avoid_: Transaction, settlement
 
+**Betalingsmelding** (Payment report):
+A Medlem's own report that they have paid ("Jeg har betalt"). It doesn't count until another Medlem (or, for an Admin's own report, that Admin) confirms it, which turns it into an Indbetaling.
+_Avoid_: Kvittering, claim
+
 **Saldo** (Balance):
-What a Medlem currently owes: their Bøder and Gebyrer minus their Indbetalinger.
+What a Medlem currently owes: their Bøder and Gebyrer minus their Indbetalinger. Can be negative when a Medlem has paid more than they owe (credit, "til gode").
 _Avoid_: Debt, gæld
+
+**Hævning** (Withdrawal):
+Money an Admin takes out of the Bødekasse for a stated purpose. Lowers the box's money, never any Medlem's Saldo.
+_Avoid_: Udbetaling, expense
 
 ### Corrections
 

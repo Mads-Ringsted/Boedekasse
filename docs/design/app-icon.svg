@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 100 100">
+  <rect width="100" height="100" fill="#0E1220"/>
+  <g transform="translate(50 50) scale(1.22) translate(-50 -64)">
+    <polygon points="22,52 50,66 50,90 22,76" fill="#3B68F5"/>
+    <polygon points="50,66 78,52 78,76 50,90" fill="#1E50E6"/>
+    <polygon points="22,52 50,38 78,52 50,66" fill="#8AA6FF"/>
+    <path d="M40 47 L60 57" stroke="#0E1220" stroke-width="2.8" stroke-linecap="round"/>
+    <text transform="matrix(0.894 -0.447 0 1 64 71)" y="7" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF" font-family="-apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif">$</text>
+  </g>
+</svg>
