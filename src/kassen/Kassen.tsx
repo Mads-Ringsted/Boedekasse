@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ArrowUpRight, Plus } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
+import { AfventerKort } from '../betal/AfventerKort.tsx';
 import { BackButton } from '../components/BackButton.tsx';
 import { Screen } from '../components/Screen.tsx';
 import { formatKr, t } from '../strings/index.ts';
@@ -66,7 +67,7 @@ export function Kassen() {
         </div>
       )}
 
-      {/* #60 puts the "Afventer" Betalingsmeldinger (Afvis / Bekræft) here. */}
+      <AfventerKort variant="kassen" onBehandlet={kassen.reload} />
 
       {kassen.status === 'error' && (
         <button type="button" className="kassen__fejl" onClick={kassen.reload}>
