@@ -25,11 +25,15 @@ The definition of a fine: a name and a price. Any Medlem can create one.
 _Avoid_: Regel, fine type
 
 **Bøde** (Fine):
-A Bødekategori given to a specific Medlem by another Medlem. Keeps the price the Bødekategori had when it was given.
+A fine one Medlem gives another, either from a Bødekategori or as an Engangsbøde. Keeps the price it had when it was given.
 _Avoid_: Penalty, charge
 
+**Engangsbøde** (One-off fine):
+A Bøde given with a free-text reason and amount instead of a Bødekategori. The giver is charged a Gebyr for it.
+_Avoid_: Custom Bøde, ad-hoc Bøde
+
 **Gebyr** (Fee):
-A charge the Bødekasse imposes itself rather than one Medlem giving another, e.g. for creating a Bødekategori, losing an Anke, or placing in a Konkurrence.
+A charge the Bødekasse imposes itself rather than one Medlem giving another, e.g. for creating a Bødekategori, giving an Engangsbøde, losing an Anke, or placing in a Konkurrence.
 _Avoid_: Afgift, ankebøde
 
 **Frikøb** (Buy-out):
