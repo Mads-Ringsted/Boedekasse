@@ -19,8 +19,12 @@ A Medlem who can change a Bødekasse's settings, manage Medlemmer, and register 
 _Avoid_: Kasserer, owner, moderator
 
 **Sæson** (Season):
-One period of a Bødekasse, from one reset to the next. A Bødekasse always has exactly one current Sæson; an Admin starts the next one, and unpaid Saldo carries over into it.
+A period in which a Bødekasse is active: Medlemmer give Bøder and Gebyrer arise. An Admin starts it and it ends on its end date or when an Admin ends it; unpaid Saldo carries over into the next one.
 _Avoid_: Season, periode, år
+
+**Pause** (Break):
+The time between one Sæson ending and the next starting. No Bøder or Gebyrer arise, but Indbetalinger and withdrawals still happen.
+_Avoid_: Sæsonpause, break
 
 ### Charges
 
