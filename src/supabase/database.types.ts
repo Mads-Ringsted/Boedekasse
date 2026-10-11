@@ -39,6 +39,12 @@ isOneToOne: false
       foreignKeyName: "anke_bodekasse_id_afgjort_af_fkey"
       columns: ["bodekasse_id","afgjort_af"]
 isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "anke_bodekasse_id_afgjort_af_fkey"
+      columns: ["bodekasse_id","afgjort_af"]
+isOneToOne: false
       referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
@@ -125,6 +131,12 @@ isOneToOne: false
       foreignKeyName: "betalingsmelding_bodekasse_id_behandlet_af_fkey"
       columns: ["bodekasse_id","behandlet_af"]
 isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "betalingsmelding_bodekasse_id_behandlet_af_fkey"
+      columns: ["bodekasse_id","behandlet_af"]
+isOneToOne: false
       referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
@@ -162,6 +174,12 @@ isOneToOne: false
       columns: ["bodekasse_id","medlem_id"]
 isOneToOne: false
       referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "betalingsmelding_bodekasse_id_medlem_id_fkey"
+      columns: ["bodekasse_id","medlem_id"]
+isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
       foreignKeyName: "betalingsmelding_bodekasse_id_medlem_id_fkey"
@@ -212,6 +230,12 @@ isOneToOne: false
       columns: ["bodekasse_id","annulleret_af"]
 isOneToOne: false
       referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_annulleret_af_fkey"
+      columns: ["bodekasse_id","annulleret_af"]
+isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
       foreignKeyName: "bode_bodekasse_id_annulleret_af_fkey"
@@ -271,6 +295,12 @@ isOneToOne: false
       foreignKeyName: "bode_bodekasse_id_giver_id_fkey"
       columns: ["bodekasse_id","giver_id"]
 isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_giver_id_fkey"
+      columns: ["bodekasse_id","giver_id"]
+isOneToOne: false
       referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
@@ -290,6 +320,12 @@ isOneToOne: false
       columns: ["bodekasse_id","modtager_id"]
 isOneToOne: false
       referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_modtager_id_fkey"
+      columns: ["bodekasse_id","modtager_id"]
+isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
       foreignKeyName: "bode_bodekasse_id_modtager_id_fkey"
@@ -409,6 +445,12 @@ isOneToOne: false
       foreignKeyName: "bodekategori_bodekasse_id_oprettet_af_fkey"
       columns: ["bodekasse_id","oprettet_af"]
 isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "bodekategori_bodekasse_id_oprettet_af_fkey"
+      columns: ["bodekasse_id","oprettet_af"]
+isOneToOne: false
       referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     }
@@ -442,6 +484,12 @@ isOneToOne: false
       columns: ["bodekasse_id","annulleret_af"]
 isOneToOne: false
       referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "frikob_bodekasse_id_annulleret_af_fkey"
+      columns: ["bodekasse_id","annulleret_af"]
+isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
       foreignKeyName: "frikob_bodekasse_id_annulleret_af_fkey"
@@ -501,6 +549,12 @@ isOneToOne: false
       foreignKeyName: "frikob_bodekasse_id_medlem_id_fkey"
       columns: ["bodekasse_id","medlem_id"]
 isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "frikob_bodekasse_id_medlem_id_fkey"
+      columns: ["bodekasse_id","medlem_id"]
+isOneToOne: false
       referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
@@ -520,6 +574,12 @@ isOneToOne: false
       columns: ["bodekasse_id","registreret_af"]
 isOneToOne: false
       referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "frikob_bodekasse_id_registreret_af_fkey"
+      columns: ["bodekasse_id","registreret_af"]
+isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
       foreignKeyName: "frikob_bodekasse_id_registreret_af_fkey"
@@ -576,6 +636,12 @@ isOneToOne: false
       columns: ["bodekasse_id","annulleret_af"]
 isOneToOne: false
       referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "gebyr_bodekasse_id_annulleret_af_fkey"
+      columns: ["bodekasse_id","annulleret_af"]
+isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
       foreignKeyName: "gebyr_bodekasse_id_annulleret_af_fkey"
@@ -665,6 +731,12 @@ isOneToOne: false
       foreignKeyName: "gebyr_bodekasse_id_medlem_id_fkey"
       columns: ["bodekasse_id","medlem_id"]
 isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "gebyr_bodekasse_id_medlem_id_fkey"
+      columns: ["bodekasse_id","medlem_id"]
+isOneToOne: false
       referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
@@ -715,6 +787,12 @@ isOneToOne: false
       foreignKeyName: "haendelse_bodekasse_id_aktoer_id_fkey"
       columns: ["bodekasse_id","aktoer_id"]
 isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "haendelse_bodekasse_id_aktoer_id_fkey"
+      columns: ["bodekasse_id","aktoer_id"]
+isOneToOne: false
       referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
@@ -752,6 +830,12 @@ isOneToOne: false
       columns: ["bodekasse_id","modtager_id"]
 isOneToOne: false
       referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "haendelse_bodekasse_id_modtager_id_fkey"
+      columns: ["bodekasse_id","modtager_id"]
+isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
       foreignKeyName: "haendelse_bodekasse_id_modtager_id_fkey"
@@ -807,6 +891,12 @@ isOneToOne: false
       foreignKeyName: "haevning_bodekasse_id_annulleret_af_fkey"
       columns: ["bodekasse_id","annulleret_af"]
 isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "haevning_bodekasse_id_annulleret_af_fkey"
+      columns: ["bodekasse_id","annulleret_af"]
+isOneToOne: false
       referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
@@ -844,6 +934,12 @@ isOneToOne: false
       columns: ["bodekasse_id","registreret_af"]
 isOneToOne: false
       referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "haevning_bodekasse_id_registreret_af_fkey"
+      columns: ["bodekasse_id","registreret_af"]
+isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
       foreignKeyName: "haevning_bodekasse_id_registreret_af_fkey"
@@ -899,6 +995,12 @@ isOneToOne: false
       foreignKeyName: "indbetaling_bodekasse_id_annulleret_af_fkey"
       columns: ["bodekasse_id","annulleret_af"]
 isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "indbetaling_bodekasse_id_annulleret_af_fkey"
+      columns: ["bodekasse_id","annulleret_af"]
+isOneToOne: false
       referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
@@ -947,6 +1049,12 @@ isOneToOne: false
       foreignKeyName: "indbetaling_bodekasse_id_medlem_id_fkey"
       columns: ["bodekasse_id","medlem_id"]
 isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "indbetaling_bodekasse_id_medlem_id_fkey"
+      columns: ["bodekasse_id","medlem_id"]
+isOneToOne: false
       referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
@@ -966,6 +1074,12 @@ isOneToOne: false
       columns: ["bodekasse_id","registreret_af"]
 isOneToOne: false
       referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "indbetaling_bodekasse_id_registreret_af_fkey"
+      columns: ["bodekasse_id","registreret_af"]
+isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
       foreignKeyName: "indbetaling_bodekasse_id_registreret_af_fkey"
@@ -1021,6 +1135,12 @@ isOneToOne: false
       foreignKeyName: "konkurrence_bodekasse_id_annulleret_af_fkey"
       columns: ["bodekasse_id","annulleret_af"]
 isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "konkurrence_bodekasse_id_annulleret_af_fkey"
+      columns: ["bodekasse_id","annulleret_af"]
+isOneToOne: false
       referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
@@ -1063,6 +1183,12 @@ isOneToOne: false
       foreignKeyName: "konkurrence_bodekasse_id_oprettet_af_fkey"
       columns: ["bodekasse_id","oprettet_af"]
 isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "konkurrence_bodekasse_id_oprettet_af_fkey"
+      columns: ["bodekasse_id","oprettet_af"]
+isOneToOne: false
       referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
@@ -1082,6 +1208,12 @@ isOneToOne: false
       columns: ["bodekasse_id","rettet_af"]
 isOneToOne: false
       referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "konkurrence_bodekasse_id_rettet_af_fkey"
+      columns: ["bodekasse_id","rettet_af"]
+isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
       foreignKeyName: "konkurrence_bodekasse_id_rettet_af_fkey"
@@ -1156,6 +1288,12 @@ isOneToOne: false
       columns: ["bodekasse_id","medlem_id"]
 isOneToOne: false
       referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "konkurrence_resultat_bodekasse_id_medlem_id_fkey"
+      columns: ["bodekasse_id","medlem_id"]
+isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
       foreignKeyName: "konkurrence_resultat_bodekasse_id_medlem_id_fkey"
@@ -1260,6 +1398,12 @@ isOneToOne: false
       foreignKeyName: "haendelse_bodekasse_id_aktoer_id_fkey"
       columns: ["bodekasse_id","aktoer_id"]
 isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "haendelse_bodekasse_id_aktoer_id_fkey"
+      columns: ["bodekasse_id","aktoer_id"]
+isOneToOne: false
       referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
@@ -1297,6 +1441,12 @@ isOneToOne: false
       columns: ["bodekasse_id","modtager_id"]
 isOneToOne: false
       referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "haendelse_bodekasse_id_modtager_id_fkey"
+      columns: ["bodekasse_id","modtager_id"]
+isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
       foreignKeyName: "haendelse_bodekasse_id_modtager_id_fkey"
@@ -1346,6 +1496,12 @@ isOneToOne: false
       foreignKeyName: "bode_bodekasse_id_annulleret_af_fkey"
       columns: ["bodekasse_id","annulleret_af"]
 isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_annulleret_af_fkey"
+      columns: ["bodekasse_id","annulleret_af"]
+isOneToOne: false
       referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
@@ -1400,6 +1556,12 @@ isOneToOne: false
       foreignKeyName: "bode_bodekasse_id_giver_id_fkey"
       columns: ["bodekasse_id","giver_id"]
 isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_giver_id_fkey"
+      columns: ["bodekasse_id","giver_id"]
+isOneToOne: false
       referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
@@ -1419,6 +1581,12 @@ isOneToOne: false
       columns: ["bodekasse_id","modtager_id"]
 isOneToOne: false
       referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_modtager_id_fkey"
+      columns: ["bodekasse_id","modtager_id"]
+isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
       foreignKeyName: "bode_bodekasse_id_modtager_id_fkey"
@@ -1468,6 +1636,12 @@ isOneToOne: false
       foreignKeyName: "bode_bodekasse_id_annulleret_af_fkey"
       columns: ["bodekasse_id","annulleret_af"]
 isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_annulleret_af_fkey"
+      columns: ["bodekasse_id","annulleret_af"]
+isOneToOne: false
       referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
@@ -1522,6 +1696,12 @@ isOneToOne: false
       foreignKeyName: "bode_bodekasse_id_giver_id_fkey"
       columns: ["bodekasse_id","giver_id"]
 isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_giver_id_fkey"
+      columns: ["bodekasse_id","giver_id"]
+isOneToOne: false
       referencedRelation: "topliste"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
@@ -1541,6 +1721,12 @@ isOneToOne: false
       columns: ["bodekasse_id","modtager_id"]
 isOneToOne: false
       referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_modtager_id_fkey"
+      columns: ["bodekasse_id","modtager_id"]
+isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
       referencedColumns: ["bodekasse_id","medlem_id"]
     },{
       foreignKeyName: "bode_bodekasse_id_modtager_id_fkey"
@@ -1662,6 +1848,38 @@ isOneToOne: false
       referencedColumns: ["bodekasse_id"]
     }
                   ]
+                },"medlem_slet_grund": {
+                  Row: {
+                    "bodekasse_id": string | null,"grund": string | null,"medlem_id": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "bodekasse_id"?: string | null,"grund"?: never,"medlem_id"?: string | null
+                         }
+                        Update: {
+                           "bodekasse_id"?: string | null,"grund"?: never,"medlem_id"?: string | null
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "medlem_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "bodekasse"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "medlem_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "bodekasse_saeson"
+      referencedColumns: ["bodekasse_id"]
+    },{
+      foreignKeyName: "medlem_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "kassen"
+      referencedColumns: ["bodekasse_id"]
+    }
+                  ]
                 },"saeson_status": {
                   Row: {
                     "afsluttet": string | null,"bodekasse_id": string | null,"er_seneste": boolean | null,"id": string | null,"koerer": boolean | null,"loebenr": number | null,"navn": string | null,"slutdato": string | null,"slutter": string | null,"startet": string | null
@@ -1735,6 +1953,9 @@ isOneToOne: false
 "gendan_bodekategori":
 { Args: { "p_bodekategori": string,"p_klient_id": string }; Returns: Json
                            },
+"genoptag":
+{ Args: { "p_bodekasse": string,"p_klient_id": string,"p_medlem": string }; Returns: Json
+                           },
 "giv_boeder":
 { Args: { "p_bodekasse": string,"p_klient_id": string,"p_linjer": Json }; Returns: Json
                            },
@@ -1753,14 +1974,29 @@ isOneToOne: false
 "ret_bodekategori":
 { Args: { "p_beskrivelse": string,"p_bodekategori": string,"p_klient_id": string,"p_navn": string,"p_pris": number }; Returns: Json
                            },
+"ret_medlem_email":
+{ Args: { "p_bodekasse": string,"p_email": string,"p_klient_id": string,"p_medlem": string }; Returns: Json
+                           },
+"ret_medlem_navn":
+{ Args: { "p_bodekasse": string,"p_klient_id": string,"p_medlem": string,"p_navn": string }; Returns: Json
+                           },
 "ret_mit_navn":
 { Args: { "p_bodekasse": string,"p_klient_id": string,"p_navn": string }; Returns: Json
+                           },
+"saet_admin":
+{ Args: { "p_bodekasse": string,"p_er_admin": boolean,"p_klient_id": string,"p_medlem": string }; Returns: Json
+                           },
+"slet_medlem":
+{ Args: { "p_bodekasse": string,"p_klient_id": string,"p_medlem": string }; Returns: Json
                            },
 "tilfoej_medlem":
 { Args: { "p_bodekasse": string,"p_email": string,"p_klient_id": string,"p_navn": string }; Returns: Json
                            },
 "tilmeld_med_kode":
 { Args: { "p_klient_id": string,"p_kode": string,"p_mit_navn": string }; Returns: Json
+                           },
+"udmeld":
+{ Args: { "p_bodekasse": string,"p_klient_id": string,"p_medlem": string }; Returns: Json
                            }
           }
           Enums: {
