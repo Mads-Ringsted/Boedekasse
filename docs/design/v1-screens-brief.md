@@ -189,5 +189,6 @@ Box state: I bødekassen 570 kr · indbetalt 870 kr · hævet 300 kr · alle man
 
 The clickable prototype answers **structure and flow**: what is on each screen and how it behaves. Its visuals are a rough sketch, so design the look fresh.
 
+- **Mocks and design decisions:** [v1-design-decisions.md](v1-design-decisions.md) lists the chosen screens in [`mocks/`](mocks/) and the decisions that update this brief.
 - **Prototype:** `prototypes/core-screens/index.html` on branch [`claude/gracious-bardeen-r7lvf3`](https://github.com/Mads-Ringsted/Boedekasse/tree/claude/gracious-bardeen-r7lvf3/prototypes/core-screens). Open it at `#h1g1` for the chosen home screen and Giv flow.
 - **Out of v1:** push notifications, automatic or recurring Bøder, in-app games, location-based Bøder, MobilePay payment sync.
