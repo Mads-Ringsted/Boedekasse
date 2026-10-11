@@ -16,17 +16,23 @@ import './Mere.css';
 
 /** The numbers shown at the end of Mere's rows. */
 async function hentMere(bodekasseId: string) {
-  const [medlemmer, kassen] = await Promise.all([
+  const [medlemmer, kassen, kasse] = await Promise.all([
     supabase
       .from('medlem')
       .select('id', { count: 'exact', head: true })
       .eq('bodekasse_id', bodekasseId)
       .is('udmeldt', null),
     supabase.from('kassen').select('beloeb').eq('bodekasse_id', bodekasseId).maybeSingle(),
+    supabase.from('bodekasse').select('konkurrence_til').eq('id', bodekasseId).maybeSingle(),
   ]);
   if (medlemmer.error) throw medlemmer.error;
   if (kassen.error) throw kassen.error;
-  return { antalMedlemmer: medlemmer.count ?? 0, iBoedekassen: kassen.data?.beloeb ?? 0 };
+  if (kasse.error) throw kasse.error;
+  return {
+    antalMedlemmer: medlemmer.count ?? 0,
+    iBoedekassen: kassen.data?.beloeb ?? 0,
+    konkurrencer: kasse.data?.konkurrence_til ?? false,
+  };
 }
 
 interface RowProps {
@@ -94,7 +100,9 @@ export function Mere() {
           trailing={data && <span className="mere__vaerdi">{formatKr(data.iBoedekassen)}</span>}
         />
         <Row Icon={Scale} label="mere.anker" onClick={() => void navigate('/anker')} />
-        <Row Icon={Trophy} label="mere.konkurrencer" onClick={() => void navigate('/konkurrencer')} />
+        {data?.konkurrencer && (
+          <Row Icon={Trophy} label="mere.konkurrencer" onClick={() => void navigate('/konkurrencer')} />
+        )}
       </div>
 
       <div className="mere__gruppe">

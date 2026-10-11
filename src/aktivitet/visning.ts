@@ -19,6 +19,8 @@ export interface Raekke {
   boeder?: BoedeLinje[];
   /** Tapping the row opens this Bøde's detail sheet. */
   boedeId?: string;
+  /** Tapping the row opens this screen (e.g. a Konkurrence's result). */
+  link?: string;
 }
 
 /** One Bøde inside an expanded batch row. */
@@ -37,7 +39,7 @@ export type Ikon =
   | { slags: 'symbol'; symbol: Symbol; tone?: 'graa' | 'groen' | 'blaa' };
 
 /** Icon tiles. Add one here and in `FeedRaekke`'s SYMBOLER for a new kind. */
-export type Symbol = 'kategori' | 'saeson';
+export type Symbol = 'kategori' | 'saeson' | 'trofae';
 
 export interface Tag {
   tekst: string;
@@ -47,6 +49,8 @@ export interface Tag {
 /** Who is looking: their own name reads "Du" / "dig". */
 export interface Kontekst {
   migId: string;
+  /** Set in a Medlem's history: the feed is filtered to them. */
+  profilId?: string;
 }
 
 /** Describes one entry kind. Return null to leave the entry out. */
