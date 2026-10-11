@@ -1497,7 +1497,10 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "arkiver_bodekategori":
+            "annuller_indbetaling":
+{ Args: { "p_indbetaling": string,"p_klient_id": string,"p_note"?: string }; Returns: Json
+                           },
+"arkiver_bodekategori":
 { Args: { "p_bodekategori": string,"p_klient_id": string }; Returns: Json
                            },
 "find_bodekasse_med_kode":
@@ -1520,6 +1523,9 @@ isOneToOne: false
                            },
 "opret_bodekategori":
 { Args: { "p_beskrivelse"?: string,"p_bodekasse": string,"p_klient_id": string,"p_navn": string,"p_pris": number }; Returns: Json
+                           },
+"registrer_indbetaling":
+{ Args: { "p_beloeb": number,"p_bodekasse": string,"p_klient_id": string,"p_medlem": string,"p_note"?: string }; Returns: Json
                            },
 "ret_bodekategori":
 { Args: { "p_beskrivelse": string,"p_bodekategori": string,"p_klient_id": string,"p_navn": string,"p_pris": number }; Returns: Json
