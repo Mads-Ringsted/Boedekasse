@@ -43,3 +43,20 @@ export function medlemsliste(medlemmer: MedlemRaekke[], saldi: SaldoRaekke[], mi
     }))
     .sort((a, b) => danskOrden.compare(a.navn, b.navn));
 }
+
+/** One row under Tidligere medlemmer. */
+export interface TidligereLinje {
+  id: string;
+  navn: string;
+  /** What they still owe in kr; negative = Til gode. */
+  saldo: number;
+}
+
+/** Udmeldte Medlemmer by name (Danish order), each with what they still owe. */
+export function tidligereMedlemmer(medlemmer: MedlemRaekke[], saldi: SaldoRaekke[]): TidligereLinje[] {
+  const saldoFor = new Map(saldi.map((s) => [s.medlem_id, s.saldo]));
+  return medlemmer
+    .filter((m) => m.udmeldt !== null)
+    .map((m) => ({ id: m.id, navn: m.navn, saldo: saldoFor.get(m.id) ?? 0 }))
+    .sort((a, b) => danskOrden.compare(a.navn, b.navn));
+}
