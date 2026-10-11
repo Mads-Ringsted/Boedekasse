@@ -6,6 +6,7 @@ import { formatKr, t } from '../strings/index.ts';
 import type { Modtager } from './hentGiv.ts';
 import { KategoriVaelger } from './KategoriVaelger.tsx';
 import { boederTekst } from './tekst.ts';
+import type { Engangsbode } from './valg.ts';
 
 interface GivPersonSheetProps {
   open: boolean;
@@ -15,12 +16,28 @@ interface GivPersonSheetProps {
   antal: (kategoriId: string) => number;
   onPlus: (kategoriId: string) => void;
   onMinus: (kategoriId: string) => void;
+  /** This person's Engangsbøder, and adding or removing one for them only. */
+  engangs: readonly Engangsbode[];
+  onEngangs: () => void;
+  onFjernEngangs: (id: string) => void;
   /** This person's totals so far. */
   sum: { antal: number; beloeb: number };
 }
 
 /** Giv bøder step 3b: the same list, for one person only. Stacks on the flow. */
-export function GivPersonSheet({ open, onOpenChange, modtager, kategorier, antal, onPlus, onMinus, sum }: GivPersonSheetProps) {
+export function GivPersonSheet({
+  open,
+  onOpenChange,
+  modtager,
+  kategorier,
+  antal,
+  onPlus,
+  onMinus,
+  engangs,
+  onEngangs,
+  onFjernEngangs,
+  sum,
+}: GivPersonSheetProps) {
   const luk = () => onOpenChange(false);
   return (
     <Sheet
@@ -61,7 +78,15 @@ export function GivPersonSheet({ open, onOpenChange, modtager, kategorier, antal
         </div>
       }
     >
-      <KategoriVaelger kategorier={kategorier} antal={antal} onPlus={onPlus} onMinus={onMinus} />
+      <KategoriVaelger
+        kategorier={kategorier}
+        antal={antal}
+        onPlus={onPlus}
+        onMinus={onMinus}
+        engangs={engangs}
+        onEngangs={onEngangs}
+        onFjernEngangs={onFjernEngangs}
+      />
     </Sheet>
   );
 }
