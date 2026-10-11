@@ -1,0 +1,149 @@
+/* The verdict sheet (anke-afgoerelse.html) */
+.afgoerelse {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.afgoerelse__boede {
+  border-radius: var(--radius-card);
+  background: var(--color-surface-raised);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.afgoerelse__hvem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+}
+
+.afgoerelse__linje {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.afgoerelse__navn {
+  min-width: 0;
+  font-size: 17px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.afgoerelse__beloeb {
+  flex-shrink: 0;
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: var(--font-numeric);
+}
+
+.afgoerelse__valg {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.afgoerelse__kort {
+  border-radius: var(--radius-card);
+  background: var(--color-surface-raised);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  color: var(--color-text);
+}
+
+.afgoerelse__kort--valgt {
+  background: var(--color-accent-pale);
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
+.afgoerelse__radio {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px var(--color-line-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.afgoerelse__kort--valgt .afgoerelse__radio {
+  background: var(--color-accent);
+  box-shadow: none;
+}
+
+.afgoerelse__kort--valgt .afgoerelse__radio::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-on-accent);
+}
+
+.afgoerelse__tekst {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.afgoerelse__titel {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.afgoerelse__under {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-variant-numeric: var(--font-numeric);
+}
+
+.afgoerelse__kort--valgt .afgoerelse__under {
+  color: var(--color-accent-pale-text);
+}
+
+.afgoerelse__note {
+  margin: 0;
+  padding: 0 4px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.afgoerelse__knap {
+  width: 100%;
+  height: var(--size-button);
+  border-radius: var(--radius-button);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 17px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.afgoerelse__knap:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.afgoerelse__fejl {
+  margin: 0 4px 10px;
+  font-size: 14px;
+  color: var(--color-danger);
+}
+
+/* On the Bøde detail sheet: the note for the two involved. */
+.afgoerelse-part {
+  margin: 0;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-raised);
+  padding: 14px 16px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}

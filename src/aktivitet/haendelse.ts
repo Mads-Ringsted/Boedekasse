@@ -40,6 +40,17 @@ export interface Boede {
   annullering: Annullering | null;
   /** The Engangsbøde Gebyr the giver pays (0 for the rest). */
   gebyr: number;
+  /** Who recorded (or last changed) the Anke verdict, and when (#64). */
+  afgjort: Afgjort | null;
+  /** The Anke Gebyr the receiver pays; null with no Anke or when it was annulled. */
+  ankeGebyr: number | null;
+}
+
+/** Who decided an Anke, and when. Null `afId` = closed by a new Sæson. */
+export interface Afgjort {
+  tid: string;
+  afId: string | null;
+  afNavn: string;
 }
 
 /** One Gebyr on a feed entry's cause. */
@@ -93,6 +104,12 @@ function annullering(r: Obj): Annullering | null {
   };
 }
 
+function afgjort(r: Obj): Afgjort | null {
+  const tid = strEllerNull(r.afgjort);
+  if (!tid) return null;
+  return { tid, afId: strEllerNull(r.afgjort_af), afNavn: str(r.afgjort_af_navn) };
+}
+
 /** A row of `aktivitet_bode` (or one element of `aktivitet.boeder`). */
 export function tilBoede(raw: BoedeRow | Obj): Boede {
   const r = raw as Obj;
@@ -116,6 +133,8 @@ export function tilBoede(raw: BoedeRow | Obj): Boede {
     baererId: strEllerNull(r.baerer_id),
     annullering: annullering(r),
     gebyr: tal(r.gebyr),
+    afgjort: afgjort(r),
+    ankeGebyr: typeof r.anke_gebyr === 'number' ? r.anke_gebyr : null,
   };
 }
 

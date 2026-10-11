@@ -14,7 +14,7 @@ export function boedeTag(b: Boede): Tag | undefined {
   if (b.afgoerelseAendret) return { tekst: t('boede.tag.aendret'), tone: 'blaa' };
   return b.afgoerelse === 'modtager_vandt'
     ? { tekst: t('boede.tag.vundet'), tone: 'groen' }
-    : { tekst: t('boede.tag.tabt'), tone: 'graa' };
+    : { tekst: t('boede.tag.tabt'), tone: 'roed' };
 }
 
 const plusGebyr = (beloeb: number) => (beloeb > 0 ? t('aktivitet.plusGebyr', { beloeb: formatKr(beloeb) }) : undefined);

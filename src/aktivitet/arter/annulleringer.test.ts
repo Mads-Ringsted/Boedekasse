@@ -25,6 +25,8 @@ function haendelse(over: Partial<Haendelse> = {}): Haendelse {
       pris: 50,
       engangsbode: false,
       gebyr: 0,
+      afgjort: null,
+      ankeGebyr: null,
       note: null,
     },
     annullering: null,

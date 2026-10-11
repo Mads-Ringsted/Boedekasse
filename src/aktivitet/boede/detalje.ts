@@ -2,7 +2,7 @@ import { tilbageTekst } from '../../anke/anke.ts';
 import { formatKr, t } from '../../strings/index.ts';
 import type { Boede } from '../haendelse.ts';
 import { hvem, hvemObjekt } from '../navne.ts';
-import { givetTekst, siden } from '../tid.ts';
+import { dagOverskrift, givetTekst, siden } from '../tid.ts';
 import type { Kontekst } from '../visning.ts';
 
 /** "Fra Frederik til dig · 5 t". */
@@ -14,6 +14,12 @@ export function fraTil(b: Boede, ctx: Kontekst, nu: Date = new Date()): string {
   });
 }
 
+const stort = (s: string) => s.charAt(0).toLocaleUpperCase('da') + s.slice(1);
+const smaat = (s: string) => s.charAt(0).toLocaleLowerCase('da') + s.slice(1);
+
+/** The name of the giver or the receiver, by id. */
+const navnPaa = (b: Boede, id: string | null) => (id === b.giverId ? b.giverNavn : b.modtagerNavn);
+
 /** One line of the sheet's info card. */
 export interface DetaljeRaekke {
   label: string;
@@ -22,7 +28,8 @@ export interface DetaljeRaekke {
 
 /**
  * The info card: Givet, then how long you can still appeal (`ankeVindue`,
- * only when you may), the Engangsbøde Gebyr, the Anke, and who annulled it.
+ * only when you may), the Engangsbøde Gebyr, the Anke (after a verdict: who
+ * pays now and who decided), the Anke Gebyr, and who annulled it.
  */
 export function detaljeRaekker(
   b: Boede,
@@ -44,16 +51,37 @@ export function detaljeRaekker(
   }
 
   if (b.ankeId) {
-    const vaerdi = b.anket
-      ? t('boede.anke.venter')
-      : b.annullering && !b.afgoerelse
-        ? t('boede.anke.annulleret')
-      : b.afgoerelse === 'modtager_vandt'
-        ? t('boede.anke.vandt')
-        : b.afgoerelse === 'giver_vandt'
-          ? t('boede.anke.staar')
-          : t('boede.anke.ikkeAfgjort');
-    raekker.push({ label: t('boede.anke'), vaerdi });
+    const staar = !b.annullering && (b.afgoerelse === 'modtager_vandt' || b.afgoerelse === 'giver_vandt');
+    if (staar) {
+      // Anke vundet / tabt (boede-aendr-afgoerelse.html): who pays now, who decided.
+      raekker.push({ label: t('boede.betalesNuAf'), vaerdi: stort(hvemObjekt(b.baererId, navnPaa(b, b.baererId), ctx)) });
+      if (b.afgjort) {
+        raekker.push({
+          label: t('boede.afgjortAf'),
+          vaerdi: t('boede.afgjortAfVaerdi', {
+            hvem: stort(hvemObjekt(b.afgjort.afId, b.afgjort.afNavn, ctx)),
+            dag: smaat(dagOverskrift(b.afgjort.tid, nu)),
+          }),
+        });
+      }
+    } else {
+      const vaerdi = b.anket
+        ? t('boede.anke.venter')
+        : b.annullering && !b.afgoerelse
+          ? t('boede.anke.annulleret')
+        : b.afgoerelse === 'modtager_vandt'
+          ? t('boede.anke.vandt')
+          : b.afgoerelse === 'giver_vandt'
+            ? t('boede.anke.staar')
+            : t('boede.anke.ikkeAfgjort');
+      raekker.push({ label: t('boede.anke'), vaerdi });
+    }
+    if (b.ankeGebyr !== null) {
+      raekker.push({
+        label: t('boede.ankegebyr', { hvem: hvemObjekt(b.modtagerId, b.modtagerNavn, ctx) }),
+        vaerdi: formatKr(b.ankeGebyr),
+      });
+    }
   }
 
   if (b.annullering) {
