@@ -48,7 +48,7 @@ Danish domain terms (full definitions are in `GLOSSARY.md` on the main branch):
 - **Anke:** an appeal against a Bøde you received.
 - **Frikøb:** a buy-out of one Bødekategori (300 kr Gebyr by default): nobody can give you a Bøde in that Bødekategori for the rest of the Sæson. You can buy out several Bødekategorier.
 - **Konkurrence:** a contest. Each placement costs a Gebyr.
-- **Indbetaling:** money paid into the box. **Hæv penge:** money taken out.
+- **Indbetaling:** money paid into the box. **Hæv penge:** money taken out (a **Hævning**). A Medlem who has paid can report it ("Jeg har betalt"); the report **afventer** until someone confirms it.
 
 On screen, what a Medlem owes is shown as **"Mangler"** ("Du mangler at betale 50 kr") or **"Skylder"** in lists. The domain word is *Saldo*, but the screens use the plain words.
 
@@ -70,7 +70,12 @@ Shown when the link is opened in the browser instead of the installed app. Expla
 Email field, then a "Send kode" button. Next screen: "Tjek din mail", six digit boxes for the 6-digit code (supports iOS one-time-code autofill), and "Send ny kode". A Medlem an Admin has already added logs in with that same email and takes over their spot.
 
 ### 3. Vælg Bødekasse
-Shown after login when you are in more than one box. Each row shows the box name and its number of Medlemmer, with "Opret ny Bødekasse" at the bottom. Skipped when you are in only one box.
+Shown after login when you are in more than one box and this device has no last-used box (otherwise the app reopens the last one). Each row shows the box name and its number of Medlemmer, with "Opret ny Bødekasse" and "Jeg har en kode" at the bottom. Skipped when you are in only one box.
+
+**Velkommen** (in no box yet): two choices, "Opret Bødekasse" and "Jeg har en kode".
+
+- **Opret Bødekasse:** box name and your name in it, then you land on an empty Hjem as its first Admin.
+- **Jeg har en kode:** a 6-character join code and your name, then you land on that box's Hjem.
 
 ### 4. Hjem
 Top to bottom:
@@ -78,7 +83,8 @@ Top to bottom:
 1. **Header:** the Bødekasse name with a switch chevron, and your avatar on the right (opens your profile).
 2. **Box card:** the main-colour card shows only **how much is in the Bødekasse** ("I bødekassen · 570 kr"). Tapping it opens Kassen.
 3. **Two big actions side by side:** **Giv bøde** (primary, main colour) and **Betal**.
-4. **What's missing:** "Du mangler at betale" next to "Alle mangler at betale".
+4. **What's missing:** "Du mangler at betale" next to "Alle mangler at betale". A Medlem who has paid too much sees "Til gode" instead.
+4a. **Afventer bekræftelse:** when someone has reported a payment, a card lists each report ("Mads har betalt 50 kr · Bekræft / Afvis"). Shown to everyone who can act on it: every Medlem except the reporter, and the reporter too if they're an Admin.
 5. **Topliste:** every Medlem ranked, sortable by **Skylder · Betalt · Bøder i alt**. Each row shows rank, avatar, first name, the sorted amount, and a secondary line ("Betalt 80 kr"). Your own row is highlighted. Tapping a row opens that Medlem.
 
 Open Anker are not shown on Hjem.
@@ -94,24 +100,31 @@ Layout, top to bottom:
 4. At the end of the list: **Ny bødekategori** (shows its Gebyr, e.g. 25 kr) and **Engangsbøde** (reason + amount; the giver pays a 10 kr Gebyr).
 5. **Footer:** a one-line summary per person ("Jonas: 2× For sent, 1× Hygge i stedet for træning · Emil: 1× For sent, 1× Spildt drikke") and the button **"Giv 5 bøder · 210 kr"**.
 
-Speed target: + → person → Bøde → Giv is 4 taps. After giving, a toast says "5 bøder givet · 210 kr" with **Fortryd** (undo).
+Speed target: + → person → Bøde → Giv is 4 taps. After giving, a toast says "5 bøder givet · 210 kr" with **Fortryd** (undo) for about 8 seconds. Fortryd removes the whole batch without a trace.
 
 Design both states: one Bøde to one person, and the example evening above filled in.
 
 ### 6. Betal (bottom sheet)
-"Du mangler at betale" with the amount large, then the box's MobilePay Box number with a copy button. Explains that you pay in MobilePay and an Admin then registers it. Button: "Jeg har betalt 50 kr". Whether that button exists is still open in [Saldo and Indbetaling](https://github.com/Mads-Ringsted/Boedekasse/issues/9), so design it as optional.
+"Du mangler at betale" with the amount large, then the box's MobilePay Box number with a copy button (if no number is set: "Betal til en Admin"). Explains that you pay in MobilePay and then report it here. Button: "Jeg har betalt 50 kr" (amount editable, pre-filled with what you owe). A sent report shows as "Afventer" with a Fortryd option until someone confirms or rejects it.
 
 ### 7. Aktivitet
-A feed of everything that happened, newest first:
+A feed of everything that happened, newest first. Every Medlem sees everything. It is one plain list with no filters or search.
 
-- **Bøder:** "Jonas gav Emil en bøde · For sent · 35 min · 50 kr"
-- **Gebyrer**
-- **Indbetalinger** (green, "+80 kr")
-- **Hævninger**
+- **Bøder:** one row per receiver per Giv batch ("Jonas gav Emil 3 bøder · 90 kr"). Tapping it expands the individual Bøder; a single Bøde reads "Jonas gav Emil en bøde · For sent · 35 min · 50 kr"
+- **Gebyrer**, on the same row as their cause ("Jonas gav Emil en engangsbøde · Kom for sent til bryllup · 100 kr + 10 kr gebyr", "Emil ankede · For sent · gebyr 37 kr")
+- **Anke verdicts**
+- **Indbetalinger** (green, "+80 kr"), including confirmed and rejected reports and removed Indbetalinger
+- **Hævninger** (with their purpose), including removed ones
 - **Frikøb** ("Oliver købte Frikøb · For sent · 300 kr")
-- **Konkurrencer**, grouped into one row ("Konkurrence: Bowling · 8 gebyrer · 260 kr")
+- **Konkurrencer**, grouped into one row ("Konkurrence: Bowling · 8 gebyrer · 260 kr"). A corrected one is tagged "Rettet af Frederik"
+- **Annulleringer:** the original entry stays where it is, struck through with "Annulleret af Frederik" and the optional note. A small new entry also appears at the top ("Frederik annullerede Jonas' bøde til Emil · For sent · 50 kr")
+- **Other events:** a Bødekategori created, re-priced or archived; a Medlem added, Udmeldt or Genoptaget; a Sæson started or ended
 
-Bøder can carry a status tag: **Anket**, **Anke vundet**, or **Anke tabt**. Tapping a Bøde opens its detail sheet.
+No entry for role changes, settings changes, name edits, or Betalingsmeldinger that are still pending.
+
+Admins can annul a creation Gebyr or an Anke Gebyr from its row. Whoever entered a Konkurrence, or an Admin, can correct or annul it as a whole. All of this works in the current Sæson only.
+
+Bøder can carry a status tag: **Anket**, **Anke vundet**, **Anke tabt**, **Afgørelse ændret** or **Annulleret** (amount struck through). Tapping a Bøde opens its detail sheet.
 
 ### 8. Bødekategorier
 Title with a + button, search, "Mest brugt" (top 5), a Navn/Pris switch and the full list. Each row shows name, price and how many times it has been used. Archived ones are listed in a small line at the bottom.
@@ -122,9 +135,14 @@ Title with a + button, search, "Mest brugt" (top 5), a Navn/Pris switch and the 
 ### 9. Bøde detail (bottom sheet)
 Name, amount, "Fra Frederik til dig · 5 t". Actions depend on who you are:
 
-- **Received within 7 days:** "Anke bøden".
+- **Received within 24 hours:** "Anke bøden".
 - **Anket, and you are not one of the two involved:** "Registrér gruppens afgørelse".
 - **Anket, and you are involved:** a note that the group decides.
+- **Verdict recorded, and you recorded it or are an Admin:** "Ændr afgørelse" (current Sæson only).
+- **You gave it, and it is not anket:** "Annullér bøde", with an optional note. Admins can annul any Bøde, anket or not. Annulling an Engangsbøde also annuls its Gebyr; an Anke Gebyr always stays. An open Anke on an annulled Bøde ends as "Bøden annulleret".
+- **Annulled:** the sheet shows "Annulleret af Frederik", the note, and the amount struck through. There is no way to reverse it.
+
+Annulling and changing a verdict only work in the current Sæson.
 
 ### 10. Anke
 1. **Intro:** filing costs a random Gebyr between 1 kr and twice the Bøde, paid whatever the outcome.
@@ -132,16 +150,20 @@ Name, amount, "Fra Frederik til dig · 5 t". Actions depend on who you are:
 3. **Verdict sheet** (recorded by another Medlem): "Bøden står ved magt" or "Anken vinder" (the Bøde moves to the Medlem who gave it).
 
 ### 11. Medlem profile
-Avatar, name, tags (Admin, Ikke logget ind endnu), a "Frikøb" line listing the Bødekategorier they have bought out this Sæson, "Mangler at betale" large, then Bøder og gebyrer next to Betalt. Actions: Giv bøde (pre-selects this person), Betal and Køb Frikøb (on your own profile; Køb Frikøb only when enabled: pick a Bødekategori not yet bought out, then a confirm sheet showing price and Sæson end), Registrér indbetaling and Registrér / Annullér Frikøb per Bødekategori (Admin). On your own profile, a "Kan ankes" section lists Bøder still within the 7-day appeal window. Then the full history.
+Avatar, name, tags (Admin, Ikke logget ind endnu), a "Frikøb" line listing the Bødekategorier they have bought out this Sæson, "Mangler at betale" large, then Bøder og gebyrer next to Betalt. Actions: Giv bøde (pre-selects this person), Betal (on your own profile, showing any report that afventer) and Køb Frikøb (on your own profile, only when enabled: pick a Bødekategori not yet bought out, then a confirm sheet showing price and Sæson end), Registrér indbetaling and Registrér / Annullér Frikøb per Bødekategori (Admin). On your own profile, a "Kan ankes" section lists Bøder still within the 24-hour appeal window. Then the full history: the Aktivitet feed filtered to rows where this Medlem gave, received, paid or was charged.
 
 ### 12. Mere
-Your profile row, then Medlemmer, Kassen og indbetalinger, Anker (with count), Konkurrencer, Indstillinger (Admin), Skift Bødekasse, Log ud.
+Your profile row (your name in this box, editable; "Slet konto" at the bottom of your profile), then Medlemmer, Kassen og indbetalinger, Anker (with count), Konkurrencer, Indstillinger (Admin), Skift Bødekasse, Log ud.
 
 ### 13. Kassen
-Card with "I bødekassen", plus Indbetalt, hævet and mangler. Admin buttons: **Registrér indbetaling** (pick a Medlem, amount pre-filled with what they owe) and **Hæv penge** (amount + purpose, e.g. "Depositum til julefrokost"). Below: the list of Indbetalinger and Hævninger.
+Card with "I bødekassen", plus Indbetalt, hævet and mangler. Then reports that afventer (Bekræft / Afvis). Admin buttons: **Registrér indbetaling** (pick any Medlem incl. yourself and Udmeldte, amount pre-filled with what they owe, optional note) and **Hæv penge** (amount up to what's in the box + required purpose, e.g. "Depositum til julefrokost"). Below: the list of Indbetalinger and Hævninger; an Admin can remove one registered by mistake (current Sæson only).
 
 ### 14. Medlemmer
 List with what each owes. Admins get "Tilføj Medlem" (name + email; the person can receive Bøder before they ever log in) and can make others Admin.
+
+- **Join code (Admin):** the box's code (e.g. `K7P2QX`) with "Del" (shares an invite text with the code) and "Ny kode" (the old one stops working).
+- **Medlem actions (Admin), on a Medlem's profile:** Gør til Admin / Fjern som Admin, Ret navn, Ret email (only before they've logged in), Meld ud (also when they still owe), and Slet (only for someone who never logged in and has no history). The last Admin can't drop the role.
+- **Tidligere Medlemmer:** udmeldte Medlemmer at the bottom with what they still owe and "Genoptag" (Admin).
 
 ### 15. Konkurrencer
 List of Konkurrencer (title, date, how many placed or absent, total).
@@ -149,14 +171,16 @@ List of Konkurrencer (title, date, how many placed or absent, total).
 **Ny Konkurrence:** title, date, then tap Medlemmer in finishing order. Each row shows its place and Gebyr (0 / 10 / 25 / 35 / 40 / 45 / 50 kr; places beyond 7 pay 50 kr). Unplaced Medlemmer show "Fraværende · 50 kr".
 
 ### 16. Indstillinger (Admin)
-- **Bødekasse:** name, MobilePay Box number, Medlemmer og roller.
+- **Bødekasse:** name, MobilePay Box number, Medlemmer og roller, and "Slet Bødekasse" (type the name to confirm; gone for everyone).
 - **Særlige regler:**
   - Gebyr for ny bødekategori (on/off + 25 kr)
   - Gebyr for engangsbøde (10 kr)
-  - Anke (on/off, 7-day window)
+  - Anke (on/off, 24-hour window)
   - Frikøb (on/off + 300 kr)
   - Konkurrencegebyrer
-- **Sæson og data:** Start ny sæson, Eksportér data.
+- **Sæson og data:** Start ny sæson, Eksportér data (one CSV per Sæson: every Bøde, Gebyr, Indbetaling and Hævning).
+
+A new box starts with every Særlig regel off, except the Engangsbøde Gebyr (on, 10 kr).
 
 ### States to cover
 - Admin vs. ordinary Medlem (Admin-only actions hidden).
