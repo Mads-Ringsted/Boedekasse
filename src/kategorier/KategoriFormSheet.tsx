@@ -1,9 +1,14 @@
 import { useState, type FormEvent } from 'react';
+import { Receipt } from 'lucide-react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Sheet } from '../components/Sheet.tsx';
-import { t } from '../strings/index.ts';
+import { T } from '../components/T.tsx';
+import { hentIndstillinger } from '../indstillinger/hentIndstillinger.ts';
+import { gebyrVedOprettelse } from '../indstillinger/indstillinger.ts';
+import { formatKr, t } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
+import { useHent } from '../supabase/useHent.ts';
 import type { Kategori } from './hentKategorier.ts';
 import { parsePris } from './kategoriListe.ts';
 import './Kategorier.css';
@@ -36,8 +41,17 @@ export function KategoriFormSheet({ open, onOpenChange, kategori, onSaved, stack
   // One ID per opening, so "Prøv igen" after a lost answer never saves twice.
   const [klientId] = useState(() => crypto.randomUUID());
 
+  // Ny only: the creation Gebyr, if the rule is on. Wait for it, so nobody
+  // pays a Gebyr they were not shown.
+  const regler = useHent(
+    () => (kategori ? Promise.resolve(null) : hentIndstillinger(bodekasseId)),
+    [kategori, bodekasseId],
+  );
+  const gebyr =
+    regler.status === 'ready' && regler.data ? gebyrVedOprettelse(regler.data.indstillinger, regler.data.pause) : null;
+
   const prisTal = parsePris(pris);
-  const kanGemme = navn.trim() !== '' && prisTal !== null && !busy;
+  const kanGemme = navn.trim() !== '' && prisTal !== null && !busy && regler.status === 'ready';
 
   async function gem(event: FormEvent) {
     event.preventDefault();
@@ -76,7 +90,11 @@ export function KategoriFormSheet({ open, onOpenChange, kategori, onSaved, stack
       title={t(kategori ? 'kategori.redigerTitel' : 'kategorier.ny')}
       footer={
         <button type="submit" form={FORM_ID} className="kategori-form__primary" disabled={!kanGemme}>
-          {t(kategori ? 'kategori.gem' : 'kategori.opret')}
+          {kategori
+            ? t('kategori.gem')
+            : gebyr !== null
+              ? t('kategori.opretMedGebyr', { beloeb: formatKr(gebyr) })
+              : t('kategori.opret')}
         </button>
       }
     >
@@ -131,6 +149,21 @@ export function KategoriFormSheet({ open, onOpenChange, kategori, onSaved, stack
         </label>
 
         {kategori && <p className="kategori-form__note">{t('kategori.redigerNote')}</p>}
+        {gebyr !== null && (
+          <div className="kategori-form__gebyr">
+            <span className="kategori-form__gebyr-ikon" aria-hidden="true">
+              <Receipt size={16} strokeWidth={2} />
+            </span>
+            <span>
+              <T id="kategori.gebyrNote" values={{ beloeb: <strong>{formatKr(gebyr)}</strong> }} />
+            </span>
+          </div>
+        )}
+        {regler.status === 'error' && (
+          <button type="button" className="kategori-form__fejl kategori-form__proev" onClick={regler.reload}>
+            {rpcErrorText(regler.error)} · {t('handling.proevIgen')}
+          </button>
+        )}
         {fejl && (
           <p className="kategori-form__fejl" role="alert">
             {fejl}

@@ -1,0 +1,157 @@
+/* Indstillinger: titled cards of rows (indstillinger.html). */
+.indst__fejl {
+  padding: 4px 4px 0;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--color-danger);
+  text-align: left;
+}
+
+.indst-gruppe {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.indst-gruppe + .indst-gruppe {
+  margin-top: 10px;
+}
+
+.indst-gruppe__titel {
+  margin: 0;
+  padding: 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.indst-gruppe__kort {
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.indst-raekke {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 50px;
+  padding: 13px 16px;
+  font-size: 16px;
+  text-align: left;
+}
+
+.indst-raekke + .indst-raekke {
+  border-top: 1px solid var(--color-line);
+}
+
+.indst-raekke__label {
+  flex-grow: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.indst-raekke__vaerdi {
+  max-width: 55%;
+  color: var(--color-text-muted);
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.indst-raekke__chevron {
+  flex-shrink: 0;
+  color: var(--color-text-faint);
+}
+
+.indst-raekke--handling {
+  color: var(--color-accent-text);
+}
+
+.indst-raekke--fare {
+  justify-content: center;
+  color: var(--color-danger);
+}
+
+/* A Særlig regel: name and amount on the left, the switch on the right. */
+.indst-raekke--switch {
+  gap: 12px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.indst-raekke__tekst {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.indst-raekke__under {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.indst-switch {
+  position: relative;
+  width: 46px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 14px;
+  background: var(--color-fill-strong);
+  transition: background-color 0.15s ease;
+}
+
+.indst-switch[aria-checked='true'] {
+  background: var(--color-accent);
+}
+
+.indst-switch:disabled {
+  opacity: 0.45;
+}
+
+.indst-switch__knop {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-on-accent);
+  transition: transform 0.15s ease;
+}
+
+.indst-switch[aria-checked='true'] .indst-switch__knop {
+  transform: translateX(18px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .indst-switch,
+  .indst-switch__knop {
+    transition: none;
+  }
+}
+
+/* The field in RetIndstillingSheet, with an optional unit ("kr"). */
+.indst-felt {
+  position: relative;
+  display: flex;
+}
+
+.indst-felt__input {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.indst-felt__enhed {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 17px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}

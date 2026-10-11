@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Plus, Wallet } from 'lucide-react';
 import { useGivBoeder } from '../giv/GivBoederProvider.tsx';
+import { RegistrerIndbetalingSheet } from '../kassen/RegistrerIndbetalingSheet.tsx';
 import { t } from '../strings/index.ts';
 import type { ProfilDelProps } from './handlinger.ts';
 
@@ -39,4 +41,29 @@ export function BetalKnap({ visning }: ProfilDelProps) {
   if (!visning.kanBetale) return null;
   // #60 opens the Betal sheet from here (and shows a report that afventer).
   return <ProfilKnap primaer Icon={Wallet} label={t('profil.betal')} />;
+}
+
+/** "Registrér indbetaling" (Admin) on someone else's profile, with them picked. */
+export function RegistrerIndbetalingKnap({ profil, visning, mig, opdater }: ProfilDelProps) {
+  // Each opening mounts a fresh sheet (new one-time ID).
+  const [aabning, setAabning] = useState(0);
+  if (!mig.erAdmin || visning.egen) return null;
+  return (
+    <>
+      <ProfilKnap
+        label={t('kassen.registrer')}
+        under={t('profil.kunAdmin')}
+        onClick={() => setAabning((n) => n + 1)}
+      />
+      {aabning > 0 && (
+        <RegistrerIndbetalingSheet
+          key={aabning}
+          open
+          onOpenChange={(aaben) => !aaben && setAabning(0)}
+          medlemId={profil.id}
+          onRegistreret={opdater}
+        />
+      )}
+    </>
+  );
 }

@@ -305,6 +305,40 @@
   color: var(--color-text-muted);
 }
 
+.kategori-form__proev {
+  text-align: left;
+}
+
+/* Ny bødekategori: the creation Gebyr note (when the rule is on). */
+.kategori-form__gebyr {
+  margin-top: 4px;
+  border-radius: var(--radius-input);
+  background: var(--color-surface-raised);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+}
+
+.kategori-form__gebyr strong {
+  color: var(--color-text);
+}
+
+.kategori-form__gebyr-ikon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: var(--color-fill);
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .kategori-form__primary {
   width: 100%;
   height: var(--size-button);

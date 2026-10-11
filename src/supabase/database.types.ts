@@ -1717,7 +1717,10 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "arkiver_bodekategori":
+            "annuller_indbetaling":
+{ Args: { "p_indbetaling": string,"p_klient_id": string,"p_note"?: string }; Returns: Json
+                           },
+"arkiver_bodekategori":
 { Args: { "p_bodekategori": string,"p_klient_id": string }; Returns: Json
                            },
 "find_bodekasse_med_kode":
@@ -1735,11 +1738,17 @@ isOneToOne: false
 "giv_boeder":
 { Args: { "p_bodekasse": string,"p_klient_id": string,"p_linjer": Json }; Returns: Json
                            },
+"opdater_indstillinger":
+{ Args: { "p_aendringer": Json,"p_bodekasse": string,"p_klient_id": string }; Returns: Json
+                           },
 "opret_bodekasse":
 { Args: { "p_klient_id": string,"p_mit_navn": string,"p_navn": string }; Returns: Json
                            },
 "opret_bodekategori":
 { Args: { "p_beskrivelse"?: string,"p_bodekasse": string,"p_klient_id": string,"p_navn": string,"p_pris": number }; Returns: Json
+                           },
+"registrer_indbetaling":
+{ Args: { "p_beloeb": number,"p_bodekasse": string,"p_klient_id": string,"p_medlem": string,"p_note"?: string }; Returns: Json
                            },
 "ret_bodekategori":
 { Args: { "p_beskrivelse": string,"p_bodekategori": string,"p_klient_id": string,"p_navn": string,"p_pris": number }; Returns: Json

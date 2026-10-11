@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react';
-import { BetalKnap, GivBoedeKnap } from './knapper.tsx';
+import { BetalKnap, GivBoedeKnap, RegistrerIndbetalingKnap } from './knapper.tsx';
 import type { Profil, ProfilVisning } from './profil.ts';
 
 /** What every part added to a profile gets. */
@@ -24,10 +24,10 @@ export type ProfilDel = ComponentType<ProfilDelProps>;
 /**
  * The action buttons under the figures, in a 2-column grid (a lone button
  * fills the row). Render each with `<ProfilKnap>` from `knapper.tsx`.
- * - Someone else: Giv bøde, then #59 "Registrér indbetaling" (Admin, `under="Kun Admin"`).
+ * - Someone else: Giv bøde, then Registrér indbetaling (Admin).
  * - Your own: Betal (#60 wires it), then #65 "Køb Frikøb" (when Frikøb is on).
  */
-export const PROFIL_KNAPPER: readonly ProfilDel[] = [GivBoedeKnap, BetalKnap];
+export const PROFIL_KNAPPER: readonly ProfilDel[] = [GivBoedeKnap, RegistrerIndbetalingKnap, BetalKnap];
 
 /**
  * Cards between the buttons and Historik, top to bottom. Use the
