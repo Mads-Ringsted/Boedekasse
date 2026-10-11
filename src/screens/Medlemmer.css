@@ -1,0 +1,175 @@
+.medlemmer__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: -4px 4px 0 0;
+}
+
+.medlemmer__titel {
+  min-width: 0;
+}
+
+.medlemmer__tilfoej {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.medlemmer__antal {
+  padding: 4px 4px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.medlemmer__fejl {
+  padding: 12px 4px;
+  font-size: 15px;
+  color: var(--color-danger);
+  text-align: left;
+}
+
+.medlemmer__liste {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+/* The join-code card (Admins only), also used inside Tilføj Medlem. */
+.join-kode {
+  border-radius: 20px;
+  background: var(--color-surface);
+  padding: 14px 14px 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.join-kode__tekst {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.join-kode__label {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.join-kode__kode {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 4px;
+}
+
+.join-kode__del {
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 12px;
+  background: var(--color-accent-pale);
+  color: var(--color-accent-pale-text);
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.join-kode__ny {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: var(--color-fill);
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.medlem-linje {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 8px 16px;
+}
+
+.medlem-linje + .medlem-linje {
+  border-top: 1px solid var(--color-line);
+}
+
+.medlem-linje--egen {
+  background: var(--color-accent-pale);
+}
+
+.medlem-linje__tekst {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.medlem-linje__navn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+}
+
+.medlem-linje--egen .medlem-linje__navn {
+  font-weight: 600;
+}
+
+.medlem-linje__navn-tekst {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.medlem-linje__tag {
+  flex-shrink: 0;
+  padding: 1px 7px;
+  border-radius: var(--radius-tag);
+  background: var(--color-accent-pale);
+  color: var(--color-accent-text);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.medlem-linje--egen .medlem-linje__tag {
+  background: var(--color-fill-strong);
+  color: var(--color-accent-pale-text);
+}
+
+.medlem-linje__under {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.medlem-linje__beloeb {
+  flex-shrink: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.medlem-linje__beloeb--mangler {
+  color: var(--color-danger);
+}
+
+.medlem-linje__beloeb--til-gode {
+  color: var(--color-success);
+}

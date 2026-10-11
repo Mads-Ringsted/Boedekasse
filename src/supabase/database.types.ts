@@ -1315,8 +1315,23 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "opret_bodekasse":
+            "find_bodekasse_med_kode":
+{ Args: { "p_kode": string }; Returns: Json
+                           },
+"forny_join_kode":
+{ Args: { "p_bodekasse": string,"p_klient_id": string }; Returns: Json
+                           },
+"opret_bodekasse":
 { Args: { "p_klient_id": string,"p_mit_navn": string,"p_navn": string }; Returns: Json
+                           },
+"ret_mit_navn":
+{ Args: { "p_bodekasse": string,"p_klient_id": string,"p_navn": string }; Returns: Json
+                           },
+"tilfoej_medlem":
+{ Args: { "p_bodekasse": string,"p_email": string,"p_klient_id": string,"p_navn": string }; Returns: Json
+                           },
+"tilmeld_med_kode":
+{ Args: { "p_klient_id": string,"p_kode": string,"p_mit_navn": string }; Returns: Json
                            }
           }
           Enums: {

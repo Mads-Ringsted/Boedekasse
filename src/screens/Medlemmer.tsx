@@ -1,0 +1,143 @@
+import { useState } from 'react';
+import { Plus, RefreshCw, Share } from 'lucide-react';
+import { useNavigate } from 'react-router';
+import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
+import { delInvitation } from '../bodekasse/delInvitation.ts';
+import { Avatar } from '../components/Avatar.tsx';
+import { BackButton } from '../components/BackButton.tsx';
+import { Screen } from '../components/Screen.tsx';
+import { hentMedlemmer } from '../medlemmer/hentMedlemmer.ts';
+import type { Medlemslinje } from '../medlemmer/medlemsliste.ts';
+import { NyKodeSheet } from '../medlemmer/NyKodeSheet.tsx';
+import { TilfoejMedlemSheet } from '../medlemmer/TilfoejMedlemSheet.tsx';
+import { formatKr, t } from '../strings/index.ts';
+import { rpcErrorText } from '../supabase/rpcErrors.ts';
+import { useHent } from '../supabase/useHent.ts';
+import './Medlemmer.css';
+
+/**
+ * Medlemmer: every active Medlem with what they owe. Admins also get the join
+ * code (Del, Ny kode) and Tilføj Medlem. #69 adds Tidligere medlemmer.
+ */
+export function Medlemmer() {
+  const { bodekasseId, bodekasseNavn, medlemId, erAdmin } = useBodekasse();
+  const navigate = useNavigate();
+  const data = useHent(() => hentMedlemmer(bodekasseId, medlemId, erAdmin), [bodekasseId, medlemId, erAdmin]);
+  const [tilfoejer, setTilfoejer] = useState(false);
+  const [fornyer, setFornyer] = useState(false);
+  const [kopieret, setKopieret] = useState(false);
+
+  const klar = data.status === 'ready' ? data.data : null;
+  const kode = klar?.kode ?? null;
+
+  return (
+    <Screen>
+      <BackButton label={t('tab.mere')} onClick={() => void navigate('/mere')} />
+      <div className="medlemmer__top">
+        <h1 className="screen__title medlemmer__titel">{t('mere.medlemmer')}</h1>
+        {erAdmin && (
+          <button
+            type="button"
+            className="medlemmer__tilfoej"
+            aria-label={t('medlemmer.tilfoej')}
+            onClick={() => setTilfoejer(true)}
+          >
+            <Plus size={22} strokeWidth={2.4} aria-hidden="true" />
+          </button>
+        )}
+      </div>
+
+      {kode && (
+        <div className="join-kode">
+          <span className="join-kode__tekst">
+            <span className="join-kode__label">{kopieret ? t('invitation.kopieret') : t('medlemmer.kodeLabel')}</span>
+            <span className="join-kode__kode">{kode}</span>
+          </span>
+          <button
+            type="button"
+            className="join-kode__del"
+            onClick={() => void delInvitation(bodekasseNavn, kode).then((r) => setKopieret(r === 'kopieret'))}
+          >
+            <Share size={16} strokeWidth={2} aria-hidden="true" />
+            {t('medlemmer.del')}
+          </button>
+          <button
+            type="button"
+            className="join-kode__ny"
+            aria-label={t('medlemmer.nyKode')}
+            onClick={() => setFornyer(true)}
+          >
+            <RefreshCw size={16} strokeWidth={2} aria-hidden="true" />
+          </button>
+        </div>
+      )}
+
+      {data.status === 'error' && (
+        <button type="button" className="medlemmer__fejl" onClick={data.reload}>
+          {rpcErrorText(data.error)} · {t('handling.proevIgen')}
+        </button>
+      )}
+
+      {klar && (
+        <>
+          <h2 className="medlemmer__antal">
+            {klar.linjer.length === 1 ? t('vaelg.etMedlem') : t('vaelg.antalMedlemmer', { antal: klar.linjer.length })}
+          </h2>
+          <ul className="medlemmer__liste">
+            {klar.linjer.map((m) => (
+              <MedlemLinje key={m.id} m={m} />
+            ))}
+          </ul>
+        </>
+      )}
+
+      {erAdmin && (
+        <TilfoejMedlemSheet
+          open={tilfoejer}
+          onOpenChange={setTilfoejer}
+          kode={kode}
+          onTilfoejet={data.reload}
+        />
+      )}
+      {erAdmin && kode && (
+        <NyKodeSheet
+          open={fornyer}
+          onOpenChange={setFornyer}
+          kode={kode}
+          onFornyet={() => {
+            setKopieret(false);
+            data.reload();
+          }}
+        />
+      )}
+    </Screen>
+  );
+}
+
+/** One Medlem: avatar, name (or "Dig"), tags and what they owe. #56 makes it open the profile. */
+function MedlemLinje({ m }: { m: Medlemslinje }) {
+  const beloeb =
+    m.saldo < 0 ? (
+      <span className="medlem-linje__beloeb medlem-linje__beloeb--til-gode">
+        {t('medlemmer.tilGode', { beloeb: formatKr(-m.saldo) })}
+      </span>
+    ) : (
+      <span className={`medlem-linje__beloeb${m.saldo > 0 ? ' medlem-linje__beloeb--mangler' : ''}`}>
+        {formatKr(m.saldo)}
+      </span>
+    );
+
+  return (
+    <li className={`medlem-linje${m.egen ? ' medlem-linje--egen' : ''}`}>
+      <Avatar navn={m.navn} size={36} egen={m.egen} stiplet={!m.loggetInd} />
+      <span className="medlem-linje__tekst">
+        <span className="medlem-linje__navn">
+          <span className="medlem-linje__navn-tekst">{m.egen ? t('medlemmer.dig') : m.navn}</span>
+          {m.erAdmin && <span className="medlem-linje__tag">{t('mere.admin')}</span>}
+        </span>
+        {!m.loggetInd && <span className="medlem-linje__under">{t('medlemmer.ikkeLoggetInd')}</span>}
+      </span>
+      {beloeb}
+    </li>
+  );
+}

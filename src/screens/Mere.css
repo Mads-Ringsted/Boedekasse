@@ -1,4 +1,25 @@
+.mere__profil-kort {
+  position: relative;
+}
+
+/* Sits over the profile row, left of its chevron; the row keeps room for it. */
+.mere__ret-navn {
+  position: absolute;
+  top: 50%;
+  right: 44px;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-fill);
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .mere__profil {
+  width: 100%;
   border-radius: var(--radius-card);
   background: var(--color-surface);
   padding: 14px 16px;
@@ -10,6 +31,7 @@
 
 .mere__profil-tekst {
   flex-grow: 1;
+  margin-right: 44px; /* room for the pencil */
   min-width: 0;
   display: flex;
   flex-direction: column;

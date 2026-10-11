@@ -66,6 +66,11 @@ export const da = {
 
   // Jeg har en kode
   'kode.titel': 'Jeg har en kode',
+  'kode.label': 'Kode på 6 tegn',
+  'kode.navn': 'Dit navn i Bødekassen',
+  'kode.knap': 'Bliv medlem',
+  'kode.alleredeMedlem': 'Du er allerede med i denne Bødekasse.',
+  'kode.aaben': 'Åbn Bødekassen',
 
   // Vælg Bødekasse / Skift Bødekasse
   'vaelg.titel': 'Vælg Bødekasse',
@@ -109,6 +114,39 @@ export const da = {
   'mere.indstillinger': 'Indstillinger',
   'mere.admin': 'Admin',
   'mere.skift': 'Skift Bødekasse',
+
+  // Medlemmer, Tilføj Medlem and your own name
+  'medlemmer.tilfoej': 'Tilføj Medlem',
+  'medlemmer.kodeLabel': 'Kode til at blive medlem',
+  'medlemmer.del': 'Del',
+  'medlemmer.nyKode': 'Ny kode',
+  'medlemmer.dig': 'Dig',
+  'medlemmer.ikkeLoggetInd': 'Ikke logget ind endnu',
+  'medlemmer.tilGode': '{beloeb} til gode',
+  'medlemmer.nyKodeTitel': 'Lav en ny kode?',
+  'medlemmer.nyKodeTekst': 'Koden {kode} holder op med at virke. Dem, der allerede er med, mærker ingenting.',
+  'medlemmer.nyKodeKnap': 'Lav ny kode',
+  'tilfoej.titel': 'Tilføj Medlem',
+  'tilfoej.navn': 'Navn',
+  'tilfoej.email': 'Email',
+  'tilfoej.emailEksempel': 'navn@eksempel.dk',
+  'tilfoej.note': '{navn} kan få bøder med det samme og overtager sin plads ved at logge ind med denne email.',
+  'tilfoej.noteUdenNavn': 'Medlemmet kan få bøder med det samme og overtager sin plads ved at logge ind med denne email.',
+  'tilfoej.ellerKode': 'Eller del koden',
+  'tilfoej.knap': 'Tilføj {navn}',
+  'tilfoej.knapUdenNavn': 'Tilføj',
+  'mitNavn.titel': 'Dit navn',
+  'mitNavn.ret': 'Ret dit navn',
+  'mitNavn.label': 'Dit navn i {bodekasse}',
+  'mitNavn.note': 'Navnet gælder kun i denne Bødekasse.',
+  'mitNavn.gem': 'Gem',
+  'fejl.medlemNavnMangler': 'Skriv et navn.',
+  'fejl.emailMangler': 'Skriv en email.',
+  'fejl.emailUgyldig': 'Tjek at emailen er skrevet rigtigt.',
+  'fejl.emailFindes': 'Der er allerede et medlem med den email.',
+  'fejl.kodeUkendt': 'Koden findes ikke. Tjek den og prøv igen.',
+  'fejl.udmeldt': 'Du er meldt ud af denne Bødekasse. Bed en Admin om at genoptage dig.',
+  'fejl.ikkeAdmin': 'Det kan kun en Admin.',
 
   // General
   'fejl.ukendt': 'Noget gik galt. Prøv igen.',

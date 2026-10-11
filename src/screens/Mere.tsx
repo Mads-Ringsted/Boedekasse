@@ -1,11 +1,12 @@
 import { useState, type ReactNode } from 'react';
-import { ArrowLeftRight, ChevronRight, Coins, LogOut, Scale, Settings, Trophy, Users, type LucideIcon } from 'lucide-react';
+import { ArrowLeftRight, ChevronRight, Coins, LogOut, Pencil, Scale, Settings, Trophy, Users, type LucideIcon } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider.tsx';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { SkiftBodekasseSheet } from '../bodekasse/SkiftBodekasseSheet.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Screen } from '../components/Screen.tsx';
+import { RetMitNavnSheet } from '../medlemmer/RetMitNavnSheet.tsx';
 import { formatKr, t, type PlainStringId } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
 import { useHent } from '../supabase/useHent.ts';
@@ -56,19 +57,25 @@ export function Mere() {
   const { bodekasseId, navn, erAdmin } = useBodekasse();
   const navigate = useNavigate();
   const [skifter, setSkifter] = useState(false);
+  const [retterNavn, setRetterNavn] = useState(false);
   const tal = useHent(() => hentMere(bodekasseId), [bodekasseId]);
   const data = tal.status === 'ready' ? tal.data : null;
 
   return (
     <Screen title={t('skaerm.mere')}>
-      <button type="button" className="mere__profil" onClick={() => void navigate('/profil')}>
-        <Avatar navn={navn} size={52} egen />
-        <span className="mere__profil-tekst">
-          <span className="mere__profil-navn">{navn}</span>
-          <span className="mere__profil-under">{t(erAdmin ? 'mere.adminSeProfil' : 'mere.seProfil')}</span>
-        </span>
-        <ChevronRight className="mere__chevron" size={20} strokeWidth={2.2} aria-hidden="true" />
-      </button>
+      <div className="mere__profil-kort">
+        <button type="button" className="mere__profil" onClick={() => void navigate('/profil')}>
+          <Avatar navn={navn} size={52} egen />
+          <span className="mere__profil-tekst">
+            <span className="mere__profil-navn">{navn}</span>
+            <span className="mere__profil-under">{t(erAdmin ? 'mere.adminSeProfil' : 'mere.seProfil')}</span>
+          </span>
+          <ChevronRight className="mere__chevron" size={20} strokeWidth={2.2} aria-hidden="true" />
+        </button>
+        <button type="button" className="mere__ret-navn" aria-label={t('mitNavn.ret')} onClick={() => setRetterNavn(true)}>
+          <Pencil size={16} strokeWidth={2.2} aria-hidden="true" />
+        </button>
+      </div>
 
       <div className="mere__gruppe">
         <Row
@@ -105,6 +112,7 @@ export function Mere() {
       </button>
 
       <SkiftBodekasseSheet open={skifter} onOpenChange={setSkifter} />
+      <RetMitNavnSheet open={retterNavn} onOpenChange={setRetterNavn} />
     </Screen>
   );
 }
