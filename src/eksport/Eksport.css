@@ -1,0 +1,9 @@
+/* Eksportér data (#70): the Sæson list inside a sheet. */
+.eksport__tekst {
+  margin-top: 0;
+}
+
+.eksport__liste {
+  margin-top: 14px;
+  background: var(--color-surface-raised);
+}

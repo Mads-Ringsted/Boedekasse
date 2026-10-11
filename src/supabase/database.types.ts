@@ -2026,6 +2026,11 @@ isOneToOne: false
 "behandl_betalingsmelding":
 { Args: { "p_bekraeft": boolean,"p_klient_id": string,"p_melding": string }; Returns: Json
                            },
+"eksport_saeson":
+{ Args: { "p_bodekasse": string,"p_saeson": string }; Returns: {
+              "af": string,"anke": string,"annulleret": string,"annulleret_note": string,"art": string,"beloeb": number,"gebyr_art": Database["public"]['Enums']["gebyr_art"],"hvad": string,"medlem": string,"tid": string
+            }[]
+                           },
 "find_bodekasse_med_kode":
 { Args: { "p_kode": string }; Returns: Json
                            },
