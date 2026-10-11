@@ -94,7 +94,7 @@ Layout, top to bottom:
 4. At the end of the list: **Ny bødekategori** (shows its Gebyr, e.g. 25 kr) and **Engangsbøde** (reason + amount; the giver pays a 10 kr Gebyr).
 5. **Footer:** a one-line summary per person ("Jonas: 2× For sent, 1× Hygge i stedet for træning · Emil: 1× For sent, 1× Spildt drikke") and the button **"Giv 5 bøder · 210 kr"**.
 
-Speed target: + → person → Bøde → Giv is 4 taps. After giving, a toast says "5 bøder givet · 210 kr" with **Fortryd** (undo).
+Speed target: + → person → Bøde → Giv is 4 taps. After giving, a toast says "5 bøder givet · 210 kr" with **Fortryd** (undo) for about 8 seconds. Fortryd removes the whole batch without a trace.
 
 Design both states: one Bøde to one person, and the example evening above filled in.
 
@@ -102,16 +102,23 @@ Design both states: one Bøde to one person, and the example evening above fille
 "Du mangler at betale" with the amount large, then the box's MobilePay Box number with a copy button. Explains that you pay in MobilePay and an Admin then registers it. Button: "Jeg har betalt 50 kr". Whether that button exists is still open in [Saldo and Indbetaling](https://github.com/Mads-Ringsted/Boedekasse/issues/9), so design it as optional.
 
 ### 7. Aktivitet
-A feed of everything that happened, newest first:
+A feed of everything that happened, newest first. Every Medlem sees everything. It is one plain list with no filters or search.
 
-- **Bøder:** "Jonas gav Emil en bøde · For sent · 35 min · 50 kr"
-- **Gebyrer**
+- **Bøder:** one row per receiver per Giv batch ("Jonas gav Emil 3 bøder · 90 kr"). Tapping it expands the individual Bøder; a single Bøde reads "Jonas gav Emil en bøde · For sent · 35 min · 50 kr"
+- **Gebyrer**, on the same row as their cause ("Jonas gav Emil en engangsbøde · Kom for sent til bryllup · 100 kr + 10 kr gebyr", "Emil ankede · For sent · gebyr 37 kr")
+- **Anke verdicts**
 - **Indbetalinger** (green, "+80 kr")
 - **Hævninger**
 - **Frikøb**
-- **Konkurrencer**, grouped into one row ("Konkurrence: Bowling · 8 gebyrer · 260 kr")
+- **Konkurrencer**, grouped into one row ("Konkurrence: Bowling · 8 gebyrer · 260 kr"). A corrected one is tagged "Rettet af Frederik"
+- **Annulleringer:** the original entry stays where it is, struck through with "Annulleret af Frederik" and the optional note. A small new entry also appears at the top ("Frederik annullerede Jonas' bøde til Emil · For sent · 50 kr")
+- **Other events:** a Bødekategori created, re-priced or archived; a Medlem added, Udmeldt or Genoptaget; a Sæson started or ended
 
-Bøder can carry a status tag: **Anket**, **Anke vundet**, **Anke tabt** or **Frikøb** (amount struck through). Tapping a Bøde opens its detail sheet.
+No entry for role changes, settings changes, name edits, or Betalingsmeldinger that are still pending.
+
+Admins can annul a creation Gebyr or an Anke Gebyr from its row. Whoever entered a Konkurrence, or an Admin, can correct or annul it as a whole. All of this works in the current Sæson only.
+
+Bøder can carry a status tag: **Anket**, **Anke vundet**, **Anke tabt**, **Afgørelse ændret**, **Frikøb** or **Annulleret** (amount struck through). Tapping a Bøde opens its detail sheet.
 
 ### 8. Bødekategorier
 Title with a + button, search, "Mest brugt" (top 5), a Navn/Pris switch and the full list. Each row shows name, price and how many times it has been used. Archived ones are listed in a small line at the bottom.
@@ -122,9 +129,14 @@ Title with a + button, search, "Mest brugt" (top 5), a Navn/Pris switch and the 
 ### 9. Bøde detail (bottom sheet)
 Name, amount, "Fra Frederik til dig · 5 t". Actions depend on who you are:
 
-- **Received within 7 days:** "Anke bøden".
+- **Received within 24 hours:** "Anke bøden".
 - **Anket, and you are not one of the two involved:** "Registrér gruppens afgørelse".
 - **Anket, and you are involved:** a note that the group decides.
+- **Verdict recorded, and you recorded it or are an Admin:** "Ændr afgørelse" (current Sæson only).
+- **You gave it, and it is not anket:** "Annullér bøde", with an optional note. Admins can annul any Bøde, anket or not. Annulling an Engangsbøde also annuls its Gebyr; an Anke Gebyr always stays. An open Anke on an annulled Bøde ends as "Bøden annulleret".
+- **Annulled:** the sheet shows "Annulleret af Frederik", the note, and the amount struck through. There is no way to reverse it.
+
+Annulling and changing a verdict only work in the current Sæson.
 
 ### 10. Anke
 1. **Intro:** filing costs a random Gebyr between 1 kr and twice the Bøde, paid whatever the outcome.
@@ -132,7 +144,7 @@ Name, amount, "Fra Frederik til dig · 5 t". Actions depend on who you are:
 3. **Verdict sheet** (recorded by another Medlem): "Bøden står ved magt" or "Anken vinder" (the Bøde moves to the Medlem who gave it).
 
 ### 11. Medlem profile
-Avatar, name, tags (Admin, Frikøb 2026, Ikke logget ind endnu), "Mangler at betale" large, then Bøder og gebyrer next to Betalt. Actions: Giv bøde (pre-selects this person), Betal (on your own profile), and Registrér indbetaling (Admin). On your own profile, a "Kan ankes" section lists Bøder still within the 7-day appeal window. Then the full history.
+Avatar, name, tags (Admin, Frikøb 2026, Ikke logget ind endnu), "Mangler at betale" large, then Bøder og gebyrer next to Betalt. Actions: Giv bøde (pre-selects this person), Betal (on your own profile), and Registrér indbetaling (Admin). On your own profile, a "Kan ankes" section lists Bøder still within the 24-hour appeal window. Then the full history: the Aktivitet feed filtered to rows where this Medlem gave, received, paid or was charged.
 
 ### 12. Mere
 Your profile row, then Medlemmer, Kassen og indbetalinger, Anker (with count), Konkurrencer, Indstillinger (Admin), Skift Bødekasse, Log ud.
@@ -153,7 +165,7 @@ List of Konkurrencer (title, date, how many placed or absent, total).
 - **Særlige regler:**
   - Gebyr for ny bødekategori (on/off + 25 kr)
   - Gebyr for engangsbøde (10 kr)
-  - Anke (on/off, 7-day window)
+  - Anke (on/off, 24-hour window)
   - Frikøb (on/off + 300 kr)
   - Konkurrencegebyrer
 - **Sæson og data:** Start ny sæson, Eksportér data.
