@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from 'react-router';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { BackButton } from '../components/BackButton.tsx';
 import { Screen } from '../components/Screen.tsx';
+import { EksportSheet } from '../eksport/EksportSheet.tsx';
 import { SaesonRaekker } from '../saeson/SaesonRaekker.tsx';
 import { parsePris } from '../kategorier/kategoriListe.ts';
 import { parsePlaceringer, placeringerTekst } from '../konkurrence/raekkefoelge.ts';
@@ -59,6 +60,7 @@ function IndstillingerSkaerm() {
   const { status, error, reload, indstillinger: ind, gem } = useIndstillinger();
   const [fejl, setFejl] = useState<string | null>(null);
   const [sheet, setSheet] = useState<{ n: number; open: boolean; indhold: SheetIndhold } | null>(null);
+  const [eksport, setEksport] = useState<{ n: number; open: boolean } | null>(null);
 
   function aabn<V>(indhold: RetIndhold<V>) {
     setSheet((s) => ({ n: (s?.n ?? 0) + 1, open: true, indhold: indhold as unknown as SheetIndhold }));
@@ -193,11 +195,23 @@ function IndstillingerSkaerm() {
 
           <Gruppe titel={t('indstillinger.saesonOgData')}>
             <SaesonRaekker />
-            {/* #70 Eksportér data goes here. */}
+            <LinkRaekke
+              label={t('eksport.raekke')}
+              art="handling"
+              onClick={() => setEksport((e) => ({ n: (e?.n ?? 0) + 1, open: true }))}
+            />
           </Gruppe>
 
           {/* #71 Slet Bødekasse: its own <Gruppe> with an art="fare" row. */}
         </>
+      )}
+
+      {eksport && (
+        <EksportSheet
+          key={eksport.n}
+          open={eksport.open}
+          onOpenChange={(open) => setEksport((e) => e && { ...e, open })}
+        />
       )}
 
       {sheet && (
