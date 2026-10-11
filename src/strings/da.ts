@@ -219,6 +219,7 @@ export const da = {
   'profil.findesIkke': 'Medlemmet findes ikke i Bødekassen.',
   'profil.tag.admin': 'Admin',
   'profil.tag.ikkeLoggetInd': 'Ikke logget ind endnu',
+  'profil.tag.kontoSlettet': 'Konto slettet',
   'profil.tag.udmeldt': 'Udmeldt',
 
   // Kassen and Registrér indbetaling (#59)
@@ -423,6 +424,7 @@ export const da = {
   'medlemmer.nyKode': 'Ny kode',
   'medlemmer.dig': 'Dig',
   'medlemmer.ikkeLoggetInd': 'Ikke logget ind endnu',
+  'medlemmer.kontoSlettet': 'Konto slettet',
   'medlemmer.tilGode': '{beloeb} til gode',
   'medlemmer.nyKodeTitel': 'Lav en ny kode?',
   'medlemmer.nyKodeTekst': 'Koden {kode} holder op med at virke. Dem, der allerede er med, mærker ingenting.',

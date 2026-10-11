@@ -219,11 +219,13 @@ function AdminListe({
   );
   const under = profil.udmeldt
     ? t('profil.tag.udmeldt')
-    : !profil.loggetInd
-      ? t('profil.tag.ikkeLoggetInd')
-      : profil.erAdmin
-        ? t('profil.tag.admin')
-        : null;
+    : profil.kontoSlettet
+      ? t('profil.tag.kontoSlettet')
+      : !profil.loggetInd
+        ? t('profil.tag.ikkeLoggetInd')
+        : profil.erAdmin
+          ? t('profil.tag.admin')
+          : null;
 
   return (
     <>

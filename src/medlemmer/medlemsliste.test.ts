@@ -7,6 +7,7 @@ const medlem = (id: string, navn: string, extra: Partial<MedlemRaekke> = {}): Me
   er_admin: false,
   user_id: `bruger-${id}`,
   udmeldt: null,
+  konto_slettet: null,
   ...extra,
 });
 
@@ -37,7 +38,12 @@ describe('medlemsliste (the rows on Medlemmer)', () => {
       'm',
     );
     expect(mig).toMatchObject({ egen: true, erAdmin: true, loggetInd: true });
-    expect(sebastian).toMatchObject({ egen: false, erAdmin: false, loggetInd: false });
+    expect(sebastian).toMatchObject({ egen: false, erAdmin: false, loggetInd: false, kontoSlettet: false });
+  });
+
+  it('marks a Medlem whose login was deleted', () => {
+    const [jonas] = medlemsliste([medlem('j', 'Jonas', { user_id: null, konto_slettet: '2026-10-01T10:00:00Z' })], [], 'm');
+    expect(jonas).toMatchObject({ loggetInd: false, kontoSlettet: true });
   });
 
   it('leaves out Udmeldte and counts a Medlem with no Saldo row as owing 0 kr', () => {
@@ -47,7 +53,7 @@ describe('medlemsliste (the rows on Medlemmer)', () => {
       'x',
     );
     expect(rows).toEqual([
-      { id: 'p', navn: 'Peter Skov', erAdmin: false, loggetInd: true, egen: false, saldo: 0 },
+      { id: 'p', navn: 'Peter Skov', erAdmin: false, loggetInd: true, kontoSlettet: false, egen: false, saldo: 0 },
     ]);
   });
 });
