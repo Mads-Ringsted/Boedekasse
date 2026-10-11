@@ -13,3 +13,14 @@
   background: var(--color-accent);
   color: var(--color-on-accent);
 }
+
+.avatar--stiplet {
+  background: none;
+  border: 1.5px dashed var(--color-text-faint);
+  color: var(--color-text-muted);
+}
+
+.avatar--tidligere {
+  background: var(--color-fill-strong);
+  color: var(--color-text-muted);
+}
