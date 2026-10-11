@@ -152,6 +152,23 @@
   color: var(--color-success);
 }
 
+/* "Overført fra sidste sæson" (#68): one quiet line under the figures. */
+.profil__overfoert {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: -4px;
+  padding: 0 4px;
+}
+
+.profil__overfoert-beloeb {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  font-variant-numeric: var(--font-numeric);
+}
+
 /* ---------- Actions (PROFIL_KNAPPER) ---------- */
 .profil__knapper {
   display: grid;

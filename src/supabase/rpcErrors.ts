@@ -15,6 +15,16 @@ const BY_KEY: Record<string, PlainStringId> = {
   kode_ukendt: 'fejl.kodeUkendt',
   udmeldt: 'fejl.udmeldt',
   ikke_admin: 'fejl.ikkeAdmin',
+  // Admin actions on a Medlem (#69)
+  sidste_admin: 'fejl.sidsteAdmin',
+  medlem_udmeldt: 'fejl.medlemUdmeldt',
+  medlem_ikke_udmeldt: 'fejl.medlemIkkeUdmeldt',
+  melder_dig_selv_ud: 'fejl.melderDigSelvUd',
+  medlem_logget_ind: 'fejl.medlemLoggetInd',
+  medlem_har_boeder: 'fejl.medlemHarBoeder',
+  medlem_har_gebyrer: 'fejl.medlemHarGebyrer',
+  medlem_har_indbetalinger: 'fejl.medlemHarIndbetalinger',
+  medlem_har_historik: 'fejl.medlemHarHistorik',
   // Bødekategorier (#52)
   kategorinavn_mangler: 'fejl.kategorinavnMangler',
   navn_findes: 'fejl.navnFindes',
@@ -39,6 +49,9 @@ const BY_KEY: Record<string, PlainStringId> = {
   beloeb_ugyldig: 'fejl.beloebUgyldig',
   allerede_annulleret: 'fejl.alleredeAnnulleret',
   tidligere_saeson: 'fejl.tidligereSaeson',
+  // Annullér Bøder and Gebyrer (#62)
+  anket: 'fejl.anket',
+  kan_ikke_annulleres: 'fejl.kanIkkeAnnulleres',
   // Betalingsmelding (#60)
   melding_afventer: 'fejl.meldingAfventer',
   egen_melding: 'fejl.egenMelding',

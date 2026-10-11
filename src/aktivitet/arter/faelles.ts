@@ -14,6 +14,15 @@ export const dataTal = (h: Haendelse, felt: string): number => {
 };
 
 /**
+ * The Gebyr an Admin can annul on its own from a row (#62): a creation or
+ * Anke Gebyr that still stands. The other kinds go with their cause.
+ * Set it as the row's `annullerGebyr`.
+ */
+export function annullerbartGebyr(gebyrer: readonly Gebyr[]): Gebyr | undefined {
+  return gebyrer.find((g) => (g.art === 'oprettelse' || g.art === 'anke') && !g.annullering);
+}
+
+/**
  * The small text under a row's amount for the Gebyrer its cause charged:
  * "+25 kr gebyr" for those not annulled, "Gebyr annulleret" when every one
  * was annulled, nothing when there are none.

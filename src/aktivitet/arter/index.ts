@@ -1,8 +1,9 @@
 import type { Beskriver } from '../visning.ts';
+import { bodeAnnulleret, gebyrAnnulleret } from './annulleringer.ts';
 import { boederGivet } from './boeder.ts';
 import { frikobAnnulleret, frikobKoebt } from './frikob.ts';
 import { bodekategoriArkiveret, bodekategoriOmpriset, bodekategoriOprettet } from './kategorier.ts';
-import { medlemTilfoejet, medlemTilmeldt } from './medlemmer.ts';
+import { medlemGenoptaget, medlemTilfoejet, medlemTilmeldt, medlemUdmeldt } from './medlemmer.ts';
 import { konkurrenceAnnulleret, konkurrenceRegistreret } from './konkurrence.ts';
 import { betalingAfvist, betalingBekraeftet, haevning, haevningAnnulleret, indbetaling, indbetalingAnnulleret } from './penge.ts';
 import { bodekasseOprettet, saesonAfsluttet, saesonStartet } from './saeson.ts';
@@ -24,11 +25,15 @@ export const ARTER: Record<string, Beskriver> = {
   bodekategori_arkiveret: bodekategoriArkiveret,
   medlem_tilfoejet: medlemTilfoejet,
   medlem_tilmeldt: medlemTilmeldt,
+  medlem_udmeldt: medlemUdmeldt,
+  medlem_genoptaget: medlemGenoptaget,
   bodekasse_oprettet: bodekasseOprettet,
   saeson_startet: saesonStartet,
   saeson_afsluttet: saesonAfsluttet,
   indbetaling,
   indbetaling_annulleret: indbetalingAnnulleret,
+  bode_annulleret: bodeAnnulleret,
+  gebyr_annulleret: gebyrAnnulleret,
   frikob_koebt: frikobKoebt,
   frikob_annulleret: frikobAnnulleret,
   betaling_bekraeftet: betalingBekraeftet,
