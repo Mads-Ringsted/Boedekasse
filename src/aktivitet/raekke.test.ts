@@ -24,6 +24,7 @@ function boede(over: Partial<Boede> = {}): Boede {
     afgoerelse: null,
     anket: false,
     afgoerelseAendret: false,
+    saesonId: 's1',
     baererId: EMIL,
     annullering: null,
     gebyr: 0,

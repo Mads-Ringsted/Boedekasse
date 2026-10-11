@@ -2,6 +2,7 @@ import { X } from 'lucide-react';
 import { useBodekasse } from '../../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../../components/Avatar.tsx';
 import { Sheet, SheetClose, SheetTitle } from '../../components/Sheet.tsx';
+import { useSaeson } from '../../saeson/SaesonProvider.tsx';
 import { formatKr, t } from '../../strings/index.ts';
 import { useHent } from '../../supabase/useHent.ts';
 import { boedeTag } from '../arter/boeder.ts';
@@ -30,6 +31,9 @@ export function BoedeDetaljeSheet({ boedeId, open, onOpenChange, onAendret }: Bo
   const boede = hentet.status === 'ready' ? hentet.data : null;
   const ctx = { migId: medlemId };
   const tag = boede ? boedeTag(boede) : undefined;
+  // A past Sæson is read-only (#68): no actions on its Bøder.
+  const { saeson } = useSaeson();
+  const kanHandle = boede !== null && saeson !== null && boede.saesonId === saeson.id;
 
   const header = (
     <header className="boede-detalje__header">
@@ -75,7 +79,7 @@ export function BoedeDetaljeSheet({ boedeId, open, onOpenChange, onAendret }: Bo
             ))}
           </dl>
           <div className="boede-detalje__handlinger">
-            {BOEDE_HANDLINGER.map((Handling, i) => (
+            {(kanHandle ? BOEDE_HANDLINGER : []).map((Handling, i) => (
               <Handling
                 key={i}
                 boede={boede}

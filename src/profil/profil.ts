@@ -1,4 +1,5 @@
 import { minStatus, type MinStatus } from '../screens/hjem/topliste.ts';
+import { formatKr, t } from '../strings/index.ts';
 
 /** One Medlem's profile data (see `hentProfil`). */
 export interface Profil {
@@ -14,6 +15,8 @@ export interface Profil {
   boederOgGebyrer: number;
   /** Indbetalt in the latest Sæson, in kr. */
   betalt: number;
+  /** Saldo at the latest Sæson's start ("Overført fra sidste sæson"), in kr; negative = Til gode. */
+  overfoert: number;
 }
 
 /** The small tags under a profile's name, in display order. */
@@ -29,6 +32,8 @@ export interface ProfilVisning {
   kanGiveBoede: boolean;
   /** "Betal": your own profile, while you owe something. */
   kanBetale: boolean;
+  /** The "Overført fra sidste sæson" amount, e.g. "150 kr" or "30 kr til gode"; null at 0. */
+  overfoert: string | null;
 }
 
 /** What a profile shows, given whose it is and who is looking. */
@@ -45,5 +50,11 @@ export function profilVisning(p: Profil, migId: string): ProfilVisning {
     status,
     kanGiveBoede: !egen && !p.udmeldt,
     kanBetale: egen && status.kanBetale,
+    overfoert:
+      p.overfoert === 0
+        ? null
+        : p.overfoert > 0
+          ? formatKr(p.overfoert)
+          : t('profil.overfoertTilGode', { beloeb: formatKr(-p.overfoert) }),
   };
 }

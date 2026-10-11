@@ -14,10 +14,16 @@ export interface FeedState {
 }
 
 /**
- * The latest Sæson's feed, newest first, a page at a time. Starts over from
- * the top when `opdater` changes (pass the Giv / Bøde versions).
+ * A Sæson's feed (the latest one unless `saesonId` is given), newest first, a
+ * page at a time. Starts over from the top when `opdater` changes (pass the
+ * Giv / Bøde versions).
  */
-export function useFeed(bodekasseId: string, medlemId: string | undefined, opdater: readonly unknown[]): FeedState {
+export function useFeed(
+  bodekasseId: string,
+  medlemId: string | undefined,
+  opdater: readonly unknown[],
+  valgtSaeson?: string,
+): FeedState {
   const [status, setStatus] = useState<FeedState['status']>('loading');
   const [haendelser, setHaendelser] = useState<Haendelse[]>([]);
   const [flere, setFlere] = useState(false);
@@ -31,7 +37,7 @@ export function useFeed(bodekasseId: string, medlemId: string | undefined, opdat
     const gen = ++generation.current;
     setHenterFlere(false);
     (async () => {
-      const saesonId = await hentSenesteSaeson(bodekasseId);
+      const saesonId = valgtSaeson ?? (await hentSenesteSaeson(bodekasseId));
       if (!saesonId) return { haendelser: [], flere: false, saesonId };
       return { ...(await hentAktivitetSide({ bodekasseId, saesonId, medlemId })), saesonId };
     })().then(
@@ -44,7 +50,7 @@ export function useFeed(bodekasseId: string, medlemId: string | undefined, opdat
       },
       () => gen === generation.current && setStatus('error'),
     );
-  }, [bodekasseId, medlemId, runde, ...opdater]); // the caller lists what should start it over
+  }, [bodekasseId, medlemId, valgtSaeson, runde, ...opdater]); // the caller lists what should start it over
 
   const sidste = haendelser[haendelser.length - 1]?.id;
   const hentFlere = useCallback(() => {

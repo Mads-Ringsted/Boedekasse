@@ -15,6 +15,7 @@ import { Hjem } from './screens/Hjem.tsx';
 import { Medlemmer } from './screens/Medlemmer.tsx';
 import { Mere } from './screens/Mere.tsx';
 import { ProfilRute } from './profil/ProfilSkaerm.tsx';
+import { TidligereSaeson } from './saeson/TidligereSaeson.tsx';
 import { Placeholder } from './screens/Placeholder.tsx';
 import { VaelgBodekasse } from './screens/VaelgBodekasse.tsx';
 import { Velkommen } from './screens/Velkommen.tsx';
@@ -44,6 +45,7 @@ const router = createBrowserRouter([
       { path: 'anker', element: <Placeholder title="mere.anker" back={fraMere} /> },
       { path: 'konkurrencer', element: <Placeholder title="mere.konkurrencer" back={fraMere} /> },
       { path: 'indstillinger', element: <Indstillinger /> },
+      { path: 'saeson/:saesonId', element: <TidligereSaeson /> },
       { path: '*', element: <Hjem /> },
     ],
   },

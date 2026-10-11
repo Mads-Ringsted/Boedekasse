@@ -7,7 +7,9 @@ import { Avatar } from '../components/Avatar.tsx';
 import { Screen } from '../components/Screen.tsx';
 import { useGivBoeder } from '../giv/GivBoederProvider.tsx';
 import { useAabnProfil } from '../profil/aabnProfil.ts';
+import { hentSaesoner } from '../saeson/hentSaesoner.ts';
 import { PauseKort } from '../saeson/PauseKort.tsx';
+import { SaesonVaelger } from '../saeson/SaesonVaelger.tsx';
 import { useSaeson } from '../saeson/SaesonProvider.tsx';
 import { formatKr, t } from '../strings/index.ts';
 import { useHent } from '../supabase/useHent.ts';
@@ -35,6 +37,9 @@ export function Hjem() {
     [bodekasseId, medlemId, erAdmin, version, saesonVersion],
   );
   const data = hjem.status === 'ready' ? hjem.data : null;
+  // With past Sæsoner, the Topliste note opens the Sæson picker (#68).
+  const saesoner = useHent(() => hentSaesoner(bodekasseId), [bodekasseId, saesonVersion]);
+  const tidligere = saesoner.status === 'ready' && saesoner.data.length > 1 ? saesoner.data : null;
   const punkter = data && komIGang(data);
   // A new box (Kom i gang showing) has no money yet, so no money cards.
   const visPenge = data && !punkter ? data : null;
@@ -121,7 +126,13 @@ export function Hjem() {
         <>
           <div className="hjem__sektion">
             <h2 className="hjem__sektion-titel">{t('hjem.topliste')}</h2>
-            {!topliste.tom && (
+            {tidligere && saeson ? (
+              <SaesonVaelger
+                saesoner={tidligere}
+                visesId={saeson.id}
+                label={t('hjem.boederIAltSaeson', { saeson: saeson.navn })}
+              />
+            ) : !topliste.tom && (
               <span className="hjem__sektion-note">
                 {pause && saeson ? t('hjem.boederIAltSaeson', { saeson: saeson.navn }) : t('hjem.boederIAlt')}
               </span>

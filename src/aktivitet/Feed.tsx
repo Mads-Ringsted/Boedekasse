@@ -12,6 +12,8 @@ import './Feed.css';
 interface FeedProps {
   /** Only the entries where this Medlem gave, received or was charged (a profile's history). */
   medlemId?: string;
+  /** Show this Sæson instead of the latest (a past Sæson's page, #68). */
+  saesonId?: string;
 }
 
 /**
@@ -19,11 +21,11 @@ interface FeedProps {
  * pages load as you scroll. Refreshes after giving Bøder or changing one.
  * Used by the Aktivitet tab and, filtered with `medlemId`, by profiles.
  */
-export function Feed({ medlemId }: FeedProps) {
+export function Feed({ medlemId, saesonId }: FeedProps) {
   const { bodekasseId, medlemId: migId } = useBodekasse();
   const { version: givVersion } = useGivBoeder();
   const { aabn: aabnBoede, version: boedeVersion } = useBoedeDetalje();
-  const feed = useFeed(bodekasseId, medlemId, [givVersion, boedeVersion]);
+  const feed = useFeed(bodekasseId, medlemId, [givVersion, boedeVersion], saesonId);
 
   const dage = useMemo(() => {
     const nu = new Date();

@@ -15,6 +15,8 @@ export interface Annullering {
 /** One Bøde as the feed and the Bøde detail sheet show it (view `aktivitet_bode`). */
 export interface Boede {
   id: string;
+  /** Its Sæson. Only the latest Sæson's Bøder can be changed (#68). */
+  saesonId: string;
   batchId: string;
   giverId: string;
   giverNavn: string;
@@ -93,6 +95,7 @@ export function tilBoede(raw: BoedeRow | Obj): Boede {
   const r = raw as Obj;
   return {
     id: str(r.id),
+    saesonId: str(r.saeson_id),
     batchId: str(r.batch_id),
     giverId: str(r.giver_id),
     giverNavn: str(r.giver_navn),
