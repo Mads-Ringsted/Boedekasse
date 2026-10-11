@@ -19,6 +19,7 @@ export const da = {
   'skaerm.aktivitet': 'Aktivitet',
   'skaerm.kategorier': 'Bødekategorier',
   'skaerm.mere': 'Mere',
+  'skaerm.profil': 'Profil',
   'skaerm.kommerSnart': 'Kommer snart',
 
   // Install guide (opened in a Safari tab)
@@ -51,12 +52,68 @@ export const da = {
   'velkommen.titel': 'Velkommen',
   'velkommen.intro': 'Du er ikke med i en Bødekasse endnu.',
   'velkommen.loggetIndSom': 'Logget ind som {email}',
+  'velkommen.opret': 'Opret Bødekasse',
+  'velkommen.opretTekst': 'Start en ny og bliv Admin',
+  'velkommen.kode': 'Jeg har en kode',
+  'velkommen.kodeTekst': 'Kom med i en, der findes',
 
-  // Vælg Bødekasse
+  // Opret Bødekasse
+  'opret.titel': 'Opret Bødekasse',
+  'opret.navn': 'Navn på Bødekassen',
+  'opret.mitNavn': 'Dit navn i Bødekassen',
+  'opret.note': 'Du bliver Admin. Bagefter kan du invitere de andre med en kode.',
+  'opret.knap': 'Opret',
+
+  // Jeg har en kode
+  'kode.titel': 'Jeg har en kode',
+
+  // Vælg Bødekasse / Skift Bødekasse
   'vaelg.titel': 'Vælg Bødekasse',
+  'vaelg.antalMedlemmer': '{antal} medlemmer',
+  'vaelg.etMedlem': '1 medlem',
+  'vaelg.opretNy': 'Opret ny',
+  'vaelg.kode': 'Jeg har en kode',
+  'vaelg.aaben': 'Åben',
+  'skift.titel': 'Skift Bødekasse',
+
+  // Hjem
+  'hjem.label': 'Bødekasse',
+  'hjem.skift': 'Skift Bødekasse',
+  'hjem.iBoedekassen': 'I bødekassen',
+  'hjem.komIGang': 'Kom i gang',
+  'hjem.trin.opret': 'Opret Bødekassen',
+  'hjem.trin.inviter': 'Invitér de andre',
+  'hjem.trin.inviterKode': 'Del koden {kode}',
+  'hjem.trin.inviterUdenKode': 'En Admin kan dele koden',
+  'hjem.trin.kategorier': 'Lav jeres bødekategorier',
+  'hjem.trin.kategorierTekst': 'Fx For sent · {beloeb}',
+  'hjem.trin.boede': 'Giv den første bøde',
+  'hjem.trin.boedeTekst': 'Med + nederst',
+  'hjem.del': 'Del',
+  'hjem.opretKategori': 'Opret',
+  'hjem.topliste': 'Topliste',
+  'hjem.toplisteTom': 'Ingen bøder endnu',
+  'hjem.toplisteTomTekst': 'Her ser I, hvem der har fået flest.',
+
+  // Inviting with the join code
+  'invitation.tekst': 'Kom med i {navn} i Bødekasse. Åbn {url} og brug koden {kode}.',
+  'invitation.kopieret': 'Invitationen er kopieret',
+
+  // Mere
+  'mere.seProfil': 'Se din profil',
+  'mere.adminSeProfil': 'Admin · Se din profil',
+  'mere.medlemmer': 'Medlemmer',
+  'mere.kassen': 'Kassen og indbetalinger',
+  'mere.anker': 'Anker',
+  'mere.konkurrencer': 'Konkurrencer',
+  'mere.indstillinger': 'Indstillinger',
+  'mere.admin': 'Admin',
+  'mere.skift': 'Skift Bødekasse',
 
   // General
   'fejl.ukendt': 'Noget gik galt. Prøv igen.',
+  'fejl.navnMangler': 'Skriv et navn til Bødekassen.',
+  'fejl.mitNavnMangler': 'Skriv dit navn.',
   'handling.proevIgen': 'Prøv igen',
 
   // Offline

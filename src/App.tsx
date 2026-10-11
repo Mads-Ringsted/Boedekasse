@@ -1,9 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import { AuthProvider, useAuth } from './auth/AuthProvider.tsx';
 import { LogInd } from './auth/LogInd.tsx';
 import { BodekasseProvider, useMedlemskaber } from './bodekasse/BodekasseProvider.tsx';
 import { StatusScreen } from './components/StatusScreen.tsx';
+import { JegHarEnKode } from './onboarding/JegHarEnKode.tsx';
+import { OnboardingProvider, type OnboardingSide } from './onboarding/Onboarding.tsx';
+import { OpretBodekasse } from './onboarding/OpretBodekasse.tsx';
 import { Hjem } from './screens/Hjem.tsx';
 import { Mere } from './screens/Mere.tsx';
 import { Placeholder } from './screens/Placeholder.tsx';
@@ -16,6 +19,8 @@ import { Offline, useOnline } from './shell/Offline.tsx';
 import { UpdatePrompt } from './shell/UpdatePrompt.tsx';
 import { t } from './strings/index.ts';
 
+const fraMere = { label: 'tab.mere', to: '/mere' } as const;
+
 /** The screens inside a box. Shown only once a box is open. */
 const router = createBrowserRouter([
   {
@@ -25,6 +30,13 @@ const router = createBrowserRouter([
       { path: 'aktivitet', element: <Placeholder title="skaerm.aktivitet" /> },
       { path: 'kategorier', element: <Placeholder title="skaerm.kategorier" /> },
       { path: 'mere', element: <Mere /> },
+      // Pushed from Mere; each ticket replaces its stand-in.
+      { path: 'profil', element: <Placeholder title="skaerm.profil" back={fraMere} /> },
+      { path: 'medlemmer', element: <Placeholder title="mere.medlemmer" back={fraMere} /> },
+      { path: 'kassen', element: <Placeholder title="mere.kassen" back={fraMere} /> },
+      { path: 'anker', element: <Placeholder title="mere.anker" back={fraMere} /> },
+      { path: 'konkurrencer', element: <Placeholder title="mere.konkurrencer" back={fraMere} /> },
+      { path: 'indstillinger', element: <Placeholder title="mere.indstillinger" back={fraMere} /> },
       { path: '*', element: <Hjem /> },
     ],
   },
@@ -73,19 +85,46 @@ function LoginGate() {
   }
 }
 
-/** Velkommen, Vælg Bødekasse, or the open box's screens. */
+/**
+ * Velkommen, Vælg Bødekasse, or the open box's screens. Opret Bødekasse and
+ * Jeg har en kode cover all of them when opened (`useVisOnboarding`).
+ */
 function BoxGate() {
-  const { load, destination, reload } = useMedlemskaber();
+  const { load, destination, reload, switchTo } = useMedlemskaber();
+  const [side, setSide] = useState<OnboardingSide | null>(null);
 
-  if (load.status === 'error') return <StatusScreen message={t('fejl.ukendt')} onRetry={() => void reload()} />;
-  switch (destination?.kind) {
-    case undefined:
-      return <StatusScreen />;
-    case 'velkommen':
-      return <Velkommen />;
-    case 'vaelg':
-      return <VaelgBodekasse />;
-    case 'bodekasse':
-      return <RouterProvider router={router} />;
+  // A new or joined box: fetch the boxes again, open it on Hjem.
+  async function aabnNyKasse(bodekasseId: string) {
+    await reload();
+    switchTo(bodekasseId);
+    await router.navigate('/', { replace: true });
+    setSide(null);
   }
+
+  let content;
+  if (side === 'opret') {
+    content = <OpretBodekasse onBack={() => setSide(null)} onCreated={aabnNyKasse} />;
+  } else if (side === 'kode') {
+    content = <JegHarEnKode onBack={() => setSide(null)} />;
+  } else if (load.status === 'error') {
+    content = <StatusScreen message={t('fejl.ukendt')} onRetry={() => void reload()} />;
+  } else {
+    switch (destination?.kind) {
+      case undefined:
+        content = <StatusScreen />;
+        break;
+      case 'velkommen':
+        content = <Velkommen />;
+        break;
+      case 'vaelg':
+        content = <VaelgBodekasse />;
+        break;
+      case 'bodekasse':
+        // Keyed by box, so switching box starts every screen fresh.
+        content = <RouterProvider key={destination.bodekasseId} router={router} />;
+        break;
+    }
+  }
+
+  return <OnboardingProvider value={setSide}>{content}</OnboardingProvider>;
 }

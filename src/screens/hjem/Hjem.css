@@ -1,0 +1,176 @@
+.hjem__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 4px 4px;
+}
+
+.hjem__skift {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.hjem__label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.hjem__navn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  overflow-wrap: anywhere;
+}
+
+.hjem__chevron {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+
+.hjem__kasse {
+  border-radius: var(--radius-card-lg);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hjem__kasse-label {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.hjem__kasse-beloeb {
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -1.4px;
+  line-height: 1.1;
+}
+
+.hjem__fejl {
+  padding: 12px 4px;
+  font-size: 15px;
+  color: var(--color-danger);
+  text-align: left;
+}
+
+.hjem__sektion {
+  padding: 10px 4px 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.hjem__tom {
+  border-radius: 20px;
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-line);
+  padding: 22px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.hjem__tom-titel {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.hjem__tom-tekst {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* Kom i gang */
+.kom-i-gang {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-radius: 20px;
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.kom-i-gang__punkt {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 14px 14px 16px;
+}
+
+.kom-i-gang__punkt + .kom-i-gang__punkt {
+  border-top: 1px solid var(--color-line);
+}
+
+.kom-i-gang__nr {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-fill);
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kom-i-gang__punkt--naeste .kom-i-gang__nr {
+  background: var(--color-accent-pale);
+  color: var(--color-accent-text);
+}
+
+.kom-i-gang__punkt--gjort .kom-i-gang__nr {
+  background: var(--color-success);
+  color: var(--color-bg);
+}
+
+.kom-i-gang__tekst {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.kom-i-gang__titel {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.kom-i-gang__punkt--gjort .kom-i-gang__titel {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+.kom-i-gang__under {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.kom-i-gang__knap {
+  flex-shrink: 0;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: var(--color-fill);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.kom-i-gang__knap--primaer {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
