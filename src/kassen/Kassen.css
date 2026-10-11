@@ -393,3 +393,43 @@
   height: 50px;
   font-size: 16px;
 }
+
+/* Hæv penge (haev-penge.html) */
+.haev__kassen {
+  margin-top: 14px;
+  border-radius: var(--radius-input);
+  background: var(--color-accent-pale);
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.haev__kassen-label {
+  font-size: 14px;
+  color: var(--color-accent-pale-text);
+}
+
+.haev__kassen-beloeb {
+  font-size: 17px;
+  font-weight: 700;
+  font-variant-numeric: var(--font-numeric);
+}
+
+.registrer__beloeb-note.haev__over {
+  color: var(--color-danger);
+}
+
+.haev__formaal {
+  margin-top: 0;
+}
+
+.annuller-haev__beloeb {
+  color: var(--color-text);
+}
+
+/* A Hævning in Kassen's list: the amount out, without colour. */
+.kassen-post--haevning:not(.kassen-post--annulleret) .kassen-post__beloeb {
+  color: var(--color-text);
+}

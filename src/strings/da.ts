@@ -204,6 +204,27 @@ export const da = {
   'fejl.beloebUgyldig': 'Beløbet skal være et helt antal kroner over 0.',
   'fejl.alleredeAnnulleret': 'Den er allerede annulleret.',
   'fejl.tidligereSaeson': 'Den hører til en tidligere sæson og kan ikke ændres.',
+
+  // Hæv penge (#61)
+  'kassen.haevPenge': 'Hæv penge',
+  'kassen.haevetAf': 'Hævet af {navn}',
+  'kassen.minus': '−{beloeb}',
+  'haev.titel': 'Hæv penge',
+  'haev.hoejst': 'Højst {beloeb}',
+  'haev.tom': 'Der er ingen penge i kassen.',
+  'haev.formaal': 'Hvad skal pengene bruges til?',
+  'haev.formaalEksempel': 'F.eks. depositum til julefrokost',
+  'haev.info': 'Det ændrer kun beløbet i kassen, ikke hvad nogen mangler at betale.',
+  'haev.knap': 'Hæv {beloeb}',
+  'haev.knapUdenBeloeb': 'Hæv',
+  'annullerHaevning.titel': 'Hævning',
+  'annullerHaevning.linje': 'Hævet af {af} · {dag}',
+  'annullerHaevning.knap': 'Annullér hævning',
+  'aktivitet.haevetAf': 'Hævet af {hvem}',
+  'aktivitet.annulleredeHaevning': '{hvem} annullerede en hævning',
+  'fejl.formaalMangler': 'Skriv hvad pengene skal bruges til.',
+  'fejl.overKassen': 'Der er ikke så mange penge i kassen.',
+
   // Indstillinger (Admin)
   'indstillinger.bodekasse': 'Bødekasse',
   'indstillinger.navn': 'Navn',

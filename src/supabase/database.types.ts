@@ -1717,7 +1717,10 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "annuller_indbetaling":
+            "annuller_haevning":
+{ Args: { "p_haevning": string,"p_klient_id": string,"p_note"?: string }; Returns: Json
+                           },
+"annuller_indbetaling":
 { Args: { "p_indbetaling": string,"p_klient_id": string,"p_note"?: string }; Returns: Json
                            },
 "arkiver_bodekategori":
@@ -1737,6 +1740,9 @@ isOneToOne: false
                            },
 "giv_boeder":
 { Args: { "p_bodekasse": string,"p_klient_id": string,"p_linjer": Json }; Returns: Json
+                           },
+"haev":
+{ Args: { "p_beloeb": number,"p_bodekasse": string,"p_formaal": string,"p_klient_id": string }; Returns: Json
                            },
 "opdater_indstillinger":
 { Args: { "p_aendringer": Json,"p_bodekasse": string,"p_klient_id": string }; Returns: Json
