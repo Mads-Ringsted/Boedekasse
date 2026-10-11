@@ -3,7 +3,7 @@ import { ChevronLeft, Search, ShieldCheck } from 'lucide-react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Sheet } from '../components/Sheet.tsx';
 import { kortNavne } from '../giv/navne.ts';
-import { kortDato } from '../kategorier/kategoriListe.ts';
+import { kortDato, soegKategorier } from '../kategorier/kategoriListe.ts';
 import { formatKr, t } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
@@ -45,8 +45,7 @@ export function KoebFrikobSheet({ open, onOpenChange, medlem, status, onKoebt }:
 
   const kategorier = valg.status === 'ready' ? valg.data : [];
   const valgt = kategorier.find((k) => k.id === valgtId && !k.koebt);
-  const ord = soeg.trim().toLocaleLowerCase('da');
-  const viste = ord ? kategorier.filter((k) => k.navn.toLocaleLowerCase('da').includes(ord)) : kategorier;
+  const viste = soegKategorier(kategorier, soeg);
   const fornavn = kortNavne([medlem.navn])[0] ?? medlem.navn;
   const pris = formatKr(status.pris);
 

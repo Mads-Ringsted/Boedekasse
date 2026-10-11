@@ -1,4 +1,5 @@
-const fornavn = (navn: string) => navn.trim().split(/\s+/)[0] ?? '';
+/** The first name: the first word of a full name. */
+export const fornavn = (navn: string): string => navn.trim().split(/\s+/)[0] ?? '';
 
 /**
  * Short names for a list of people, in the same order: the first name, or

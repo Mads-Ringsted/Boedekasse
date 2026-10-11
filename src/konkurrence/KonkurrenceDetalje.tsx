@@ -1,4 +1,5 @@
 import { useState, type FormEvent, type ReactNode } from 'react';
+import { fornavn } from '../giv/navne.ts';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { TagMaerke } from '../aktivitet/TagMaerke.tsx';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
@@ -136,7 +137,7 @@ function Resultat({ k, medlemId, children }: { k: Konkurrence; medlemId: string;
         <span className="konk-detalje__titel-blok">
           <h1 className="screen__title konk-detalje__titel">{k.titel}</h1>
           <span className="konk-detalje__under">
-            {t('konkurrence.registreretAf', { dato: konkurrenceDato(k.dato), navn: k.oprettetAfNavn.split(/\s+/)[0] ?? '' })}
+            {t('konkurrence.registreretAf', { dato: konkurrenceDato(k.dato), navn: fornavn(k.oprettetAfNavn) })}
           </span>
           {(annulleret || k.rettetAfNavn) && (
             <span className="konk-detalje__tags">
@@ -144,7 +145,7 @@ function Resultat({ k, medlemId, children }: { k: Konkurrence; medlemId: string;
                 <TagMaerke tag={{ tekst: t('boede.tag.annulleret'), tone: 'graa' }} />
               ) : (
                 <TagMaerke
-                  tag={{ tekst: t('konkurrence.rettetAf', { navn: k.rettetAfNavn?.split(/\s+/)[0] ?? '' }), tone: 'blaa' }}
+                  tag={{ tekst: t('konkurrence.rettetAf', { navn: fornavn(k.rettetAfNavn ?? '') }), tone: 'blaa' }}
                 />
               )}
             </span>
@@ -160,7 +161,7 @@ function Resultat({ k, medlemId, children }: { k: Konkurrence; medlemId: string;
 
       {k.annullering && (
         <p className="konk-detalje__annulleret">
-          {[t('konkurrence.annulleretAf', { navn: k.annullering.afNavn.split(/\s+/)[0] ?? '' }), k.annullering.note]
+          {[t('konkurrence.annulleretAf', { navn: fornavn(k.annullering.afNavn) }), k.annullering.note]
             .filter(Boolean)
             .join(' · ')}
         </p>

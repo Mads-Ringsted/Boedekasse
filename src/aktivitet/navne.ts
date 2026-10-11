@@ -1,7 +1,7 @@
 import { t } from '../strings/index.ts';
 import type { Kontekst } from './visning.ts';
 
-const fornavn = (navn: string) => navn.trim().split(/\s+/)[0] ?? '';
+import { fornavn } from '../giv/navne.ts';
 
 /** A Medlem as the subject of a feed sentence: "Du", or their first name. */
 export function hvem(id: string | null, navn: string | null, ctx: Kontekst): string {

@@ -21,12 +21,17 @@ const efterNavn = (a: ListeKategori, b: ListeKategori) => dansk.compare(a.navn, 
  * By Navn, the "Ofte brugt" ones come first (most used first), then A–Å.
  * By Pris, cheapest first.
  */
+/** The Bødekategorier whose name contains the search (case ignored); all of them for an empty search. */
+export function soegKategorier<K extends { navn: string }>(kategorier: readonly K[], soeg: string): K[] {
+  const ord = soeg.trim().toLocaleLowerCase('da');
+  return ord ? kategorier.filter((k) => k.navn.toLocaleLowerCase('da').includes(ord)) : [...kategorier];
+}
+
 export function kategoriListe<K extends ListeKategori>(
   kategorier: readonly K[],
   { soeg, sortering }: { soeg: string; sortering: Sortering },
 ): { aktive: K[]; arkiverede: K[] } {
-  const ord = soeg.trim().toLocaleLowerCase('da');
-  const fundne = ord ? kategorier.filter((k) => k.navn.toLocaleLowerCase('da').includes(ord)) : [...kategorier];
+  const fundne = soegKategorier(kategorier, soeg);
 
   const aktive = fundne.filter((k) => !k.arkiveret);
   if (sortering === 'pris') {
