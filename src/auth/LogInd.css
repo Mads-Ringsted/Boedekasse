@@ -1,0 +1,176 @@
+.login {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: calc(env(safe-area-inset-top) + 56px) calc(env(safe-area-inset-right) + 24px)
+    calc(env(safe-area-inset-bottom) + 24px) calc(env(safe-area-inset-left) + 24px);
+}
+
+.login--code {
+  padding-top: calc(env(safe-area-inset-top) + 8px);
+}
+
+.login__logo {
+  display: block;
+  border-radius: 13px;
+  box-shadow: 0 0 0 1px var(--color-fill-strong);
+}
+
+.login__title {
+  margin-top: 24px;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+}
+
+.login--code .login__title {
+  margin-top: 18px;
+}
+
+.login__lead {
+  margin-top: 8px;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+.login__email {
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+
+.login__field {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.login__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.login__input {
+  height: 54px;
+  border: 0;
+  border-radius: var(--radius-input);
+  padding: 0 16px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 17px;
+  outline: none;
+}
+
+.login__input:focus {
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
+.login__error,
+.login__notice {
+  margin-top: 12px;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.login__error {
+  color: var(--color-danger);
+}
+
+.login__notice {
+  color: var(--color-success);
+}
+
+.login__primary {
+  margin-top: auto;
+  height: var(--size-button);
+  border-radius: var(--radius-button);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 17px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.login__primary:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.login__back {
+  align-self: flex-start;
+  height: var(--size-touch);
+  margin-left: -8px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--color-accent-text);
+  font-size: 17px;
+}
+
+/* Six digit boxes drawn over one invisible input, so iOS autofill fills all six. */
+.login__code {
+  position: relative;
+  margin-top: 36px;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.login__code-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: transparent;
+  caret-color: transparent;
+  font-size: 16px; /* at least 16px, or iOS zooms in on focus */
+  opacity: 0;
+  outline: none;
+}
+
+.login__digit {
+  height: 60px;
+  border-radius: 14px;
+  background: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.login__digit--active {
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
+.login__caret {
+  width: 2px;
+  height: 26px;
+  background: var(--color-accent);
+  animation: login-caret 1s steps(1) infinite;
+}
+
+@keyframes login-caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+.login__link {
+  margin-top: 24px;
+  align-self: flex-start;
+  min-height: var(--size-touch);
+  color: var(--color-accent-text);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.login__link:disabled {
+  color: var(--color-text-faint);
+  cursor: default;
+}
