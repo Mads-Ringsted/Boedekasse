@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PROTOTYPE · Bødekasse datamodel</title>
+<style>
+  :root { --accent:#1E50E6; --bg:#F6F7F9; --card:#fff; --text:#14161A; --muted:#6B7280; --line:#E3E6EB; --ok:#12805C; --bad:#C2261D; --new:#FFF6CC; }
+  @media (prefers-color-scheme: dark) { :root { --accent:#3B68F5; --bg:#0F1115; --card:#181B21; --text:#E9ECF1; --muted:#9AA3AF; --line:#2A2F37; --ok:#3CCB8F; --bad:#FF6B61; --new:#3A3413; } }
+  * { box-sizing:border-box; }
+  body { margin:0; font:14px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; background:var(--bg); color:var(--text); }
+  header { padding:20px 24px 8px; max-width:1500px; margin:0 auto; }
+  h1 { font-size:22px; margin:0 0 4px; } h2 { font-size:15px; margin:0 0 8px; } h3 { font-size:13px; margin:12px 0 4px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+  .proto { display:inline-block; background:var(--bad); color:#fff; font-size:11px; font-weight:700; padding:2px 6px; border-radius:4px; margin-right:6px; vertical-align:middle; }
+  .intro { color:var(--muted); max-width:900px; }
+  .intro b { color:var(--text); }
+  main { display:grid; grid-template-columns: 430px 1fr; gap:16px; padding:8px 24px 40px; max-width:1500px; margin:0 auto; }
+  @media (max-width: 1000px) { main { grid-template-columns: 1fr; } }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; margin-bottom:16px; }
+  .row { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:6px 0; }
+  .row label { color:var(--muted); font-size:12px; }
+  input, select { font:inherit; padding:5px 7px; border:1px solid var(--line); border-radius:6px; background:var(--card); color:var(--text); max-width:100%; }
+  input[type=number] { width:76px; }
+  button { font:inherit; padding:6px 10px; border-radius:8px; border:1px solid var(--accent); background:var(--accent); color:#fff; cursor:pointer; }
+  button.ghost { background:transparent; color:var(--accent); }
+  button:disabled { opacity:.4; cursor:default; }
+  .tabs { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:10px; }
+  .tabs button { background:transparent; color:var(--text); border-color:var(--line); font-size:13px; }
+  .tabs button.on { background:var(--accent); color:#fff; border-color:var(--accent); }
+  ol.steps { padding-left:20px; margin:8px 0 0; } ol.steps li { margin:5px 0; }
+  ol.steps button { text-align:left; font-size:13px; }
+  ol.steps li.done button { background:transparent; color:var(--muted); border-color:var(--line); }
+  .msg { padding:8px 10px; border-radius:8px; margin-bottom:12px; font-weight:600; }
+  .msg.ok { background:color-mix(in srgb, var(--ok) 15%, transparent); color:var(--ok); }
+  .msg.bad { background:color-mix(in srgb, var(--bad) 15%, transparent); color:var(--bad); }
+  .stats { display:grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap:10px; }
+  .stat { border:1px solid var(--line); border-radius:10px; padding:8px 10px; }
+  .stat .k { color:var(--muted); font-size:12px; } .stat .v { font-size:18px; font-weight:700; }
+  table { border-collapse:collapse; width:100%; font-size:12.5px; }
+  th, td { text-align:left; padding:4px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; }
+  tr.new td, td.changed { background:var(--new); }
+  tr.annul td { text-decoration:line-through; color:var(--muted); }
+  .tables { display:grid; grid-template-columns: repeat(auto-fit, minmax(420px,1fr)); gap:12px; }
+  .tables .card { margin:0; overflow-x:auto; }
+  .feed li { margin:3px 0; } .feed .t { color:var(--muted); font-size:12px; margin-right:6px; }
+  .feed .strike { text-decoration:line-through; color:var(--muted); }
+  .muted { color:var(--muted); } .small { font-size:12px; }
+  details summary { cursor:pointer; color:var(--accent); font-weight:600; }
+  .q li { margin:4px 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="proto">PROTOTYPE</span>Bødekasse v1 · datamodel</h1>
+  <p class="intro"><b>Spørgsmålet:</b> kan disse tabeller udtrykke alle v1-reglerne, og kommer Saldo, Kassen, Topliste og Aktivitet rigtigt ud, når vi kun <b>beregner</b> dem ud fra rækkerne (intet gemt Saldo)? Tryk på knapperne, og se tabellerne og tallene ændre sig. Afviste handlinger viser adgangsreglerne. Gule rækker er lige ændret.</p>
+  <details class="intro"><summary>Valg i modellen, du skal reagere på</summary>
+    <ol class="q">
+      <li><b>Én tabel pr. slags</b> (bøde, gebyr, frikøb, konkurrence, indbetaling, betalingsmelding, hævning) i stedet for én fælles posteringstabel.</li>
+      <li><b>Saldo gemmes aldrig.</b> Den er en view: bøder man bærer + gebyrer − indbetalinger, alt der ikke er annulleret, på tværs af alle Sæsoner. "Overført" er bare summen fra tidligere Sæsoner.</li>
+      <li><b>Hvem bærer en Bøde</b> beregnes fra Anken: åben Anke → ingen; modtageren vandt → giveren; ellers modtageren.</li>
+      <li><b>Frikøb påvirker ikke Saldo.</b> Det blokerer kun, at Bøden kan gives. Derfor rammer en Bøde flyttet af en vundet Anke uden videre.</li>
+      <li><b>Alle skrivninger går gennem funktioner (RPC)</b>, der tjekker reglerne og skriver Gebyr + aktivitet i samme transaktion. RLS giver kun læseadgang.</li>
+      <li><b>Pausen hører til den Sæson, der lige er slut.</b> Penge i Pausen får dens sæson-id. Rettelser er tilladt i den seneste Sæson, Pause inklusive, indtil næste Sæson starter.</li>
+      <li><b>Kun Fortryd sletter.</b> Ret Konkurrence annullerer de gamle Gebyrer (note "rettet") og laver nye.</li>
+      <li><b>Åben Anke, når næste Sæson starter:</b> lukkes som "Ikke afgjort", og modtageren bærer Bøden. <i>(Ikke besluttet endnu. Hidtil ville den tælle for ingen, for altid.)</i></li>
+      <li><b>Aktivitet</b> er en tabel, der kun tilføjes til (haendelse). Den viser annullerede rækker overstreget ved at slå op i kilden.</li>
+      <li><b>Sæsonens slutdato</b> beregnes ved læsning (ingen cron): sæsonen er slut, når klokken passerer midnat efter slutdatoen.</li>
+    </ol>
+  </details>
+</header>
+
+<main>
+  <section>
+    <div class="card">
+      <h2>Gennemgange</h2>
+      <div class="tabs" id="tabs"></div>
+      <div id="scenario"></div>
+    </div>
+    <div class="card" id="freeplay"></div>
+  </section>
+  <section>
+    <div id="msg"></div>
+    <div class="card"><div class="stats" id="stats"></div></div>
+    <div class="card"><h2>Saldo pr. Medlem <span class="muted small">(view: medlem_saldo)</span></h2><div id="saldo"></div></div>
+    <div class="card"><h2>Aktivitet <span class="muted small">(tabel: haendelse, nyeste først)</span></h2><ul class="feed" id="feed"></ul></div>
+    <h2 style="margin:4px 0 8px">Tabellerne</h2>
+    <div class="tables" id="tables"></div>
+  </section>
+</main>
+
+<script>
+/* =====================================================================
+   PURE MODEL — no DOM in here. Liftable: the rules each RPC must check,
+   and the derived views (Saldo, Kassen, Topliste, bærer).
+   ===================================================================== */
+const Model = (() => {
+  const clone = (s) => JSON.parse(JSON.stringify(s));
+  class Afvist extends Error {}
+  const nej = (msg) => { throw new Afvist(msg); };
+
+  function initial() {
+    return {
+      seq: 0, tid: 12, // hours since day 1 00:00
+      indstillinger: {
+        anke_til: true, anke_vindue_timer: 24, anke_min: 1, anke_max_gange: 2,
+        oprettelsesgebyr_til: true, oprettelsesgebyr: 25,
+        engangsgebyr_til: true, engangsgebyr: 10,
+        frikob_til: true, frikob_pris: 300,
+        konkurrence_til: true, placeringer: [0, 10, 25, 35, 40, 45, 50], fravaersgebyr: 50,
+      },
+      medlem: [
+        { id: 'anna', navn: 'Anna', er_admin: true, udmeldt: false },
+        { id: 'bo', navn: 'Bo', er_admin: false, udmeldt: false },
+        { id: 'carl', navn: 'Carl', er_admin: false, udmeldt: false },
+        { id: 'dina', navn: 'Dina', er_admin: false, udmeldt: false },
+      ],
+      saeson: [{ id: 's1', navn: 'Sæson 2026', startet: 0, slutdato: null, afsluttet: null }],
+      bodekategori: [
+        { id: 'k1', navn: 'For sent', pris: 50, arkiveret: false, oprettet_af: 'anna' },
+        { id: 'k2', navn: 'Glemt drikkevarer', pris: 30, arkiveret: false, oprettet_af: 'bo' },
+      ],
+      bode: [], anke: [], gebyr: [], frikob: [], konkurrence: [], konkurrence_resultat: [],
+      indbetaling: [], betalingsmelding: [], haevning: [], haendelse: [],
+      fortryd_batch: null,
+    };
+  }
+
+  const id = (s, p) => p + (++s.seq);
+  const navn = (s, m) => (s.medlem.find((x) => x.id === m) || {}).navn || m;
+  const medlem = (s, m) => s.medlem.find((x) => x.id === m) || nej('Ukendt Medlem');
+  const kategori = (s, k) => s.bodekategori.find((x) => x.id === k) || nej('Ukendt Bødekategori');
+  const seneste = (s) => s.saeson[s.saeson.length - 1];
+  const slutTid = (x) => {
+    const fra = x.slutdato == null ? Infinity : x.slutdato; // slutdato stored as the midnight it ends
+    return Math.min(x.afsluttet == null ? Infinity : x.afsluttet, fra);
+  };
+  /** The running Sæson, or null during a Pause. Computed at read time (no cron). */
+  const aktivSaeson = (s) => { const x = seneste(s); return x && s.tid < slutTid(x) ? x : null; };
+  const kraevSaeson = (s) => aktivSaeson(s) || nej('Pause: der er ingen aktiv Sæson');
+  /** Rows can be corrected only while their Sæson is the latest one (Pause included). */
+  const kraevSeneste = (s, saesonId) => { if (saesonId !== seneste(s).id) nej('Tidligere Sæsoner er skrivebeskyttede'); };
+  const aktiv = (s, m) => { const x = medlem(s, m); if (x.udmeldt) nej(`${x.navn} er Udmeldt`); return x; };
+  const admin = (s, m) => { if (!aktiv(s, m).er_admin) nej(`${navn(s, m)} er ikke Admin`); };
+  const log = (s, aktoer, tekst, ref) => s.haendelse.push({ id: id(s, 'h'), saeson_id: seneste(s).id, tid: s.tid, aktoer, tekst, ref });
+  const annuller = (row, af, note) => { row.annulleret_af = af; row.annulleret_note = note || null; };
+
+  // ---------- derived views ----------
+  const ankeFor = (s, b) => s.anke.find((a) => a.bode_id === b.id);
+  /** Who bears a Bøde right now: null = counts for nobody. */
+  function baerer(s, b) {
+    if (b.annulleret_af) return null;
+    const a = ankeFor(s, b);
+    if (!a) return b.modtager_id;
+    if (a.afgoerelse == null) return null;          // pending: "anket"
+    if (a.afgoerelse === 'modtager_vandt') return b.giver_id;
+    return b.modtager_id;                           // 'giver_vandt' or 'ikke_afgjort'
+  }
+  function saldoDele(s, m, saesonFilter) {
+    const inS = (r) => !saesonFilter || saesonFilter(r.saeson_id);
+    const boder = s.bode.filter((b) => inS(b) && baerer(s, b) === m).reduce((t, b) => t + b.pris, 0);
+    const gebyrer = s.gebyr.filter((g) => inS(g) && g.medlem_id === m && !g.annulleret_af).reduce((t, g) => t + g.beloeb, 0);
+    const ind = s.indbetaling.filter((i) => inS(i) && i.medlem_id === m && !i.annulleret_af).reduce((t, i) => t + i.beloeb, 0);
+    return { boder, gebyrer, ind, saldo: boder + gebyrer - ind };
+  }
+  function saldoView(s) {
+    const cur = seneste(s).id;
+    return s.medlem.map((m) => {
+      const alt = saldoDele(s, m.id);
+      const foer = saldoDele(s, m.id, (sid) => sid !== cur);
+      const nu = saldoDele(s, m.id, (sid) => sid === cur);
+      const frikobGebyr = s.gebyr.filter((g) => g.saeson_id === cur && g.medlem_id === m.id && g.art === 'frikob' && !g.annulleret_af).reduce((t, g) => t + g.beloeb, 0);
+      return { id: m.id, navn: m.navn, udmeldt: m.udmeldt, overfoert: foer.saldo, boder: nu.boder, gebyrer: nu.gebyrer, ind: nu.ind, saldo: alt.saldo, boder_i_alt: nu.boder + frikobGebyr };
+    });
+  }
+  const kassen = (s) => s.indbetaling.filter((i) => !i.annulleret_af).reduce((t, i) => t + i.beloeb, 0)
+    - s.haevning.filter((h) => !h.annulleret_af).reduce((t, h) => t + h.beloeb, 0);
+  const harFrikob = (s, m, k, sid) => s.frikob.some((f) => f.medlem_id === m && f.bodekategori_id === k && f.saeson_id === sid && !f.annulleret_af);
+
+  function ankeGebyr(s, pris) {
+    const { anke_min: lo, anke_max_gange: g } = s.indstillinger, hi = Math.max(lo, pris * g);
+    const r = ((s.seq * 9301 + 49297) % 233280) / 233280; // stand-in for the server-side draw
+    return lo + Math.floor(r * (hi - lo + 1));
+  }
+
+  // ---------- RPCs: each checks its rules, writes rows + Gebyr + haendelse together ----------
+  const rpc = {
+    giv_boeder(s, a) { // a: { af, linjer:[{til, kategori|null, grund, beloeb}] }
+      const sae = kraevSaeson(s); aktiv(s, a.af);
+      const batch = id(s, 'batch');
+      for (const l of a.linjer) {
+        aktiv(s, l.til);
+        let pris, kat = null, grund = null;
+        if (l.kategori) {
+          kat = kategori(s, l.kategori); if (kat.arkiveret) nej('Bødekategorien er arkiveret');
+          if (harFrikob(s, l.til, kat.id, sae.id)) nej(`${navn(s, l.til)} har Frikøb på "${kat.navn}"`);
+          pris = kat.pris;
+        } else {
+          if (!(l.beloeb > 0)) nej('Engangsbøde kræver et beløb over 0'); if (!l.grund) nej('Engangsbøde kræver en grund');
+          pris = l.beloeb; grund = l.grund;
+        }
+        const b = { id: id(s, 'b'), saeson_id: sae.id, batch_id: batch, giver_id: a.af, modtager_id: l.til, bodekategori_id: kat && kat.id, grund, pris, givet: s.tid };
+        s.bode.push(b);
+        let tekst = `${navn(s, a.af)} gav ${navn(s, l.til)} en bøde · ${kat ? kat.navn : grund} · ${pris} kr`;
+        if (!kat && s.indstillinger.engangsgebyr_til) {
+          s.gebyr.push({ id: id(s, 'g'), saeson_id: sae.id, medlem_id: a.af, art: 'engangsbode', beloeb: s.indstillinger.engangsgebyr, bode_id: b.id });
+          tekst += ` (+ Gebyr ${s.indstillinger.engangsgebyr} kr til ${navn(s, a.af)})`;
+        }
+        log(s, a.af, tekst, { tabel: 'bode', id: b.id, batch });
+      }
+      s.fortryd_batch = batch;
+      return `Bøder givet (batch ${batch})`;
+    },
+    fortryd(s, a) {
+      const batch = s.fortryd_batch || nej('Fortryd er kun muligt lige efter, man har givet bøder');
+      const ids = s.bode.filter((b) => b.batch_id === batch).map((b) => b.id);
+      s.bode = s.bode.filter((b) => b.batch_id !== batch);
+      s.gebyr = s.gebyr.filter((g) => !ids.includes(g.bode_id));
+      s.haendelse = s.haendelse.filter((h) => !(h.ref && h.ref.batch === batch));
+      return 'Fortrudt: batchen er slettet helt (den eneste rigtige sletning)';
+    },
+    opret_kategori(s, a) {
+      aktiv(s, a.af);
+      if (s.bodekategori.some((k) => !k.arkiveret && k.navn.toLowerCase() === a.navn.toLowerCase())) nej('Navnet er allerede brugt af en aktiv Bødekategori');
+      if (!(a.pris > 0)) nej('Prisen skal være over 0');
+      const k = { id: id(s, 'k'), navn: a.navn, pris: a.pris, arkiveret: false, oprettet_af: a.af };
+      s.bodekategori.push(k);
+      const sae = aktivSaeson(s);
+      let tekst = `${navn(s, a.af)} oprettede Bødekategorien ${a.navn} · ${a.pris} kr`;
+      if (sae && s.indstillinger.oprettelsesgebyr_til) {
+        s.gebyr.push({ id: id(s, 'g'), saeson_id: sae.id, medlem_id: a.af, art: 'oprettelse', beloeb: s.indstillinger.oprettelsesgebyr, bodekategori_id: k.id });
+        tekst += ` (+ Gebyr ${s.indstillinger.oprettelsesgebyr} kr)`;
+      }
+      log(s, a.af, tekst, { tabel: 'bodekategori', id: k.id });
+      return 'Bødekategori oprettet';
+    },
+    ret_pris(s, a) {
+      const k = kategori(s, a.kategori); aktiv(s, a.af);
+      if (k.oprettet_af !== a.af && !medlem(s, a.af).er_admin) nej('Kun den, der oprettede den, eller en Admin kan rette den');
+      log(s, a.af, `${navn(s, a.af)} ændrede prisen på ${k.navn}: ${k.pris} → ${a.pris} kr`, { tabel: 'bodekategori', id: k.id });
+      k.pris = a.pris;
+      return 'Prisen er ændret. Gamle Bøder beholder deres pris.';
+    },
+    anke(s, a) {
+      const sae = kraevSaeson(s); aktiv(s, a.af);
+      if (!s.indstillinger.anke_til) nej('Anke er slået fra');
+      const b = s.bode.find((x) => x.id === a.bode) || nej('Ukendt Bøde');
+      if (b.modtager_id !== a.af) nej('Kun modtageren kan anke en Bøde');
+      if (b.annulleret_af) nej('Bøden er annulleret');
+      if (ankeFor(s, b)) nej('Bøden er allerede anket');
+      if (b.saeson_id !== sae.id) nej('Bøden er fra en tidligere Sæson');
+      if (s.tid - b.givet > s.indstillinger.anke_vindue_timer) nej(`Ankefristen (${s.indstillinger.anke_vindue_timer} t) er udløbet`);
+      const ak = { id: id(s, 'a'), saeson_id: sae.id, bode_id: b.id, indgivet: s.tid, afgoerelse: null, afgjort_af: null, aendret: false };
+      s.anke.push(ak);
+      const beloeb = ankeGebyr(s, b.pris);
+      s.gebyr.push({ id: id(s, 'g'), saeson_id: sae.id, medlem_id: a.af, art: 'anke', beloeb, anke_id: ak.id });
+      log(s, a.af, `${navn(s, a.af)} ankede bøden fra ${navn(s, b.giver_id)} · ${b.pris} kr · Ankegebyr ${beloeb} kr (hjulet)`, { tabel: 'anke', id: ak.id });
+      return `Anke indgivet. Hjulet gav ${beloeb} kr.`;
+    },
+    afgoer_anke(s, a) { // a.vinder: 'modtager' | 'giver'
+      aktiv(s, a.af);
+      const ak = s.anke.find((x) => x.id === a.anke) || nej('Ukendt Anke');
+      const b = s.bode.find((x) => x.id === ak.bode_id);
+      kraevSeneste(s, ak.saeson_id);
+      if (b.annulleret_af) nej('Bøden er annulleret, så Anken har ingen afgørelse');
+      if (ak.afgoerelse === 'ikke_afgjort') nej('Anken blev lukket, da Sæsonen sluttede');
+      const ny = a.vinder === 'modtager' ? 'modtager_vandt' : 'giver_vandt';
+      if (ak.afgoerelse == null) {
+        if (a.af === b.giver_id || a.af === b.modtager_id) nej('Parterne kan ikke selv afgøre Anken');
+        ak.afgoerelse = ny; ak.afgjort_af = a.af;
+        log(s, a.af, `${navn(s, a.af)} afgjorde Anken: ${navn(s, a.vinder === 'modtager' ? b.modtager_id : b.giver_id)} vandt · bøden bæres af ${navn(s, baerer(s, b))}`, { tabel: 'anke', id: ak.id });
+        return 'Afgørelse registreret';
+      }
+      if (a.af !== ak.afgjort_af && !medlem(s, a.af).er_admin) nej('Kun den, der afgjorde den, eller en Admin kan ændre afgørelsen');
+      if (ak.afgoerelse === ny) nej('Det er allerede afgørelsen');
+      ak.afgoerelse = ny; ak.aendret = true;
+      log(s, a.af, `${navn(s, a.af)} ændrede afgørelsen · bøden bæres nu af ${navn(s, baerer(s, b))} (Ankegebyret bliver)`, { tabel: 'anke', id: ak.id });
+      return 'Afgørelse ændret';
+    },
+    annuller(s, a) { // a.tabel, a.id
+      aktiv(s, a.af);
+      const erAdmin = medlem(s, a.af).er_admin;
+      const row = (s[a.tabel] || []).find((x) => x.id === a.id) || nej('Ukendt række');
+      if (row.annulleret_af) nej('Allerede annulleret');
+      kraevSeneste(s, row.saeson_id);
+      if (a.tabel === 'bode') {
+        const ak = ankeFor(s, row);
+        if (!erAdmin) {
+          if (row.giver_id !== a.af) nej('Kun giveren eller en Admin kan annullere en Bøde');
+          if (ak) nej('Bøden er anket: kun en Admin kan annullere den nu');
+        }
+        annuller(row, a.af);
+        s.gebyr.filter((g) => g.bode_id === row.id).forEach((g) => annuller(g, a.af, 'fulgte bøden'));
+        log(s, a.af, `${navn(s, a.af)} annullerede ${navn(s, row.giver_id)}s bøde til ${navn(s, row.modtager_id)} · ${row.pris} kr${ak ? ' (Ankegebyret bliver)' : ''}`, { tabel: 'bode', id: row.id });
+      } else if (a.tabel === 'gebyr') {
+        if (!erAdmin) nej('Kun en Admin kan annullere et Gebyr');
+        if (!['oprettelse', 'anke'].includes(row.art)) nej(`Et ${row.art}-gebyr følger sin årsag og kan ikke annulleres alene`);
+        annuller(row, a.af);
+        log(s, a.af, `${navn(s, a.af)} annullerede et ${row.art}-gebyr til ${navn(s, row.medlem_id)} · ${row.beloeb} kr`, { tabel: 'gebyr', id: row.id });
+      } else if (a.tabel === 'frikob') {
+        if (!erAdmin) nej('Kun en Admin kan annullere et Frikøb');
+        annuller(row, a.af);
+        s.gebyr.filter((g) => g.frikob_id === row.id).forEach((g) => annuller(g, a.af, 'fulgte frikøbet'));
+        log(s, a.af, `${navn(s, a.af)} annullerede ${navn(s, row.medlem_id)}s Frikøb`, { tabel: 'frikob', id: row.id });
+      } else if (a.tabel === 'konkurrence') {
+        if (row.oprettet_af !== a.af && !erAdmin) nej('Kun den, der indtastede den, eller en Admin');
+        annuller(row, a.af);
+        s.gebyr.filter((g) => g.konkurrence_id === row.id && !g.annulleret_af).forEach((g) => annuller(g, a.af, 'fulgte konkurrencen'));
+        log(s, a.af, `${navn(s, a.af)} annullerede Konkurrencen ${row.titel}`, { tabel: 'konkurrence', id: row.id });
+      } else if (a.tabel === 'indbetaling' || a.tabel === 'haevning') {
+        if (!erAdmin) nej('Kun en Admin');
+        annuller(row, a.af);
+        log(s, a.af, `${navn(s, a.af)} annullerede en ${a.tabel === 'indbetaling' ? 'Indbetaling' : 'Hævning'} · ${row.beloeb} kr`, { tabel: a.tabel, id: row.id });
+      } else nej('Kan ikke annulleres');
+      return 'Annulleret (rækken bliver, men tæller ikke)';
+    },
+    koeb_frikob(s, a) { // a.medlem, a.kategori
+      const sae = kraevSaeson(s); aktiv(s, a.af); aktiv(s, a.medlem);
+      if (!s.indstillinger.frikob_til) nej('Frikøb er slået fra');
+      if (a.af !== a.medlem && !medlem(s, a.af).er_admin) nej('Kun Medlemmet selv eller en Admin');
+      const k = kategori(s, a.kategori); if (k.arkiveret) nej('Bødekategorien er arkiveret');
+      if (harFrikob(s, a.medlem, k.id, sae.id)) nej('Allerede Frikøb på den Bødekategori i denne Sæson');
+      const f = { id: id(s, 'f'), saeson_id: sae.id, medlem_id: a.medlem, bodekategori_id: k.id, koebt: s.tid, registreret_af: a.af };
+      s.frikob.push(f);
+      s.gebyr.push({ id: id(s, 'g'), saeson_id: sae.id, medlem_id: a.medlem, art: 'frikob', beloeb: s.indstillinger.frikob_pris, frikob_id: f.id });
+      log(s, a.af, `${navn(s, a.medlem)} købte Frikøb · ${k.navn} · ${s.indstillinger.frikob_pris} kr`, { tabel: 'frikob', id: f.id });
+      return 'Frikøb købt';
+    },
+    registrer_konkurrence(s, a) { // a.titel, a.placeringer: {medlem: plads}, a.ret (konkurrence id to correct)
+      aktiv(s, a.af);
+      if (!s.indstillinger.konkurrence_til) nej('Konkurrence er slået fra');
+      let k;
+      if (a.ret) {
+        k = s.konkurrence.find((x) => x.id === a.ret) || nej('Ukendt Konkurrence');
+        kraevSaeson(s); kraevSeneste(s, k.saeson_id);
+        if (k.annulleret_af) nej('Konkurrencen er annulleret');
+        if (k.oprettet_af !== a.af && !medlem(s, a.af).er_admin) nej('Kun den, der indtastede den, eller en Admin kan rette den');
+        s.gebyr.filter((g) => g.konkurrence_id === k.id && !g.annulleret_af).forEach((g) => annuller(g, a.af, 'rettet'));
+        s.konkurrence_resultat = s.konkurrence_resultat.filter((r) => r.konkurrence_id !== k.id);
+        k.rettet_af = a.af;
+      } else {
+        const sae = kraevSaeson(s);
+        if (!a.titel) nej('Titel mangler');
+        k = { id: id(s, 'kk'), saeson_id: sae.id, titel: a.titel, dato: s.tid, oprettet_af: a.af };
+        s.konkurrence.push(k);
+      }
+      const { placeringer: tab, fravaersgebyr } = s.indstillinger;
+      // Everyone who is a Medlem (not Udmeldt) when saving is placed or absent.
+      for (const m of s.medlem.filter((x) => !x.udmeldt)) {
+        const plads = a.placeringer[m.id] || null;
+        const beloeb = plads ? tab[Math.min(plads, tab.length) - 1] : fravaersgebyr;
+        s.konkurrence_resultat.push({ konkurrence_id: k.id, medlem_id: m.id, plads });
+        s.gebyr.push({ id: id(s, 'g'), saeson_id: k.saeson_id, medlem_id: m.id, art: plads ? 'placering' : 'fravaer', beloeb, konkurrence_id: k.id });
+      }
+      log(s, a.af, a.ret ? `${navn(s, a.af)} rettede Konkurrencen ${k.titel}` : `${navn(s, a.af)} registrerede Konkurrencen ${k.titel}`, { tabel: 'konkurrence', id: k.id });
+      return a.ret ? 'Rettet: gamle Gebyrer annulleret ("rettet"), nye lavet' : 'Konkurrence registreret';
+    },
+    registrer_indbetaling(s, a) {
+      admin(s, a.af); medlem(s, a.medlem); if (!(a.beloeb > 0)) nej('Beløbet skal være over 0');
+      const i = { id: id(s, 'i'), saeson_id: seneste(s).id, medlem_id: a.medlem, beloeb: a.beloeb, registreret_af: a.af, betalingsmelding_id: null, tid: s.tid };
+      s.indbetaling.push(i);
+      log(s, a.af, `${navn(s, a.af)} registrerede en Indbetaling fra ${navn(s, a.medlem)} · ${a.beloeb} kr`, { tabel: 'indbetaling', id: i.id });
+      return 'Indbetaling registreret';
+    },
+    meld_betaling(s, a) {
+      aktiv(s, a.af); if (!(a.beloeb > 0)) nej('Beløbet skal være over 0');
+      s.betalingsmelding.push({ id: id(s, 'bm'), medlem_id: a.af, beloeb: a.beloeb, status: 'afventer', behandlet_af: null, tid: s.tid });
+      return 'Betalingsmelding oprettet (afventer, tæller ikke endnu, ingen aktivitet)';
+    },
+    behandl_melding(s, a) { // a.melding, a.svar: 'bekraeft' | 'afvis' | 'traek'
+      aktiv(s, a.af);
+      const bm = s.betalingsmelding.find((x) => x.id === a.melding) || nej('Ukendt melding');
+      if (bm.status !== 'afventer') nej('Meldingen er allerede behandlet');
+      if (a.svar === 'traek') { if (a.af !== bm.medlem_id) nej('Kun den, der meldte den'); bm.status = 'trukket'; return 'Trukket tilbage'; }
+      if (a.af === bm.medlem_id && !medlem(s, a.af).er_admin) nej('Du kan ikke selv bekræfte eller afvise din egen melding');
+      bm.behandlet_af = a.af;
+      if (a.svar === 'afvis') {
+        bm.status = 'afvist';
+        log(s, a.af, `${navn(s, a.af)} afviste ${navn(s, bm.medlem_id)}s betaling · ${bm.beloeb} kr`, { tabel: 'betalingsmelding', id: bm.id });
+        return 'Afvist';
+      }
+      bm.status = 'bekraeftet';
+      const i = { id: id(s, 'i'), saeson_id: seneste(s).id, medlem_id: bm.medlem_id, beloeb: bm.beloeb, registreret_af: a.af, betalingsmelding_id: bm.id, tid: s.tid };
+      s.indbetaling.push(i);
+      log(s, a.af, `${navn(s, a.af)} bekræftede ${navn(s, bm.medlem_id)}s betaling · ${bm.beloeb} kr`, { tabel: 'indbetaling', id: i.id });
+      return 'Bekræftet: nu en Indbetaling';
+    },
+    haev(s, a) {
+      admin(s, a.af);
+      if (!a.formaal) nej('Formål mangler'); if (!(a.beloeb > 0)) nej('Beløbet skal være over 0');
+      if (a.beloeb > kassen(s)) nej(`Der er kun ${kassen(s)} kr i kassen`);
+      const h = { id: id(s, 'hv'), saeson_id: seneste(s).id, beloeb: a.beloeb, formaal: a.formaal, registreret_af: a.af, tid: s.tid };
+      s.haevning.push(h);
+      log(s, a.af, `${navn(s, a.af)} hævede ${a.beloeb} kr · ${a.formaal}`, { tabel: 'haevning', id: h.id });
+      return 'Hævet';
+    },
+    afslut_saeson(s, a) {
+      admin(s, a.af); const sae = kraevSaeson(s); sae.afsluttet = s.tid;
+      log(s, a.af, `${navn(s, a.af)} afsluttede ${sae.navn} · Pause`, { tabel: 'saeson', id: sae.id });
+      return 'Sæsonen er slut. Pause.';
+    },
+    saet_slutdato(s, a) {
+      admin(s, a.af); const sae = kraevSaeson(s);
+      sae.slutdato = (Math.floor(s.tid / 24) + 1 + a.dage) * 24; // midnight after the end date
+      return `Slutdato sat: Sæsonen slutter ${fmtTid(sae.slutdato)}`;
+    },
+    start_saeson(s, a) {
+      admin(s, a.af);
+      const gammel = seneste(s);
+      if (aktivSaeson(s)) gammel.afsluttet = s.tid; // "Start ny sæson" while running = end + start
+      // Open Anker close with the receiver bearing the Bøde (proposal 8)
+      s.anke.filter((ak) => ak.saeson_id === gammel.id && ak.afgoerelse == null && !s.bode.find((b) => b.id === ak.bode_id).annulleret_af)
+        .forEach((ak) => { ak.afgoerelse = 'ikke_afgjort'; });
+      const ny = { id: id(s, 's'), navn: `Sæson ${s.saeson.length + 2025 + 1}`, startet: s.tid, slutdato: null, afsluttet: null };
+      s.saeson.push(ny);
+      log(s, a.af, `${navn(s, a.af)} startede ${ny.navn}`, { tabel: 'saeson', id: ny.id });
+      return `${ny.navn} er startet. Saldo er overført.`;
+    },
+    udmeld(s, a) {
+      admin(s, a.af); const m = medlem(s, a.medlem);
+      if (m.udmeldt) nej('Allerede Udmeldt');
+      if (m.er_admin && s.medlem.filter((x) => x.er_admin && !x.udmeldt).length === 1) nej('Den sidste Admin kan ikke meldes ud');
+      m.udmeldt = true;
+      log(s, a.af, `${navn(s, a.af)} meldte ${m.navn} ud`, { tabel: 'medlem', id: m.id });
+      return `${m.navn} er Udmeldt: kan ikke længere læse Bødekassen (RLS), og Saldo bliver`;
+    },
+    genoptag(s, a) {
+      admin(s, a.af); const m = medlem(s, a.medlem); if (!m.udmeldt) nej('Ikke Udmeldt');
+      m.udmeldt = false; log(s, a.af, `${navn(s, a.af)} genoptog ${m.navn}`, { tabel: 'medlem', id: m.id });
+      return `${m.navn} er genoptaget`;
+    },
+    spol(s, a) { s.tid += a.timer; return `Tiden er spolet ${a.timer} timer frem`; },
+  };
+
+  /** dispatch(state, action) -> { state, ok, besked }. Never mutates the input. */
+  function dispatch(state, action) {
+    const s = clone(state);
+    const keepFortryd = action.type === 'giv_boeder';
+    try {
+      const besked = rpc[action.type](s, action);
+      if (!keepFortryd) s.fortryd_batch = null;
+      return { state: s, ok: true, besked };
+    } catch (e) {
+      if (e instanceof Afvist) return { state, ok: false, besked: 'Afvist: ' + e.message };
+      throw e;
+    }
+  }
+
+  function fmtTid(t) { if (t === Infinity || t == null) return '—'; const d = Math.floor(t / 24) + 1, h = t % 24; return `dag ${d} kl. ${String(h).padStart(2, '0')}`; }
+
+  return { initial, dispatch, saldoView, kassen, aktivSaeson, seneste, baerer, navn, fmtTid };
+})();
+
+/* =====================================================================
+   THROWAWAY PAGE SHELL
+   ===================================================================== */
+let state = Model.initial(), prev = state, last = null;
+const $ = (q) => document.querySelector(q);
+const kr = (n) => `${n} kr`;
+const N = (id) => Model.navn(state, id);
+
+function act(action) {
+  const r = Model.dispatch(state, action);
+  prev = state; state = r.state; last = r; render();
+  return r;
+}
+
+const SCENARIOS = [
+  { navn: 'Anke flytter bøden', tekst: 'Carl anker en Bøde fra Bo. Mens Anken er åben, tæller Bøden for ingen. Se hvem der bærer den efter afgørelsen, og efter at den ændres. Ankegebyret bliver hele vejen.',
+    steps: [
+      ['Bo giver Carl "For sent"', { type: 'giv_boeder', af: 'bo', linjer: [{ til: 'carl', kategori: 'k1' }] }],
+      ['Carl anker bøden', (s) => ({ type: 'anke', af: 'carl', bode: s.bode[0].id })],
+      ['Bo prøver at afgøre Anken selv', (s) => ({ type: 'afgoer_anke', af: 'bo', anke: s.anke[0].id, vinder: 'giver' })],
+      ['Dina afgør: Carl vandt', (s) => ({ type: 'afgoer_anke', af: 'dina', anke: s.anke[0].id, vinder: 'modtager' })],
+      ['Anna (Admin) ændrer: Bo vandt alligevel', (s) => ({ type: 'afgoer_anke', af: 'anna', anke: s.anke[0].id, vinder: 'giver' })],
+    ] },
+  { navn: 'Frikøb', tekst: 'Bo køber Frikøb på "For sent". Det blokerer kun, at han kan få den Bøde. Det rører ikke Saldo-beregningen, så en Bøde flyttet af en vundet Anke rammer ham alligevel.',
+    steps: [
+      ['Bo køber Frikøb på "For sent"', { type: 'koeb_frikob', af: 'bo', medlem: 'bo', kategori: 'k1' }],
+      ['Carl giver Bo "For sent"', { type: 'giv_boeder', af: 'carl', linjer: [{ til: 'bo', kategori: 'k1' }] }],
+      ['Carl giver Bo "Glemt drikkevarer"', { type: 'giv_boeder', af: 'carl', linjer: [{ til: 'bo', kategori: 'k2' }] }],
+      ['Bo giver Carl "For sent"', { type: 'giv_boeder', af: 'bo', linjer: [{ til: 'carl', kategori: 'k1' }] }],
+      ['Carl anker den', (s) => ({ type: 'anke', af: 'carl', bode: s.bode[s.bode.length - 1].id })],
+      ['Anna afgør: Carl vandt', (s) => ({ type: 'afgoer_anke', af: 'anna', anke: s.anke[0].id, vinder: 'modtager' })],
+      ['Bo prøver at købe Frikøb igen på "For sent"', { type: 'koeb_frikob', af: 'bo', medlem: 'bo', kategori: 'k1' }],
+      ['Anna annullerer Bos Frikøb', (s) => ({ type: 'annuller', af: 'anna', tabel: 'frikob', id: s.frikob[0].id })],
+    ] },
+  { navn: 'Annullering og Fortryd', tekst: 'Annullering beholder rækken (overstreget), men den tæller ikke. Engangsbødens Gebyr følger med. Et Ankegebyr bliver altid. Fortryd er den eneste rigtige sletning.',
+    steps: [
+      ['Bo giver Carl en Engangsbøde "Spildte øl" 80 kr', { type: 'giv_boeder', af: 'bo', linjer: [{ til: 'carl', grund: 'Spildte øl', beloeb: 80 }] }],
+      ['Carl prøver at annullere den', (s) => ({ type: 'annuller', af: 'carl', tabel: 'bode', id: s.bode[0].id })],
+      ['Bo annullerer sin egen bøde', (s) => ({ type: 'annuller', af: 'bo', tabel: 'bode', id: s.bode[0].id })],
+      ['Bo giver Dina "For sent"', { type: 'giv_boeder', af: 'bo', linjer: [{ til: 'dina', kategori: 'k1' }] }],
+      ['Dina anker', (s) => ({ type: 'anke', af: 'dina', bode: s.bode[1].id })],
+      ['Bo prøver at annullere den nu', (s) => ({ type: 'annuller', af: 'bo', tabel: 'bode', id: s.bode[1].id })],
+      ['Anna (Admin) annullerer den', (s) => ({ type: 'annuller', af: 'anna', tabel: 'bode', id: s.bode[1].id })],
+      ['Carl giver Bo og Dina "Glemt drikkevarer"', { type: 'giv_boeder', af: 'carl', linjer: [{ til: 'bo', kategori: 'k2' }, { til: 'dina', kategori: 'k2' }] }],
+      ['Carl trykker Fortryd', { type: 'fortryd', af: 'carl' }],
+    ] },
+  { navn: 'Sæson, Pause og overførsel', tekst: 'Sæsonen slutter med en åben Anke. I Pausen kan man betale og hæve, men ikke give bøder. Når næste Sæson starter, bliver Saldo overført, og den åbne Anke lukkes (forslag 8).',
+    steps: [
+      ['Bo giver Carl "For sent"', { type: 'giv_boeder', af: 'bo', linjer: [{ til: 'carl', kategori: 'k1' }] }],
+      ['Carl giver Bo "Glemt drikkevarer"', { type: 'giv_boeder', af: 'carl', linjer: [{ til: 'bo', kategori: 'k2' }] }],
+      ['Bo anker den', (s) => ({ type: 'anke', af: 'bo', bode: s.bode[1].id })],
+      ['Anna sætter slutdato i morgen', { type: 'saet_slutdato', af: 'anna', dage: 0 }],
+      ['Spol 25 timer frem', { type: 'spol', timer: 25 }],
+      ['Carl prøver at give Bo en bøde', { type: 'giv_boeder', af: 'carl', linjer: [{ til: 'bo', kategori: 'k1' }] }],
+      ['Carl melder "Jeg har betalt" 50 kr', { type: 'meld_betaling', af: 'carl', beloeb: 50 }],
+      ['Carl prøver at bekræfte selv', (s) => ({ type: 'behandl_melding', af: 'carl', melding: s.betalingsmelding[0].id, svar: 'bekraeft' })],
+      ['Dina bekræfter', (s) => ({ type: 'behandl_melding', af: 'dina', melding: s.betalingsmelding[0].id, svar: 'bekraeft' })],
+      ['Anna hæver 40 kr til sæsonfesten', { type: 'haev', af: 'anna', beloeb: 40, formaal: 'Sæsonfest' }],
+      ['Anna starter ny Sæson', { type: 'start_saeson', af: 'anna' }],
+      ['Anna prøver at annullere Carls indbetaling', (s) => ({ type: 'annuller', af: 'anna', tabel: 'indbetaling', id: s.indbetaling[0].id })],
+    ] },
+  { navn: 'Konkurrence', tekst: 'Placeringer giver Gebyrer fra tabellen 0/10/25/…; delt plads giver samme beløb; alle andre Medlemmer får fraværsgebyr. En rettelse annullerer de gamle Gebyrer og laver nye. Udmeldte tæller ikke med.',
+    steps: [
+      ['Anna registrerer "Bowling": Bo 1, Carl 2, Dina 2', { type: 'registrer_konkurrence', af: 'anna', titel: 'Bowling', placeringer: { bo: 1, carl: 2, dina: 2 } }],
+      ['Carl prøver at rette den', (s) => ({ type: 'registrer_konkurrence', af: 'carl', ret: s.konkurrence[0].id, placeringer: { carl: 1 } })],
+      ['Anna retter: Bo 1, Carl 2, Dina 3, Anna 4', (s) => ({ type: 'registrer_konkurrence', af: 'anna', ret: s.konkurrence[0].id, placeringer: { bo: 1, carl: 2, dina: 3, anna: 4 } })],
+      ['Anna melder Dina ud', { type: 'udmeld', af: 'anna', medlem: 'dina' }],
+      ['Bo registrerer "Dart": Bo 1', { type: 'registrer_konkurrence', af: 'bo', titel: 'Dart', placeringer: { bo: 1 } }],
+    ] },
+  { navn: 'Ulovligt', tekst: 'Handlinger, der skal afvises. Hver afvisning er en regel, som RPC-funktionen skal tjekke.',
+    steps: [
+      ['Bo prøver at hæve penge', { type: 'haev', af: 'bo', beloeb: 10, formaal: 'Øl' }],
+      ['Bo prøver at registrere en Indbetaling', { type: 'registrer_indbetaling', af: 'bo', medlem: 'bo', beloeb: 100 }],
+      ['Anna registrerer 100 kr fra Bo', { type: 'registrer_indbetaling', af: 'anna', medlem: 'bo', beloeb: 100 }],
+      ['Anna prøver at hæve 150 kr', { type: 'haev', af: 'anna', beloeb: 150, formaal: 'Fest' }],
+      ['Anna melder selv "Jeg har betalt" 20 kr', { type: 'meld_betaling', af: 'anna', beloeb: 20 }],
+      ['Anna (Admin) bekræfter sin egen', (s) => ({ type: 'behandl_melding', af: 'anna', melding: s.betalingsmelding[0].id, svar: 'bekraeft' })],
+      ['Carl opretter "For sent" igen', { type: 'opret_kategori', af: 'carl', navn: 'For sent', pris: 20 }],
+      ['Bo giver Carl "For sent"',{ type: 'giv_boeder', af: 'bo', linjer: [{ til: 'carl', kategori: 'k1' }] }],
+      ['Spol 25 timer frem', { type: 'spol', timer: 25 }],
+      ['Carl prøver at anke for sent', (s) => ({ type: 'anke', af: 'carl', bode: s.bode[0].id })],
+      ['Anna prøver at melde sig selv ud', { type: 'udmeld', af: 'anna', medlem: 'anna' }],
+    ] },
+];
+
+let tab = 0, step = 0;
+function startScenario(i) { tab = i; step = 0; state = prev = Model.initial(); last = null; render(); }
+function runStep(i) {
+  const sc = SCENARIOS[tab]; const [, a] = sc.steps[i];
+  act(typeof a === 'function' ? a(state) : a); step = i + 1; render();
+}
+function renderScenario() {
+  $('#tabs').innerHTML = SCENARIOS.map((s, i) => `<button class="${i === tab ? 'on' : ''}" onclick="startScenario(${i})">${s.navn}</button>`).join('');
+  const sc = SCENARIOS[tab];
+  $('#scenario').innerHTML = `<p>${sc.tekst}</p><ol class="steps">${sc.steps.map(([l], i) =>
+    `<li class="${i < step ? 'done' : ''}"><button ${i !== step ? 'disabled' : ''} onclick="runStep(${i})">${l}</button></li>`).join('')}</ol>
+    <div class="row"><button class="ghost" onclick="startScenario(${tab})">Start forfra</button></div>`;
+}
+
+// ---------- free play ----------
+const opts = (rows, f, g) => rows.map((r) => `<option value="${f(r)}">${g(r)}</option>`).join('');
+function renderFreeplay() {
+  const s = state;
+  const mOpts = opts(s.medlem, (m) => m.id, (m) => m.navn + (m.er_admin ? ' (Admin)' : '') + (m.udmeldt ? ' – Udmeldt' : ''));
+  const kOpts = opts(s.bodekategori.filter((k) => !k.arkiveret), (k) => k.id, (k) => `${k.navn} · ${k.pris} kr`);
+  const bOpts = opts(s.bode, (b) => b.id, (b) => `${b.id}: ${N(b.giver_id)}→${N(b.modtager_id)} ${b.pris} kr`);
+  const aOpts = opts(s.anke, (a) => a.id, (a) => `${a.id} (bøde ${a.bode_id})`);
+  const annullable = [];
+  for (const t of ['bode', 'gebyr', 'frikob', 'konkurrence', 'indbetaling', 'haevning']) for (const r of s[t]) if (!r.annulleret_af) annullable.push([t, r.id]);
+  const anOpts = annullable.map(([t, id]) => `<option value="${t}|${id}">${t} ${id}</option>`).join('');
+  const bmOpts = opts(s.betalingsmelding.filter((b) => b.status === 'afventer'), (b) => b.id, (b) => `${b.id}: ${N(b.medlem_id)} ${b.beloeb} kr`);
+  const keep = {}; document.querySelectorAll('#freeplay select, #freeplay input').forEach((e) => (keep[e.id] = e.value));
+  $('#freeplay').innerHTML = `
+  <h2>Frit spil</h2>
+  <div class="row"><label>Du er</label><select id="fp-af">${mOpts}</select></div>
+  <h3>Bøder</h3>
+  <div class="row"><label>Til</label><select id="fp-til">${mOpts}</select><select id="fp-kat">${kOpts}<option value="">Engangsbøde…</option></select></div>
+  <div class="row"><input id="fp-grund" placeholder="Grund (engangsbøde)"><input id="fp-bel" type="number" placeholder="kr"><button onclick="fp('giv')">Giv bøde</button><button class="ghost" onclick="fp('fortryd')">Fortryd</button></div>
+  <div class="row"><input id="fp-knavn" placeholder="Ny kategori"><input id="fp-kpris" type="number" placeholder="kr"><button onclick="fp('opret')">Opret Bødekategori</button></div>
+  <h3>Anke</h3>
+  <div class="row"><select id="fp-bode">${bOpts}</select><button onclick="fp('anke')">Anke</button></div>
+  <div class="row"><select id="fp-anke">${aOpts}</select><select id="fp-vinder"><option value="modtager">Modtager vandt</option><option value="giver">Giver vandt</option></select><button onclick="fp('afgoer')">Afgør / ændr</button></div>
+  <h3>Frikøb og Konkurrence</h3>
+  <div class="row"><label>Frikøb for</label><select id="fp-fm">${mOpts}</select><select id="fp-fk">${kOpts}</select><button onclick="fp('frikob')">Køb</button></div>
+  <div class="row"><input id="fp-ktitel" placeholder="Titel"><input id="fp-kres" placeholder="bo=1, carl=2"><button onclick="fp('konk')">Registrér</button></div>
+  <h3>Penge</h3>
+  <div class="row"><label>Fra</label><select id="fp-im">${mOpts}</select><input id="fp-ibel" type="number" placeholder="kr"><button onclick="fp('indb')">Registrér indbetaling</button><button class="ghost" onclick="fp('meld')">Jeg har betalt</button></div>
+  <div class="row"><select id="fp-bm">${bmOpts}</select><button onclick="fp('bekraeft')">Bekræft</button><button class="ghost" onclick="fp('afvis')">Afvis</button><button class="ghost" onclick="fp('traek')">Træk tilbage</button></div>
+  <div class="row"><input id="fp-hbel" type="number" placeholder="kr"><input id="fp-hform" placeholder="Formål"><button onclick="fp('haev')">Hæv penge</button></div>
+  <h3>Rettelser</h3>
+  <div class="row"><select id="fp-an">${anOpts}</select><button onclick="fp('annuller')">Annullér</button></div>
+  <h3>Sæson og Medlemmer</h3>
+  <div class="row"><button onclick="fp('afslut')">Afslut sæson nu</button><button onclick="fp('start')">Start ny sæson</button><button class="ghost" onclick="fp('spol')">Spol 25 t</button></div>
+  <div class="row"><select id="fp-um">${mOpts}</select><button onclick="fp('udmeld')">Meld ud</button><button class="ghost" onclick="fp('genoptag')">Genoptag</button></div>
+  <div class="row"><button class="ghost" onclick="state=prev=Model.initial();last=null;render()">Nulstil alt</button></div>`;
+  for (const [k, v] of Object.entries(keep)) { const e = document.getElementById(k); if (e && [...(e.options || [])].some((o) => o.value === v) || (e && e.tagName === 'INPUT')) e.value = v; }
+}
+function fp(kind) {
+  const v = (id) => document.getElementById('fp-' + id).value, n = (id) => Number(v(id));
+  const af = v('af');
+  const A = {
+    giv: () => ({ type: 'giv_boeder', af, linjer: [v('kat') ? { til: v('til'), kategori: v('kat') } : { til: v('til'), grund: v('grund'), beloeb: n('bel') }] }),
+    fortryd: () => ({ type: 'fortryd', af }),
+    opret: () => ({ type: 'opret_kategori', af, navn: v('knavn'), pris: n('kpris') }),
+    anke: () => ({ type: 'anke', af, bode: v('bode') }),
+    afgoer: () => ({ type: 'afgoer_anke', af, anke: v('anke'), vinder: v('vinder') }),
+    frikob: () => ({ type: 'koeb_frikob', af, medlem: v('fm'), kategori: v('fk') }),
+    konk: () => ({ type: 'registrer_konkurrence', af, titel: v('ktitel'), placeringer: Object.fromEntries(v('kres').split(',').map((p) => p.split('=').map((x) => x.trim())).filter((p) => p[0]).map(([m, p]) => [m.toLowerCase(), Number(p)])) }),
+    indb: () => ({ type: 'registrer_indbetaling', af, medlem: v('im'), beloeb: n('ibel') }),
+    meld: () => ({ type: 'meld_betaling', af, beloeb: n('ibel') }),
+    bekraeft: () => ({ type: 'behandl_melding', af, melding: v('bm'), svar: 'bekraeft' }),
+    afvis: () => ({ type: 'behandl_melding', af, melding: v('bm'), svar: 'afvis' }),
+    traek: () => ({ type: 'behandl_melding', af, melding: v('bm'), svar: 'traek' }),
+    haev: () => ({ type: 'haev', af, beloeb: n('hbel'), formaal: v('hform') }),
+    annuller: () => { const [tabel, id] = v('an').split('|'); return { type: 'annuller', af, tabel, id }; },
+    afslut: () => ({ type: 'afslut_saeson', af }),
+    start: () => ({ type: 'start_saeson', af }),
+    spol: () => ({ type: 'spol', timer: 25 }),
+    udmeld: () => ({ type: 'udmeld', af, medlem: v('um') }),
+    genoptag: () => ({ type: 'genoptag', af, medlem: v('um') }),
+  };
+  act(A[kind]());
+}
+
+// ---------- state panels ----------
+const COLS = {
+  saeson: ['id', 'navn', 'startet', 'slutdato', 'afsluttet'],
+  medlem: ['id', 'navn', 'er_admin', 'udmeldt'],
+  bodekategori: ['id', 'navn', 'pris', 'arkiveret', 'oprettet_af'],
+  bode: ['id', 'saeson_id', 'batch_id', 'giver_id', 'modtager_id', 'bodekategori_id', 'grund', 'pris', 'givet', '→ bæres af', 'annulleret_af'],
+  anke: ['id', 'saeson_id', 'bode_id', 'indgivet', 'afgoerelse', 'afgjort_af', 'aendret'],
+  gebyr: ['id', 'saeson_id', 'medlem_id', 'art', 'beloeb', 'årsag', 'annulleret_af', 'annulleret_note'],
+  frikob: ['id', 'saeson_id', 'medlem_id', 'bodekategori_id', 'registreret_af', 'annulleret_af'],
+  konkurrence: ['id', 'saeson_id', 'titel', 'oprettet_af', 'rettet_af', 'annulleret_af'],
+  konkurrence_resultat: ['konkurrence_id', 'medlem_id', 'plads'],
+  indbetaling: ['id', 'saeson_id', 'medlem_id', 'beloeb', 'registreret_af', 'betalingsmelding_id', 'annulleret_af'],
+  betalingsmelding: ['id', 'medlem_id', 'beloeb', 'status', 'behandlet_af'],
+  haevning: ['id', 'saeson_id', 'beloeb', 'formaal', 'registreret_af', 'annulleret_af'],
+};
+const TID = ['startet', 'slutdato', 'afsluttet', 'givet', 'indgivet'];
+function cell(t, r, c) {
+  if (c === '→ bæres af') { const b = Model.baerer(state, r); return b ? `<b>${N(b)}</b>` : '<i class="muted">ingen</i>'; }
+  if (c === 'årsag') return r.bode_id ? `bøde ${r.bode_id}` : r.anke_id ? `anke ${r.anke_id}` : r.frikob_id ? `frikøb ${r.frikob_id}` : r.konkurrence_id ? `konk. ${r.konkurrence_id}` : r.bodekategori_id ? `kategori ${r.bodekategori_id}` : '';
+  const v = r[c];
+  if (v == null || v === false) return '<span class="muted">·</span>';
+  if (TID.includes(c)) return Model.fmtTid(v);
+  if (/_id$|_af$/.test(c) && state.medlem.some((m) => m.id === v)) return N(v);
+  return String(v);
+}
+const key = (r) => r.id || JSON.stringify(r);
+function renderTables() {
+  $('#tables').innerHTML = Object.entries(COLS).map(([t, cols]) => {
+    const rows = state[t]; const before = new Map((prev[t] || []).map((r) => [key(r), JSON.stringify(r)]));
+    return `<div class="card"><h2>${t} <span class="muted small">${rows.length} rækker</span></h2>${rows.length ? `<table><tr>${cols.map((c) => `<th>${c}</th>`).join('')}</tr>${rows.map((r) =>
+      `<tr class="${before.get(key(r)) !== JSON.stringify(r) ? 'new' : ''} ${r.annulleret_af ? 'annul' : ''}">${cols.map((c) => `<td>${cell(t, r, c)}</td>`).join('')}</tr>`).join('')}</table>` : '<span class="muted small">tom</span>'}</div>`;
+  }).join('');
+}
+function renderStats() {
+  const aktiv = Model.aktivSaeson(state), sen = Model.seneste(state);
+  const top = Model.saldoView(state).filter((m) => !m.udmeldt).sort((a, b) => b.boder_i_alt - a.boder_i_alt)[0];
+  const k = Model.kassen(state), pk = Model.kassen(prev);
+  $('#stats').innerHTML = `
+    <div class="stat"><div class="k">Nu</div><div class="v">${Model.fmtTid(state.tid)}</div></div>
+    <div class="stat"><div class="k">Sæson</div><div class="v">${aktiv ? aktiv.navn : `Pause <span class="small muted">(${sen.navn} slut)</span>`}</div></div>
+    <div class="stat ${k !== pk ? 'changed' : ''}" style="${k !== pk ? 'background:var(--new)' : ''}"><div class="k">Kassen (indbetalt − hævet)</div><div class="v">${kr(k)}</div></div>
+    <div class="stat"><div class="k">Topliste #1 (Bøder i alt)</div><div class="v">${top && top.boder_i_alt ? `${top.navn} · ${kr(top.boder_i_alt)}` : '—'}</div></div>`;
+}
+function renderSaldo() {
+  const p = new Map(Model.saldoView(prev).map((m) => [m.id, m]));
+  const cols = [['overfoert', 'Overført'], ['boder', 'Bøder (bærer)'], ['gebyrer', 'Gebyrer'], ['ind', 'Indbetalt'], ['saldo', 'Saldo'], ['boder_i_alt', 'Bøder i alt (Topliste)']];
+  $('#saldo').innerHTML = `<table><tr><th>Medlem</th>${cols.map(([, l]) => `<th>${l}</th>`).join('')}</tr>${Model.saldoView(state).map((m) =>
+    `<tr><td>${m.navn}${m.udmeldt ? ' <span class="muted small">Udmeldt</span>' : ''}</td>${cols.map(([c]) => {
+      const ch = p.get(m.id) && p.get(m.id)[c] !== m[c];
+      const v = c === 'saldo' ? (m.saldo < 0 ? `Til gode ${kr(-m.saldo)}` : `<b>${kr(m.saldo)}</b>`) : kr(m[c]);
+      return `<td class="${ch ? 'changed' : ''}">${v}</td>`; }).join('')}</tr>`).join('')}</table>
+    <p class="small muted">Saldo = Bøder man bærer + Gebyrer − Indbetalinger, alt ikke-annulleret, alle Sæsoner. Kolonnerne Bøder/Gebyrer/Indbetalt er kun den seneste Sæson.</p>`;
+}
+function renderFeed() {
+  const isAnnul = (ref) => ref && ref.tabel && state[ref.tabel] && (state[ref.tabel].find((r) => r.id === ref.id) || {}).annulleret_af;
+  const before = new Set(prev.haendelse.map((h) => h.id));
+  $('#feed').innerHTML = state.haendelse.slice().reverse().map((h) =>
+    `<li style="${before.has(h.id) ? '' : 'background:var(--new)'}"><span class="t">${Model.fmtTid(h.tid)}</span><span class="${isAnnul(h.ref) ? 'strike' : ''}">${h.tekst}</span></li>`).join('') || '<li class="muted">Ingen aktivitet endnu</li>';
+}
+function render() {
+  $('#msg').innerHTML = last ? `<div class="msg ${last.ok ? 'ok' : 'bad'}">${last.besked}</div>` : '';
+  renderScenario(); renderFreeplay(); renderStats(); renderSaldo(); renderFeed(); renderTables();
+}
+render();
+</script>
+</body>
+</html>
