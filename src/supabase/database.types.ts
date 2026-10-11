@@ -39,6 +39,12 @@ isOneToOne: false
       foreignKeyName: "anke_bodekasse_id_bode_id_fkey"
       columns: ["bodekasse_id","bode_id"]
 isOneToOne: false
+      referencedRelation: "aktivitet_bode"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
+      foreignKeyName: "anke_bodekasse_id_bode_id_fkey"
+      columns: ["bodekasse_id","bode_id"]
+isOneToOne: false
       referencedRelation: "bode"
       referencedColumns: ["bodekasse_id","id"]
     },{
@@ -511,6 +517,12 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "medlem_saldo"
       referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "gebyr_bodekasse_id_bode_id_fkey"
+      columns: ["bodekasse_id","bode_id"]
+isOneToOne: false
+      referencedRelation: "aktivitet_bode"
+      referencedColumns: ["bodekasse_id","id"]
     },{
       foreignKeyName: "gebyr_bodekasse_id_bode_id_fkey"
       columns: ["bodekasse_id","bode_id"]
@@ -1082,7 +1094,185 @@ isOneToOne: false
                 }
           }
           Views: {
-            "bode_baerer": {
+            "aktivitet": {
+                  Row: {
+                    "aktoer_id": string | null,"aktoer_navn": string | null,"annulleret": string | null,"annulleret_af": string | null,"annulleret_af_navn": string | null,"annulleret_note": string | null,"art": string | null,"batch_id": string | null,"bodekasse_id": string | null,"boeder": Json | null,"data": Json | null,"gebyrer": Json | null,"id": number | null,"involverede": (string)[] | null,"modtager_id": string | null,"modtager_navn": string | null,"ref_id": string | null,"ref_tabel": string | null,"saeson_id": string | null,"tid": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "haendelse_bodekasse_id_aktoer_id_fkey"
+      columns: ["bodekasse_id","aktoer_id"]
+isOneToOne: false
+      referencedRelation: "medlem"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
+      foreignKeyName: "haendelse_bodekasse_id_aktoer_id_fkey"
+      columns: ["bodekasse_id","aktoer_id"]
+isOneToOne: false
+      referencedRelation: "medlem_saeson_tal"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "haendelse_bodekasse_id_aktoer_id_fkey"
+      columns: ["bodekasse_id","aktoer_id"]
+isOneToOne: false
+      referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "haendelse_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "bodekasse"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "haendelse_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "bodekasse_saeson"
+      referencedColumns: ["bodekasse_id"]
+    },{
+      foreignKeyName: "haendelse_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "kassen"
+      referencedColumns: ["bodekasse_id"]
+    },{
+      foreignKeyName: "haendelse_bodekasse_id_modtager_id_fkey"
+      columns: ["bodekasse_id","modtager_id"]
+isOneToOne: false
+      referencedRelation: "medlem"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
+      foreignKeyName: "haendelse_bodekasse_id_modtager_id_fkey"
+      columns: ["bodekasse_id","modtager_id"]
+isOneToOne: false
+      referencedRelation: "medlem_saeson_tal"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "haendelse_bodekasse_id_modtager_id_fkey"
+      columns: ["bodekasse_id","modtager_id"]
+isOneToOne: false
+      referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "haendelse_bodekasse_id_saeson_id_fkey"
+      columns: ["bodekasse_id","saeson_id"]
+isOneToOne: false
+      referencedRelation: "saeson"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
+      foreignKeyName: "haendelse_bodekasse_id_saeson_id_fkey"
+      columns: ["bodekasse_id","saeson_id"]
+isOneToOne: false
+      referencedRelation: "saeson_status"
+      referencedColumns: ["bodekasse_id","id"]
+    }
+                  ]
+                },"aktivitet_bode": {
+                  Row: {
+                    "afgoerelse": Database["public"]['Enums']["anke_afgoerelse"] | null,"afgoerelse_aendret": boolean | null,"anke_id": string | null,"anket": boolean | null,"annulleret": string | null,"annulleret_af": string | null,"annulleret_af_navn": string | null,"annulleret_note": string | null,"baerer_id": string | null,"batch_id": string | null,"bodekasse_id": string | null,"bodekategori_id": string | null,"engangsbode": boolean | null,"gebyr": number | null,"giver_id": string | null,"giver_navn": string | null,"givet": string | null,"id": string | null,"modtager_id": string | null,"modtager_navn": string | null,"navn": string | null,"pris": number | null,"saeson_id": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "bode_bodekasse_id_annulleret_af_fkey"
+      columns: ["bodekasse_id","annulleret_af"]
+isOneToOne: false
+      referencedRelation: "medlem"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_annulleret_af_fkey"
+      columns: ["bodekasse_id","annulleret_af"]
+isOneToOne: false
+      referencedRelation: "medlem_saeson_tal"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_annulleret_af_fkey"
+      columns: ["bodekasse_id","annulleret_af"]
+isOneToOne: false
+      referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_bodekategori_id_fkey"
+      columns: ["bodekasse_id","bodekategori_id"]
+isOneToOne: false
+      referencedRelation: "bodekategori"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_bodekategori_id_fkey"
+      columns: ["bodekasse_id","bodekategori_id"]
+isOneToOne: false
+      referencedRelation: "bodekategori_brug"
+      referencedColumns: ["bodekasse_id","bodekategori_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "bodekasse"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "bodekasse_saeson"
+      referencedColumns: ["bodekasse_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "kassen"
+      referencedColumns: ["bodekasse_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_giver_id_fkey"
+      columns: ["bodekasse_id","giver_id"]
+isOneToOne: false
+      referencedRelation: "medlem"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_giver_id_fkey"
+      columns: ["bodekasse_id","giver_id"]
+isOneToOne: false
+      referencedRelation: "medlem_saeson_tal"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_giver_id_fkey"
+      columns: ["bodekasse_id","giver_id"]
+isOneToOne: false
+      referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_modtager_id_fkey"
+      columns: ["bodekasse_id","modtager_id"]
+isOneToOne: false
+      referencedRelation: "medlem"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_modtager_id_fkey"
+      columns: ["bodekasse_id","modtager_id"]
+isOneToOne: false
+      referencedRelation: "medlem_saeson_tal"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_modtager_id_fkey"
+      columns: ["bodekasse_id","modtager_id"]
+isOneToOne: false
+      referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_saeson_id_fkey"
+      columns: ["bodekasse_id","saeson_id"]
+isOneToOne: false
+      referencedRelation: "saeson"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
+      foreignKeyName: "bode_bodekasse_id_saeson_id_fkey"
+      columns: ["bodekasse_id","saeson_id"]
+isOneToOne: false
+      referencedRelation: "saeson_status"
+      referencedColumns: ["bodekasse_id","id"]
+    }
+                  ]
+                },"bode_baerer": {
                   Row: {
                     "afgoerelse": Database["public"]['Enums']["anke_afgoerelse"] | null,"anke_id": string | null,"anket": boolean | null,"annulleret": string | null,"annulleret_af": string | null,"annulleret_note": string | null,"baerer_id": string | null,"batch_id": string | null,"bodekasse_id": string | null,"bodekategori_id": string | null,"giver_id": string | null,"givet": string | null,"grund": string | null,"id": string | null,"modtager_id": string | null,"pris": number | null,"saeson_id": string | null
                   }
