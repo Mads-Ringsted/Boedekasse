@@ -31,6 +31,14 @@ const BY_KEY: Record<string, PlainStringId> = {
   antal_ugyldig: 'fejl.antalUgyldig',
   fortryd_udloebet: 'fejl.fortrydUdloebet',
   kan_ikke_fortrydes: 'fejl.kanIkkeFortrydes',
+  // Engangsbøde (#58); beloeb_ugyldig is shared with #59
+  grund_mangler: 'fejl.grundMangler',
+  grund_for_lang: 'fejl.grundForLang',
+  // Kassen and Registrér indbetaling (#59)
+  medlem_ukendt: 'fejl.medlemUkendt',
+  beloeb_ugyldig: 'fejl.beloebUgyldig',
+  allerede_annulleret: 'fejl.alleredeAnnulleret',
+  tidligere_saeson: 'fejl.tidligereSaeson',
   // Indstillinger (#57)
   indstilling_ugyldig: 'fejl.indstillingUgyldig',
   indstilling_ukendt: 'fejl.indstillingUgyldig',
@@ -42,8 +50,8 @@ const BY_KEY: Record<string, PlainStringId> = {
   ingen_placeret: 'fejl.ingenPlaceret',
   konkurrence_ugyldig: 'fejl.konkurrenceUgyldig',
   deltager_ukendt: 'fejl.deltagerUkendt',
-  annulleret: 'fejl.konkurrenceAnnulleret',
-  tidligere_saeson: 'fejl.tidligereSaeson',
+  // Sæson (#67)
+  slutdato_ugyldig: 'saeson.slutdatoFortid',
 };
 
 /**

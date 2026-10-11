@@ -101,14 +101,17 @@
 }
 
 .medlem-linje {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 12px;
   min-height: 52px;
   padding: 8px 16px;
+  color: inherit;
+  text-align: left;
 }
 
-.medlem-linje + .medlem-linje {
+.medlemmer__punkt + .medlemmer__punkt {
   border-top: 1px solid var(--color-line);
 }
 

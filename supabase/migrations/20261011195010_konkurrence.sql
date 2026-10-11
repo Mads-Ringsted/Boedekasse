@@ -175,7 +175,7 @@ grant execute on function public.registrer_konkurrence(uuid, uuid, text, date, j
 -- Gebyrer are annulled (note "rettet") and new ones charged from the current
 -- table. The feed entry stays; it shows "Rettet af X". Returns {}.
 -- Errors: ikke_fundet, ikke_medlem / ikke_tilladt (42501), pause,
--- tidligere_saeson, annulleret, plus those of registrer_konkurrence.
+-- tidligere_saeson, allerede_annulleret, plus those of registrer_konkurrence.
 create function public.ret_konkurrence(
   p_klient_id uuid, p_konkurrence uuid, p_titel text, p_dato date, p_placeringer jsonb)
 returns jsonb
@@ -191,7 +191,7 @@ begin
   v_tidligere := private.start_kald(p_klient_id, 'ret_konkurrence');
   if v_tidligere is not null then return v_tidligere; end if;
 
-  if v_k.annulleret is not null then raise exception 'annulleret'; end if;
+  if v_k.annulleret is not null then raise exception 'allerede_annulleret'; end if;
   v_saeson := private.aktiv_saeson(v_k.bodekasse_id);
   if v_saeson is null then raise exception 'pause'; end if;
   if v_k.saeson_id <> v_saeson then raise exception 'tidligere_saeson'; end if;
@@ -220,7 +220,7 @@ grant execute on function public.ret_konkurrence(uuid, uuid, text, date, jsonb) 
 -- {titel, beloeb, konkurrence_id} entry appears at the top (no ref, so it is
 -- not struck itself). Returns {}.
 -- Errors: ikke_fundet, ikke_medlem / ikke_tilladt (42501), tidligere_saeson,
--- annulleret.
+-- allerede_annulleret.
 create function public.annuller_konkurrence(p_klient_id uuid, p_konkurrence uuid, p_note text default null)
 returns jsonb
 language plpgsql volatile security definer set search_path = '' as $$
@@ -234,8 +234,8 @@ begin
   v_tidligere := private.start_kald(p_klient_id, 'annuller_konkurrence');
   if v_tidligere is not null then return v_tidligere; end if;
 
-  if v_k.annulleret is not null then raise exception 'annulleret'; end if;
-  if v_k.saeson_id <> private.seneste_saeson(v_k.bodekasse_id) then raise exception 'tidligere_saeson'; end if;
+  if v_k.annulleret is not null then raise exception 'allerede_annulleret'; end if;
+  perform private.tjek_seneste_saeson(v_k.bodekasse_id, v_k.saeson_id);
 
   select coalesce(sum(beloeb), 0) into v_beloeb
     from public.gebyr where konkurrence_id = v_k.id and annulleret is null;

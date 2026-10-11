@@ -168,7 +168,7 @@ select results_eq(
   'a new "annullerede" entry appears at the top, not struck itself');
 select throws_ok(
   format($$ select public.annuller_konkurrence(gen_random_uuid(), %L) $$, :'bowling'),
-  'P0001', 'annulleret', 'an annulled Konkurrence cannot be annulled again');
+  'P0001', 'allerede_annulleret', 'an annulled Konkurrence cannot be annulled again');
 
 -- ---------- Pause ----------
 select tests.log_ud();

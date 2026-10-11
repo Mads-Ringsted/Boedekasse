@@ -28,7 +28,7 @@ export function TabBar({ onGive, giveDisabled = false }: TabBarProps) {
             <button
               type="button"
               className="tabbar__fab"
-              aria-label={t('tab.givBoeder')}
+              aria-label={t(giveDisabled ? 'tab.givBoederPause' : 'tab.givBoeder')}
               onClick={onGive}
               disabled={giveDisabled}
             >
