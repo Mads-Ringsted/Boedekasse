@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { ArrowLeftRight, ChevronRight, Coins, LogOut, Pencil, Scale, Settings, Trophy, Users, type LucideIcon } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import { hentAntalAabneAnker } from '../anke/hentAnke.ts';
 import { useAuth } from '../auth/AuthProvider.tsx';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { SkiftBodekasseSheet } from '../bodekasse/SkiftBodekasseSheet.tsx';
@@ -16,7 +17,7 @@ import './Mere.css';
 
 /** The numbers shown at the end of Mere's rows. */
 async function hentMere(bodekasseId: string) {
-  const [medlemmer, kassen, kasse] = await Promise.all([
+  const [medlemmer, kassen, kasse, aabneAnker] = await Promise.all([
     supabase
       .from('medlem')
       .select('id', { count: 'exact', head: true })
@@ -24,6 +25,7 @@ async function hentMere(bodekasseId: string) {
       .is('udmeldt', null),
     supabase.from('kassen').select('beloeb').eq('bodekasse_id', bodekasseId).maybeSingle(),
     supabase.from('bodekasse').select('konkurrence_til').eq('id', bodekasseId).maybeSingle(),
+    hentAntalAabneAnker(bodekasseId),
   ]);
   if (medlemmer.error) throw medlemmer.error;
   if (kassen.error) throw kassen.error;
@@ -32,6 +34,7 @@ async function hentMere(bodekasseId: string) {
     antalMedlemmer: medlemmer.count ?? 0,
     iBoedekassen: kassen.data?.beloeb ?? 0,
     konkurrencer: kasse.data?.konkurrence_til ?? false,
+    aabneAnker,
   };
 }
 
@@ -99,7 +102,18 @@ export function Mere() {
           onClick={() => void navigate('/kassen', { state: FRA_MERE })}
           trailing={data && <span className="mere__vaerdi">{formatKr(data.iBoedekassen)}</span>}
         />
-        <Row Icon={Scale} label="mere.anker" onClick={() => void navigate('/anker')} />
+        <Row
+          Icon={Scale}
+          label="mere.anker"
+          onClick={() => void navigate('/anker')}
+          trailing={
+            data && data.aabneAnker > 0 ? (
+              <span className="mere__badge" aria-label={t('anker.antal', { antal: data.aabneAnker })}>
+                {data.aabneAnker}
+              </span>
+            ) : undefined
+          }
+        />
         {data?.konkurrencer && (
           <Row Icon={Trophy} label="mere.konkurrencer" onClick={() => void navigate('/konkurrencer')} />
         )}

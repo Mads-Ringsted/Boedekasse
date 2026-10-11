@@ -1,3 +1,4 @@
+import { tilbageTekst } from '../../anke/anke.ts';
 import { formatKr, t } from '../../strings/index.ts';
 import type { Boede } from '../haendelse.ts';
 import { hvem, hvemObjekt } from '../navne.ts';
@@ -19,9 +20,21 @@ export interface DetaljeRaekke {
   vaerdi: string;
 }
 
-/** The info card: Givet, then the Engangsbøde Gebyr, the Anke, and who annulled it. */
-export function detaljeRaekker(b: Boede, ctx: Kontekst, nu: Date = new Date()): DetaljeRaekke[] {
+/**
+ * The info card: Givet, then how long you can still appeal (`ankeVindue`,
+ * only when you may), the Engangsbøde Gebyr, the Anke, and who annulled it.
+ */
+export function detaljeRaekker(
+  b: Boede,
+  ctx: Kontekst,
+  nu: Date = new Date(),
+  ankeVindue: { msTilbage: number } | null = null,
+): DetaljeRaekke[] {
   const raekker: DetaljeRaekke[] = [{ label: t('boede.givet'), vaerdi: givetTekst(b.givet, nu) }];
+
+  if (ankeVindue) {
+    raekker.push({ label: t('anke.kanAnkes'), vaerdi: t('anke.endnu', { tid: tilbageTekst(ankeVindue.msTilbage) }) });
+  }
 
   if (b.engangsbode && b.gebyr > 0) {
     raekker.push({
@@ -33,6 +46,8 @@ export function detaljeRaekker(b: Boede, ctx: Kontekst, nu: Date = new Date()): 
   if (b.ankeId) {
     const vaerdi = b.anket
       ? t('boede.anke.venter')
+      : b.annullering && !b.afgoerelse
+        ? t('boede.anke.annulleret')
       : b.afgoerelse === 'modtager_vandt'
         ? t('boede.anke.vandt')
         : b.afgoerelse === 'giver_vandt'

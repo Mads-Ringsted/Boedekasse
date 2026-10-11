@@ -8,7 +8,13 @@ import { parsePris } from '../kategorier/kategoriListe.ts';
 import { parsePlaceringer, placeringerTekst } from '../konkurrence/raekkefoelge.ts';
 import { formatKr, t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
-import { rensMobilePay, type IndstillingAendringer, type Indstillinger as IndstillingerData } from './indstillinger.ts';
+import {
+  gangeTekst,
+  parseGange,
+  rensMobilePay,
+  type IndstillingAendringer,
+  type Indstillinger as IndstillingerData,
+} from './indstillinger.ts';
 import { Gruppe, LinkRaekke, SwitchRaekke } from './raekker.tsx';
 import { RetIndstillingSheet, type RetIndhold, type Tjek } from './RetIndstillingSheet.tsx';
 import { useIndstillinger } from './useIndstillinger.ts';
@@ -32,6 +38,16 @@ const tjekMobilePay: Tjek<string | null> = (tekst) => {
 const tjekPlaceringer: Tjek<number[]> = (tekst) => {
   const tabel = parsePlaceringer(tekst);
   return tabel === null ? { ok: false, fejl: t('indstillinger.placeringerUgyldig') } : { ok: true, vaerdi: tabel };
+};
+
+const tjekTimer: Tjek<number> = (tekst) => {
+  const timer = parsePris(tekst);
+  return timer === null ? { ok: false, fejl: t('indstillinger.timerUgyldig') } : { ok: true, vaerdi: timer };
+};
+
+const tjekGange: Tjek<number> = (tekst) => {
+  const gange = parseGange(tekst);
+  return gange === null ? { ok: false, fejl: t('indstillinger.gangeUgyldig') } : { ok: true, vaerdi: gange };
 };
 
 const tjekBeloeb: Tjek<number> = (tekst) => {
@@ -81,6 +97,20 @@ function IndstillingerSkaerm() {
       note,
       tjek: tjekBeloeb,
       onGem: (beloeb, klientId) => gem({ [noegle]: beloeb }, klientId),
+    });
+  }
+
+  function retAnkefrist() {
+    if (!ind) return;
+    aabn<number>({
+      title: t('indstillinger.ankeVindue'),
+      label: t('indstillinger.ankeVindueLabel'),
+      start: String(ind.anke_vindue_timer),
+      enhed: t('indstillinger.timer'),
+      inputMode: 'numeric',
+      note: t('indstillinger.ankeVindueNote'),
+      tjek: tjekTimer,
+      onGem: (anke_vindue_timer, klientId) => gem({ anke_vindue_timer }, klientId),
     });
   }
 
@@ -152,7 +182,42 @@ function IndstillingerSkaerm() {
                 retBeloeb('engangsgebyr', t('indstillinger.engangsgebyr'), t('indstillinger.engangsgebyrNote'))
               }
             />
-            {/* #63 Anke goes here. */}
+            <SwitchRaekke
+              label={t('indstillinger.anke')}
+              under={t('indstillinger.ankeUnder', { timer: ind.anke_vindue_timer })}
+              til={ind.anke_til}
+              onSkift={(til) => skift({ anke_til: til })}
+              onAabn={retAnkefrist}
+            />
+            {ind.anke_til && (
+              <>
+                <LinkRaekke
+                  label={t('indstillinger.ankeVindue')}
+                  vaerdi={t('indstillinger.ankeVindueVaerdi', { timer: ind.anke_vindue_timer })}
+                  onClick={retAnkefrist}
+                />
+                <LinkRaekke
+                  label={t('indstillinger.ankeMin')}
+                  vaerdi={formatKr(ind.anke_min)}
+                  onClick={() => retBeloeb('anke_min', t('indstillinger.ankeMin'), t('indstillinger.ankeMinNote'))}
+                />
+                <LinkRaekke
+                  label={t('indstillinger.ankeMax')}
+                  vaerdi={t('indstillinger.ankeMaxVaerdi', { gange: gangeTekst(ind.anke_max_gange) })}
+                  onClick={() =>
+                    aabn<number>({
+                      title: t('indstillinger.ankeMax'),
+                      label: t('indstillinger.ankeMaxLabel'),
+                      start: gangeTekst(ind.anke_max_gange),
+                      enhed: '×',
+                      note: t('indstillinger.ankeMaxNote'),
+                      tjek: tjekGange,
+                      onGem: (anke_max_gange, klientId) => gem({ anke_max_gange }, klientId),
+                    })
+                  }
+                />
+              </>
+            )}
             <SwitchRaekke
               label={t('indstillinger.frikob')}
               under={t('indstillinger.frikobPris', { beloeb: formatKr(ind.frikob_pris) })}

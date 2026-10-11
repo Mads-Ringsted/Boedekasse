@@ -108,12 +108,13 @@ export function FeedRaekke({ raekke, tid, onAabnBoede, onAnnullerGebyr }: FeedRa
 
   return (
     <li className="feed__post">
-      {boedeId ? (
-        <button type="button" className={klasse} onClick={() => onAabnBoede(boedeId)}>
+      {/* Admins: a Gebyr to annul wins over opening the Bøde (an Anke row has both). */}
+      {raekke.annullerGebyr && onAnnullerGebyr ? (
+        <button type="button" className={klasse} onClick={() => onAnnullerGebyr(raekke)}>
           {indhold}
         </button>
-      ) : raekke.annullerGebyr && onAnnullerGebyr ? (
-        <button type="button" className={klasse} onClick={() => onAnnullerGebyr(raekke)}>
+      ) : boedeId ? (
+        <button type="button" className={klasse} onClick={() => onAabnBoede(boedeId)}>
           {indhold}
         </button>
       ) : link ? (

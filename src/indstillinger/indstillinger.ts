@@ -32,3 +32,19 @@ export function rensMobilePay(input: string): { ok: true; vaerdi: string | null 
   if (!/^[0-9]+( [0-9]+)*$/.test(nr) || nr.length > 20) return { ok: false };
   return { ok: true, vaerdi: nr };
 }
+
+/**
+ * The Anke max multiple as typed: "2", "1,5" or "1.5", at least 1, at most
+ * two decimals (the column is numeric ≥ 1). Null when it isn't one.
+ */
+export function parseGange(input: string): number | null {
+  const tekst = input.trim().replace(',', '.');
+  if (!/^\d+(\.\d{1,2})?$/.test(tekst)) return null;
+  const gange = Number(tekst);
+  return gange >= 1 && gange <= 1000 ? gange : null;
+}
+
+/** The Anke max multiple with a Danish decimal comma: "1,5". */
+export function gangeTekst(gange: number): string {
+  return String(gange).replace('.', ',');
+}

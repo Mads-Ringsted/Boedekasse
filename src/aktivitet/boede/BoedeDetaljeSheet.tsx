@@ -1,4 +1,6 @@
 import { X } from 'lucide-react';
+import { ankeVindue } from '../../anke/anke.ts';
+import { hentAnkeRegler } from '../../anke/hentAnke.ts';
 import { useBodekasse } from '../../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../../components/Avatar.tsx';
 import { Sheet, SheetClose, SheetTitle } from '../../components/Sheet.tsx';
@@ -27,10 +29,10 @@ interface BoedeDetaljeSheetProps {
 export function BoedeDetaljeSheet({ boedeId, open, onOpenChange, onAendret }: BoedeDetaljeSheetProps) {
   const { medlemId, erAdmin, bodekasseId } = useBodekasse();
   const hentet = useHent(
-    () => Promise.all([hentBoede(boedeId), hentSenesteSaeson(bodekasseId)]),
+    () => Promise.all([hentBoede(boedeId), hentSenesteSaeson(bodekasseId), hentAnkeRegler(bodekasseId)]),
     [boedeId, bodekasseId],
   );
-  const [boede, senesteSaeson] = hentet.status === 'ready' ? hentet.data : [null, null];
+  const [boede, senesteSaeson, ankeRegler] = hentet.status === 'ready' ? hentet.data : [null, null, null];
   const ctx = { migId: medlemId };
   const tag = boede ? boedeTag(boede) : undefined;
 
@@ -70,7 +72,7 @@ export function BoedeDetaljeSheet({ boedeId, open, onOpenChange, onAendret }: Bo
       {boede && (
         <div className="boede-detalje">
           <dl className="boede-detalje__info">
-            {detaljeRaekker(boede, ctx).map((r) => (
+            {detaljeRaekker(boede, ctx, new Date(), ankeRegler && ankeVindue(boede, medlemId, ankeRegler)).map((r) => (
               <div key={r.label} className="boede-detalje__raekke">
                 <dt>{r.label}</dt>
                 <dd>{r.vaerdi}</dd>
@@ -84,6 +86,7 @@ export function BoedeDetaljeSheet({ boedeId, open, onOpenChange, onAendret }: Bo
                 boede={boede}
                 mig={{ medlemId, erAdmin }}
                 iSenesteSaeson={boede.saesonId === senesteSaeson}
+                ankeRegler={ankeRegler}
                 luk={() => onOpenChange(false)}
                 aendret={() => {
                   hentet.reload();
