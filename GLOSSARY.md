@@ -77,3 +77,9 @@ _Avoid_: Debt, gæld
 **Hævning** (Withdrawal):
 Money an Admin takes out of the Bødekasse for a stated purpose. Lowers the box's money, never any Medlem's Saldo.
 _Avoid_: Udbetaling, expense
+
+### Corrections
+
+**Annullering** (Annulment):
+Undoing a Bøde, Gebyr, Indbetaling, Hævning or Frikøb after the fact. The record stays in the history marked **Annulleret**, but no longer counts towards anyone's Saldo. Nothing is ever deleted, except a batch of Bøder taken back with Fortryd straight after giving it.
+_Avoid_: Sletning, delete, remove, cancel, refund
