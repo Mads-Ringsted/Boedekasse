@@ -6,6 +6,7 @@ import { delInvitation } from '../bodekasse/delInvitation.ts';
 import { Avatar } from '../components/Avatar.tsx';
 import { BackButton } from '../components/BackButton.tsx';
 import { Screen } from '../components/Screen.tsx';
+import { hentFrikoeb } from '../frikob/hentFrikoeb.ts';
 import { hentMedlemmer } from '../medlemmer/hentMedlemmer.ts';
 import type { Medlemslinje } from '../medlemmer/medlemsliste.ts';
 import { NyKodeSheet } from '../medlemmer/NyKodeSheet.tsx';
@@ -25,6 +26,7 @@ export function Medlemmer() {
   const navigate = useNavigate();
   const aabnProfil = useAabnProfil('mere.medlemmer');
   const data = useHent(() => hentMedlemmer(bodekasseId, medlemId, erAdmin), [bodekasseId, medlemId, erAdmin]);
+  const frikoeb = useHent(() => hentFrikoeb(bodekasseId), [bodekasseId]);
   const [tilfoejer, setTilfoejer] = useState(false);
   const [fornyer, setFornyer] = useState(false);
   const [kopieret, setKopieret] = useState(false);
@@ -88,7 +90,11 @@ export function Medlemmer() {
           <ul className="medlemmer__liste">
             {klar.linjer.map((m) => (
               <li key={m.id} className="medlemmer__punkt">
-                <MedlemLinje m={m} onClick={() => aabnProfil(m.id)} />
+                <MedlemLinje
+                  m={m}
+                  frikob={frikoeb.status === 'ready' ? frikoeb.data.filter((f) => f.medlemId === m.id) : []}
+                  onClick={() => aabnProfil(m.id)}
+                />
               </li>
             ))}
           </ul>
@@ -119,7 +125,16 @@ export function Medlemmer() {
 }
 
 /** One Medlem: avatar, name (or "Dig"), tags and what they owe. Opens their profile. */
-function MedlemLinje({ m, onClick }: { m: Medlemslinje; onClick: () => void }) {
+function MedlemLinje({
+  m,
+  frikob = [],
+  onClick,
+}: {
+  m: Medlemslinje;
+  /** Their Frikøb now: tagged "Frikøb · For sent" (#65). */
+  frikob?: readonly { bodekategoriNavn: string }[];
+  onClick: () => void;
+}) {
   const beloeb =
     m.saldo < 0 ? (
       <span className="medlem-linje__beloeb medlem-linje__beloeb--til-gode">
@@ -138,6 +153,11 @@ function MedlemLinje({ m, onClick }: { m: Medlemslinje; onClick: () => void }) {
         <span className="medlem-linje__navn">
           <span className="medlem-linje__navn-tekst">{m.egen ? t('medlemmer.dig') : m.navn}</span>
           {m.erAdmin && <span className="medlem-linje__tag">{t('mere.admin')}</span>}
+          {frikob.length > 0 && (
+            <span className="medlem-linje__tag">
+              {t('frikob.medlemTag', { navne: frikob.map((f) => f.bodekategoriNavn).join(', ') })}
+            </span>
+          )}
         </span>
         {!m.loggetInd && <span className="medlem-linje__under">{t('medlemmer.ikkeLoggetInd')}</span>}
       </span>

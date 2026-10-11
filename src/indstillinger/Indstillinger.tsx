@@ -152,7 +152,14 @@ function IndstillingerSkaerm() {
                 retBeloeb('engangsgebyr', t('indstillinger.engangsgebyr'), t('indstillinger.engangsgebyrNote'))
               }
             />
-            {/* #63 Anke, #65 Frikøb go here. */}
+            {/* #63 Anke goes here. */}
+            <SwitchRaekke
+              label={t('indstillinger.frikob')}
+              under={t('indstillinger.frikobPris', { beloeb: formatKr(ind.frikob_pris) })}
+              til={ind.frikob_til}
+              onSkift={(til) => skift({ frikob_til: til })}
+              onAabn={() => retBeloeb('frikob_pris', t('indstillinger.frikob'), t('indstillinger.frikobNote'))}
+            />
             <SwitchRaekke
               label={t('indstillinger.konkurrence')}
               under={t('indstillinger.konkurrenceUnder', {

@@ -1,0 +1,246 @@
+/* Frikøb (#65): the tag, chips, Køb Frikøb sheet. */
+
+.frikob-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-accent-text);
+  background: var(--color-accent-pale);
+  padding: 1px 7px;
+  border-radius: var(--radius-tag);
+  white-space: nowrap;
+}
+
+/* "Gives kun til Jonas" under a row in Giv bøder step 2. */
+.giv-kat__note {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Chips: "Frikøb i sæson 2026" ---------- */
+.frikob-kort__titel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.frikob-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.frikob-chip {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 16px;
+  background: var(--color-accent-pale);
+  color: var(--color-accent-pale-text);
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---------- Køb Frikøb ---------- */
+.frikob__intro {
+  margin: 14px 4px 0;
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.frikob__soeg {
+  margin: 14px 0 12px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--color-surface-raised);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  color: var(--color-text-muted);
+}
+
+.frikob__soeg input {
+  flex-grow: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+}
+
+.frikob__soeg input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.frikob__fejl {
+  margin: 0 4px 10px;
+}
+
+.frikob-valg {
+  border-radius: 16px;
+  background: var(--color-surface-raised);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.frikob-valg__raekke {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  text-align: left;
+  color: var(--color-text);
+}
+
+.frikob-valg__raekke + .frikob-valg__raekke {
+  border-top: 1px solid var(--color-line);
+}
+
+.frikob-valg__raekke--valgt {
+  background: var(--color-surface-selected);
+}
+
+.frikob-valg__raekke:disabled {
+  color: var(--color-text-faint);
+}
+
+.frikob-valg__radio {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px var(--color-line-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.frikob-valg__raekke:disabled .frikob-valg__radio {
+  box-shadow: inset 0 0 0 2px var(--color-line);
+}
+
+.frikob-valg__raekke--valgt .frikob-valg__radio {
+  background: var(--color-accent);
+  box-shadow: none;
+}
+
+.frikob-valg__raekke--valgt .frikob-valg__radio::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-on-accent);
+}
+
+.frikob-valg__tekst {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.frikob-valg__navn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+}
+
+.frikob-valg__raekke--valgt .frikob-valg__navn {
+  font-weight: 600;
+}
+
+.frikob-valg__under {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-variant-numeric: var(--font-numeric);
+}
+
+.frikob-valg__raekke:disabled .frikob-valg__under {
+  color: inherit;
+}
+
+.frikob-bekraeft__top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 0 28px;
+  text-align: center;
+}
+
+.frikob-bekraeft__ikon {
+  width: 72px;
+  height: 72px;
+  border-radius: 22px;
+  background: var(--color-accent-pale);
+  color: var(--color-accent-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.frikob-bekraeft__titel {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+.frikob-bekraeft__tekst {
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.frikob-bekraeft__liste {
+  margin: 0;
+  border-radius: 18px;
+  background: var(--color-surface-raised);
+  display: flex;
+  flex-direction: column;
+}
+
+.frikob-bekraeft__liste > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  font-size: 15px;
+}
+
+.frikob-bekraeft__liste > div + div {
+  border-top: 1px solid var(--color-line);
+}
+
+.frikob-bekraeft__liste dt {
+  color: var(--color-text-muted);
+}
+
+.frikob-bekraeft__liste dd {
+  margin: 0;
+  font-variant-numeric: var(--font-numeric);
+}
+
+.frikob-bekraeft__pris {
+  font-weight: 700;
+}
+
+/* ---------- Annullér frikøb ---------- */
+.frikob-annuller__tekst {
+  margin: 4px 0 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+}
+
+.frikob-annuller__knap {
+  margin-top: 16px;
+  background: var(--color-danger);
+}

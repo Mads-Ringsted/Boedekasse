@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ArrowRight, Check, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
+import { frikobIGiv, frikobRegler } from '../frikob/frikob.ts';
+import { FrikobTag } from '../frikob/FrikobTag.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Sheet } from '../components/Sheet.tsx';
 import { T } from '../components/T.tsx';
@@ -56,9 +58,6 @@ interface GivBoederProps {
 
 type Trin = 1 | 2 | 3;
 
-/** #65 swaps this for the Frikøb rules of the people picked. */
-const regler = INGEN_REGLER;
-
 /**
  * Giv bøder: 1 Hvem → 2 Hvad → give, or 3 "Tilpas pr. person" (with 3b for
  * one person). One submit is one `giv_boeder` call. Mount it with a new
@@ -68,9 +67,11 @@ export function GivBoeder({ open, onOpenChange, forvalg, onGivet }: GivBoederPro
   const { bodekasseId, medlemId } = useBodekasse();
   const hentet = useHent(() => hentGiv(bodekasseId, medlemId), [bodekasseId, medlemId]);
   const data = hentet.status === 'ready' ? hentet.data : null;
+  // Frikøb: nobody gets a Bødekategori they have bought out.
+  const regler = useMemo(() => (data ? frikobRegler(data.frikoeb) : INGEN_REGLER), [data]);
 
   const [valg, setValg] = useState<Valg>(() =>
-    nytValg({ personer: forvalg.medlemId ? [forvalg.medlemId] : [], kategoriId: forvalg.kategoriId }, regler),
+    nytValg({ personer: forvalg.medlemId ? [forvalg.medlemId] : [], kategoriId: forvalg.kategoriId }),
   );
   const [trin, setTrin] = useState<Trin>(forvalg.medlemId ? 2 : 1);
   const [busy, setBusy] = useState(false);
@@ -215,6 +216,17 @@ export function GivBoeder({ open, onOpenChange, forvalg, onGivet }: GivBoederPro
           antal={(k) => faellesAntal(valg, k)}
           onPlus={(k) => aendr((v) => plusAlle(v, k, regler))}
           onMinus={(k) => aendr((v) => minusAlle(v, k))}
+          tag={(k) => {
+            const f = frikobIGiv(valgte, k.id, regler);
+            if (f) return <FrikobTag tekst={t('frikob.harFrikob', { navne: navneliste(f.holdere) })} />;
+            return k.ofteBrugt && <span className="kategori-tag">{t('kategorier.ofteBrugt')}</span>;
+          }}
+          note={(k) => {
+            const f = frikobIGiv(valgte, k.id, regler);
+            if (!f || f.modtagere.length === 0) return null;
+            return <span className="giv-kat__note">{t('frikob.givesKunTil', { navne: navneliste(f.modtagere) })}</span>;
+          }}
+          deaktiveret={(k) => frikobIGiv(valgte, k.id, regler)?.modtagere.length === 0}
           onNy={() => {
             setNyNr((n) => n + 1);
             setNyAaben(true);
@@ -319,6 +331,7 @@ export function GivBoeder({ open, onOpenChange, forvalg, onGivet }: GivBoederPro
           antal={(k) => antalFor(valg, person.id, k)}
           onPlus={(k) => aendr((v) => plusPerson(v, person.id, k, regler))}
           onMinus={(k) => aendr((v) => minusPerson(v, person.id, k))}
+          kanFaa={(k) => regler.kanFaa(person.id, k)}
           engangs={engangsFor(valg, person.id)}
           onFjernEngangs={(id) => aendr((v) => fjernEngangsPerson(v, person.id, id))}
           onEngangs={() => aabnEngangs(person.id)}
