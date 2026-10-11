@@ -31,6 +31,34 @@ export const da = {
   'installer.krav': 'Kræver iOS 17.5 eller nyere.',
   'installer.delKnappen': 'Del-knappen er nederst i Safari',
 
+  // Log ind
+  'logInd.titel': 'Log ind',
+  'logInd.intro': 'Vi sender en kode til din email.',
+  'logInd.email': 'Email',
+  'logInd.sendKode': 'Send kode',
+  'logInd.tjekMail': 'Tjek din mail',
+  'logInd.kodeSendt': 'Vi har sendt en kode på 6 cifre til {email}',
+  'logInd.kodeLabel': 'Kode på 6 cifre',
+  'logInd.sendNyKode': 'Send ny kode',
+  'logInd.sendNyKodeOm': 'Send ny kode om {sekunder} s',
+  'logInd.nyKodeSendt': 'Ny kode sendt',
+  'logInd.fejl.forkertKode': 'Koden er forkert eller udløbet. Prøv igen, eller få en ny kode.',
+  'logInd.fejl.forHurtigt': 'Vent et øjeblik, før du beder om en ny kode.',
+  'logInd.fejl.email': 'Tjek at din email er skrevet rigtigt.',
+  'logUd': 'Log ud',
+
+  // Velkommen (logged in, in no box yet)
+  'velkommen.titel': 'Velkommen',
+  'velkommen.intro': 'Du er ikke med i en Bødekasse endnu.',
+  'velkommen.loggetIndSom': 'Logget ind som {email}',
+
+  // Vælg Bødekasse
+  'vaelg.titel': 'Vælg Bødekasse',
+
+  // General
+  'fejl.ukendt': 'Noget gik galt. Prøv igen.',
+  'handling.proevIgen': 'Prøv igen',
+
   // Offline
   'offline.titel': 'Ingen forbindelse',
   'offline.tekst': 'Appen virker igen, så snart du er online.',

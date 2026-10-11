@@ -1,0 +1,34 @@
+.vaelg {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: calc(env(safe-area-inset-top) + 56px) calc(env(safe-area-inset-right) + 20px)
+    calc(env(safe-area-inset-bottom) + 24px) calc(env(safe-area-inset-left) + 20px);
+}
+
+.vaelg__title {
+  margin: 0 4px;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+}
+
+.vaelg__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vaelg__row {
+  width: 100%;
+  min-height: var(--size-button);
+  padding: 0 16px;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  font-size: 17px;
+  font-weight: 600;
+}

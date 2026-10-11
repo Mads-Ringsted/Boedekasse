@@ -1,0 +1,12 @@
+.mere__logud {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: var(--size-touch);
+  padding: 15px 16px 15px 22px;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  color: var(--color-danger);
+  font-size: 16px;
+  font-weight: 500;
+}
