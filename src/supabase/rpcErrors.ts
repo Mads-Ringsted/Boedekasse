@@ -35,6 +35,8 @@ const BY_KEY: Record<string, PlainStringId> = {
   indstilling_ugyldig: 'fejl.indstillingUgyldig',
   indstilling_ukendt: 'fejl.indstillingUgyldig',
   mobilepay_ugyldig: 'fejl.mobilepayUgyldig',
+  // Sæson (#67)
+  slutdato_ugyldig: 'saeson.slutdatoFortid',
 };
 
 /**
