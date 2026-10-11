@@ -15,6 +15,13 @@ const BY_KEY: Record<string, PlainStringId> = {
   kode_ukendt: 'fejl.kodeUkendt',
   udmeldt: 'fejl.udmeldt',
   ikke_admin: 'fejl.ikkeAdmin',
+  // Bødekategorier (#52)
+  kategorinavn_mangler: 'fejl.kategorinavnMangler',
+  navn_findes: 'fejl.navnFindes',
+  pris_ugyldig: 'fejl.prisUgyldig',
+  ikke_tilladt: 'fejl.ikkeTilladt',
+  arkiveret: 'fejl.kategoriArkiveret',
+  ikke_fundet: 'fejl.ikkeFundet',
 };
 
 /**

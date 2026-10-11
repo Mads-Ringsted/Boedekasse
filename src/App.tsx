@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router';
 import { AuthProvider, useAuth } from './auth/AuthProvider.tsx';
 import { LogInd } from './auth/LogInd.tsx';
 import { BodekasseProvider, useMedlemskaber } from './bodekasse/BodekasseProvider.tsx';
+import { Kategorier } from './kategorier/Kategorier.tsx';
 import { StatusScreen } from './components/StatusScreen.tsx';
 import { JegHarEnKode } from './onboarding/JegHarEnKode.tsx';
 import { OnboardingProvider, type OnboardingSide } from './onboarding/Onboarding.tsx';
@@ -29,7 +30,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Hjem /> },
       { path: 'aktivitet', element: <Placeholder title="skaerm.aktivitet" /> },
-      { path: 'kategorier', element: <Placeholder title="skaerm.kategorier" /> },
+      { path: 'kategorier', element: <Kategorier /> },
       { path: 'mere', element: <Mere /> },
       // Pushed from Mere; each ticket replaces its stand-in.
       { path: 'profil', element: <Placeholder title="skaerm.profil" back={fraMere} /> },

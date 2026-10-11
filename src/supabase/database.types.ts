@@ -1315,14 +1315,26 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "find_bodekasse_med_kode":
+            "arkiver_bodekategori":
+{ Args: { "p_bodekategori": string,"p_klient_id": string }; Returns: Json
+                           },
+"find_bodekasse_med_kode":
 { Args: { "p_kode": string }; Returns: Json
                            },
 "forny_join_kode":
 { Args: { "p_bodekasse": string,"p_klient_id": string }; Returns: Json
                            },
+"gendan_bodekategori":
+{ Args: { "p_bodekategori": string,"p_klient_id": string }; Returns: Json
+                           },
 "opret_bodekasse":
 { Args: { "p_klient_id": string,"p_mit_navn": string,"p_navn": string }; Returns: Json
+                           },
+"opret_bodekategori":
+{ Args: { "p_beskrivelse"?: string,"p_bodekasse": string,"p_klient_id": string,"p_navn": string,"p_pris": number }; Returns: Json
+                           },
+"ret_bodekategori":
+{ Args: { "p_beskrivelse": string,"p_bodekategori": string,"p_klient_id": string,"p_navn": string,"p_pris": number }; Returns: Json
                            },
 "ret_mit_navn":
 { Args: { "p_bodekasse": string,"p_klient_id": string,"p_navn": string }; Returns: Json
