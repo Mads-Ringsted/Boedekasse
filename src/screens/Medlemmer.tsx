@@ -11,6 +11,7 @@ import type { Medlemslinje } from '../medlemmer/medlemsliste.ts';
 import { NyKodeSheet } from '../medlemmer/NyKodeSheet.tsx';
 import { useAabnProfil } from '../profil/aabnProfil.ts';
 import { TilfoejMedlemSheet } from '../medlemmer/TilfoejMedlemSheet.tsx';
+import { TidligereMedlemmer } from '../medlemmer/TidligereMedlemmer.tsx';
 import { formatKr, t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import { useHent } from '../supabase/useHent.ts';
@@ -18,7 +19,7 @@ import './Medlemmer.css';
 
 /**
  * Medlemmer: every active Medlem with what they owe. Admins also get the join
- * code (Del, Ny kode) and Tilføj Medlem. #69 adds Tidligere medlemmer.
+ * code (Del, Ny kode) and Tilføj Medlem. Udmeldte sit under Tidligere medlemmer.
  */
 export function Medlemmer() {
   const { bodekasseId, bodekasseNavn, medlemId, erAdmin } = useBodekasse();
@@ -92,6 +93,7 @@ export function Medlemmer() {
               </li>
             ))}
           </ul>
+          <TidligereMedlemmer linjer={klar.tidligere} onAabn={aabnProfil} onGenoptaget={data.reload} />
         </>
       )}
 

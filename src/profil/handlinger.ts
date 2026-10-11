@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react';
+import { AdminHandlingerKnap } from '../medlemmer/AdminHandlinger.tsx';
 import { BetalKnap, GivBoedeKnap, RegistrerIndbetalingKnap } from './knapper.tsx';
 import type { Profil, ProfilVisning } from './profil.ts';
 
@@ -38,7 +39,8 @@ export const PROFIL_KORT: readonly ProfilDel[] = [];
 
 /**
  * Small buttons at the top right, beside the back button.
- * #69 adds the Admin actions entry (opens "Handlinger for X"; its sheet holds
- * Registrér indbetaling, Registrér frikøb (#65), roles, Ret navn/email, Meld ud, Slet).
+ * Admin actions (#69, `AdminHandlingerKnap`): opens "Handlinger for X" with
+ * Registrér indbetaling, roles, Ret navn/email, Meld ud / Genoptag and Slet.
+ * #65 adds "Registrér frikøb" to `adminHandlinger()` in `medlemmer/adminHandlinger.ts`.
  */
-export const PROFIL_TOP: readonly ProfilDel[] = [];
+export const PROFIL_TOP: readonly ProfilDel[] = [AdminHandlingerKnap];

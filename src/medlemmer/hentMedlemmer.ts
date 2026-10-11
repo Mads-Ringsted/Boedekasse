@@ -1,13 +1,15 @@
 import { supabase } from '../supabase/index.ts';
-import { medlemsliste, type Medlemslinje } from './medlemsliste.ts';
+import { medlemsliste, tidligereMedlemmer, type Medlemslinje, type TidligereLinje } from './medlemsliste.ts';
 
 export interface MedlemmerData {
   linjer: Medlemslinje[];
+  /** Udmeldte, for Tidligere medlemmer. */
+  tidligere: TidligereLinje[];
   /** The join code; null for non-Admins (they can't read it). */
   kode: string | null;
 }
 
-/** Everything Medlemmer shows: every active Medlem with what they owe, and the code for Admins. */
+/** Everything Medlemmer shows: every Medlem with what they owe (active and Udmeldte), and the code for Admins. */
 export async function hentMedlemmer(bodekasseId: string, medlemId: string, erAdmin: boolean): Promise<MedlemmerData> {
   const [medlemmer, saldi, kode] = await Promise.all([
     supabase.from('medlem').select('id, navn, er_admin, user_id, udmeldt').eq('bodekasse_id', bodekasseId),
@@ -16,12 +18,12 @@ export async function hentMedlemmer(bodekasseId: string, medlemId: string, erAdm
   ]);
   if (medlemmer.error) throw medlemmer.error;
   if (saldi.error) throw saldi.error;
+  const saldoRaekker = saldi.data.flatMap((s) =>
+    s.medlem_id === null ? [] : [{ medlem_id: s.medlem_id, saldo: s.saldo ?? 0 }],
+  );
   return {
-    linjer: medlemsliste(
-      medlemmer.data,
-      saldi.data.flatMap((s) => (s.medlem_id === null ? [] : [{ medlem_id: s.medlem_id, saldo: s.saldo ?? 0 }])),
-      medlemId,
-    ),
+    linjer: medlemsliste(medlemmer.data, saldoRaekker, medlemId),
+    tidligere: tidligereMedlemmer(medlemmer.data, saldoRaekker),
     kode,
   };
 }

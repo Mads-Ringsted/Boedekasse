@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { medlemsliste, type MedlemRaekke } from './medlemsliste.ts';
+import { medlemsliste, tidligereMedlemmer, type MedlemRaekke } from './medlemsliste.ts';
 
 const medlem = (id: string, navn: string, extra: Partial<MedlemRaekke> = {}): MedlemRaekke => ({
   id,
@@ -48,6 +48,26 @@ describe('medlemsliste (the rows on Medlemmer)', () => {
     );
     expect(rows).toEqual([
       { id: 'p', navn: 'Peter Skov', erAdmin: false, loggetInd: true, egen: false, saldo: 0 },
+    ]);
+  });
+});
+
+describe('tidligereMedlemmer (Tidligere medlemmer on Medlemmer)', () => {
+  it('lists only Udmeldte by name, with what each still owes', () => {
+    const rows = tidligereMedlemmer(
+      [
+        medlem('m', 'Mads'),
+        medlem('v', 'Viktor', { udmeldt: '2026-09-01T10:00:00Z' }),
+        medlem('a', 'Anders Vang', { udmeldt: '2026-08-01T10:00:00Z', user_id: null }),
+      ],
+      [
+        { medlem_id: 'a', saldo: 40 },
+        { medlem_id: 'm', saldo: 10 },
+      ],
+    );
+    expect(rows).toEqual([
+      { id: 'a', navn: 'Anders Vang', saldo: 40 },
+      { id: 'v', navn: 'Viktor', saldo: 0 },
     ]);
   });
 });
