@@ -40,8 +40,21 @@
   color: var(--color-on-accent);
   padding: 18px 20px;
   display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  text-align: left;
+}
+
+.hjem__kasse-tekst {
+  min-width: 0;
+  display: flex;
   flex-direction: column;
   gap: 2px;
+}
+
+.hjem__kasse-chevron {
+  flex-shrink: 0;
+  margin-bottom: 10px;
 }
 
 .hjem__kasse-label {
@@ -63,11 +76,113 @@
   text-align: left;
 }
 
+.hjem__tal {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.hjem__tal-kort {
+  min-width: 0;
+  border-radius: 16px;
+  background: var(--color-surface);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hjem__tal-label {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.hjem__tal-beloeb {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.hjem__tal-beloeb--ind {
+  color: var(--color-success);
+}
+
+.hjem__tal-beloeb--mangler {
+  color: var(--color-danger);
+}
+
+.hjem__min {
+  min-height: 68px;
+  border-radius: 20px;
+  background: var(--color-surface);
+  padding: 12px 12px 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hjem__min--til-gode {
+  padding: 14px 18px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-success) 30%, transparent);
+}
+
+.hjem__min-tekst {
+  display: flex;
+  flex-direction: column;
+}
+
+.hjem__min-label {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.hjem__min-beloeb {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.hjem__min--til-gode .hjem__min-beloeb {
+  color: var(--color-success);
+}
+
+.hjem__min-note {
+  max-width: 150px;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--color-text-muted);
+  text-align: right;
+}
+
+.hjem__betal {
+  flex-shrink: 0;
+  height: 44px;
+  padding: 0 20px;
+  border-radius: 14px;
+  background: var(--color-accent-pale);
+  color: var(--color-accent-pale-text);
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .hjem__sektion {
-  padding: 10px 4px 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 8px 4px 0;
+}
+
+.hjem__sektion-titel {
   font-size: 20px;
   font-weight: 700;
   letter-spacing: -0.3px;
+}
+
+.hjem__sektion-note {
+  font-size: 13px;
+  color: var(--color-text-muted);
 }
 
 .hjem__tom {
@@ -173,4 +288,162 @@
 .kom-i-gang__knap--primaer {
   background: var(--color-accent);
   color: var(--color-on-accent);
+}
+
+/* Topliste: podium */
+.podie {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  align-items: end;
+  padding: 0 8px;
+}
+
+.podie__knap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.podie__avatar {
+  position: relative;
+  display: flex;
+  border-radius: 50%;
+}
+
+.podie__plads--1 .podie__avatar {
+  box-shadow: 0 0 0 3px var(--color-bg), 0 0 0 5px var(--color-accent);
+}
+
+.podie__nr {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-fill-strong);
+  color: var(--color-text);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 2px var(--color-bg);
+}
+
+.podie__plads--1 .podie__nr {
+  bottom: -6px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 12px;
+}
+
+.podie__navn {
+  max-width: 100%;
+  font-size: 14px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podie__knap--egen .podie__navn {
+  color: var(--color-accent-text);
+}
+
+.podie__blok {
+  width: 100%;
+  height: 72px;
+  border-radius: 14px 14px 6px 6px;
+  background: var(--color-surface-raised);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+}
+
+.podie__plads--1 .podie__blok {
+  height: 96px;
+  background: var(--color-accent-pale);
+}
+
+.podie__plads--3 .podie__blok {
+  height: 56px;
+}
+
+.podie__beloeb {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.podie__plads--1 .podie__beloeb {
+  font-size: 19px;
+}
+
+.podie__betalt {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.podie__plads--1 .podie__betalt {
+  color: var(--color-accent-pale-text);
+}
+
+/* Topliste: rows from 4th place */
+.topliste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.topliste li + li {
+  border-top: 1px solid var(--color-line);
+}
+
+.topliste__rad {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  text-align: left;
+}
+
+.topliste__rad--egen {
+  background: var(--color-accent-pale);
+}
+
+.topliste__nr {
+  min-width: 18px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.topliste__tekst {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topliste__beloeb {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.topliste__under {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
 }
