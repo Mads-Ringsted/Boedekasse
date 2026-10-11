@@ -43,7 +43,10 @@ export function AnnullerIndbetalingSheet({ post, open, onOpenChange, onAnnullere
   return (
     <Sheet open={open} onOpenChange={onOpenChange} height="partial" title={t('annullerIndbetaling.titel')}>
       <p className="annuller-ind__linje">
-        {t('annullerIndbetaling.linje', { af: post.registreretAf, dag: dagTekst(post.tid) })}
+        {t(post.bekraeftet ? 'annullerIndbetaling.linjeBekraeftet' : 'annullerIndbetaling.linje', {
+          af: post.registreretAf,
+          dag: dagTekst(post.tid),
+        })}
       </p>
       <div className="annuller-ind__top">
         <span className="annuller-ind__navn">{post.navn}</span>

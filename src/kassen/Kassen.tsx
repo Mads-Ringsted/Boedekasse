@@ -151,7 +151,11 @@ function Post({ post, onAnnuller }: { post: KassePost; onAnnuller: () => void })
     ? [t('kassen.annulleretAf', { navn: post.annulleret.af }), dagTekst(post.annulleret.tid), post.annulleret.note]
     : haevning
       ? [post.formaal, dagTekst(post.tid)]
-      : [t('kassen.registreretAf', { navn: post.registreretAf }), dagTekst(post.tid), post.note];
+      : [
+          t(post.bekraeftet ? 'kassen.bekraeftetAf' : 'kassen.registreretAf', { navn: post.registreretAf }),
+          dagTekst(post.tid),
+          post.note,
+        ];
   const beloeb = formatKr(post.beloeb);
   const indhold = (
     <>

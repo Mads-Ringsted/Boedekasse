@@ -49,6 +49,7 @@ describe('kassePoster (the list of Indbetalinger on Kassen)', () => {
     annulleret: null,
     annulleret_af: null,
     annulleret_note: null,
+    betalingsmelding_id: null,
     ...r,
   });
   const rows = [
@@ -69,6 +70,15 @@ describe('kassePoster (the list of Indbetalinger on Kassen)', () => {
     const poster = kassePoster(rows, { navne, senesteSaesonId: 's2', erAdmin: false });
     expect(poster.map((p) => p.id)).toEqual(['ny', 'fjernet', 'gammel']);
     expect(poster[0]).toMatchObject({ navn: 'Kasper', beloeb: 80, registreretAf: 'Frederik', note: 'Kontant' });
+  });
+
+  it('says who confirmed it when it came from a Betalingsmelding, else who registered it', () => {
+    const [bekraeftet, registreret] = kassePoster(
+      [raekke({ id: 'b', betalingsmelding_id: 'm1', registreret: '2026-10-11T12:00:00Z' }), raekke({ id: 'r' })],
+      { navne, senesteSaesonId: 's2', erAdmin: false },
+    );
+    expect(bekraeftet).toMatchObject({ registreretAf: 'Frederik', bekraeftet: true });
+    expect(registreret).toMatchObject({ registreretAf: 'Frederik', bekraeftet: false });
   });
 
   it('marks an annulled one with who did it and the note', () => {

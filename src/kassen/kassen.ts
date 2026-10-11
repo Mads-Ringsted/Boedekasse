@@ -13,6 +13,8 @@ export interface IndbetalingRaekke {
   annulleret: string | null;
   annulleret_af: string | null;
   annulleret_note: string | null;
+  /** Set when a confirmed Betalingsmelding made it. */
+  betalingsmelding_id: string | null;
 }
 
 /** The `haevning` columns Kassen needs. */
@@ -46,6 +48,8 @@ export interface IndbetalingPost extends PostFaelles {
   /** Who paid. */
   navn: string;
   note: string | null;
+  /** From a Betalingsmelding: `registreretAf` confirmed it ("Bekræftet af"). */
+  bekraeftet: boolean;
 }
 
 /** A Hævning in Kassen's list. */
@@ -80,7 +84,15 @@ export function kassePoster(
     kanAnnulleres: ctx.erAdmin && !r.annulleret && r.saeson_id === ctx.senesteSaesonId,
   });
   return [
-    ...rows.map((r): KassePost => ({ art: 'indbetaling', ...faelles(r), navn: navn(r.medlem_id), note: r.note })),
+    ...rows.map(
+      (r): KassePost => ({
+        art: 'indbetaling',
+        ...faelles(r),
+        navn: navn(r.medlem_id),
+        note: r.note,
+        bekraeftet: r.betalingsmelding_id !== null,
+      }),
+    ),
     ...haevninger.map((r): KassePost => ({ art: 'haevning', ...faelles(r), formaal: r.formaal })),
   ].sort((a, b) => (a.tid < b.tid ? 1 : a.tid > b.tid ? -1 : 0));
 }

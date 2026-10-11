@@ -23,7 +23,7 @@ export async function hentKassen(bodekasseId: string, erAdmin: boolean): Promise
     supabase
       .from('indbetaling')
       .select(
-        'id, saeson_id, medlem_id, beloeb, note, registreret_af, registreret, annulleret, annulleret_af, annulleret_note',
+        'id, saeson_id, medlem_id, beloeb, note, registreret_af, registreret, annulleret, annulleret_af, annulleret_note, betalingsmelding_id',
       )
       .eq('bodekasse_id', bodekasseId),
     supabase
