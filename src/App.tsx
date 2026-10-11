@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router';
 import { AuthProvider, useAuth } from './auth/AuthProvider.tsx';
 import { LogInd } from './auth/LogInd.tsx';
 import { BodekasseProvider, useMedlemskaber } from './bodekasse/BodekasseProvider.tsx';
+import { Indstillinger } from './indstillinger/Indstillinger.tsx';
 import { Kategorier } from './kategorier/Kategorier.tsx';
 import { StatusScreen } from './components/StatusScreen.tsx';
 import { JegHarEnKode } from './onboarding/JegHarEnKode.tsx';
@@ -38,7 +39,7 @@ const router = createBrowserRouter([
       { path: 'kassen', element: <Placeholder title="mere.kassen" back={fraMere} /> },
       { path: 'anker', element: <Placeholder title="mere.anker" back={fraMere} /> },
       { path: 'konkurrencer', element: <Placeholder title="mere.konkurrencer" back={fraMere} /> },
-      { path: 'indstillinger', element: <Placeholder title="mere.indstillinger" back={fraMere} /> },
+      { path: 'indstillinger', element: <Indstillinger /> },
       { path: '*', element: <Hjem /> },
     ],
   },
