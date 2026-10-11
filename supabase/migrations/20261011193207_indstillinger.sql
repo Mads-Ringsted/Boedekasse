@@ -121,8 +121,9 @@ grant execute on function public.opdater_indstillinger(uuid, uuid, jsonb) to aut
 -- Raises `pause` when no Sæson runs (callers that skip the Gebyr in a Pause
 -- check private.aktiv_saeson first). The Gebyr counts in Saldo and Bøder i
 -- alt through the views at once.
--- Feed pattern: a Gebyr has no feed entry of its own. Put it on its cause's
--- entry as data keys `gebyr` (amount) and `gebyr_id` (for annulling, #62).
+-- Feed pattern: a Gebyr has no feed entry of its own. It shows on its
+-- cause's entry: the `aktivitet` view (#55) finds it through the entry's
+-- ref_tabel/ref_id, so nothing about the Gebyr goes in the entry's data.
 create function private.opret_gebyr(
   p_bodekasse uuid, p_medlem uuid, p_art public.gebyr_art, p_beloeb int, p_aarsag uuid)
 returns uuid
@@ -146,8 +147,8 @@ end $$;
 
 -- ---------- opret_bodekategori (from #52) + the creation Gebyr ----------
 -- As before, plus: when the box has the creation Gebyr on and a Sæson runs,
--- the creator pays it in the same transaction. Its feed entry then carries
--- {navn, pris, gebyr, gebyr_id}; without a Gebyr it stays {navn, pris}.
+-- the creator pays it in the same transaction. The feed entry is unchanged
+-- ({navn, pris}); `aktivitet.gebyrer` shows the Gebyr on it.
 create or replace function public.opret_bodekategori(
   p_klient_id uuid, p_bodekasse uuid, p_navn text, p_pris int, p_beskrivelse text default null)
 returns jsonb
@@ -158,7 +159,6 @@ declare
   v_navn      text;
   v_id        uuid;
   v_kasse     public.bodekasse;
-  v_data      jsonb;
 begin
   v_tidligere := private.start_kald(p_klient_id, 'opret_bodekategori');
   if v_tidligere is not null then return v_tidligere; end if;
@@ -175,15 +175,14 @@ begin
     raise exception 'navn_findes';   -- someone took the name a moment ago
   end;
 
-  v_data := jsonb_build_object('navn', v_navn, 'pris', p_pris);
   select * into v_kasse from public.bodekasse where id = p_bodekasse;
   if v_kasse.oprettelsesgebyr_til and private.aktiv_saeson(p_bodekasse) is not null then
-    v_data := v_data || jsonb_build_object(
-      'gebyr', v_kasse.oprettelsesgebyr,
-      'gebyr_id', private.opret_gebyr(p_bodekasse, v_mig, 'oprettelse', v_kasse.oprettelsesgebyr, v_id));
+    perform private.opret_gebyr(p_bodekasse, v_mig, 'oprettelse', v_kasse.oprettelsesgebyr, v_id);
   end if;
 
   perform private.tilfoej_haendelse(
-    p_bodekasse, v_mig, 'bodekategori_oprettet', v_data, 'bodekategori', v_id);
+    p_bodekasse, v_mig, 'bodekategori_oprettet',
+    jsonb_build_object('navn', v_navn, 'pris', p_pris),
+    'bodekategori', v_id);
   return private.afslut_kald(p_klient_id, jsonb_build_object('bodekategori_id', v_id));
 end $$;

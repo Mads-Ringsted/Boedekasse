@@ -40,10 +40,10 @@ select is(
   30, 'the Gebyr counts in the creator''s Bøder i alt this Sæson');
 
 select results_eq(
-  format($$ select data - 'gebyr_id', data ->> 'gebyr_id' = (select id::text from public.gebyr where bodekategori_id = %1$L)
-              from public.haendelse where ref_id = %1$L $$, :'for_sent'),
-  $$ values ('{"navn": "For sent", "pris": 50, "gebyr": 30}'::jsonb, true) $$,
-  'the Gebyr sits on the "created" feed entry, with its id');
+  format($$ select data, jsonb_path_query_array(gebyrer, '$[*].beloeb')
+              from public.aktivitet where ref_id = %L $$, :'for_sent'),
+  $$ values ('{"navn": "For sent", "pris": 50}'::jsonb, '[30]'::jsonb) $$,
+  'the Gebyr shows on the "created" feed row');
 
 -- Prøv igen with the same one-time ID charges once.
 select gen_random_uuid() as id_igen \gset
