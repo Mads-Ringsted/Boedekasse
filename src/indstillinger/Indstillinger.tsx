@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from 'react-router';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { BackButton } from '../components/BackButton.tsx';
 import { Screen } from '../components/Screen.tsx';
+import { SaesonRaekker } from '../saeson/SaesonRaekker.tsx';
 import { parsePris } from '../kategorier/kategoriListe.ts';
 import { formatKr, t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
@@ -149,7 +150,8 @@ function IndstillingerSkaerm() {
           </Gruppe>
 
           <Gruppe titel={t('indstillinger.saesonOgData')}>
-            {/* Shown once it has rows: #63 Sæson, #70 Eksportér data. */}
+            <SaesonRaekker />
+            {/* #70 Eksportér data goes here. */}
           </Gruppe>
 
           {/* #71 Slet Bødekasse: its own <Gruppe> with an art="fare" row. */}

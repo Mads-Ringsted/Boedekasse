@@ -1,0 +1,76 @@
+/* Sæson sheets (#67) and the Pause card on Hjem (hjem-pause.html). */
+.felt-knap--fare {
+  background: var(--color-danger-fill);
+  color: var(--color-on-accent);
+}
+
+.saeson-dato {
+  appearance: none;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.saeson-fjern {
+  width: 100%;
+  height: var(--size-button);
+  margin-top: 8px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-danger);
+  text-align: center;
+}
+
+.saeson-fjern:disabled {
+  opacity: 0.45;
+}
+
+.pause-kort {
+  border-radius: 20px;
+  background: var(--color-surface);
+  padding: 14px 14px 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pause-kort__ikon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: var(--color-fill);
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pause-kort__tekst {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.pause-kort__titel {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.pause-kort__linje {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.pause-kort__knap {
+  flex-shrink: 0;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 12px;
+  background: var(--color-accent-pale);
+  color: var(--color-accent-pale-text);
+  font-size: 14px;
+  font-weight: 600;
+}
