@@ -9,6 +9,7 @@ import { Screen } from '../components/Screen.tsx';
 import { hentMedlemmer } from '../medlemmer/hentMedlemmer.ts';
 import type { Medlemslinje } from '../medlemmer/medlemsliste.ts';
 import { NyKodeSheet } from '../medlemmer/NyKodeSheet.tsx';
+import { useAabnProfil } from '../profil/aabnProfil.ts';
 import { TilfoejMedlemSheet } from '../medlemmer/TilfoejMedlemSheet.tsx';
 import { formatKr, t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
@@ -22,6 +23,7 @@ import './Medlemmer.css';
 export function Medlemmer() {
   const { bodekasseId, bodekasseNavn, medlemId, erAdmin } = useBodekasse();
   const navigate = useNavigate();
+  const aabnProfil = useAabnProfil('mere.medlemmer');
   const data = useHent(() => hentMedlemmer(bodekasseId, medlemId, erAdmin), [bodekasseId, medlemId, erAdmin]);
   const [tilfoejer, setTilfoejer] = useState(false);
   const [fornyer, setFornyer] = useState(false);
@@ -85,7 +87,9 @@ export function Medlemmer() {
           </h2>
           <ul className="medlemmer__liste">
             {klar.linjer.map((m) => (
-              <MedlemLinje key={m.id} m={m} />
+              <li key={m.id} className="medlemmer__punkt">
+                <MedlemLinje m={m} onClick={() => aabnProfil(m.id)} />
+              </li>
             ))}
           </ul>
         </>
@@ -114,8 +118,8 @@ export function Medlemmer() {
   );
 }
 
-/** One Medlem: avatar, name (or "Dig"), tags and what they owe. #56 makes it open the profile. */
-function MedlemLinje({ m }: { m: Medlemslinje }) {
+/** One Medlem: avatar, name (or "Dig"), tags and what they owe. Opens their profile. */
+function MedlemLinje({ m, onClick }: { m: Medlemslinje; onClick: () => void }) {
   const beloeb =
     m.saldo < 0 ? (
       <span className="medlem-linje__beloeb medlem-linje__beloeb--til-gode">
@@ -128,7 +132,7 @@ function MedlemLinje({ m }: { m: Medlemslinje }) {
     );
 
   return (
-    <li className={`medlem-linje${m.egen ? ' medlem-linje--egen' : ''}`}>
+    <button type="button" className={`medlem-linje${m.egen ? ' medlem-linje--egen' : ''}`} onClick={onClick}>
       <Avatar navn={m.navn} size={36} egen={m.egen} stiplet={!m.loggetInd} />
       <span className="medlem-linje__tekst">
         <span className="medlem-linje__navn">
@@ -138,6 +142,6 @@ function MedlemLinje({ m }: { m: Medlemslinje }) {
         {!m.loggetInd && <span className="medlem-linje__under">{t('medlemmer.ikkeLoggetInd')}</span>}
       </span>
       {beloeb}
-    </li>
+    </button>
   );
 }
