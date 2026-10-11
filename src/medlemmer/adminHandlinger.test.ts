@@ -26,6 +26,17 @@ describe('adminHandlinger (the rows in "Handlinger for X")', () => {
     expect(farlig).toEqual([{ art: 'genoptag' }, { art: 'slet', grund: 'historik' }]);
   });
 
+  it('offers Registrér frikøb after Registrér indbetaling while Frikøb can be bought', () => {
+    const { hoved } = adminHandlinger(sebastian, { egen: false, sletGrund: 'boeder', frikob: true });
+    expect(arter(hoved)).toEqual(['registrerIndbetaling', 'registrerFrikob', 'goerTilAdmin', 'retNavn', 'retEmail']);
+    expect(
+      arter(adminHandlinger({ ...sebastian, udmeldt: true }, { egen: false, sletGrund: null, frikob: true }).hoved),
+    ).not.toContain('registrerFrikob');
+    expect(
+      arter(adminHandlinger({ ...sebastian, erAdmin: true }, { egen: true, sletGrund: null, frikob: true }).hoved),
+    ).not.toContain('registrerFrikob');
+  });
+
   it('lets Slet go ahead when nothing stops it', () => {
     const { farlig } = adminHandlinger(sebastian, { egen: false, sletGrund: null });
     expect(farlig[1]).toEqual({ art: 'slet', grund: null });

@@ -3,6 +3,7 @@ import { ChevronRight, Ellipsis } from 'lucide-react';
 import { useBodekasse, useMedlemskaber } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Sheet } from '../components/Sheet.tsx';
+import { KoebFrikobSheet } from '../frikob/KoebFrikobSheet.tsx';
 import { RegistrerIndbetalingSheet } from '../kassen/RegistrerIndbetalingSheet.tsx';
 import { useProfilTilbage } from '../profil/aabnProfil.ts';
 import type { ProfilDelProps } from '../profil/handlinger.ts';
@@ -12,7 +13,7 @@ import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import { useHent } from '../supabase/useHent.ts';
 import { adminHandlinger, type AdminHandling, type SletGrund } from './adminHandlinger.ts';
 import { BekraeftSheet, RetFeltSheet } from './AdminSheets.tsx';
-import { hentAdminData } from './hentAdminData.ts';
+import { hentAdminData, type AdminData } from './hentAdminData.ts';
 import './AdminHandlinger.css';
 
 type Art = AdminHandling['art'];
@@ -98,6 +99,18 @@ function AdminSheet({ profil, visning, opdater, art, vaelg, luk }: AdminSheetPro
       );
     case 'registrerIndbetaling':
       return <RegistrerIndbetalingSheet open onOpenChange={onOpenChange} medlemId={profil.id} onRegistreret={opdater} />;
+    case 'registrerFrikob':
+      // The row only shows once the data (with the Frikøb status) has loaded.
+      if (data.status !== 'ready') return null;
+      return (
+        <KoebFrikobSheet
+          open
+          onOpenChange={onOpenChange}
+          medlem={{ id: profil.id, navn }}
+          status={data.data.frikob}
+          onKoebt={opdater}
+        />
+      );
     case 'goerTilAdmin':
     case 'fjernSomAdmin': {
       const goer = art === 'goerTilAdmin';
@@ -197,12 +210,12 @@ function AdminListe({
   data,
   vaelg,
 }: Pick<ProfilDelProps, 'profil' | 'visning'> & {
-  data: { email: string | null; sletGrund: SletGrund | null } | null;
+  data: AdminData | null;
   vaelg: (art: Art) => void;
 }) {
   const { hoved, farlig } = adminHandlinger(
     { erAdmin: profil.erAdmin, loggetInd: profil.loggetInd, udmeldt: profil.udmeldt, email: data?.email ?? null },
-    { egen: visning.egen, sletGrund: data?.sletGrund ?? null },
+    { egen: visning.egen, sletGrund: data?.sletGrund ?? null, frikob: data?.frikob.kanKoebe ?? false },
   );
   const under = profil.udmeldt
     ? t('profil.tag.udmeldt')
@@ -266,6 +279,8 @@ function raekkeTekst(h: AdminHandling): string {
   switch (h.art) {
     case 'registrerIndbetaling':
       return t('kassen.registrer');
+    case 'registrerFrikob':
+      return t('frikob.registrerTitel');
     case 'goerTilAdmin':
       return t('adminHandlinger.goerTilAdmin');
     case 'fjernSomAdmin':
