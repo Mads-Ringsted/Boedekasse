@@ -16,6 +16,7 @@ export interface Annullering {
 /** One Bøde as the feed and the Bøde detail sheet show it (view `aktivitet_bode`). */
 export interface Boede {
   id: string;
+  /** Its Sæson. Only the latest Sæson's Bøder can be changed (#68). */
   saesonId: string;
   batchId: string;
   giverId: string;

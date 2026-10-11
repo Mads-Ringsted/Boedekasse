@@ -1,0 +1,116 @@
+/* ---------- The Sæson picker (#68) ---------- */
+.saeson-vaelger {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-height: var(--size-touch);
+  margin: -12px -4px -12px 0;
+  padding: 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-accent-text);
+}
+
+.saeson-liste {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-radius: 20px;
+  background: var(--color-surface-raised);
+  overflow: hidden;
+}
+
+.saeson-liste li + li {
+  border-top: 1px solid var(--color-line);
+}
+
+.saeson-liste__row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  text-align: left;
+}
+
+.saeson-liste__ikon {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 13px;
+  background: var(--color-fill);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.saeson-liste__ikon--seneste {
+  background: var(--color-accent-pale);
+  color: var(--color-accent-pale-text);
+}
+
+.saeson-liste__tekst {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.saeson-liste__navn {
+  font-size: 17px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.saeson-liste__periode {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.saeson-liste__chevron {
+  flex-shrink: 0;
+  color: var(--color-text-faint);
+}
+
+.saeson-liste__check {
+  flex-shrink: 0;
+  color: var(--color-accent-text);
+}
+
+/* ---------- A past Sæson's page ---------- */
+.tidligere__hoved {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 0 4px;
+}
+
+.tidligere__navn {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  overflow-wrap: anywhere;
+}
+
+.tidligere__periode {
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.tidligere__note {
+  margin: 0;
+  padding: 0 4px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.tidligere__fejl {
+  color: var(--color-danger);
+  font-size: 15px;
+  padding: 12px 4px;
+  text-align: left;
+}

@@ -369,6 +369,21 @@ export const da = {
   'saeson.fjernSlutdato': 'Fjern slutdato',
   'saeson.slutdatoFortid': 'Datoen må ikke ligge før i dag.',
 
+  // Past Sæsoner, read-only (#68)
+  'saeson.periode': '{start} – {slut}',
+  'saeson.periodeKoerer': 'Fra {start} · kører',
+  'saeson.vaelgTitel': 'Sæsoner',
+  'saeson.vaelg': 'Vælg sæson',
+  'saeson.vises': 'Vises nu',
+  'saeson.tidligere.tag': 'Afsluttet',
+  'saeson.tidligere.note': 'En tidligere sæson. Her kan du kun kigge.',
+  'saeson.tidligere.boederIAlt': 'Bøder i alt',
+  'saeson.tidligere.indbetalt': 'Indbetalt',
+  'saeson.tidligere.aktivitet': 'Aktivitet',
+  'saeson.tidligere.findesIkke': 'Sæsonen findes ikke.',
+  'profil.overfoert': 'Overført fra sidste sæson',
+  'profil.overfoertTilGode': '{beloeb} til gode',
+
   // Medlemmer, Tilføj Medlem and your own name
   'medlemmer.tilfoej': 'Tilføj Medlem',
   'medlemmer.kodeLabel': 'Kode til at blive medlem',
