@@ -3,6 +3,7 @@ import { boederGivet } from './boeder.ts';
 import { frikobAnnulleret, frikobKoebt } from './frikob.ts';
 import { bodekategoriArkiveret, bodekategoriOmpriset, bodekategoriOprettet } from './kategorier.ts';
 import { medlemTilfoejet, medlemTilmeldt } from './medlemmer.ts';
+import { konkurrenceAnnulleret, konkurrenceRegistreret } from './konkurrence.ts';
 import { betalingAfvist, betalingBekraeftet, indbetaling, indbetalingAnnulleret } from './penge.ts';
 import { bodekasseOprettet, saesonAfsluttet, saesonStartet } from './saeson.ts';
 
@@ -32,4 +33,6 @@ export const ARTER: Record<string, Beskriver> = {
   frikob_annulleret: frikobAnnulleret,
   betaling_bekraeftet: betalingBekraeftet,
   betaling_afvist: betalingAfvist,
+  konkurrence_registreret: konkurrenceRegistreret,
+  konkurrence_annulleret: konkurrenceAnnulleret,
 };
