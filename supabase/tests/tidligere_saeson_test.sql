@@ -7,7 +7,7 @@
 -- throws_ok for it below.
 begin;
 \ir _hjaelpere.psql
-select plan(9);
+select plan(14);
 
 select tests.opret_bodekasse() as kasse \gset
 select id as foerste from public.saeson where bodekasse_id = :'kasse' \gset
@@ -23,6 +23,19 @@ select (public.giv_boeder(gen_random_uuid(), :'kasse', jsonb_build_array(
         ->> 'batch_id') as batch \gset
 select public.registrer_indbetaling(gen_random_uuid(), :'kasse', :'jonas', 20) ->> 'indbetaling_id' as gammel_betaling \gset
 
+-- More Sæson 1 records, written directly (their own RPCs are tested elsewhere):
+-- a Hævning, a Frikøb, a Konkurrence and a Betalingsmelding that afventer.
+select tests.log_ud();
+insert into public.haevning (bodekasse_id, saeson_id, beloeb, formaal, registreret_af)
+values (:'kasse', :'foerste', 10, 'Bold', :'mads') returning id as haevning \gset
+insert into public.frikob (bodekasse_id, saeson_id, medlem_id, bodekategori_id, registreret_af)
+values (:'kasse', :'foerste', :'jonas', :'for_sent', :'mads') returning id as frikob \gset
+insert into public.konkurrence (bodekasse_id, saeson_id, titel, oprettet_af)
+values (:'kasse', :'foerste', 'Bowling', :'mads') returning id as konkurrence \gset
+insert into public.betalingsmelding (bodekasse_id, saeson_id, medlem_id, beloeb)
+values (:'kasse', :'foerste', :'jonas', 15) returning id as melding \gset
+select tests.log_ind_som_medlem(:'mads');
+
 -- The next Sæson starts.
 select public.start_saeson(gen_random_uuid(), :'kasse') ->> 'saeson_id' as anden \gset
 
@@ -34,6 +47,23 @@ select throws_ok(
 select throws_ok(
   format($$ select public.annuller_indbetaling(gen_random_uuid(), %L) $$, :'gammel_betaling'),
   'P0001', 'tidligere_saeson', 'an Indbetaling from a past Sæson cannot be annulled');
+
+select throws_ok(
+  format($$ select public.annuller_haevning(gen_random_uuid(), %L) $$, :'haevning'),
+  'P0001', 'tidligere_saeson', 'a Hævning from a past Sæson cannot be annulled');
+
+select throws_ok(
+  format($$ select public.annuller_frikob(gen_random_uuid(), %L) $$, :'frikob'),
+  'P0001', 'tidligere_saeson', 'a Frikøb from a past Sæson cannot be annulled');
+
+select throws_ok(
+  format($$ select public.ret_konkurrence(gen_random_uuid(), %L, 'Bowling', current_date, '[]'::jsonb) $$,
+         :'konkurrence'),
+  'P0001', 'tidligere_saeson', 'a Konkurrence from a past Sæson cannot be corrected');
+
+select throws_ok(
+  format($$ select public.annuller_konkurrence(gen_random_uuid(), %L) $$, :'konkurrence'),
+  'P0001', 'tidligere_saeson', 'a Konkurrence from a past Sæson cannot be annulled');
 
 select results_eq(
   format($$ select (select count(*) from public.bode where batch_id = %L and annulleret is null),
@@ -79,6 +109,13 @@ select results_eq(
          :'foerste', :'jonas'),
   $$ values (20) $$,
   'the past Sæson''s Topliste does not change');
+
+-- A report from last Sæson, confirmed now, is a payment in the current Sæson.
+select public.behandl_betalingsmelding(gen_random_uuid(), :'melding', true) ->> 'indbetaling_id' as fra_melding \gset
+select is(
+  (select saeson_id from public.indbetaling where id = :'fra_melding'),
+  :'anden'::uuid,
+  'confirming last Sæson''s Betalingsmelding records the payment in the current Sæson');
 
 select * from finish();
 rollback;
