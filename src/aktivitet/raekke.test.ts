@@ -232,4 +232,14 @@ describe('Medlem and Sæson rows', () => {
       linje: 'Startet af Jonas',
     });
   });
+
+  it('shows a Sæson ended by an Admin, and one that ended by its date', () => {
+    expect(beskrivRaekke(andet({ art: 'saeson_afsluttet', data: { saeson_navn: 'Sæson 2026' } }), ctx)).toMatchObject({
+      titel: 'Sæson 2026 sluttede',
+      linje: 'Afsluttet af Jonas',
+    });
+    expect(
+      beskrivRaekke(andet({ art: 'saeson_afsluttet', aktoerId: null, aktoerNavn: null, data: { saeson_navn: 'Sæson 2026' } }), ctx),
+    ).toMatchObject({ titel: 'Sæson 2026 sluttede', linje: '' });
+  });
 });

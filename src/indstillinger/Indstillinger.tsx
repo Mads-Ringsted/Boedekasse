@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from 'react-router';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { BackButton } from '../components/BackButton.tsx';
 import { Screen } from '../components/Screen.tsx';
+import { SaesonRaekker } from '../saeson/SaesonRaekker.tsx';
 import { parsePris } from '../kategorier/kategoriListe.ts';
 import { formatKr, t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
@@ -136,11 +137,21 @@ function IndstillingerSkaerm() {
                 retBeloeb('oprettelsesgebyr', t('indstillinger.oprettelsesgebyr'), t('indstillinger.oprettelsesgebyrNote'))
               }
             />
-            {/* #58 Engangsbøde Gebyr, #66 Anke, #65 Frikøb, #67 Konkurrencegebyrer go here. */}
+            <SwitchRaekke
+              label={t('indstillinger.engangsgebyr')}
+              under={formatKr(ind.engangsgebyr)}
+              til={ind.engangsgebyr_til}
+              onSkift={(til) => skift({ engangsgebyr_til: til })}
+              onAabn={() =>
+                retBeloeb('engangsgebyr', t('indstillinger.engangsgebyr'), t('indstillinger.engangsgebyrNote'))
+              }
+            />
+            {/* #66 Anke, #65 Frikøb, #67 Konkurrencegebyrer go here. */}
           </Gruppe>
 
           <Gruppe titel={t('indstillinger.saesonOgData')}>
-            {/* Shown once it has rows: #63 Sæson, #70 Eksportér data. */}
+            <SaesonRaekker />
+            {/* #70 Eksportér data goes here. */}
           </Gruppe>
 
           {/* #71 Slet Bødekasse: its own <Gruppe> with an art="fare" row. */}

@@ -2,8 +2,8 @@ import type { Beskriver } from '../visning.ts';
 import { boederGivet } from './boeder.ts';
 import { bodekategoriArkiveret, bodekategoriOmpriset, bodekategoriOprettet } from './kategorier.ts';
 import { medlemGenoptaget, medlemTilfoejet, medlemTilmeldt, medlemUdmeldt } from './medlemmer.ts';
-import { indbetaling, indbetalingAnnulleret } from './penge.ts';
-import { bodekasseOprettet, saesonStartet } from './saeson.ts';
+import { betalingAfvist, betalingBekraeftet, indbetaling, indbetalingAnnulleret } from './penge.ts';
+import { bodekasseOprettet, saesonAfsluttet, saesonStartet } from './saeson.ts';
 
 /**
  * Every feed entry kind the app can show, by `haendelse.art`. An entry of a
@@ -26,6 +26,9 @@ export const ARTER: Record<string, Beskriver> = {
   medlem_genoptaget: medlemGenoptaget,
   bodekasse_oprettet: bodekasseOprettet,
   saeson_startet: saesonStartet,
+  saeson_afsluttet: saesonAfsluttet,
   indbetaling,
   indbetaling_annulleret: indbetalingAnnulleret,
+  betaling_bekraeftet: betalingBekraeftet,
+  betaling_afvist: betalingAfvist,
 };

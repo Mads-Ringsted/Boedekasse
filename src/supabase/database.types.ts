@@ -1935,11 +1935,17 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "annuller_indbetaling":
+            "afslut_saeson":
+{ Args: { "p_bodekasse": string,"p_klient_id": string }; Returns: Json
+                           },
+"annuller_indbetaling":
 { Args: { "p_indbetaling": string,"p_klient_id": string,"p_note"?: string }; Returns: Json
                            },
 "arkiver_bodekategori":
 { Args: { "p_bodekategori": string,"p_klient_id": string }; Returns: Json
+                           },
+"behandl_betalingsmelding":
+{ Args: { "p_bekraeft": boolean,"p_klient_id": string,"p_melding": string }; Returns: Json
                            },
 "find_bodekasse_med_kode":
 { Args: { "p_kode": string }; Returns: Json
@@ -1950,6 +1956,9 @@ isOneToOne: false
 "fortryd_batch":
 { Args: { "p_batch": string,"p_klient_id": string }; Returns: Json
                            },
+"fortryd_betalingsmelding":
+{ Args: { "p_klient_id": string,"p_melding": string }; Returns: Json
+                           },
 "gendan_bodekategori":
 { Args: { "p_bodekategori": string,"p_klient_id": string }; Returns: Json
                            },
@@ -1958,6 +1967,12 @@ isOneToOne: false
                            },
 "giv_boeder":
 { Args: { "p_bodekasse": string,"p_klient_id": string,"p_linjer": Json }; Returns: Json
+                           },
+"meld_betaling":
+{ Args: { "p_beloeb": number,"p_bodekasse": string,"p_klient_id": string }; Returns: Json
+                           },
+"omdoeb_saeson":
+{ Args: { "p_bodekasse": string,"p_klient_id": string,"p_navn": string }; Returns: Json
                            },
 "opdater_indstillinger":
 { Args: { "p_aendringer": Json,"p_bodekasse": string,"p_klient_id": string }; Returns: Json
@@ -1986,8 +2001,14 @@ isOneToOne: false
 "saet_admin":
 { Args: { "p_bodekasse": string,"p_er_admin": boolean,"p_klient_id": string,"p_medlem": string }; Returns: Json
                            },
+"saet_slutdato":
+{ Args: { "p_bodekasse": string,"p_klient_id": string,"p_slutdato": string }; Returns: Json
+                           },
 "slet_medlem":
 { Args: { "p_bodekasse": string,"p_klient_id": string,"p_medlem": string }; Returns: Json
+                           },
+"start_saeson":
+{ Args: { "p_bodekasse": string,"p_klient_id": string }; Returns: Json
                            },
 "tilfoej_medlem":
 { Args: { "p_bodekasse": string,"p_email": string,"p_klient_id": string,"p_navn": string }; Returns: Json
