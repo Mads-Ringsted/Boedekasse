@@ -6,6 +6,7 @@ import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { SkiftBodekasseSheet } from '../bodekasse/SkiftBodekasseSheet.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Screen } from '../components/Screen.tsx';
+import { FRA_MERE } from '../kassen/Kassen.tsx';
 import { RetMitNavnSheet } from '../medlemmer/RetMitNavnSheet.tsx';
 import { formatKr, t, type PlainStringId } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
@@ -87,7 +88,7 @@ export function Mere() {
         <Row
           Icon={Coins}
           label="mere.kassen"
-          onClick={() => void navigate('/kassen')}
+          onClick={() => void navigate('/kassen', { state: FRA_MERE })}
           trailing={data && <span className="mere__vaerdi">{formatKr(data.iBoedekassen)}</span>}
         />
         <Row Icon={Scale} label="mere.anker" onClick={() => void navigate('/anker')} />
