@@ -136,7 +136,16 @@ function IndstillingerSkaerm() {
                 retBeloeb('oprettelsesgebyr', t('indstillinger.oprettelsesgebyr'), t('indstillinger.oprettelsesgebyrNote'))
               }
             />
-            {/* #58 Engangsbøde Gebyr, #66 Anke, #65 Frikøb, #67 Konkurrencegebyrer go here. */}
+            <SwitchRaekke
+              label={t('indstillinger.engangsgebyr')}
+              under={formatKr(ind.engangsgebyr)}
+              til={ind.engangsgebyr_til}
+              onSkift={(til) => skift({ engangsgebyr_til: til })}
+              onAabn={() =>
+                retBeloeb('engangsgebyr', t('indstillinger.engangsgebyr'), t('indstillinger.engangsgebyrNote'))
+              }
+            />
+            {/* #66 Anke, #65 Frikøb, #67 Konkurrencegebyrer go here. */}
           </Gruppe>
 
           <Gruppe titel={t('indstillinger.saesonOgData')}>

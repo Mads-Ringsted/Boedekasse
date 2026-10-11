@@ -9,6 +9,7 @@ import { formatKr, t } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import { useHent } from '../supabase/useHent.ts';
+import { EngangsboedeSheet } from './EngangsboedeSheet.tsx';
 import type { Forvalg } from './GivBoederProvider.tsx';
 import { GivPersonSheet } from './GivPersonSheet.tsx';
 import { hentGiv, type Modtager } from './hentGiv.ts';
@@ -16,8 +17,11 @@ import { KategoriVaelger } from './KategoriVaelger.tsx';
 import { boederTekst, linjeTekst, navneliste, personerTekst } from './tekst.ts';
 import {
   antalFor,
+  engangsFor,
   erValgt,
   faellesAntal,
+  fjernEngangsAlle,
+  fjernEngangsPerson,
   fravaelgAlle,
   givLinjer,
   INGEN_REGLER,
@@ -28,6 +32,8 @@ import {
   plusAlle,
   plusPerson,
   skiftPerson,
+  tilfoejEngangsAlle,
+  tilfoejEngangsPerson,
   vaelgAlle,
   type Opsummering,
   type Valg,
@@ -77,6 +83,12 @@ export function GivBoeder({ open, onOpenChange, forvalg, onGivet }: GivBoederPro
   const [personAaben, setPersonAaben] = useState(false);
   const [nyNr, setNyNr] = useState(0);
   const [nyAaben, setNyAaben] = useState(false);
+  // Engangsbøde: for everyone picked (step 2, null) or one person (3b).
+  const [engangs, setEngangs] = useState<{ nr: number; open: boolean; personId: string | null }>({
+    nr: 0,
+    open: false,
+    personId: null,
+  });
 
   const modtagere = data?.modtagere ?? [];
   const kategorier = data?.kategorier ?? [];
@@ -88,6 +100,10 @@ export function GivBoeder({ open, onOpenChange, forvalg, onGivet }: GivBoederPro
   function aendr(f: (v: Valg) => Valg) {
     setFejl(null);
     setValg(f);
+  }
+
+  function aabnEngangs(forPerson: string | null) {
+    setEngangs((e) => ({ nr: e.nr + 1, open: true, personId: forPerson }));
   }
 
   async function giv() {
@@ -203,6 +219,9 @@ export function GivBoeder({ open, onOpenChange, forvalg, onGivet }: GivBoederPro
             setNyNr((n) => n + 1);
             setNyAaben(true);
           }}
+          engangs={valg.faellesEngangs}
+          onFjernEngangs={(id) => aendr((v) => fjernEngangsAlle(v, id))}
+          onEngangs={() => aabnEngangs(null)}
         />
       </>
     );
@@ -241,7 +260,7 @@ export function GivBoeder({ open, onOpenChange, forvalg, onGivet }: GivBoederPro
                 <ul className="giv-kort__linjer">
                   {p.linjer.map((l) => (
                     <li key={l.kategoriId}>
-                      <span>{t('giv.gange', { antal: l.antal, navn: l.navn })}</span>
+                      <span>{l.engangs ? l.navn : t('giv.gange', { antal: l.antal, navn: l.navn })}</span>
                       <span className="giv-kort__linje-beloeb">{formatKr(l.beloeb)}</span>
                     </li>
                   ))}
@@ -300,7 +319,25 @@ export function GivBoeder({ open, onOpenChange, forvalg, onGivet }: GivBoederPro
           antal={(k) => antalFor(valg, person.id, k)}
           onPlus={(k) => aendr((v) => plusPerson(v, person.id, k, regler))}
           onMinus={(k) => aendr((v) => minusPerson(v, person.id, k))}
+          engangs={engangsFor(valg, person.id)}
+          onFjernEngangs={(id) => aendr((v) => fjernEngangsPerson(v, person.id, id))}
+          onEngangs={() => aabnEngangs(person.id)}
           sum={personSum}
+        />
+      )}
+
+      {engangs.nr > 0 && (
+        <EngangsboedeSheet
+          key={`engangs-${engangs.nr}`}
+          open={engangs.open}
+          onOpenChange={(open) => setEngangs((e) => ({ ...e, open }))}
+          modtagere={engangs.personId ? (person ? [person] : []) : valgte}
+          onTilfoej={({ grund, beloeb }) => {
+            const ny = { id: crypto.randomUUID(), grund, beloeb };
+            const forPerson = engangs.personId;
+            setEngangs((e) => ({ ...e, open: false }));
+            aendr((v) => (forPerson ? tilfoejEngangsPerson(v, forPerson, ny) : tilfoejEngangsAlle(v, ny)));
+          }}
         />
       )}
 
