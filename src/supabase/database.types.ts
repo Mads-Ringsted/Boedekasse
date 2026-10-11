@@ -1717,7 +1717,10 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "arkiver_bodekategori":
+            "afslut_saeson":
+{ Args: { "p_bodekasse": string,"p_klient_id": string }; Returns: Json
+                           },
+"arkiver_bodekategori":
 { Args: { "p_bodekategori": string,"p_klient_id": string }; Returns: Json
                            },
 "find_bodekasse_med_kode":
@@ -1735,6 +1738,9 @@ isOneToOne: false
 "giv_boeder":
 { Args: { "p_bodekasse": string,"p_klient_id": string,"p_linjer": Json }; Returns: Json
                            },
+"omdoeb_saeson":
+{ Args: { "p_bodekasse": string,"p_klient_id": string,"p_navn": string }; Returns: Json
+                           },
 "opdater_indstillinger":
 { Args: { "p_aendringer": Json,"p_bodekasse": string,"p_klient_id": string }; Returns: Json
                            },
@@ -1749,6 +1755,12 @@ isOneToOne: false
                            },
 "ret_mit_navn":
 { Args: { "p_bodekasse": string,"p_klient_id": string,"p_navn": string }; Returns: Json
+                           },
+"saet_slutdato":
+{ Args: { "p_bodekasse": string,"p_klient_id": string,"p_slutdato": string }; Returns: Json
+                           },
+"start_saeson":
+{ Args: { "p_bodekasse": string,"p_klient_id": string }; Returns: Json
                            },
 "tilfoej_medlem":
 { Args: { "p_bodekasse": string,"p_email": string,"p_klient_id": string,"p_navn": string }; Returns: Json
