@@ -3,10 +3,14 @@ import { ChevronDown, ChevronRight, Wallet } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { SkiftBodekasseSheet } from '../bodekasse/SkiftBodekasseSheet.tsx';
+import { AfventerKort } from '../betal/AfventerKort.tsx';
+import { BetalSheet } from '../betal/BetalSheet.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Screen } from '../components/Screen.tsx';
 import { useGivBoeder } from '../giv/GivBoederProvider.tsx';
 import { useAabnProfil } from '../profil/aabnProfil.ts';
+import { PauseKort } from '../saeson/PauseKort.tsx';
+import { useSaeson } from '../saeson/SaesonProvider.tsx';
 import { formatKr, t } from '../strings/index.ts';
 import { useHent } from '../supabase/useHent.ts';
 import { hentHjem } from './hjem/hentHjem.ts';
@@ -26,8 +30,15 @@ export function Hjem() {
   const navigate = useNavigate();
   const aabnProfil = useAabnProfil('tab.hjem');
   const [skifter, setSkifter] = useState(false);
+  // Betal: a counter, so each opening mounts a fresh sheet (new one-time ID).
+  const [betaler, setBetaler] = useState(0);
+  const [betalRunde, setBetalRunde] = useState(0);
   const { version } = useGivBoeder();
-  const hjem = useHent(() => hentHjem(bodekasseId, medlemId, erAdmin), [bodekasseId, medlemId, erAdmin, version]);
+  const { saeson, pause, version: saesonVersion } = useSaeson();
+  const hjem = useHent(
+    () => hentHjem(bodekasseId, medlemId, erAdmin),
+    [bodekasseId, medlemId, erAdmin, version, saesonVersion],
+  );
   const data = hjem.status === 'ready' ? hjem.data : null;
   const punkter = data && komIGang(data);
   // A new box (Kom i gang showing) has no money yet, so no money cards.
@@ -54,6 +65,8 @@ export function Hjem() {
           <Avatar navn={navn} egen />
         </button>
       </header>
+
+      <PauseKort />
 
       <button type="button" className="hjem__kasse" onClick={() => void navigate('/kassen')}>
         <span className="hjem__kasse-tekst">
@@ -97,9 +110,8 @@ export function Hjem() {
               <span className="hjem__min-label">{t('hjem.duMangler')}</span>
               <span className="hjem__min-beloeb">{formatKr(status.beloeb)}</span>
             </span>
-            {/* #60 opens the Betal sheet from here. */}
             {status.kanBetale && (
-              <button type="button" className="hjem__betal">
+              <button type="button" className="hjem__betal" onClick={() => setBetaler((n) => n + 1)}>
                 <Wallet size={20} strokeWidth={2} aria-hidden="true" />
                 {t('hjem.betal')}
               </button>
@@ -107,13 +119,19 @@ export function Hjem() {
           </div>
         ))}
 
+      {data && <AfventerKort variant="hjem" opdater={betalRunde + version} onBehandlet={hjem.reload} />}
+
       {data && punkter && <KomIGangKort punkter={punkter} bodekasseNavn={bodekasseNavn} kode={data.kode} />}
 
       {topliste && (
         <>
           <div className="hjem__sektion">
             <h2 className="hjem__sektion-titel">{t('hjem.topliste')}</h2>
-            {!topliste.tom && <span className="hjem__sektion-note">{t('hjem.boederIAlt')}</span>}
+            {!topliste.tom && (
+              <span className="hjem__sektion-note">
+                {pause && saeson ? t('hjem.boederIAltSaeson', { saeson: saeson.navn }) : t('hjem.boederIAlt')}
+              </span>
+            )}
           </div>
           {topliste.tom ? (
             <div className="hjem__tom">
@@ -127,6 +145,14 @@ export function Hjem() {
       )}
 
       <SkiftBodekasseSheet open={skifter} onOpenChange={setSkifter} />
+      {betaler > 0 && (
+        <BetalSheet
+          key={`betal-${betaler}`}
+          open
+          onOpenChange={(aaben) => !aaben && setBetaler(0)}
+          onAendret={() => setBetalRunde((n) => n + 1)}
+        />
+      )}
     </Screen>
   );
 }

@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Plus, Wallet } from 'lucide-react';
+import { BetalSheet } from '../betal/BetalSheet.tsx';
+import { MinAfventendeMelding } from '../betal/MinMeldingKort.tsx';
 import { useGivBoeder } from '../giv/GivBoederProvider.tsx';
 import { RegistrerIndbetalingSheet } from '../kassen/RegistrerIndbetalingSheet.tsx';
+import { useSaeson } from '../saeson/SaesonProvider.tsx';
 import { t } from '../strings/index.ts';
 import type { ProfilDelProps } from './handlinger.ts';
 
@@ -29,18 +32,36 @@ export function ProfilKnap({ label, Icon, primaer = false, under, onClick }: Pro
   );
 }
 
-/** "Giv bøde": opens Giv bøder with this person picked. */
+/** "Giv bøde": opens Giv bøder with this person picked. Hidden in a Pause. */
 export function GivBoedeKnap({ profil, visning }: ProfilDelProps) {
   const { aabn } = useGivBoeder();
-  if (!visning.kanGiveBoede) return null;
+  const { pause } = useSaeson();
+  if (!visning.kanGiveBoede || pause) return null;
   return <ProfilKnap primaer Icon={Plus} label={t('profil.givBoede')} onClick={() => aabn({ medlemId: profil.id })} />;
 }
 
-/** "Betal" on your own profile while you owe. */
-export function BetalKnap({ visning }: ProfilDelProps) {
+/** "Betal" on your own profile while you owe: opens the Betal sheet. */
+export function BetalKnap({ visning, opdater }: ProfilDelProps) {
+  // Each opening mounts a fresh sheet (new one-time ID).
+  const [aabning, setAabning] = useState(0);
   if (!visning.kanBetale) return null;
-  // #60 opens the Betal sheet from here (and shows a report that afventer).
-  return <ProfilKnap primaer Icon={Wallet} label={t('profil.betal')} />;
+  return (
+    <>
+      <ProfilKnap primaer Icon={Wallet} label={t('profil.betal')} onClick={() => setAabning((n) => n + 1)} />
+      {aabning > 0 && (
+        <BetalSheet key={aabning} open onOpenChange={(aaben) => !aaben && setAabning(0)} onAendret={opdater} />
+      )}
+    </>
+  );
+}
+
+/**
+ * Your own report that afventer (orange card with Fortryd), on your own
+ * profile. It reloads with the profile: `opdater()` gives a new `profil`.
+ */
+export function MinMeldingProfilKort({ profil, visning, opdater }: ProfilDelProps) {
+  if (!visning.egen) return null;
+  return <MinAfventendeMelding opdater={profil} onFortrudt={opdater} />;
 }
 
 /** "Registrér indbetaling" (Admin) on someone else's profile, with them picked. */

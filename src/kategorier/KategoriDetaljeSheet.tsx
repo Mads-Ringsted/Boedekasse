@@ -5,6 +5,7 @@ import { hentFrikoeb } from '../frikob/hentFrikoeb.ts';
 import { useGivBoeder } from '../giv/GivBoederProvider.tsx';
 import { navneliste } from '../giv/tekst.ts';
 import { kortNavne } from '../giv/navne.ts';
+import { useSaeson } from '../saeson/SaesonProvider.tsx';
 import { formatKr, t } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
@@ -30,6 +31,7 @@ interface KategoriDetaljeSheetProps {
 export function KategoriDetaljeSheet({ open, onOpenChange, kategori, onRediger, onAendret }: KategoriDetaljeSheetProps) {
   const mig = useBodekasse();
   const { aabn: givBoeder } = useGivBoeder();
+  const { pause } = useSaeson();
   const [busy, setBusy] = useState(false);
   const [fejl, setFejl] = useState<string | null>(null);
   const [klientId] = useState(() => crypto.randomUUID());
@@ -93,7 +95,7 @@ export function KategoriDetaljeSheet({ open, onOpenChange, kategori, onRediger, 
           </p>
         )}
 
-        {!kategori.arkiveret && (
+        {!kategori.arkiveret && !pause && (
           <button
             type="button"
             className="kategori-detalje__giv"
