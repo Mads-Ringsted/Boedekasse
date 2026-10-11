@@ -548,6 +548,28 @@ export const da = {
   'boede.tag.vundet': 'Anke vundet',
   'boede.tag.tabt': 'Anke tabt',
 
+  // Annullér Bøder and Gebyrer (#62)
+  'annuller.note': 'Note til annulleringen (valgfri)',
+  'annuller.advarsel': 'En annullering kan ikke fortrydes.',
+  'annuller.boede': 'Annullér bøde',
+  'annuller.gebyr': 'Annullér gebyr',
+  'annuller.gebyrTitel': 'Gebyr',
+  'annuller.gebyrLinje': 'Betales af {hvem}',
+  'aktivitet.annulleredeBoede': '{hvem} annullerede {ejer} bøde til {modtager}',
+  'aktivitet.annulleredeEngangsboede': '{hvem} annullerede {ejer} engangsbøde til {modtager}',
+  'aktivitet.annulleredeGebyr': '{hvem} annullerede {ejer} gebyr',
+  'aktivitet.gebyrOprettelse': 'Ny bødekategori: {navn}',
+  'aktivitet.gebyrAnke': 'Anke: {navn}',
+  'aktivitet.gebyrAndet': 'Gebyr',
+  'aktivitet.ejerGenitiv': '{navn}s',
+  'aktivitet.ejerGenitivS': "{navn}'",
+  'aktivitet.din': 'din',
+  'aktivitet.sin': 'sin',
+  'aktivitet.dit': 'dit',
+  'aktivitet.sit': 'sit',
+  'fejl.anket': 'Bøden er anket, så kun en Admin kan annullere den.',
+  'fejl.kanIkkeAnnulleres': 'Det gebyr følger sin årsag og kan ikke annulleres alene.',
+
   // Time (Aktivitet and the Bøde detail)
   'tid.ligeNu': 'Lige nu',
   'tid.minutter': '{antal} min',

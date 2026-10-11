@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { useGivBoeder } from '../giv/GivBoederProvider.tsx';
 import { t } from '../strings/index.ts';
+import { AnnullerGebyrSheet } from './boede/AnnullerGebyrSheet.tsx';
 import { useBoedeDetalje } from './boede/BoedeDetaljeProvider.tsx';
 import { FeedRaekke } from './FeedRaekke.tsx';
 import { beskrivRaekke } from './raekke.ts';
+import type { Raekke } from './visning.ts';
 import { iDag, iDage, siden } from './tid.ts';
 import { useFeed } from './useFeed.ts';
 import './Feed.css';
@@ -20,9 +22,12 @@ interface FeedProps {
  * Used by the Aktivitet tab and, filtered with `medlemId`, by profiles.
  */
 export function Feed({ medlemId }: FeedProps) {
-  const { bodekasseId, medlemId: migId } = useBodekasse();
+  const { bodekasseId, medlemId: migId, erAdmin } = useBodekasse();
   const { version: givVersion } = useGivBoeder();
-  const { aabn: aabnBoede, version: boedeVersion } = useBoedeDetalje();
+  const { aabn: aabnBoede, version: boedeVersion, aendret } = useBoedeDetalje();
+  // Admin: the row whose Gebyr is being annulled (#62). A new nr per opening.
+  const [gebyrRaekke, setGebyrRaekke] = useState<{ nr: number; raekke: Raekke } | null>(null);
+  const [gebyrAaben, setGebyrAaben] = useState(false);
   const feed = useFeed(bodekasseId, medlemId, [givVersion, boedeVersion]);
 
   const dage = useMemo(() => {
@@ -76,11 +81,29 @@ export function Feed({ medlemId }: FeedProps) {
                 raekke={p.raekke}
                 tid={p.idag ? siden(p.tid) : undefined}
                 onAabnBoede={aabnBoede}
+                onAnnullerGebyr={
+                  erAdmin
+                    ? (raekke) => {
+                        setGebyrRaekke((g) => ({ nr: (g?.nr ?? 0) + 1, raekke }));
+                        setGebyrAaben(true);
+                      }
+                    : undefined
+                }
               />
             ))}
           </ul>
         </section>
       ))}
+      {gebyrRaekke?.raekke.annullerGebyr && (
+        <AnnullerGebyrSheet
+          key={gebyrRaekke.nr}
+          gebyr={gebyrRaekke.raekke.annullerGebyr}
+          titel={gebyrRaekke.raekke.titel}
+          open={gebyrAaben}
+          onOpenChange={setGebyrAaben}
+          onAnnulleret={aendret}
+        />
+      )}
       {flere && (
         <button ref={slut} type="button" className="feed__flere" disabled={henterFlere} onClick={hentFlere}>
           {t('aktivitet.visFlere')}

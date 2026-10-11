@@ -1,4 +1,5 @@
 import type { Beskriver } from '../visning.ts';
+import { bodeAnnulleret, gebyrAnnulleret } from './annulleringer.ts';
 import { boederGivet } from './boeder.ts';
 import { frikobAnnulleret, frikobKoebt } from './frikob.ts';
 import { bodekategoriArkiveret, bodekategoriOmpriset, bodekategoriOprettet } from './kategorier.ts';
@@ -29,6 +30,8 @@ export const ARTER: Record<string, Beskriver> = {
   saeson_afsluttet: saesonAfsluttet,
   indbetaling,
   indbetaling_annulleret: indbetalingAnnulleret,
+  bode_annulleret: bodeAnnulleret,
+  gebyr_annulleret: gebyrAnnulleret,
   frikob_koebt: frikobKoebt,
   frikob_annulleret: frikobAnnulleret,
   betaling_bekraeftet: betalingBekraeftet,

@@ -7,6 +7,7 @@ const ctx = { migId: 'emil' };
 
 const boede = (over: Partial<Boede> = {}): Boede => ({
   id: 'b1',
+  saesonId: 's1',
   batchId: 'batch',
   giverId: 'frederik',
   giverNavn: 'Frederik Lund',

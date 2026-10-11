@@ -2008,8 +2008,14 @@ isOneToOne: false
             "afslut_saeson":
 { Args: { "p_bodekasse": string,"p_klient_id": string }; Returns: Json
                            },
+"annuller_bode":
+{ Args: { "p_bode": string,"p_klient_id": string,"p_note"?: string }; Returns: Json
+                           },
 "annuller_frikob":
 { Args: { "p_frikob": string,"p_klient_id": string,"p_note"?: string }; Returns: Json
+                           },
+"annuller_gebyr":
+{ Args: { "p_gebyr": string,"p_klient_id": string,"p_note"?: string }; Returns: Json
                            },
 "annuller_haevning":
 { Args: { "p_haevning": string,"p_klient_id": string,"p_note"?: string }; Returns: Json

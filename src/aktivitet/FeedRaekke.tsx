@@ -28,6 +28,8 @@ interface FeedRaekkeProps {
   /** Appended to the second line, e.g. "35 min" for today's rows. */
   tid?: string;
   onAabnBoede: (boedeId: string) => void;
+  /** Admins only: a row with `annullerGebyr` opens "Annullér gebyr". */
+  onAnnullerGebyr?: (raekke: Raekke) => void;
 }
 
 /**
@@ -35,7 +37,7 @@ interface FeedRaekkeProps {
  * line, amount with any Gebyr under it. A batch of Bøder expands; a single
  * Bøde opens its detail sheet.
  */
-export function FeedRaekke({ raekke, tid, onAabnBoede }: FeedRaekkeProps) {
+export function FeedRaekke({ raekke, tid, onAabnBoede, onAnnullerGebyr }: FeedRaekkeProps) {
   const [aaben, setAaben] = useState(false);
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -108,6 +110,10 @@ export function FeedRaekke({ raekke, tid, onAabnBoede }: FeedRaekkeProps) {
     <li className="feed__post">
       {boedeId ? (
         <button type="button" className={klasse} onClick={() => onAabnBoede(boedeId)}>
+          {indhold}
+        </button>
+      ) : raekke.annullerGebyr && onAnnullerGebyr ? (
+        <button type="button" className={klasse} onClick={() => onAnnullerGebyr(raekke)}>
           {indhold}
         </button>
       ) : link ? (

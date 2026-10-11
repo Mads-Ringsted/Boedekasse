@@ -1,7 +1,7 @@
 import { formatKr, t } from '../../strings/index.ts';
 import { hvem } from '../navne.ts';
 import type { Beskriver, Ikon } from '../visning.ts';
-import { dataTal, dataTekst, gebyrTekst } from './faelles.ts';
+import { annullerbartGebyr, dataTal, dataTekst, gebyrTekst } from './faelles.ts';
 
 // Bødekategori entries (#52): ref_tabel 'bodekategori', aktoer = who did it.
 const ikon: Ikon = { slags: 'symbol', symbol: 'kategori' };
@@ -13,6 +13,7 @@ export const bodekategoriOprettet: Beskriver = (h, ctx) => ({
   linje: t('aktivitet.kategoriOprettetLinje', { pris: formatKr(dataTal(h, 'pris')) }),
   gebyr: gebyrTekst(h.gebyrer),
   annulleret: false,
+  annullerGebyr: annullerbartGebyr(h.gebyrer),
 });
 
 /** 'bodekategori_ompriset' {navn, gammel_pris, ny_pris}. */

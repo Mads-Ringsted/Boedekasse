@@ -9,6 +9,8 @@ interface BoedeDetaljeApi {
    * Put it in a screen's `useHent` deps, next to `useGivBoeder().version`.
    */
   version: number;
+  /** Call after anything else changed a Bøde or Gebyr (e.g. a Gebyr annulled from a feed row). */
+  aendret: () => void;
 }
 
 const BoedeDetaljeContext = createContext<BoedeDetaljeApi | null>(null);
@@ -33,7 +35,7 @@ export function BoedeDetaljeProvider({ children }: { children: ReactNode }) {
   }, []);
   const aendret = useCallback(() => setVersion((v) => v + 1), []);
 
-  const api = useMemo(() => ({ aabn, version }), [aabn, version]);
+  const api = useMemo(() => ({ aabn, version, aendret }), [aabn, version, aendret]);
 
   return (
     <BoedeDetaljeContext.Provider value={api}>

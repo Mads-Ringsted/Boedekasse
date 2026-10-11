@@ -39,6 +39,9 @@ const BY_KEY: Record<string, PlainStringId> = {
   beloeb_ugyldig: 'fejl.beloebUgyldig',
   allerede_annulleret: 'fejl.alleredeAnnulleret',
   tidligere_saeson: 'fejl.tidligereSaeson',
+  // Annullér Bøder and Gebyrer (#62)
+  anket: 'fejl.anket',
+  kan_ikke_annulleres: 'fejl.kanIkkeAnnulleres',
   // Betalingsmelding (#60)
   melding_afventer: 'fejl.meldingAfventer',
   egen_melding: 'fejl.egenMelding',
