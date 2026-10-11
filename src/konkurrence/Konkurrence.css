@@ -1,0 +1,536 @@
+/* ---------- Konkurrencer (list) ---------- */
+.konk__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: -4px 4px 4px 0;
+}
+
+.konk__ny {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.konk__fejl {
+  padding: 12px 4px;
+  font-size: 15px;
+  color: var(--color-danger);
+  text-align: left;
+}
+
+.konk__note {
+  padding: 0 4px;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+.konk__tom {
+  padding: 32px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.konk__tom-titel {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.konk__tom-tekst {
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.konk-kort {
+  width: 100%;
+  border-radius: 20px;
+  background: var(--color-surface);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: left;
+  color: inherit;
+}
+
+.konk-kort__hoved {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.konk-kort__ikon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: var(--color-fill);
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.konk-kort__ikon--nyeste {
+  background: var(--color-accent-pale);
+  color: var(--color-accent-text);
+}
+
+.konk-kort__tekst {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.konk-kort__titel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.konk-kort__titel-tekst {
+  font-size: 17px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.konk-kort__linje {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.konk-kort__beloeb {
+  flex-shrink: 0;
+  font-size: 17px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.konk-kort--annulleret .konk-kort__beloeb {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+.konk-kort__top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  padding-left: 52px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.konk-kort__plads {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.konk-kort__nr {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-fill-strong);
+  color: var(--color-text);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.konk-kort__nr--1 {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+/* ---------- Ny / Ret konkurrence (sheet) ---------- */
+.kny {
+  padding-bottom: 8px;
+}
+
+.kny__felter {
+  margin-top: 12px;
+  border-radius: var(--radius-input);
+  background: var(--color-surface-raised);
+  display: flex;
+  flex-direction: column;
+}
+
+.kny__felt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 50px;
+  padding: 0 16px;
+  font-size: 16px;
+}
+
+.kny__felt + .kny__felt {
+  border-top: 1px solid var(--color-line);
+}
+
+.kny__label {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+
+.kny__input {
+  min-width: 0;
+  flex-grow: 1;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-weight: 600;
+  text-align: right;
+  outline: none;
+}
+
+.kny__input::placeholder {
+  color: var(--color-text-faint);
+  font-weight: 400;
+}
+
+.kny__input--dato {
+  flex-grow: 0;
+  color-scheme: light dark;
+}
+
+.kny__overskrift {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 24px;
+  padding: 20px 4px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.kny__nulstil {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-accent-text);
+}
+
+.kny__fejl {
+  padding: 12px 4px;
+  font-size: 15px;
+  color: var(--color-danger);
+  text-align: left;
+}
+
+.kny__liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-radius: var(--radius-input);
+  background: var(--color-surface-raised);
+  overflow: hidden;
+}
+
+.kny__raekke {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-left: 16px;
+}
+
+.kny__raekke + .kny__raekke {
+  border-top: 1px solid var(--color-line);
+}
+
+.kny__raekke--placeret {
+  background: var(--color-surface-selected);
+}
+
+.kny__nr {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* A tie: same place as the one above. */
+.kny__nr--delt {
+  background: var(--color-accent-pale);
+  color: var(--color-accent-pale-text);
+  box-shadow: inset 0 0 0 1.5px var(--color-accent);
+}
+
+.kny__nr--tom {
+  background: transparent;
+  border: 1.5px dashed var(--color-line-strong);
+}
+
+.kny__person {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 16px 9px 0;
+  text-align: left;
+  color: inherit;
+}
+
+.kny__navn {
+  flex-grow: 1;
+  min-width: 0;
+  font-size: 16px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kny__navn--fravaer {
+  font-weight: 400;
+}
+
+.kny__beloeb {
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.kny__fravaer {
+  flex-shrink: 0;
+  font-size: 14px;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.kny__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.kny__sum {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+
+.kny__sum-tekst {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.kny__sum-beloeb {
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Result screen ---------- */
+.konk-detalje {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.konk-detalje__hoved {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 4px;
+}
+
+.konk-detalje__titel-blok {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.konk-detalje__titel {
+  padding: 0;
+  overflow-wrap: anywhere;
+}
+
+.konk-detalje__under {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.konk-detalje__tags {
+  display: flex;
+  padding-top: 4px;
+}
+
+.konk-detalje__total {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.konk-detalje__total-beloeb {
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.konk-detalje--annulleret .konk-detalje__total-beloeb,
+.konk-detalje--annulleret .podie__beloeb,
+.konk-detalje--annulleret .konk-detalje__beloeb {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+.konk-detalje__total-antal {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.konk-detalje__annulleret {
+  padding: 0 4px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.konk-detalje__podie {
+  padding-top: 10px;
+}
+
+.konk-detalje__podie-plads {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.podie__plads--1 .konk-detalje__podie-plads {
+  color: var(--color-accent-pale-text);
+}
+
+.konk-detalje__liste {
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.konk-detalje__gruppe {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.konk-detalje__gruppe-titel {
+  margin: 0;
+  padding: 10px 16px 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.konk-detalje__gruppe + .konk-detalje__gruppe-titel {
+  border-top: 1px solid var(--color-line);
+}
+
+.konk-detalje__raekke {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+}
+
+.konk-detalje__raekke + .konk-detalje__raekke {
+  border-top: 1px solid var(--color-line);
+}
+
+.konk-detalje__raekke--egen {
+  background: var(--color-accent-pale);
+}
+
+.konk-detalje__nr {
+  width: 22px;
+  flex-shrink: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.konk-detalje__raekke--egen .konk-detalje__nr {
+  color: var(--color-accent-text);
+}
+
+.konk-detalje__navn {
+  flex-grow: 1;
+  min-width: 0;
+  font-size: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.konk-detalje__raekke--egen .konk-detalje__navn {
+  font-weight: 600;
+}
+
+.konk-detalje__navn--fravaer {
+  color: var(--color-text-secondary);
+}
+
+.konk-detalje__beloeb {
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.konk-detalje__handlinger {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 6px;
+}
+
+.konk-detalje__knap {
+  height: var(--size-button);
+  border-radius: var(--radius-button);
+  background: var(--color-surface);
+  color: var(--color-accent-text);
+  font-size: 17px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.konk-detalje__knap--fare {
+  color: var(--color-danger);
+}
+
+.konk-annuller__tekst {
+  margin-top: 4px;
+}
+
+.konk-annuller__knap {
+  background: var(--color-danger-fill);
+}
