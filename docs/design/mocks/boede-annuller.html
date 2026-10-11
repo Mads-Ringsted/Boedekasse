@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<title>Bøde du gav · Annullér</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+button{border:0;margin:0;padding:0;background:none;color:inherit;font:inherit;cursor:pointer;text-align:left}
+input{border:0;margin:0;padding:0;background:none;color:inherit;font:inherit;outline:none}
+input::placeholder{color:#6E7690}
+a{color:#8AA6FF}a:hover{color:#B7C8FF}
+</style>
+</helmet>
+<div style="width: 393px; height: 852px; position: relative; overflow: hidden; box-sizing: border-box; background: #0A0C12; color: #F1F3F9; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-variant-numeric: tabular-nums">
+
+<div aria-hidden="true" style="padding: 60px 16px 0; display: flex; flex-direction: column; gap: 10px">
+<span style="margin: 0 4px 8px; font-size: 32px; font-weight: 700; letter-spacing: -0.6px">Aktivitet</span>
+<span style="height: 256px; border-radius: 18px; background: #151924"></span>
+</div>
+<div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(0,0,0,0.6)"></div>
+
+<section role="dialog" aria-label="Bøde" style="position: absolute; left: 0; right: 0; bottom: 0; top: 330px; border-radius: 22px 22px 0 0; background: #151924; padding: 8px 20px 34px; box-sizing: border-box; display: flex; flex-direction: column">
+<div aria-hidden="true" style="width: 36px; height: 5px; border-radius: 3px; background: #3A4157; margin: 0 auto"></div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; margin-top: 14px">
+<span style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #9298AB">
+<span style="width: 28px; height: 28px; border-radius: 50%; background: #DCE4FF; color: #1E50E6; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center">JH</span>Fra dig til Jonas · 10 min</span>
+<button aria-label="Luk" style="width: 32px; height: 32px; border-radius: 50%; background: #232838; color: #C3C8D6; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+</div>
+
+<div style="display: flex; align-items: flex-end; justify-content: space-between; margin-top: 18px">
+<h2 style="margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.4px">For sent</h2>
+<span style="font-size: 34px; font-weight: 700; letter-spacing: -1px; line-height: 1">50 kr</span>
+</div>
+
+<label style="margin-top: 22px; height: 50px; border-radius: 16px; background: #1C2232; display: flex; align-items: center; padding: 0 16px">
+<input type="text" placeholder="Note til annulleringen (valgfri)" aria-label="Note" style="flex-grow: 1; font-size: 16px">
+</label>
+
+<div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px">
+<button style="height: 54px; border-radius: 18px; background: #1C2232; box-shadow: inset 0 0 0 1px rgba(255,99,105,0.4); color: #FF6369; font-size: 17px; font-weight: 600; text-align: center">Annullér bøde</button>
+<p style="margin: 0; text-align: center; font-size: 13px; color: #9298AB">En annullering kan ikke fortrydes.</p>
+</div>
+</section>
+
+<div aria-hidden="true" style="position: absolute; left: 50%; transform: translateX(-50%); bottom: 8px; width: 134px; height: 5px; border-radius: 3px; background: #F1F3F9"></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":393,"height":852}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

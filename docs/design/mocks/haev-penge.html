@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<title>Hæv penge</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+button{border:0;margin:0;padding:0;background:none;color:inherit;font:inherit;cursor:pointer;text-align:left}
+input{border:0;margin:0;padding:0;background:none;color:inherit;font:inherit;outline:none}
+a{color:#8AA6FF}a:hover{color:#B7C8FF}
+</style>
+</helmet>
+<div style="width: 393px; height: 852px; position: relative; overflow: hidden; box-sizing: border-box; background: #000000; color: #F1F3F9; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-variant-numeric: tabular-nums">
+
+<div aria-hidden="true" style="position: absolute; top: 46px; left: 18px; right: 18px; height: 40px; border-radius: 14px 14px 0 0; background: #1A1E28"></div>
+
+<section aria-label="Hæv penge" style="position: absolute; top: 58px; left: 0; right: 0; bottom: 0; border-radius: 22px 22px 0 0; background: #151924; display: flex; flex-direction: column; padding: 0 16px 34px">
+<div aria-hidden="true" style="width: 36px; height: 5px; border-radius: 3px; background: #3A4157; margin: 8px auto 0"></div>
+<header style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 44px">
+<button style="color: #8AA6FF; font-size: 17px; justify-self: start">Annullér</button>
+<h1 style="margin: 0; font-size: 17px; font-weight: 700">Hæv penge</h1>
+<span></span>
+</header>
+
+<div style="margin-top: 14px; border-radius: 16px; background: #182650; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center">
+<span style="font-size: 14px; color: #B7C8FF">I bødekassen</span>
+<span style="font-size: 17px; font-weight: 700">570 kr</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 40px 0 32px">
+<span style="font-size: 13px; color: #9298AB">Beløb</span>
+<label style="display: flex; align-items: baseline; gap: 6px"><input type="text" inputmode="numeric" value="300" aria-label="Beløb i kr" style="width: 150px; text-align: right; font-size: 64px; font-weight: 700; letter-spacing: -2px"><span style="font-size: 32px; font-weight: 700; color: #9298AB">kr</span></label>
+<span style="font-size: 13px; color: #9298AB">Højst 570 kr</span>
+</div>
+
+<label style="display: flex; flex-direction: column; gap: 8px">
+<span style="padding: 0 4px; font-size: 13px; font-weight: 600; color: #9298AB">Hvad skal pengene bruges til?</span>
+<span style="height: 52px; border-radius: 16px; background: #1C2232; box-shadow: inset 0 0 0 2px #3B68F5; display: flex; align-items: center; padding: 0 16px"><input type="text" value="Depositum til julefrokost" required style="flex-grow: 1; font-size: 17px"></span>
+</label>
+
+<p style="margin: 14px 4px 0; font-size: 13px; color: #9298AB; line-height: 1.45">Det ændrer kun beløbet i kassen, ikke hvad nogen mangler at betale.</p>
+
+<button style="margin-top: auto; height: 56px; border-radius: 18px; background: #3B68F5; color: #FFFFFF; font-size: 17px; font-weight: 600; text-align: center">Hæv 300 kr</button>
+</section>
+
+<div aria-hidden="true" style="position: absolute; left: 50%; transform: translateX(-50%); bottom: 8px; width: 134px; height: 5px; border-radius: 3px; background: #F1F3F9"></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":393,"height":852}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

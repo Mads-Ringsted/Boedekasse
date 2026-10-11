@@ -1,0 +1,153 @@
+/*
+ * Bødekasse v1 design tokens.
+ *
+ * Light is the default; dark follows the phone setting. Set
+ * data-theme="light" or data-theme="dark" on <html> to force one.
+ * The mocks in ./mocks are drawn in dark with raw hex values; the
+ * table in v1-design-decisions.md (section 5) maps each one to a token.
+ */
+
+:root {
+  /* Surfaces */
+  --color-bg: #F2F3F8;              /* page background */
+  --color-surface: #FFFFFF;         /* cards and lists on a page */
+  --color-sheet: #F2F3F8;           /* bottom sheet background */
+  --color-surface-raised: #FFFFFF;  /* cards, inputs and lists inside a sheet */
+  --color-surface-selected: #F3F6FE;/* a list row with a count, or picked */
+  --color-fill: #EEF0F5;            /* icon tiles, secondary buttons, + buttons */
+  --color-fill-strong: #E3E6EE;     /* − buttons, active segment track */
+  --color-line: #E1E4ED;            /* dividers */
+  --color-line-strong: #C3C8D6;     /* empty radio rings, sheet grabber */
+  --color-tabbar: rgba(255, 255, 255, 0.96);
+  --color-backdrop: #1C1F27;        /* behind a full-height sheet */
+  --color-sheet-peek: #A9AEBB;      /* the screen peeking above a sheet */
+  --color-scrim: rgba(14, 18, 32, 0.4);
+
+  /* Text */
+  --color-text: #0E1220;
+  --color-text-secondary: #3F4558;
+  --color-text-muted: #636A7E;
+  --color-text-faint: #8A90A2;      /* chevrons, disabled, dashed avatars */
+
+  /* Brand blue (fixed) */
+  --color-accent: #1E50E6;          /* main colour: box card, + button, primary buttons */
+  --color-accent-text: #1A46CC;     /* blue text and icons, active tab */
+  --color-accent-pale: #E4EBFD;     /* pale blue fills: tags, Betal chip, podium winner */
+  --color-accent-pale-text: #1A46CC;/* text on the pale blue fill */
+  --color-on-accent: #FFFFFF;
+  --color-accent-shadow: rgba(30, 80, 230, 0.35);
+
+  /* Avatars */
+  --color-avatar-bg: #E4EBFD;
+  --color-avatar-text: #1A46CC;
+
+  /* Status */
+  --color-danger: #CE2C31;          /* unpaid amounts, destructive text */
+  --color-danger-fill: #CE2C31;     /* destructive filled button */
+  --color-danger-pale: rgba(206, 44, 49, 0.10);
+  --color-success: #0A8754;         /* paid, money in */
+  --color-success-pale: rgba(10, 135, 84, 0.10);
+  --color-warning: #A35F00;         /* waiting: Anket, Afventer */
+  --color-warning-pale: rgba(163, 95, 0, 0.10);
+  --color-coin: #FFC94D;            /* app icon and illustrations only */
+
+  /* Type */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace; /* join codes */
+  --font-numeric: tabular-nums;     /* use on every amount */
+
+  /* Radii */
+  --radius-sheet: 22px;
+  --radius-card-lg: 24px;           /* box card */
+  --radius-card: 18px;              /* lists and cards */
+  --radius-button: 18px;            /* 56px primary buttons */
+  --radius-input: 16px;
+  --radius-chip: 999px;
+  --radius-tag: 6px;
+
+  /* Sizes */
+  --size-button: 56px;
+  --size-touch: 44px;
+  --size-tabbar: 88px;              /* includes the home-indicator area */
+  --size-fab: 64px;                 /* the raised + */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: #0A0C12;
+    --color-surface: #151924;
+    --color-sheet: #151924;
+    --color-surface-raised: #1C2232;
+    --color-surface-selected: #1E2740;
+    --color-fill: #232838;
+    --color-fill-strong: #2C3246;
+    --color-line: #252A39;
+    --color-line-strong: #4A5168;
+    --color-tabbar: rgba(16, 19, 28, 0.96);
+    --color-backdrop: #000000;
+    --color-sheet-peek: #1A1E28;
+    --color-scrim: rgba(0, 0, 0, 0.6);
+
+    --color-text: #F1F3F9;
+    --color-text-secondary: #C3C8D6;
+    --color-text-muted: #9298AB;
+    --color-text-faint: #6E7690;
+
+    --color-accent: #3B68F5;
+    --color-accent-text: #8AA6FF;
+    --color-accent-pale: #182650;
+    --color-accent-pale-text: #B7C8FF;
+    --color-on-accent: #FFFFFF;
+    --color-accent-shadow: rgba(59, 104, 245, 0.45);
+
+    --color-avatar-bg: #DCE4FF;
+    --color-avatar-text: #1E50E6;
+
+    --color-danger: #FF6369;
+    --color-danger-fill: #D93F45;
+    --color-danger-pale: rgba(255, 99, 105, 0.14);
+    --color-success: #3DD68C;
+    --color-success-pale: rgba(61, 214, 140, 0.14);
+    --color-warning: #FFB547;
+    --color-warning-pale: rgba(255, 181, 71, 0.14);
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-bg: #0A0C12;
+  --color-surface: #151924;
+  --color-sheet: #151924;
+  --color-surface-raised: #1C2232;
+  --color-surface-selected: #1E2740;
+  --color-fill: #232838;
+  --color-fill-strong: #2C3246;
+  --color-line: #252A39;
+  --color-line-strong: #4A5168;
+  --color-tabbar: rgba(16, 19, 28, 0.96);
+  --color-backdrop: #000000;
+  --color-sheet-peek: #1A1E28;
+  --color-scrim: rgba(0, 0, 0, 0.6);
+
+  --color-text: #F1F3F9;
+  --color-text-secondary: #C3C8D6;
+  --color-text-muted: #9298AB;
+  --color-text-faint: #6E7690;
+
+  --color-accent: #3B68F5;
+  --color-accent-text: #8AA6FF;
+  --color-accent-pale: #182650;
+  --color-accent-pale-text: #B7C8FF;
+  --color-on-accent: #FFFFFF;
+  --color-accent-shadow: rgba(59, 104, 245, 0.45);
+
+  --color-avatar-bg: #DCE4FF;
+  --color-avatar-text: #1E50E6;
+
+  --color-danger: #FF6369;
+  --color-danger-fill: #D93F45;
+  --color-danger-pale: rgba(255, 99, 105, 0.14);
+  --color-success: #3DD68C;
+  --color-success-pale: rgba(61, 214, 140, 0.14);
+  --color-warning: #FFB547;
+  --color-warning-pale: rgba(255, 181, 71, 0.14);
+}

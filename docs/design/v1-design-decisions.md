@@ -40,8 +40,27 @@ The chosen screens are in [`mocks/`](mocks/). Each mock is one HTML file with in
 | Ny Konkurrence (sheet) | [konkurrence-ny.html](mocks/konkurrence-ny.html) | 15 |
 | Konkurrence result | [konkurrence-detalje.html](mocks/konkurrence-detalje.html) | 15 |
 | Indstillinger | [indstillinger.html](mocks/indstillinger.html) | 16 |
+| Slet Bødekasse | [slet-boedekasse.html](mocks/slet-boedekasse.html) | 16 |
+| Opret Bødekasse | [opret-boedekasse.html](mocks/opret-boedekasse.html) | 3 |
+| Jeg har en kode | [jeg-har-en-kode.html](mocks/jeg-har-en-kode.html) | 3 |
+| Hjem: new, empty box | [hjem-tom.html](mocks/hjem-tom.html) | 4 |
+| Hjem: Til gode | [hjem-til-gode.html](mocks/hjem-til-gode.html) | 4 |
+| Giv bøder, step 2 with a Frikøb | [giv-2-frikoeb.html](mocks/giv-2-frikoeb.html) | 5 |
+| Engangsbøde (sheet) | [engangsboede.html](mocks/engangsboede.html) | 5 |
+| Betal: no Box number | [betal-uden-box.html](mocks/betal-uden-box.html) | 6 |
+| Bødekategorier: empty | [boedekategorier-tom.html](mocks/boedekategorier-tom.html) | 8 |
+| Ny bødekategori (sheet) | [ny-boedekategori.html](mocks/ny-boedekategori.html) | 8 |
+| Bødekategori detail (sheet) | [boedekategori-detalje.html](mocks/boedekategori-detalje.html) | 8 |
+| Bøde you gave: Annullér | [boede-annuller.html](mocks/boede-annuller.html) | 9 |
+| Bøde with a verdict: Ændr afgørelse | [boede-aendr-afgoerelse.html](mocks/boede-aendr-afgoerelse.html) | 9 |
+| Your own profile | [min-profil.html](mocks/min-profil.html) | 11 |
+| Køb Frikøb: pick a Bødekategori | [koeb-frikoeb-vaelg.html](mocks/koeb-frikoeb-vaelg.html) | 11 |
+| Køb Frikøb: confirm | [koeb-frikoeb-bekraeft.html](mocks/koeb-frikoeb-bekraeft.html) | 11 |
+| Hæv penge (sheet) | [haev-penge.html](mocks/haev-penge.html) | 13 |
+| Tilføj Medlem (sheet) | [tilfoej-medlem.html](mocks/tilfoej-medlem.html) | 14 |
+| App icon | [app-ikon.html](mocks/app-ikon.html), [app-icon.svg](app-icon.svg) | – |
 
-Only Hjem has light-mode mocks so far. The other screens use the same light tokens (below).
+The mocks are dark. Light mode comes from the CSS variables in [tokens.css](tokens.css) (section 5); Hjem also has light mocks as a reference.
 
 ## Decisions
 
@@ -67,7 +86,7 @@ Changes from the brief:
 ### 3. Giv bøder is a three-step flow
 The single sheet from the brief ("Udfylder for", "Samme til alle") is replaced by steps in one full-height sheet. A three-part progress bar sits under the header ("1 af 3").
 
-1. **Hvem:** a grid of person tiles. Tap to select (blue tile with a tick). "Vælg alle" at the top. A Medlem with Frikøb is a greyed-out tile with a "Frikøb" tag and can't be selected. Button: "Næste · 2 valgt".
+1. **Hvem:** a grid of person tiles. Tap to select (blue tile with a tick). "Vælg alle" at the top. Every Medlem can be selected, including one with a Frikøb. Button: "Næste · 2 valgt".
 2. **Hvad:** one list of Bødekategorier with search. Every Bøde added here goes to **everyone selected**; a line shows who ("Gælder for Jonas og Emil"). Tapping + adds one; a row with a count shows a − / count / + stepper. Footer: "1 bøde til hver · 100 kr i alt" and "Næste".
 3. **Tjek og giv:** one card per person with their Bøder, amounts and total. Tapping a person or "Tilføj bøde" opens a second sheet (**3b**) with the same list for **that person only**. Footer: "5 bøder til 2 personer · 210 kr" and "Giv 5 bøder · 210 kr".
 
@@ -79,19 +98,54 @@ No headings or explainer text inside the steps; each screen does one job.
 There is no separate chip row of favourites. The 5 most-used Bødekategorier sit at the top of the one list, each with a small blue **Ofte brugt** tag next to its price. The rest follow alphabetically. The same pattern is used on the Bødekategorier screen, where each row also shows "Brugt 34 gange".
 
 ### 5. Colours
-Brief tokens apply, with these additions and changes:
+**Light mode comes from CSS variables, not from separate mocks.** [tokens.css](tokens.css) defines every colour as a token with a light value (the default) and a dark value that follows the phone setting. The app uses only these tokens, so each screen gets light mode for free. The mocks are drawn in dark with raw hex values; when building, swap each hex for its token:
+
+| Hex in the dark mocks | Token | Light value |
+|---|---|---|
+| `#0A0C12` | `--color-bg` | `#F2F3F8` |
+| `#151924` (page cards) | `--color-surface` | `#FFFFFF` |
+| `#151924` (sheet background) | `--color-sheet` | `#F2F3F8` |
+| `#1C2232` | `--color-surface-raised` | `#FFFFFF` |
+| `#1E2740` | `--color-surface-selected` | `#F3F6FE` |
+| `#232838` | `--color-fill` | `#EEF0F5` |
+| `#2C3246` | `--color-fill-strong` | `#E3E6EE` |
+| `#252A39` | `--color-line` | `#E1E4ED` |
+| `#4A5168`, `#3A4157` | `--color-line-strong` | `#C3C8D6` |
+| `rgba(16,19,28,0.96)` | `--color-tabbar` | `rgba(255,255,255,0.96)` |
+| `#000000` behind a sheet | `--color-backdrop` | `#1C1F27` |
+| `#1A1E28` | `--color-sheet-peek` | `#A9AEBB` |
+| `rgba(0,0,0,0.6)` | `--color-scrim` | `rgba(14,18,32,0.4)` |
+| `#F1F3F9` | `--color-text` | `#0E1220` |
+| `#C3C8D6` (text) | `--color-text-secondary` | `#3F4558` |
+| `#9298AB` | `--color-text-muted` | `#636A7E` |
+| `#6E7690` | `--color-text-faint` | `#8A90A2` |
+| `#3B68F5` | `--color-accent` | `#1E50E6` |
+| `#8AA6FF` | `--color-accent-text` | `#1A46CC` |
+| `#182650` | `--color-accent-pale` | `#E4EBFD` |
+| `#B7C8FF` | `--color-accent-pale-text` | `#1A46CC` |
+| `#FFFFFF` on blue | `--color-on-accent` | `#FFFFFF` |
+| `#DCE4FF` / `#1E50E6` avatars | `--color-avatar-bg` / `--color-avatar-text` | `#E4EBFD` / `#1A46CC` |
+| `#FF6369` | `--color-danger` | `#CE2C31` |
+| `#D93F45` | `--color-danger-fill` | `#CE2C31` |
+| `#3DD68C` | `--color-success` | `#0A8754` |
+| `#FFB547` | `--color-warning` | `#A35F00` |
+| `rgba(…, 0.14)` tints | `--color-danger-pale`, `--color-success-pale`, `--color-warning-pale` | 10% tints |
+
+The light Hjem mocks ([hjem-lys.html](mocks/hjem-lys.html), [hjem-fortryd-lys.html](mocks/hjem-fortryd-lys.html)) show the result. `tokens.css` also holds the font stacks, radii and sizes.
+
+Additions and changes to the brief's tokens:
 
 | Use | Dark | Light |
 |---|---|---|
 | Raised surface (list cards, inputs inside sheets) | `#1C2232` | `#FFFFFF` on `#F2F3F8` |
 | Unpaid / owed amounts (red) | `#FF6369` | `#CE2C31` |
 | Paid / money in (green) | `#3DD68C` | `#0A8754` |
-| Waiting: Anket, Afventer (orange, new) | `#FFB547` | not yet defined |
+| Waiting: Anket, Afventer (orange, new) | `#FFB547` | `#A35F00` |
 
 - **Light-mode red and green are darker than the brief** (`#E5484D` and `#0E9F64`). The brief's values are below 4.5:1 contrast for small text on white.
 - **Red now means "not paid yet"**, not only errors. It is used for "I alt ikke betalte bøder", "Mangler at betale" on a profile, and what each Medlem owes on Medlemmer. Destructive actions (Meld ud, Slet, Log ud, Slet Bødekasse) also use red text.
 - **Orange means "waiting for someone"**: the Anket tag, and the outline and dot on Afventer cards.
-- **Status tags** are small rounded labels: Anket (orange), Anke vundet (green), Anke tabt (red), Annulleret (grey, with the row greyed and the amount struck through), Frikøb (blue), Ofte brugt (blue), Admin (blue).
+- **Status tags** are small rounded labels: Anket (orange), Anke vundet (green), Anke tabt (red), Annulleret (grey, with the row greyed and the amount struck through), Frikøb (blue, on a bought-out Bødekategori, with a shield icon), Ofte brugt (blue), Admin (blue).
 
 ### 6. Sheets
 - **Full height** for flows: Giv bøder, Ny Konkurrence, Registrér indbetaling, Anke. They have Annullér or Tilbage on the left, a centred title, and a fixed footer or button at the bottom.
@@ -128,16 +182,43 @@ Brief tokens apply, with these additions and changes:
 - **Velkommen:** two large cards, **Opret Bødekasse** (blue, "Start en ny og bliv Admin") and **Jeg har en kode**, with "Log ud" at the bottom.
 - **Vælg Bødekasse:** one row per box (initial tile, name, number of Medlemmer), with "Opret ny" and "Jeg har en kode" at the bottom.
 
-### 12. Small patterns
+### 12. Frikøb per Bødekategori
+Follows [Frikøb per Bødekategori](https://github.com/Mads-Ringsted/Boedekasse/issues/34): a Frikøb covers one Bødekategori, and a Medlem can hold several.
+
+- **Your own profile:** Mangler / Bøder og gebyrer / Betalt, then **Betal** and **Køb Frikøb**, then a "Frikøb i sæson 2026" card with one chip per bought-out Bødekategori (shield icon), then "Kan ankes" and the history.
+- **Køb Frikøb:** step 1 lists every active Bødekategori as radio rows with its price and how many you have had; one already bought out is disabled with a "Frikøb" tag. Step 2 confirms: "Frikøb på For sent", Frikøbsgebyr 300 kr, valid from now until the Sæson ends, and a note that Engangsbøder, Gebyrer and earlier Bøder are not covered.
+- **Giv bøder step 2:** a Bødekategori that one of the selected people has bought out shows a "Oliver har Frikøb" tag and "Gives kun til Jonas"; the footer shows what each person actually gets. In step 3b for that one person, the Bødekategori is greyed out and can't be tapped.
+- **Elsewhere:** Aktivitet shows "Oliver købte Frikøb · For sent · 300 kr"; Medlemmer tags Oliver "Frikøb · For sent"; the Bødekategori detail sheet lists who has a Frikøb on it; Indstillinger says "300 kr pr. bødekategori"; the Admin sheet on a Medlem has "Registrér frikøb".
+
+### 13. Sheets and actions
+- **Ny bødekategori:** Navn, Pris and an optional Beskrivelse, a note about the 25 kr Gebyr (when the rule is on), and "Opret · 25 kr gebyr".
+- **Bødekategori detail:** name, price, Ofte brugt tag, description, Oprettet af, Brugt, Frikøb; "Giv denne bøde", then Redigér and a red Arkivér.
+- **Engangsbøde:** who it's for, Hvorfor, a large amount, a note about the 10 kr Gebyr and that Frikøb doesn't cover it.
+- **Hæv penge:** the box amount on top, a large amount ("Højst 570 kr"), a required purpose, and a note that it never changes anyone's Saldo.
+- **Tilføj Medlem:** Navn and Email, a dashed avatar preview, a note that they can get Bøder before logging in, and the join code as an alternative.
+- **Annullér bøde** (you gave it): an optional note field and a red-outlined "Annullér bøde" with "En annullering kan ikke fortrydes."
+- **Ændr afgørelse:** the "Anke vundet" tag, who pays now, who decided, the Anke Gebyr, and a secondary "Ændr afgørelse" ("Kan ændres resten af sæsonen").
+- **Slet Bødekasse:** a red warning, what disappears for whom, "Eksportér data først", type the box name to confirm, and a red "Slet for alle".
+
+### 14. Onboarding and empty states
+- **Opret Bødekasse / Jeg har en kode:** pushed screens with a large title. The code screen uses six monospaced boxes, shows the box it found (name, number of Medlemmer, green tick), then asks for your name.
+- **New, empty Hjem:** the box card at 0 kr, a "Kom i gang" checklist (Opret Bødekassen ✓, Invitér de andre with **Del**, Lav jeres bødekategorier with **Opret**, Giv den første bøde), and an empty Topliste card.
+- **Empty Bødekategorier:** a centred icon, "Ingen bødekategorier endnu", and a "Ny bødekategori" button.
+- **Til gode:** the "Du mangler" row turns into "Du har til gode 14 kr" in green, with "Trækkes fra dine næste bøder" and no Betal button.
+- **Betal without a Box number:** "Betal til en Admin" lists the Admins instead of the Box card; the rest of the sheet is the same.
+
+### 15. App icon
+Logo **2a** is the app icon: an isometric box in three blues (`#8AA6FF` lid, `#3B68F5` and `#1E50E6` sides) with a slot on the lid and a white "$" on the right side, on navy `#0E1220`. The master is [app-icon.svg](app-icon.svg) (square; iOS rounds the corners). It is used on the install guide and the log-in screen. The "$" is a text glyph in the SVG; convert it to a path before exporting PNGs so it doesn't depend on fonts.
+
+### 16. Small patterns
 - Avatars are initials on a pale-blue circle. A Medlem who has not logged in yet has a dashed avatar. A former Medlem has a grey avatar.
 - Your own row is highlighted in blue and labelled "Dig".
 - Admin-only actions carry a small "Kun Admin" or "Admin" label in the mocks; in the app they are hidden from ordinary Medlemmer.
-- The app icon placeholder is a coins icon on a blue rounded square (install guide, log in).
+- Destructive confirmations use a red-outlined or red-filled button and say plainly that it can't be undone.
 
 ## Placeholders and open questions
 
-- **MobilePay Box number** "1234 5678", the join code "K7P2QX", the former Medlem "Anders Vang" and the boxes "Klassen fra 2012" and "Poker-tirsdag" are placeholders.
+- **Placeholders:** the MobilePay Box number "1234 5678", the join code "K7P2QX", the former Medlem "Anders Vang", the new Medlem "Peter Skov", the boxes "Klassen fra 2012" and "Poker-tirsdag", and the description of "For sent".
 - **Tap count for one Bøde** is now 6 (+ → person → Næste → Bøde → Næste → Giv); the brief's target was 4. One option: let step 2's button give the Bøder directly and make step 3 optional, which gives 5 taps.
-- **Frikøb on the Topliste:** the mock counts the 300 kr Frikøb Gebyr in Oliver's "Bøder i alt".
-- **App icon:** the coins placeholder needs a real icon.
-- **Not designed yet:** Ny bødekategori and Bødekategori detail sheets, Engangsbøde, Hæv penge, Tilføj Medlem, Opret Bødekasse and "Jeg har en kode" forms, Køb Frikøb confirm, Annullér bøde and Ændr afgørelse, Slet Bødekasse confirm, "Til gode" on Hjem, "Betal til en Admin" (no Box number), empty states, and light mode for screens other than Hjem.
+- **Does a Frikøbsgebyr count** in a Medlem's "Bøder i alt" on the Topliste? The mock counts it (Oliver's 310 kr).
+- **Light mode** is covered by [tokens.css](tokens.css) rather than a light copy of every mock. Check contrast on a few real screens once they are built.

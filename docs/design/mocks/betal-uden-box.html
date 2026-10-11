@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<title>Betal · Intet Box-nummer</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+button{border:0;margin:0;padding:0;background:none;color:inherit;font:inherit;cursor:pointer;text-align:left}
+input{border:0;margin:0;padding:0;background:none;color:inherit;font:inherit;outline:none}
+a{color:#8AA6FF}a:hover{color:#B7C8FF}
+</style>
+</helmet>
+<div style="width: 393px; height: 852px; position: relative; overflow: hidden; box-sizing: border-box; background: #0A0C12; color: #F1F3F9; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-variant-numeric: tabular-nums">
+
+<div aria-hidden="true" style="padding: 60px 16px 0; display: flex; flex-direction: column; gap: 12px">
+<span style="height: 48px"></span>
+<span style="height: 104px; border-radius: 24px; background: #3B68F5"></span>
+<span style="height: 64px; border-radius: 16px; background: #151924"></span>
+</div>
+<div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(0,0,0,0.6)"></div>
+
+<section role="dialog" aria-label="Betal" style="position: absolute; left: 0; right: 0; bottom: 0; top: 222px; border-radius: 22px 22px 0 0; background: #151924; padding: 8px 20px 34px; box-sizing: border-box; display: flex; flex-direction: column">
+<div aria-hidden="true" style="width: 36px; height: 5px; border-radius: 3px; background: #3A4157; margin: 0 auto"></div>
+<div style="display: flex; justify-content: flex-end; margin-top: 8px">
+<button aria-label="Luk" style="width: 32px; height: 32px; border-radius: 50%; background: #232838; color: #C3C8D6; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 2px; margin-top: -6px">
+<span style="font-size: 15px; color: #9298AB">Du mangler at betale</span>
+<span style="font-size: 60px; font-weight: 700; letter-spacing: -2px; line-height: 1.1">120 kr</span>
+</div>
+
+<div style="margin-top: 22px; border-radius: 18px; background: #1C2232; display: flex; flex-direction: column">
+<span style="padding: 14px 16px 6px; font-size: 13px; font-weight: 600; color: #9298AB">Betal til en Admin</span>
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px 16px; border-bottom: 1px solid #252A39">
+<span style="width: 36px; height: 36px; border-radius: 50%; background: #DCE4FF; color: #1E50E6; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center">FL</span>
+<span style="font-size: 16px">Frederik Lund</span>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px 16px 12px">
+<span style="width: 36px; height: 36px; border-radius: 50%; background: #DCE4FF; color: #1E50E6; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center">MR</span>
+<span style="font-size: 16px">Mads Ringsted</span>
+</div>
+</div>
+
+<p style="margin: 14px 4px 0; font-size: 14px; color: #9298AB; line-height: 1.45">Betal fx med MobilePay, og meld det her bagefter, så en anden kan bekræfte det.</p>
+
+<label style="margin-top: auto; margin-bottom: 10px; height: 52px; border-radius: 16px; background: #1C2232; display: flex; align-items: center; justify-content: space-between; padding: 0 18px; font-size: 16px"><span style="color: #9298AB">Beløb</span><span style="display: flex; align-items: center; gap: 4px; font-weight: 700"><input type="text" inputmode="numeric" value="120" aria-label="Beløb i kr" style="width: 60px; text-align: right; font-size: 17px; font-weight: 700">kr</span></label>
+<button style="height: 56px; border-radius: 18px; background: #3B68F5; color: #FFFFFF; font-size: 17px; font-weight: 600; text-align: center">Jeg har betalt 120 kr</button>
+</section>
+
+<div aria-hidden="true" style="position: absolute; left: 50%; transform: translateX(-50%); bottom: 8px; width: 134px; height: 5px; border-radius: 3px; background: #F1F3F9"></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":393,"height":852}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
