@@ -7,17 +7,47 @@ export type Database = {
           Tables: {
             "anke": {
                   Row: {
-                    "aendret": boolean,"afgjort": string | null,"afgjort_af": string | null,"afgoerelse": Database["public"]['Enums']["anke_afgoerelse"] | null,"bode_id": string,"bodekasse_id": string,"id": string,"indgivet": string,"saeson_id": string
+                    "aendret": boolean,"aendret_af": string | null,"aendret_tid": string | null,"afgjort": string | null,"afgjort_af": string | null,"afgoerelse": Database["public"]['Enums']["anke_afgoerelse"] | null,"bode_id": string,"bodekasse_id": string,"id": string,"indgivet": string,"saeson_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "aendret"?: boolean,"afgjort"?: string | null,"afgjort_af"?: string | null,"afgoerelse"?: Database["public"]['Enums']["anke_afgoerelse"] | null,"bode_id": string,"bodekasse_id": string,"id"?: string,"indgivet"?: string,"saeson_id": string
+                    "aendret"?: boolean,"aendret_af"?: string | null,"aendret_tid"?: string | null,"afgjort"?: string | null,"afgjort_af"?: string | null,"afgoerelse"?: Database["public"]['Enums']["anke_afgoerelse"] | null,"bode_id": string,"bodekasse_id": string,"id"?: string,"indgivet"?: string,"saeson_id": string
                   }
                   Update: {
-                    "aendret"?: boolean,"afgjort"?: string | null,"afgjort_af"?: string | null,"afgoerelse"?: Database["public"]['Enums']["anke_afgoerelse"] | null,"bode_id"?: string,"bodekasse_id"?: string,"id"?: string,"indgivet"?: string,"saeson_id"?: string
+                    "aendret"?: boolean,"aendret_af"?: string | null,"aendret_tid"?: string | null,"afgjort"?: string | null,"afgjort_af"?: string | null,"afgoerelse"?: Database["public"]['Enums']["anke_afgoerelse"] | null,"bode_id"?: string,"bodekasse_id"?: string,"id"?: string,"indgivet"?: string,"saeson_id"?: string
                   }
                   Relationships: [
                     {
+      foreignKeyName: "anke_bodekasse_id_aendret_af_fkey"
+      columns: ["bodekasse_id","aendret_af"]
+isOneToOne: false
+      referencedRelation: "medlem"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
+      foreignKeyName: "anke_bodekasse_id_aendret_af_fkey"
+      columns: ["bodekasse_id","aendret_af"]
+isOneToOne: false
+      referencedRelation: "medlem_saeson_tal"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "anke_bodekasse_id_aendret_af_fkey"
+      columns: ["bodekasse_id","aendret_af"]
+isOneToOne: false
+      referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "anke_bodekasse_id_aendret_af_fkey"
+      columns: ["bodekasse_id","aendret_af"]
+isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "anke_bodekasse_id_aendret_af_fkey"
+      columns: ["bodekasse_id","aendret_af"]
+isOneToOne: false
+      referencedRelation: "topliste"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
       foreignKeyName: "anke_bodekasse_id_afgjort_af_fkey"
       columns: ["bodekasse_id","afgjort_af"]
 isOneToOne: false
@@ -1315,17 +1345,47 @@ isOneToOne: false
                   ]
                 },"konkurrence_resultat": {
                   Row: {
-                    "bodekasse_id": string,"konkurrence_id": string,"medlem_id": string,"plads": number | null
+                    "annulleret": string | null,"annulleret_af": string | null,"annulleret_note": string | null,"bodekasse_id": string,"id": string,"konkurrence_id": string,"medlem_id": string,"plads": number | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "bodekasse_id": string,"konkurrence_id": string,"medlem_id": string,"plads"?: number | null
+                    "annulleret"?: string | null,"annulleret_af"?: string | null,"annulleret_note"?: string | null,"bodekasse_id": string,"id"?: string,"konkurrence_id": string,"medlem_id": string,"plads"?: number | null
                   }
                   Update: {
-                    "bodekasse_id"?: string,"konkurrence_id"?: string,"medlem_id"?: string,"plads"?: number | null
+                    "annulleret"?: string | null,"annulleret_af"?: string | null,"annulleret_note"?: string | null,"bodekasse_id"?: string,"id"?: string,"konkurrence_id"?: string,"medlem_id"?: string,"plads"?: number | null
                   }
                   Relationships: [
                     {
+      foreignKeyName: "konkurrence_resultat_bodekasse_id_annulleret_af_fkey"
+      columns: ["bodekasse_id","annulleret_af"]
+isOneToOne: false
+      referencedRelation: "medlem"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
+      foreignKeyName: "konkurrence_resultat_bodekasse_id_annulleret_af_fkey"
+      columns: ["bodekasse_id","annulleret_af"]
+isOneToOne: false
+      referencedRelation: "medlem_saeson_tal"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "konkurrence_resultat_bodekasse_id_annulleret_af_fkey"
+      columns: ["bodekasse_id","annulleret_af"]
+isOneToOne: false
+      referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "konkurrence_resultat_bodekasse_id_annulleret_af_fkey"
+      columns: ["bodekasse_id","annulleret_af"]
+isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "konkurrence_resultat_bodekasse_id_annulleret_af_fkey"
+      columns: ["bodekasse_id","annulleret_af"]
+isOneToOne: false
+      referencedRelation: "topliste"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
       foreignKeyName: "konkurrence_resultat_bodekasse_id_fkey"
       columns: ["bodekasse_id"]
 isOneToOne: false
@@ -1578,7 +1638,7 @@ isOneToOne: false
                   ]
                 },"aktivitet_bode": {
                   Row: {
-                    "afgjort": string | null,"afgjort_af": string | null,"afgjort_af_navn": string | null,"afgoerelse": Database["public"]['Enums']["anke_afgoerelse"] | null,"afgoerelse_aendret": boolean | null,"anke_gebyr": number | null,"anke_id": string | null,"anket": boolean | null,"annulleret": string | null,"annulleret_af": string | null,"annulleret_af_navn": string | null,"annulleret_note": string | null,"baerer_id": string | null,"batch_id": string | null,"bodekasse_id": string | null,"bodekategori_id": string | null,"engangsbode": boolean | null,"gebyr": number | null,"giver_id": string | null,"giver_navn": string | null,"givet": string | null,"id": string | null,"modtager_id": string | null,"modtager_navn": string | null,"navn": string | null,"pris": number | null,"saeson_id": string | null
+                    "aendret_af": string | null,"aendret_af_navn": string | null,"aendret_tid": string | null,"afgjort": string | null,"afgjort_af": string | null,"afgjort_af_navn": string | null,"afgoerelse": Database["public"]['Enums']["anke_afgoerelse"] | null,"afgoerelse_aendret": boolean | null,"anke_gebyr": number | null,"anke_id": string | null,"anket": boolean | null,"annulleret": string | null,"annulleret_af": string | null,"annulleret_af_navn": string | null,"annulleret_note": string | null,"baerer_id": string | null,"batch_id": string | null,"bodekasse_id": string | null,"bodekategori_id": string | null,"engangsbode": boolean | null,"gebyr": number | null,"giver_id": string | null,"giver_navn": string | null,"givet": string | null,"id": string | null,"modtager_id": string | null,"modtager_navn": string | null,"navn": string | null,"pris": number | null,"saeson_id": string | null
                   }
                   ComputedFields: never
                   Relationships: [

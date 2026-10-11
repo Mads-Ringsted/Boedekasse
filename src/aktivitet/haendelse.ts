@@ -40,8 +40,10 @@ export interface Boede {
   annullering: Annullering | null;
   /** The Engangsbøde Gebyr the giver pays (0 for the rest). */
   gebyr: number;
-  /** Who recorded (or last changed) the Anke verdict, and when (#64). */
+  /** Who recorded the Anke verdict, and when (#64). Kept when it is changed. */
   afgjort: Afgjort | null;
+  /** Who last changed the verdict, and when; null if never changed. */
+  aendret: Afgjort | null;
   /** The Anke Gebyr the receiver pays; null with no Anke or when it was annulled. */
   ankeGebyr: number | null;
 }
@@ -110,6 +112,12 @@ function afgjort(r: Obj): Afgjort | null {
   return { tid, afId: strEllerNull(r.afgjort_af), afNavn: str(r.afgjort_af_navn) };
 }
 
+function aendret(r: Obj): Afgjort | null {
+  const tid = strEllerNull(r.aendret_tid);
+  if (!tid) return null;
+  return { tid, afId: strEllerNull(r.aendret_af), afNavn: str(r.aendret_af_navn) };
+}
+
 /** A row of `aktivitet_bode` (or one element of `aktivitet.boeder`). */
 export function tilBoede(raw: BoedeRow | Obj): Boede {
   const r = raw as Obj;
@@ -134,6 +142,7 @@ export function tilBoede(raw: BoedeRow | Obj): Boede {
     annullering: annullering(r),
     gebyr: tal(r.gebyr),
     afgjort: afgjort(r),
+    aendret: aendret(r),
     ankeGebyr: typeof r.anke_gebyr === 'number' ? r.anke_gebyr : null,
   };
 }

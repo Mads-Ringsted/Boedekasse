@@ -725,6 +725,7 @@ export const da = {
   'afgoerelse.part': 'Gruppen afgør anken. En anden end dig og {anden} registrerer afgørelsen.',
   'boede.betalesNuAf': 'Betales nu af',
   'boede.afgjortAf': 'Afgjort af',
+  'boede.aendretAf': 'Ændret af',
   'boede.afgjortAfVaerdi': '{hvem} · {dag}',
   'boede.ankegebyr': 'Ankegebyr ({hvem})',
   'aktivitet.ankeVandt': '{hvem} vandt anken mod {modpart}',

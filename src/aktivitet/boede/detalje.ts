@@ -64,6 +64,15 @@ export function detaljeRaekker(
           }),
         });
       }
+      if (b.aendret) {
+        raekker.push({
+          label: t('boede.aendretAf'),
+          vaerdi: t('boede.afgjortAfVaerdi', {
+            hvem: stort(hvemObjekt(b.aendret.afId, b.aendret.afNavn, ctx)),
+            dag: smaat(dagOverskrift(b.aendret.tid, nu)),
+          }),
+        });
+      }
     } else {
       const vaerdi = b.anket
         ? t('boede.anke.venter')
