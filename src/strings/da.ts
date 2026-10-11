@@ -19,7 +19,6 @@ export const da = {
   'skaerm.aktivitet': 'Aktivitet',
   'skaerm.kategorier': 'Bødekategorier',
   'skaerm.mere': 'Mere',
-  'skaerm.profil': 'Profil',
   'skaerm.kommerSnart': 'Kommer snart',
 
   // Install guide (opened in a Safari tab)
@@ -83,6 +82,7 @@ export const da = {
 
   // Hjem
   'hjem.label': 'Bødekasse',
+  'hjem.dinProfil': 'Din profil',
   'hjem.skift': 'Skift Bødekasse',
   'hjem.iBoedekassen': 'I bødekassen',
   'hjem.komIGang': 'Kom i gang',
@@ -162,6 +162,21 @@ export const da = {
   'mere.indstillinger': 'Indstillinger',
   'mere.admin': 'Admin',
   'mere.skift': 'Skift Bødekasse',
+
+  // Medlem profile (yours and others')
+  'profil.manglerAtBetale': 'Mangler at betale',
+  'profil.mangler': 'Mangler',
+  'profil.tilGode': 'Til gode',
+  'profil.boederOgGebyrer': 'Bøder og gebyrer',
+  'profil.betalt': 'Betalt',
+  'profil.givBoede': 'Giv bøde',
+  'profil.betal': 'Betal',
+  'profil.historik': 'Historik',
+  'profil.sletKonto': 'Slet konto',
+  'profil.findesIkke': 'Medlemmet findes ikke i Bødekassen.',
+  'profil.tag.admin': 'Admin',
+  'profil.tag.ikkeLoggetInd': 'Ikke logget ind endnu',
+  'profil.tag.udmeldt': 'Udmeldt',
 
   // Medlemmer, Tilføj Medlem and your own name
   'medlemmer.tilfoej': 'Tilføj Medlem',

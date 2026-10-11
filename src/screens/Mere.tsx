@@ -7,6 +7,7 @@ import { SkiftBodekasseSheet } from '../bodekasse/SkiftBodekasseSheet.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Screen } from '../components/Screen.tsx';
 import { RetMitNavnSheet } from '../medlemmer/RetMitNavnSheet.tsx';
+import { useAabnProfil } from '../profil/aabnProfil.ts';
 import { formatKr, t, type PlainStringId } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
 import { useHent } from '../supabase/useHent.ts';
@@ -54,8 +55,9 @@ function Row({ Icon, label, onClick, trailing }: RowProps) {
  */
 export function Mere() {
   const { logOut } = useAuth();
-  const { bodekasseId, navn, erAdmin } = useBodekasse();
+  const { bodekasseId, medlemId, navn, erAdmin } = useBodekasse();
   const navigate = useNavigate();
+  const aabnProfil = useAabnProfil('tab.mere');
   const [skifter, setSkifter] = useState(false);
   const [retterNavn, setRetterNavn] = useState(false);
   const tal = useHent(() => hentMere(bodekasseId), [bodekasseId]);
@@ -64,7 +66,7 @@ export function Mere() {
   return (
     <Screen title={t('skaerm.mere')}>
       <div className="mere__profil-kort">
-        <button type="button" className="mere__profil" onClick={() => void navigate('/profil')}>
+        <button type="button" className="mere__profil" onClick={() => aabnProfil(medlemId)}>
           <Avatar navn={navn} size={52} egen />
           <span className="mere__profil-tekst">
             <span className="mere__profil-navn">{navn}</span>
