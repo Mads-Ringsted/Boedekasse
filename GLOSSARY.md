@@ -33,11 +33,11 @@ A Bøde given with a free-text reason and amount instead of a Bødekategori. The
 _Avoid_: Custom Bøde, ad-hoc Bøde
 
 **Gebyr** (Fee):
-A charge the Bødekasse imposes itself rather than one Medlem giving another, e.g. for creating a Bødekategori, giving an Engangsbøde, filing an Anke, or placing in a Konkurrence.
+A charge the Bødekasse imposes itself rather than one Medlem giving another, e.g. for creating a Bødekategori, giving an Engangsbøde, filing an Anke, placing in a Konkurrence, or buying Frikøb.
 _Avoid_: Afgift, ankebøde
 
 **Frikøb** (Buy-out):
-A one-off payment that exempts a Medlem from Bøder for the rest of the calendar year. Never covers Gebyrer.
+A one-off purchase that exempts a Medlem from receiving Bøder for the rest of the Sæson. Buying it costs a Gebyr (the **Frikøbsgebyr**). It only covers Bøder from the moment it is bought, and never covers Gebyrer or a Bøde moved onto the Medlem by a won Anke.
 _Avoid_: Amnesti, amnesty
 
 **Anke** (Appeal):
