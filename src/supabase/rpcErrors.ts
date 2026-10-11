@@ -43,6 +43,10 @@ const BY_KEY: Record<string, PlainStringId> = {
   indstilling_ugyldig: 'fejl.indstillingUgyldig',
   indstilling_ukendt: 'fejl.indstillingUgyldig',
   mobilepay_ugyldig: 'fejl.mobilepayUgyldig',
+  // Frikøb (#65)
+  har_frikob: 'fejl.harFrikob',
+  frikob_findes: 'fejl.frikobFindes',
+  frikob_slaaet_fra: 'fejl.frikobSlaaetFra',
 };
 
 /**

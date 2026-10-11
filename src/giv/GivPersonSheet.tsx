@@ -1,4 +1,5 @@
 import { Avatar } from '../components/Avatar.tsx';
+import { FrikobTag } from '../frikob/FrikobTag.tsx';
 import { Sheet, SheetTitle } from '../components/Sheet.tsx';
 import { T } from '../components/T.tsx';
 import type { Kategori } from '../kategorier/hentKategorier.ts';
@@ -16,6 +17,8 @@ interface GivPersonSheetProps {
   antal: (kategoriId: string) => number;
   onPlus: (kategoriId: string) => void;
   onMinus: (kategoriId: string) => void;
+  /** False for a Bødekategori this person has bought out (greyed, "Frikøb" tag). */
+  kanFaa: (kategoriId: string) => boolean;
   /** This person's Engangsbøder, and adding or removing one for them only. */
   engangs: readonly Engangsbode[];
   onEngangs: () => void;
@@ -33,6 +36,7 @@ export function GivPersonSheet({
   antal,
   onPlus,
   onMinus,
+  kanFaa,
   engangs,
   onEngangs,
   onFjernEngangs,
@@ -83,6 +87,10 @@ export function GivPersonSheet({
         antal={antal}
         onPlus={onPlus}
         onMinus={onMinus}
+        tag={(k) =>
+          kanFaa(k.id) ? k.ofteBrugt && <span className="kategori-tag">{t('kategorier.ofteBrugt')}</span> : <FrikobTag />
+        }
+        deaktiveret={(k) => !kanFaa(k.id)}
         engangs={engangs}
         onEngangs={onEngangs}
         onFjernEngangs={onFjernEngangs}

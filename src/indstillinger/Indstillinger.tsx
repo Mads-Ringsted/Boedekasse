@@ -146,6 +146,13 @@ function IndstillingerSkaerm() {
               }
             />
             {/* #66 Anke, #65 Frikøb, #67 Konkurrencegebyrer go here. */}
+            <SwitchRaekke
+              label={t('indstillinger.frikob')}
+              under={t('indstillinger.frikobPris', { beloeb: formatKr(ind.frikob_pris) })}
+              til={ind.frikob_til}
+              onSkift={(til) => skift({ frikob_til: til })}
+              onAabn={() => retBeloeb('frikob_pris', t('indstillinger.frikob'), t('indstillinger.frikobNote'))}
+            />
           </Gruppe>
 
           <Gruppe titel={t('indstillinger.saesonOgData')}>
