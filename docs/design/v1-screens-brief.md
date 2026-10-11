@@ -46,7 +46,7 @@ Danish domain terms (full definitions are in `GLOSSARY.md` on the main branch):
 - **Engangsbøde:** a one-off Bøde with a free-text reason and amount.
 - **Gebyr:** a fee charged by the box itself, for example for creating a Bødekategori, giving an Engangsbøde, filing an Anke or placing in a Konkurrence.
 - **Anke:** an appeal against a Bøde you received.
-- **Frikøb:** a 300 kr buy-out that covers your ordinary Bøder for the rest of the year.
+- **Frikøb:** a buy-out of one Bødekategori (300 kr Gebyr by default): nobody can give you a Bøde in that Bødekategori for the rest of the Sæson. You can buy out several Bødekategorier.
 - **Konkurrence:** a contest. Each placement costs a Gebyr.
 - **Indbetaling:** money paid into the box. **Hæv penge:** money taken out.
 
@@ -90,7 +90,7 @@ Layout, top to bottom:
 
 1. **Hvem:** a horizontal row of Medlem avatars. Tapping one selects that person and makes them the one being filled in (strongly highlighted). Other selected people stay marked, and a badge on each avatar shows how many Bøder they have so far. Tapping the person being filled in again deselects them.
 2. A line "Udfylder for **Jonas**" and, when two or more people are selected, a **"Samme til alle"** toggle. With it on, every tap applies to all selected people.
-3. **Hvad:** a search field, a row of the five most-used Bødekategorier as chips, a Navn/Pris sort switch, then the full list. Tapping a Bødekategori adds one, so tapping again makes it two. Once a row has a count it shows a − / count / + stepper.
+3. **Hvad:** a search field, a row of the five most-used Bødekategorier as chips, a Navn/Pris sort switch, then the full list. Tapping a Bødekategori adds one, so tapping again makes it two. Once a row has a count it shows a − / count / + stepper. A Bødekategori the person being filled in has bought out is greyed out with a "Frikøb" tag and can't be tapped; with "Samme til alle" on, it is skipped for that person only.
 4. At the end of the list: **Ny bødekategori** (shows its Gebyr, e.g. 25 kr) and **Engangsbøde** (reason + amount; the giver pays a 10 kr Gebyr).
 5. **Footer:** a one-line summary per person ("Jonas: 2× For sent, 1× Hygge i stedet for træning · Emil: 1× For sent, 1× Spildt drikke") and the button **"Giv 5 bøder · 210 kr"**.
 
@@ -108,10 +108,10 @@ A feed of everything that happened, newest first:
 - **Gebyrer**
 - **Indbetalinger** (green, "+80 kr")
 - **Hævninger**
-- **Frikøb**
+- **Frikøb** ("Oliver købte Frikøb · For sent · 300 kr")
 - **Konkurrencer**, grouped into one row ("Konkurrence: Bowling · 8 gebyrer · 260 kr")
 
-Bøder can carry a status tag: **Anket**, **Anke vundet**, **Anke tabt** or **Frikøb** (amount struck through). Tapping a Bøde opens its detail sheet.
+Bøder can carry a status tag: **Anket**, **Anke vundet**, or **Anke tabt**. Tapping a Bøde opens its detail sheet.
 
 ### 8. Bødekategorier
 Title with a + button, search, "Mest brugt" (top 5), a Navn/Pris switch and the full list. Each row shows name, price and how many times it has been used. Archived ones are listed in a small line at the bottom.
@@ -132,7 +132,7 @@ Name, amount, "Fra Frederik til dig · 5 t". Actions depend on who you are:
 3. **Verdict sheet** (recorded by another Medlem): "Bøden står ved magt" or "Anken vinder" (the Bøde moves to the Medlem who gave it).
 
 ### 11. Medlem profile
-Avatar, name, tags (Admin, Frikøb 2026, Ikke logget ind endnu), "Mangler at betale" large, then Bøder og gebyrer next to Betalt. Actions: Giv bøde (pre-selects this person), Betal (on your own profile), and Registrér indbetaling (Admin). On your own profile, a "Kan ankes" section lists Bøder still within the 7-day appeal window. Then the full history.
+Avatar, name, tags (Admin, Ikke logget ind endnu), a "Frikøb" line listing the Bødekategorier they have bought out this Sæson, "Mangler at betale" large, then Bøder og gebyrer next to Betalt. Actions: Giv bøde (pre-selects this person), Betal and Køb Frikøb (on your own profile; Køb Frikøb only when enabled: pick a Bødekategori not yet bought out, then a confirm sheet showing price and Sæson end), Registrér indbetaling and Registrér / Annullér Frikøb per Bødekategori (Admin). On your own profile, a "Kan ankes" section lists Bøder still within the 7-day appeal window. Then the full history.
 
 ### 12. Mere
 Your profile row, then Medlemmer, Kassen og indbetalinger, Anker (with count), Konkurrencer, Indstillinger (Admin), Skift Bødekasse, Log ud.
@@ -166,7 +166,7 @@ List of Konkurrencer (title, date, how many placed or absent, total).
 
 ## Sample data
 
-Box **FC Ølhunde**, 8 Medlemmer: Mads Ringsted (Admin, you), Jonas Holm, Frederik Lund (Admin), Oliver Krogh (Frikøb), Emil Bach, Kasper Nørgaard, Lucas Berg, Sebastian Juhl (not logged in yet).
+Box **FC Ølhunde**, 8 Medlemmer: Mads Ringsted (Admin, you), Jonas Holm, Frederik Lund (Admin), Oliver Krogh (Frikøb on For sent), Emil Bach, Kasper Nørgaard, Lucas Berg, Sebastian Juhl (not logged in yet).
 
 Bødekategorier (sample names are plain text):
 

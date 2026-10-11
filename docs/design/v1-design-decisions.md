@@ -68,7 +68,7 @@ Brief tokens apply, with these additions and changes:
 
 - **Light-mode red and green are darker than the brief** (`#E5484D` and `#0E9F64`). The brief's values are below 4.5:1 contrast for small text on white.
 - **Red now means "not paid yet"**, not only errors. It is used for "I alt ikke betalte bøder" and "Mangler at betale" on a profile.
-- **Status tags** are small rounded labels: Anket (orange), Anke vundet (green), Anke tabt (red), Frikøb (blue, with the amount struck through), Ofte brugt (blue), Admin (blue).
+- **Status tags** are small rounded labels: Anket (orange), Anke vundet (green), Anke tabt (red), Frikøb (blue, on a bought-out Bødekategori), Ofte brugt (blue), Admin (blue).
 
 ### 6. Sheets
 - **Full height** for flows: Giv bøder, Ny Konkurrence. They have Annullér or Tilbage on the left, a centred title, and a fixed footer with a one-line summary above the main button.
@@ -91,5 +91,5 @@ Brief tokens apply, with these additions and changes:
 - **MobilePay Box number** "1234 5678" in the Betal mock is a placeholder.
 - **"Jeg har betalt" button** is in the Betal mock but is still open in [Saldo and Indbetaling](https://github.com/Mads-Ringsted/Boedekasse/issues/9).
 - **Tap count for one Bøde** is now 6 (+ → person → Næste → Bøde → Næste → Giv); the brief's target was 4. One option: let step 2's button give the Bøder directly and make step 3 optional, which gives 5 taps.
-- **Does Frikøb count** in a Medlem's "Bøder i alt" on the Topliste? The mock counts it.
+- **Does a Frikøbsgebyr count** in a Medlem's "Bøder i alt" on the Topliste? The mock counts it.
 - **Not designed yet:** Install guide, Log ind, Vælg Bødekasse, Kassen, Medlemmer, Indstillinger, Anke intro, wheel and verdict, the undo toast, empty states, and light mode for screens other than Hjem.
