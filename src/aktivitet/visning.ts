@@ -39,7 +39,7 @@ export type Ikon =
   | { slags: 'symbol'; symbol: Symbol; tone?: 'graa' | 'groen' | 'blaa' };
 
 /** Icon tiles. Add one here and in `FeedRaekke`'s SYMBOLER for a new kind. */
-export type Symbol = 'kategori' | 'saeson' | 'trofae';
+export type Symbol = 'kategori' | 'saeson' | 'trofae' | 'haevning';
 
 export interface Tag {
   tekst: string;

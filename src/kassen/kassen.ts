@@ -1,4 +1,4 @@
-import { kortDato } from '../kategorier/kategoriListe.ts';
+import { kortDato, parsePris } from '../kategorier/kategoriListe.ts';
 import { t } from '../strings/index.ts';
 
 /** The `indbetaling` columns Kassen needs. */
@@ -15,24 +15,47 @@ export interface IndbetalingRaekke {
   annulleret_note: string | null;
 }
 
-/**
- * One row in Kassen's list. #61 adds Hævninger: widen `art` and give them
- * their own fields, then merge both kinds by `tid` in `kassePoster`.
- */
-export interface KassePost {
-  art: 'indbetaling';
+/** The `haevning` columns Kassen needs. */
+export interface HaevningRaekke {
   id: string;
-  /** Who paid. */
-  navn: string;
+  saeson_id: string;
   beloeb: number;
+  formaal: string;
+  registreret_af: string;
+  registreret: string;
+  annulleret: string | null;
+  annulleret_af: string | null;
+  annulleret_note: string | null;
+}
+
+interface PostFaelles {
+  id: string;
+  beloeb: number;
+  /** Who registered the Indbetaling, or made the Hævning. */
   registreretAf: string;
   tid: string;
-  note: string | null;
   /** Set when annulled: greyed and struck through. */
   annulleret: { af: string; tid: string; note: string | null } | null;
   /** Admins may annul it: not annulled yet, and in the latest Sæson. */
   kanAnnulleres: boolean;
 }
+
+/** An Indbetaling in Kassen's list. */
+export interface IndbetalingPost extends PostFaelles {
+  art: 'indbetaling';
+  /** Who paid. */
+  navn: string;
+  note: string | null;
+}
+
+/** A Hævning in Kassen's list. */
+export interface HaevningPost extends PostFaelles {
+  art: 'haevning';
+  formaal: string;
+}
+
+/** One row in Kassen's list. */
+export type KassePost = IndbetalingPost | HaevningPost;
 
 interface PostKontekst {
   /** Medlem id → name, Udmeldte included. */
@@ -41,24 +64,40 @@ interface PostKontekst {
   erAdmin: boolean;
 }
 
-/** Kassen's list: every Indbetaling, newest first. */
-export function kassePoster(rows: readonly IndbetalingRaekke[], ctx: PostKontekst): KassePost[] {
+/** Kassen's list: every Indbetaling and Hævning, newest first. */
+export function kassePoster(
+  rows: readonly IndbetalingRaekke[],
+  ctx: PostKontekst,
+  haevninger: readonly HaevningRaekke[] = [],
+): KassePost[] {
   const navn = (id: string | null) => (id && ctx.navne.get(id)) || '';
-  return rows
-    .map(
-      (r): KassePost => ({
-        art: 'indbetaling',
-        id: r.id,
-        navn: navn(r.medlem_id),
-        beloeb: r.beloeb,
-        registreretAf: navn(r.registreret_af),
-        tid: r.registreret,
-        note: r.note,
-        annulleret: r.annulleret ? { af: navn(r.annulleret_af), tid: r.annulleret, note: r.annulleret_note } : null,
-        kanAnnulleres: ctx.erAdmin && !r.annulleret && r.saeson_id === ctx.senesteSaesonId,
-      }),
-    )
-    .sort((a, b) => (a.tid < b.tid ? 1 : a.tid > b.tid ? -1 : 0));
+  const faelles = (r: IndbetalingRaekke | HaevningRaekke): PostFaelles => ({
+    id: r.id,
+    beloeb: r.beloeb,
+    registreretAf: navn(r.registreret_af),
+    tid: r.registreret,
+    annulleret: r.annulleret ? { af: navn(r.annulleret_af), tid: r.annulleret, note: r.annulleret_note } : null,
+    kanAnnulleres: ctx.erAdmin && !r.annulleret && r.saeson_id === ctx.senesteSaesonId,
+  });
+  return [
+    ...rows.map((r): KassePost => ({ art: 'indbetaling', ...faelles(r), navn: navn(r.medlem_id), note: r.note })),
+    ...haevninger.map((r): KassePost => ({ art: 'haevning', ...faelles(r), formaal: r.formaal })),
+  ].sort((a, b) => (a.tid < b.tid ? 1 : a.tid > b.tid ? -1 : 0));
+}
+
+/**
+ * The Hæv penge form: the amount as whole kroner (null if not), whether it
+ * is more than Kassen holds, and whether the form can be sent (a valid
+ * amount up to Kassen and a purpose).
+ */
+export function haevTjek(
+  beloeb: string,
+  formaal: string,
+  kassen: number,
+): { kr: number | null; overKassen: boolean; klar: boolean } {
+  const kr = parsePris(beloeb);
+  const overKassen = kr !== null && kr > kassen;
+  return { kr, overKassen, klar: kr !== null && !overKassen && formaal.trim() !== '' };
 }
 
 /** Someone an Admin can register an Indbetaling from. */

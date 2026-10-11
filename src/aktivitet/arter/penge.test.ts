@@ -112,3 +112,63 @@ describe('a rejected Betalingsmelding row', () => {
     expect(r?.beloeb).toBeUndefined();
   });
 });
+
+describe('a Hævning row', () => {
+  const haevning = (over: Partial<Haendelse> = {}) =>
+    haendelse({
+      art: 'haevning',
+      modtagerId: null,
+      modtagerNavn: null,
+      refTabel: 'haevning',
+      refId: 'h1',
+      data: { beloeb: 300, formaal: 'Depositum til julefrokost' },
+      ...over,
+    });
+
+  it('says who took it out, the purpose, and "−300 kr" without colour', () => {
+    const r = beskrivRaekke(haevning(), ctx);
+    expect(r).toMatchObject({
+      titel: 'Hævet af Frederik',
+      linje: 'Depositum til julefrokost',
+      beloeb: { tekst: '−300 kr' },
+      ikon: { slags: 'symbol', symbol: 'haevning' },
+      annulleret: false,
+    });
+    expect(r?.beloeb?.tone).toBeUndefined();
+  });
+
+  it('says "dig" when you took it out', () => {
+    expect(beskrivRaekke(haevning({ aktoerId: 'mig' }), ctx)).toMatchObject({ titel: 'Hævet af dig' });
+  });
+
+  it('stays struck through once annulled', () => {
+    const r = beskrivRaekke(
+      haevning({ annullering: { tid: '2026-10-11T18:00:00Z', afId: FREDERIK, afNavn: 'Frederik Lund', note: null } }),
+      ctx,
+    );
+    expect(r).toMatchObject({ annulleret: true, linje: 'Depositum til julefrokost · annulleret af Frederik' });
+  });
+});
+
+describe('the row for annulling a Hævning', () => {
+  it('says who annulled a Hævning, its purpose, the amount and the note', () => {
+    const r = beskrivRaekke(
+      haendelse({
+        art: 'haevning_annulleret',
+        modtagerId: null,
+        modtagerNavn: null,
+        refTabel: null,
+        refId: null,
+        data: { haevning_id: 'h1', beloeb: 300, formaal: 'Bowling', note: 'Forkert beløb' },
+      }),
+      ctx,
+    );
+    expect(r).toMatchObject({
+      titel: 'Frederik annullerede en hævning',
+      linje: 'Bowling · 300 kr · Forkert beløb',
+      ikon: { slags: 'avatar', navn: 'Frederik Lund' },
+      annulleret: false,
+    });
+    expect(r?.beloeb).toBeUndefined();
+  });
+});

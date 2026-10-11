@@ -1,5 +1,5 @@
 import { useState, type ComponentType } from 'react';
-import { CalendarDays, ChevronDown, Tag as TagIkon, Trophy } from 'lucide-react';
+import { ArrowUpRight, CalendarDays, ChevronDown, Tag as TagIkon, Trophy } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router';
 import { Avatar } from '../components/Avatar.tsx';
 import { TagMaerke } from './TagMaerke.tsx';
@@ -10,6 +10,7 @@ const SYMBOLER: Record<Symbol, ComponentType<{ size?: number; strokeWidth?: numb
   kategori: TagIkon,
   saeson: CalendarDays,
   trofae: Trophy,
+  haevning: ArrowUpRight,
 };
 
 function RaekkeIkon({ ikon }: { ikon: Ikon }) {

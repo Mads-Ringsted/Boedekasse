@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus } from 'lucide-react';
+import { ArrowUpRight, Plus } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { AfventerKort } from '../betal/AfventerKort.tsx';
@@ -8,7 +8,9 @@ import { Screen } from '../components/Screen.tsx';
 import { formatKr, t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import { useHent } from '../supabase/useHent.ts';
+import { AnnullerHaevningSheet } from './AnnullerHaevningSheet.tsx';
 import { AnnullerIndbetalingSheet } from './AnnullerIndbetalingSheet.tsx';
+import { HaevPengeSheet } from './HaevPengeSheet.tsx';
 import { hentKassen } from './hentKassen.ts';
 import { dagTekst, type KassePost } from './kassen.ts';
 import { RegistrerIndbetalingSheet } from './RegistrerIndbetalingSheet.tsx';
@@ -19,7 +21,8 @@ export const FRA_MERE = { fra: 'mere' } as const;
 
 /**
  * Kassen: I bødekassen, then Indbetalt / Hævet / Mangler, the Admin buttons,
- * and every Indbetaling. An Admin taps one from the latest Sæson to annul it.
+ * and every Indbetaling and Hævning. An Admin taps one from the latest Sæson
+ * to annul it.
  */
 export function Kassen() {
   const { bodekasseId, erAdmin } = useBodekasse();
@@ -28,6 +31,7 @@ export function Kassen() {
   const kassen = useHent(() => hentKassen(bodekasseId, erAdmin), [bodekasseId, erAdmin]);
   const data = kassen.status === 'ready' ? kassen.data : null;
   const [registrerer, setRegistrerer] = useState(0);
+  const [haever, setHaever] = useState(0);
   const [annullerer, setAnnullerer] = useState<KassePost | null>(null);
 
   return (
@@ -50,11 +54,15 @@ export function Kassen() {
       </div>
 
       {erAdmin && (
-        // One column per button: #61 adds "Hæv penge" next to it.
+        // One column per button.
         <div className="kassen__knapper">
           <button type="button" className="kassen__knap kassen__knap--primaer" onClick={() => setRegistrerer((n) => n + 1)}>
             <Plus size={18} strokeWidth={2.4} aria-hidden="true" />
             {t('kassen.registrer')}
+          </button>
+          <button type="button" className="kassen__knap" disabled={!data} onClick={() => setHaever((n) => n + 1)}>
+            <ArrowUpRight size={18} strokeWidth={2} aria-hidden="true" />
+            {t('kassen.haevPenge')}
           </button>
         </div>
       )}
@@ -90,7 +98,25 @@ export function Kassen() {
           onRegistreret={kassen.reload}
         />
       )}
-      {annullerer && (
+      {erAdmin && haever > 0 && data && (
+        <HaevPengeSheet
+          key={`haev-${haever}`}
+          open
+          onOpenChange={(aaben) => !aaben && setHaever(0)}
+          kassen={data.beloeb}
+          onHaevet={kassen.reload}
+        />
+      )}
+      {annullerer?.art === 'haevning' && (
+        <AnnullerHaevningSheet
+          key={`annuller-${annullerer.id}`}
+          post={annullerer}
+          open
+          onOpenChange={(aaben) => !aaben && setAnnullerer(null)}
+          onAnnulleret={kassen.reload}
+        />
+      )}
+      {annullerer?.art === 'indbetaling' && (
         <AnnullerIndbetalingSheet
           key={`annuller-${annullerer.id}`}
           post={annullerer}
@@ -114,21 +140,29 @@ function Tal({ label, beloeb, tone }: { label: string; beloeb: number | undefine
   );
 }
 
-/** One Indbetaling: who paid, who registered it, when; struck through if annulled. */
+/**
+ * One Indbetaling (who paid, who registered it, when) or Hævning (who took
+ * it out, the purpose, when); struck through if annulled.
+ */
 function Post({ post, onAnnuller }: { post: KassePost; onAnnuller: () => void }) {
+  const haevning = post.art === 'haevning';
+  const titel = haevning ? t('kassen.haevetAf', { navn: post.registreretAf }) : post.navn;
   const under = post.annulleret
     ? [t('kassen.annulleretAf', { navn: post.annulleret.af }), dagTekst(post.annulleret.tid), post.annulleret.note]
-    : [t('kassen.registreretAf', { navn: post.registreretAf }), dagTekst(post.tid), post.note];
+    : haevning
+      ? [post.formaal, dagTekst(post.tid)]
+      : [t('kassen.registreretAf', { navn: post.registreretAf }), dagTekst(post.tid), post.note];
+  const beloeb = formatKr(post.beloeb);
   const indhold = (
     <>
       <span className="kassen-post__tekst">
-        <span className="kassen-post__navn">{post.navn}</span>
+        <span className="kassen-post__navn">{titel}</span>
         <span className="kassen-post__under">{under.filter(Boolean).join(' · ')}</span>
       </span>
-      <span className="kassen-post__beloeb">{t('kassen.plus', { beloeb: formatKr(post.beloeb) })}</span>
+      <span className="kassen-post__beloeb">{t(haevning ? 'kassen.minus' : 'kassen.plus', { beloeb })}</span>
     </>
   );
-  const klasse = `kassen-post${post.annulleret ? ' kassen-post--annulleret' : ''}`;
+  const klasse = `kassen-post kassen-post--${post.art}${post.annulleret ? ' kassen-post--annulleret' : ''}`;
 
   return (
     <li className="kassen__raekke">

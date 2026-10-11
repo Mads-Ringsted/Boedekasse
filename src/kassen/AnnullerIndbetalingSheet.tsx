@@ -3,10 +3,10 @@ import { Sheet } from '../components/Sheet.tsx';
 import { formatKr, t } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
-import { dagTekst, type KassePost } from './kassen.ts';
+import { dagTekst, type IndbetalingPost } from './kassen.ts';
 
 interface AnnullerIndbetalingSheetProps {
-  post: KassePost;
+  post: IndbetalingPost;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onAnnulleret: () => void;

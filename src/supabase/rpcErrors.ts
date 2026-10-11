@@ -44,6 +44,9 @@ const BY_KEY: Record<string, PlainStringId> = {
   egen_melding: 'fejl.egenMelding',
   ikke_afventer: 'fejl.ikkeAfventer',
   ikke_din_melding: 'fejl.ikkeDinMelding',
+  // Hæv penge (#61)
+  formaal_mangler: 'fejl.formaalMangler',
+  over_kassen: 'fejl.overKassen',
   // Indstillinger (#57)
   indstilling_ugyldig: 'fejl.indstillingUgyldig',
   indstilling_ukendt: 'fejl.indstillingUgyldig',

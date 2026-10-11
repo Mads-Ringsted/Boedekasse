@@ -2011,6 +2011,9 @@ isOneToOne: false
 "annuller_frikob":
 { Args: { "p_frikob": string,"p_klient_id": string,"p_note"?: string }; Returns: Json
                            },
+"annuller_haevning":
+{ Args: { "p_haevning": string,"p_klient_id": string,"p_note"?: string }; Returns: Json
+                           },
 "annuller_indbetaling":
 { Args: { "p_indbetaling": string,"p_klient_id": string,"p_note"?: string }; Returns: Json
                            },
@@ -2040,6 +2043,9 @@ isOneToOne: false
                            },
 "giv_boeder":
 { Args: { "p_bodekasse": string,"p_klient_id": string,"p_linjer": Json }; Returns: Json
+                           },
+"haev":
+{ Args: { "p_beloeb": number,"p_bodekasse": string,"p_formaal": string,"p_klient_id": string }; Returns: Json
                            },
 "koeb_frikob":
 { Args: { "p_bodekasse": string,"p_bodekategori": string,"p_klient_id": string,"p_medlem"?: string }; Returns: Json
