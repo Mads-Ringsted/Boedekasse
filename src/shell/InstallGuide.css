@@ -1,0 +1,95 @@
+.install {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: calc(env(safe-area-inset-top) + 96px) 24px 0;
+}
+
+.install__icon {
+  border-radius: 19px;
+  box-shadow: 0 0 0 1px var(--color-fill-strong), 0 12px 32px var(--color-accent-shadow);
+}
+
+.install__title {
+  margin-top: 20px;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+}
+
+.install__intro {
+  margin-top: 8px;
+  font-size: 16px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.install__steps {
+  list-style: none;
+  margin: 40px 0 0;
+  padding: 0;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 20px;
+  background: var(--color-surface);
+}
+
+.install__step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  font-size: 16px;
+}
+
+.install__step + .install__step {
+  border-top: 1px solid var(--color-line);
+}
+
+.install__num {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-fill);
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.install__text {
+  flex-grow: 1;
+}
+
+.install__hint {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: var(--color-accent-pale);
+  color: var(--color-accent-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.install__req {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.install__pointer {
+  margin-top: auto;
+  padding: 24px 0 calc(env(safe-area-inset-bottom) + 40px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-accent-text);
+  font-size: 14px;
+  font-weight: 500;
+}
