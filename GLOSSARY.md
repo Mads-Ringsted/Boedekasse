@@ -41,7 +41,7 @@ A Medlem's challenge of a Bøde they received.
 _Avoid_: Klage, dispute
 
 **Konkurrence** (Competition):
-A recurring contest whose final placements result in Gebyrer.
+A contest among a Bødekasse's Medlemmer, held whenever the group likes. Each placement results in a Gebyr, and every Medlem who didn't take part gets an absent Gebyr.
 _Avoid_: Game, spil
 
 ### Money
