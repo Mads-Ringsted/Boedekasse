@@ -14,6 +14,10 @@ _Avoid_: Group, team, kasse
 A person in a Bødekasse. May exist as name + email before the person has signed up; signing in with that email claims the spot.
 _Avoid_: User, player, participant
 
+**Udmeldt** (Removed):
+A former Medlem an Admin has taken out of the Bødekasse. Their history and any unpaid Saldo stay in the Bødekasse, and an Admin can bring them back.
+_Avoid_: Slettet, inaktiv, forladt
+
 **Admin**:
 A Medlem who can change a Bødekasse's settings, manage Medlemmer, and register Indbetalinger. The creator is the first Admin.
 _Avoid_: Kasserer, owner, moderator
