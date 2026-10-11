@@ -8,11 +8,11 @@ import './Onboarding.css';
 interface OpretBodekasseProps {
   onBack: () => void;
   /** The box exists and you are its Admin; open it. */
-  onCreated: (bodekasseId: string) => Promise<void>;
+  onOprettet: (bodekasseId: string) => Promise<void>;
 }
 
 /** Box name and your own name; you become the first Admin. */
-export function OpretBodekasse({ onBack, onCreated }: OpretBodekasseProps) {
+export function OpretBodekasse({ onBack, onOprettet }: OpretBodekasseProps) {
   const [navn, setNavn] = useState('');
   const [mitNavn, setMitNavn] = useState('');
   const [busy, setBusy] = useState(false);
@@ -37,7 +37,7 @@ export function OpretBodekasse({ onBack, onCreated }: OpretBodekasseProps) {
       setBusy(false);
       return;
     }
-    await onCreated((data as { bodekasse_id: string }).bodekasse_id);
+    await onOprettet((data as { bodekasse_id: string }).bodekasse_id);
   }
 
   return (

@@ -113,9 +113,9 @@ function BoxGate() {
 
   let content;
   if (side === 'opret') {
-    content = <OpretBodekasse onBack={() => setSide(null)} onCreated={aabnNyKasse} />;
+    content = <OpretBodekasse onBack={() => setSide(null)} onOprettet={aabnNyKasse} />;
   } else if (side === 'kode') {
-    content = <JegHarEnKode onBack={() => setSide(null)} onJoined={aabnNyKasse} />;
+    content = <JegHarEnKode onBack={() => setSide(null)} onTilmeldt={aabnNyKasse} />;
   } else if (load.status === 'error') {
     content = <StatusScreen message={t('fejl.ukendt')} onRetry={() => void reload()} />;
   } else {
