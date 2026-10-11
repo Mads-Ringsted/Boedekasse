@@ -37,7 +37,7 @@ A charge the Bødekasse imposes itself rather than one Medlem giving another, e.
 _Avoid_: Afgift, ankebøde
 
 **Frikøb** (Buy-out):
-A one-off payment that exempts a Medlem from Bøder for the rest of the calendar year. Never covers Gebyrer.
+A one-off payment that exempts a Medlem from one Bødekategori for the rest of the Sæson. A Medlem can hold several, one per Bødekategori. Never covers Engangsbøder or Gebyrer.
 _Avoid_: Amnesti, amnesty
 
 **Anke** (Appeal):
