@@ -44,6 +44,10 @@
   text-align: center;
 }
 
+.annuller__knap--ankegebyr {
+  margin: 0 0 16px;
+}
+
 .annuller__knap:disabled {
   opacity: 0.45;
 }

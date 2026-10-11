@@ -4,6 +4,7 @@ import { AfgoerAnke } from '../../anke/AfgoerAnke.tsx';
 import { AnkeBoede } from '../../anke/AnkeBoede.tsx';
 import type { AnkeRegler } from '../../anke/anke.ts';
 import type { Boede } from '../haendelse.ts';
+import { AnnullerAnkeGebyr } from './AnnullerAnkeGebyr.tsx';
 import { AnnullerBoede } from './AnnullerBoede.tsx';
 
 /** What every action on the Bøde detail sheet gets. */
@@ -31,7 +32,13 @@ export type BoedeHandling = ComponentType<BoedeHandlingProps>;
 /**
  * The actions, top to bottom, in the sheet's action area.
  * "Anke bøden" (#63), the verdict and "Ændr afgørelse" (#64), then
- * "Annullér bøde" (#62).
+ * "Annullér ankegebyr" and "Annullér bøde" (#62).
  * Write each in its own file next to this one and add it here.
  */
-export const BOEDE_HANDLINGER: readonly BoedeHandling[] = [AnkeBoede, AfgoerAnke, AendrAfgoerelse, AnnullerBoede];
+export const BOEDE_HANDLINGER: readonly BoedeHandling[] = [
+  AnkeBoede,
+  AfgoerAnke,
+  AendrAfgoerelse,
+  AnnullerAnkeGebyr,
+  AnnullerBoede,
+];

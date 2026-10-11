@@ -11,8 +11,9 @@ alter table public.anke
   add foreign key (bodekasse_id, aendret_af) references public.medlem (bodekasse_id, id);
 
 -- ---------- aktivitet_bode (from 20261011213000_anke_afgoerelse.sql) ----------
--- Unchanged, plus three last columns: aendret_af / aendret_af_navn /
--- aendret_tid = who last changed the verdict, and when (null if never).
+-- Unchanged, plus four last columns: aendret_af / aendret_af_navn /
+-- aendret_tid = who last changed the verdict, and when (null if never);
+-- anke_gebyr_id = the Anke Gebyr behind anke_gebyr (for "Annullér ankegebyr").
 -- afgjort_af / afgjort_af_navn / afgjort are now always the original recording.
 create or replace view public.aktivitet_bode with (security_invoker = true) as
 select b.id,
@@ -47,7 +48,10 @@ select b.id,
          where ga.anke_id = b.anke_id and ga.annulleret is null)::int        as anke_gebyr,
        an.aendret_af,
        ae.navn                                  as aendret_af_navn,
-       an.aendret_tid
+       an.aendret_tid,
+       (select ga.id from public.gebyr ga
+         where ga.anke_id = b.anke_id and ga.annulleret is null
+         order by ga.oprettet, ga.id limit 1)                               as anke_gebyr_id
   from public.bode_baerer b
   join public.medlem g on g.id = b.giver_id
   join public.medlem m on m.id = b.modtager_id

@@ -21,7 +21,8 @@ export interface Raekke {
   boedeId?: string;
   /**
    * A Gebyr an Admin may annul from this row (see `annullerbartGebyr`).
-   * For Admins, tapping the row opens "Annullér gebyr".
+   * For Admins, tapping the row opens "Annullér gebyr", unless the row has a
+   * `boedeId` (the Bøde detail offers it then). See `trykPaaRaekke`.
    */
   annullerGebyr?: Gebyr;
   /** Tapping the row opens this screen (e.g. a Konkurrence's result). */

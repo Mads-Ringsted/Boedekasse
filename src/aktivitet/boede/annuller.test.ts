@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Boede } from '../haendelse.ts';
-import { kanAnnullereBoede } from './annuller.ts';
+import { kanAnnullereAnkeGebyr, kanAnnullereBoede } from './annuller.ts';
 
 const boede = (over: Partial<Boede> = {}): Boede => ({
   id: 'b1',
@@ -25,6 +25,7 @@ const boede = (over: Partial<Boede> = {}): Boede => ({
   afgjort: null,
   aendret: null,
   ankeGebyr: null,
+  ankeGebyrId: null,
   ...over,
 });
 
@@ -54,5 +55,17 @@ describe('who can annul a Bøde', () => {
   it('only in the latest Sæson, and never twice', () => {
     expect(kanAnnullereBoede(boede(), admin, false)).toBe(false);
     expect(kanAnnullereBoede(boede({ annullering: annulleret, baererId: null }), admin, true)).toBe(false);
+  });
+});
+
+describe('kanAnnullereAnkeGebyr ("Annullér ankegebyr" on the Bøde detail)', () => {
+  const anket = boede({ ankeId: 'a1', ankeGebyr: 37, ankeGebyrId: 'g1' });
+  it('is for an Admin while the Anke Gebyr stands, in the latest Sæson', () => {
+    expect(kanAnnullereAnkeGebyr(anket, { medlemId: 'mads', erAdmin: true }, true)).toBe(true);
+    expect(kanAnnullereAnkeGebyr(anket, { medlemId: 'jonas', erAdmin: false }, true)).toBe(false);
+    expect(kanAnnullereAnkeGebyr(anket, { medlemId: 'mads', erAdmin: true }, false)).toBe(false);
+    expect(
+      kanAnnullereAnkeGebyr({ ...anket, ankeGebyr: null, ankeGebyrId: null }, { medlemId: 'mads', erAdmin: true }, true),
+    ).toBe(false);
   });
 });

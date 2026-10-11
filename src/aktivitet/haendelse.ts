@@ -46,6 +46,8 @@ export interface Boede {
   aendret: Afgjort | null;
   /** The Anke Gebyr the receiver pays; null with no Anke or when it was annulled. */
   ankeGebyr: number | null;
+  /** That Anke Gebyr's id, for "Annullér ankegebyr"; null like `ankeGebyr`. */
+  ankeGebyrId: string | null;
 }
 
 /** Who decided an Anke, and when. Null `afId` = closed by a new Sæson. */
@@ -144,6 +146,7 @@ export function tilBoede(raw: BoedeRow | Obj): Boede {
     afgjort: afgjort(r),
     aendret: aendret(r),
     ankeGebyr: typeof r.anke_gebyr === 'number' ? r.anke_gebyr : null,
+    ankeGebyrId: strEllerNull(r.anke_gebyr_id),
   };
 }
 

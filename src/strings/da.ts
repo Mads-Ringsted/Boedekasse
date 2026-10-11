@@ -749,6 +749,8 @@ export const da = {
   'annuller.gebyr': 'Annullér gebyr',
   'annuller.gebyrTitel': 'Gebyr',
   'annuller.gebyrLinje': 'Betales af {hvem}',
+  'annuller.ankeGebyrKnap': 'Annullér ankegebyr',
+  'annuller.ankeGebyrTitel': 'Ankegebyr · {navn}',
   'aktivitet.annulleredeBoede': '{hvem} annullerede {ejer} bøde til {modtager}',
   'aktivitet.annulleredeEngangsboede': '{hvem} annullerede {ejer} engangsbøde til {modtager}',
   'aktivitet.annulleredeGebyr': '{hvem} annullerede {ejer} gebyr',

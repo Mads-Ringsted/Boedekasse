@@ -74,10 +74,11 @@ select ok(
   'the verdict shows in the recorder''s, the giver''s and the receiver''s history');
 
 select results_eq(
-  format($$ select afgjort_af, afgjort_af_navn, afgjort is not null, anke_gebyr
-              from public.aktivitet_bode where id = %L $$, :'b1'),
-  format($$ values (%L::uuid, 'Dan', true, %s) $$, :'dan', :'g1'),
-  'aktivitet_bode shows who decided, when, and the Anke Gebyr');
+  format($$ select afgjort_af, afgjort_af_navn, afgjort is not null, anke_gebyr,
+                   anke_gebyr_id = (select id from public.gebyr where anke_id = ab.anke_id)
+              from public.aktivitet_bode ab where id = %L $$, :'b1'),
+  format($$ values (%L::uuid, 'Dan', true, %s, true) $$, :'dan', :'g1'),
+  'aktivitet_bode shows who decided, when, and the Anke Gebyr (with its id, to annul it)');
 
 select tests.log_ind_som_medlem(:'eva');
 select throws_ok(
