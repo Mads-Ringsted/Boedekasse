@@ -108,7 +108,7 @@ function Raekke({ melding, variant, onBehandlet }: { melding: Melding; variant: 
   return (
     <div className="afventer-hjem__melding">
       <div className="afventer-hjem__hvem">
-        <Avatar navn={melding.navn} size={40} egen={egen} />
+        <Avatar navn={melding.fuldtNavn} size={40} egen={egen} />
         <span className="afventer-hjem__tekst">
           <span className="afventer__titel">{titel}</span>
           <span className="afventer-hjem__tid">{meldtTekst(melding.meldt)}</span>

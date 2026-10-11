@@ -8,6 +8,8 @@ export interface Melding {
   medlemId: string;
   /** The reporter's short name. */
   navn: string;
+  /** The reporter's full name (for the avatar's initials). */
+  fuldtNavn: string;
   beloeb: number;
   meldt: string;
 }

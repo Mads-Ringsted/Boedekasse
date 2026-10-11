@@ -16,10 +16,12 @@ export async function hentMeldinger(bodekasseId: string): Promise<Melding[]> {
   if (medlemmer.error) throw medlemmer.error;
   // First names, unless two share one.
   const navne = new Map(kortNavne(medlemmer.data.map((m) => m.navn)).map((n, i) => [medlemmer.data[i]!.id, n]));
+  const fulde = new Map(medlemmer.data.map((m) => [m.id, m.navn]));
   return meldinger.data.map((m) => ({
     id: m.id,
     medlemId: m.medlem_id,
     navn: navne.get(m.medlem_id) ?? '',
+    fuldtNavn: fulde.get(m.medlem_id) ?? '',
     beloeb: m.beloeb,
     meldt: m.meldt,
   }));

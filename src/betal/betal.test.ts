@@ -5,6 +5,7 @@ const melding = (id: string, medlemId: string, meldt: string): Melding => ({
   id,
   medlemId,
   navn: medlemId,
+  fuldtNavn: medlemId,
   beloeb: 85,
   meldt,
 });
