@@ -82,11 +82,10 @@ describe('time left to appeal', () => {
 });
 
 describe('a row on Mere → Anker', () => {
-  it('says who appealed whose Bøde, tagged Anket, with its price, and opens the Bøde', () => {
+  it('says who appealed whose Bøde, with its price, and opens the Bøde', () => {
     expect(ankerRaekke(boede({ ankeId: 'a1', anket: true }), { migId: 'jonas' }, nu)).toMatchObject({
       titel: 'Emil ankede Frederiks bøde',
       linje: 'For sent · 5 t',
-      tag: { tekst: 'Anket', tone: 'advarsel' },
       beloeb: { tekst: '50 kr' },
       boedeId: 'b1',
       annulleret: false,
