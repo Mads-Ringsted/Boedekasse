@@ -1,0 +1,248 @@
+/* A Medlem's profile (medlem.html, min-profil.html). */
+
+.profil__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.profil__top-handlinger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profil__fejl {
+  padding: 12px 4px;
+  font-size: 15px;
+  color: var(--color-danger);
+  text-align: left;
+}
+
+/* ---------- Header ---------- */
+.profil__hoved {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: -4px;
+  text-align: center;
+}
+
+.profil__hoved--egen {
+  flex-direction: row;
+  gap: 14px;
+  margin-top: 0;
+  padding: 0 4px;
+  text-align: left;
+}
+
+.profil__hoved-tekst {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.profil__navn-linje {
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profil__navn {
+  margin: 0;
+  min-width: 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  overflow-wrap: anywhere;
+}
+
+.profil__hoved--egen .profil__navn {
+  font-size: 22px;
+  letter-spacing: -0.3px;
+}
+
+.profil__ret-navn {
+  flex-shrink: 0;
+  min-width: 32px;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent-text);
+}
+
+.profil__tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.profil__hoved--egen .profil__tags {
+  justify-content: flex-start;
+}
+
+/* ---------- Figures ---------- */
+.profil__label {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.profil__saldo {
+  margin-top: 4px;
+  border-radius: var(--radius-card-lg);
+  background: var(--color-surface);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profil__saldo .profil__label {
+  font-size: 13px;
+}
+
+.profil__saldo-beloeb {
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -1.2px;
+  font-variant-numeric: var(--font-numeric);
+}
+
+.profil__tal {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.profil__tal--tre {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.profil__tal-kort {
+  min-width: 0;
+  border-radius: 16px;
+  background: var(--color-surface);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.profil__tal-beloeb {
+  font-size: 18px;
+  font-weight: 700;
+  font-variant-numeric: var(--font-numeric);
+  overflow-wrap: anywhere;
+}
+
+.profil__beloeb--mangler {
+  color: var(--color-danger);
+}
+
+.profil__beloeb--til-gode,
+.profil__beloeb--betalt {
+  color: var(--color-success);
+}
+
+/* "Overført fra sidste sæson" (#68): one quiet line under the figures. */
+.profil__overfoert {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: -4px;
+  padding: 0 4px;
+}
+
+.profil__overfoert-beloeb {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  font-variant-numeric: var(--font-numeric);
+}
+
+/* ---------- Actions (PROFIL_KNAPPER) ---------- */
+.profil__knapper {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.profil__knapper:empty {
+  display: none;
+}
+
+.profil__knapper > :only-child {
+  grid-column: 1 / -1;
+}
+
+.profil-knap {
+  min-width: 0;
+  min-height: 52px;
+  padding: 4px 8px;
+  border-radius: 16px;
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-line-strong);
+  color: var(--color-text);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.profil-knap--primaer {
+  background: var(--color-accent);
+  box-shadow: none;
+  color: var(--color-on-accent);
+}
+
+.profil-knap__linje {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profil-knap__under {
+  font-size: 11px;
+  color: var(--color-accent-text);
+}
+
+/* ---------- Cards (PROFIL_KORT) and sections ---------- */
+.profil__sektion {
+  margin: 0;
+  padding: 8px 4px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.profil__kort {
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ---------- Own profile ---------- */
+.profil__slet-konto {
+  align-self: center;
+  min-height: var(--size-touch);
+  margin-top: 12px;
+  padding: 0 16px;
+  font-size: 15px;
+  color: var(--color-danger);
+}

@@ -1,0 +1,161 @@
+-- Shared pgTAP helpers. Every test file includes this right after `begin;`:
+--
+--   begin;
+--   \ir _hjaelpere.psql
+--   select plan(n);
+--   ...
+--   select * from finish();
+--   rollback;
+--
+-- Everything here lives in the `tests` schema and is rolled back with the
+-- test's transaction, so it never reaches a real database. The `.psql`
+-- extension keeps `supabase test db` from running this file as a test.
+--
+-- Fixture helpers (tests.opret_*) are security definer: they always write as
+-- the test superuser, whoever you are logged in as. Then act as a person:
+--   select tests.log_ind_som_medlem(medlem_id);   -- or tests.log_ind_som(user_id)
+--   ... queries run as `authenticated` with that auth.uid() ...
+--   select tests.log_ud();                         -- back to superuser
+
+set client_min_messages = warning;
+create extension if not exists pgtap with schema extensions;
+reset client_min_messages;
+
+create schema if not exists tests;
+grant usage on schema tests to authenticated, anon;
+
+-- A confirmed login (auth.users row). Returns its id.
+-- Inserting it fires the claim trigger, just like a first OTP verify.
+create or replace function tests.opret_bruger(p_email text, p_bekraeftet boolean default true)
+returns uuid language plpgsql security definer as $$
+declare v_id uuid := gen_random_uuid();
+begin
+  insert into auth.users (id, instance_id, aud, role, email, email_confirmed_at,
+                          raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
+                          confirmation_token, recovery_token, email_change_token_new, email_change)
+  values (v_id, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
+          p_email, case when p_bekraeftet then now() end,
+          '{"provider":"email","providers":["email"]}', '{}', now(), now(), '', '', '', '');
+  return v_id;
+end $$;
+
+-- A Bødekasse with defaults and its first Sæson (running, no end date).
+create or replace function tests.opret_bodekasse(p_navn text default 'Testkasse')
+returns uuid language plpgsql security definer as $$
+declare v_id uuid;
+begin
+  insert into public.bodekasse (navn) values (p_navn) returning id into v_id;
+  insert into public.saeson (bodekasse_id, navn) values (v_id, 'Sæson 1');
+  return v_id;
+end $$;
+
+-- A Medlem. With p_email it is pre-added (and claimed at once if a confirmed
+-- login with that email exists). Pass p_bruger to link a login directly.
+create or replace function tests.opret_medlem(
+  p_bodekasse uuid, p_navn text,
+  p_email text default null, p_admin boolean default false, p_bruger uuid default null)
+returns uuid language plpgsql security definer as $$
+declare v_id uuid;
+begin
+  insert into public.medlem (bodekasse_id, navn, email, er_admin, user_id)
+  values (p_bodekasse, p_navn, p_email, p_admin, p_bruger) returning id into v_id;
+  return v_id;
+end $$;
+
+-- A Medlem with its own confirmed login, ready for tests.log_ind_som_medlem().
+create or replace function tests.opret_medlem_med_login(
+  p_bodekasse uuid, p_navn text, p_admin boolean default false)
+returns uuid language plpgsql security definer as $$
+begin
+  return tests.opret_medlem(p_bodekasse, p_navn, null, p_admin,
+                            tests.opret_bruger(gen_random_uuid() || '@test.dk'));
+end $$;
+
+-- A Bødekategori in the giver's box.
+create or replace function tests.opret_bodekategori(p_oprettet_af uuid, p_navn text, p_pris int)
+returns uuid language plpgsql security definer as $$
+declare v_id uuid;
+begin
+  insert into public.bodekategori (bodekasse_id, navn, pris, oprettet_af)
+  select bodekasse_id, p_navn, p_pris, p_oprettet_af from public.medlem where id = p_oprettet_af
+  returning id into v_id;
+  return v_id;
+end $$;
+
+-- A Bøde in the giver's box and its latest Sæson. Without p_kategori it is an
+-- Engangsbøde ("Test") for p_pris; with one it keeps that Bødekategori's price.
+create or replace function tests.giv_bode(
+  p_giver uuid, p_modtager uuid, p_pris int default 50, p_kategori uuid default null)
+returns uuid language plpgsql security definer as $$
+declare v_id uuid;
+begin
+  insert into public.bode (bodekasse_id, saeson_id, batch_id, giver_id, modtager_id,
+                           bodekategori_id, grund, pris)
+  select m.bodekasse_id, private.seneste_saeson(m.bodekasse_id), gen_random_uuid(),
+         p_giver, p_modtager, p_kategori,
+         case when p_kategori is null then 'Test' end,
+         coalesce((select k.pris from public.bodekategori k where k.id = p_kategori), p_pris)
+    from public.medlem m where m.id = p_giver
+  returning id into v_id;
+  return v_id;
+end $$;
+
+-- An Anke on a Bøde; p_afgoerelse null = pending.
+create or replace function tests.anke(p_bode uuid, p_afgoerelse public.anke_afgoerelse default null)
+returns uuid language plpgsql security definer as $$
+declare v_id uuid;
+begin
+  insert into public.anke (bodekasse_id, saeson_id, bode_id, afgoerelse, afgjort)
+  select b.bodekasse_id, b.saeson_id, b.id, p_afgoerelse,
+         case when p_afgoerelse is not null then now() end
+    from public.bode b where b.id = p_bode
+  returning id into v_id;
+  return v_id;
+end $$;
+
+-- Act as a login: role `authenticated` with auth.uid() = p_bruger.
+create or replace function tests.log_ind_som(p_bruger uuid)
+returns void language plpgsql as $$
+declare v_email text;
+begin
+  perform tests.log_ud();
+  select email into v_email from auth.users where id = p_bruger;
+  perform set_config('role', 'authenticated', true);
+  perform set_config('request.jwt.claims',
+    json_build_object('sub', p_bruger, 'email', v_email, 'role', 'authenticated',
+                      'aud', 'authenticated')::text, true);
+  perform set_config('request.jwt.claim.sub', p_bruger::text, true);
+end $$;
+
+-- Act as the login that has claimed this Medlem.
+create or replace function tests.log_ind_som_medlem(p_medlem uuid)
+returns void language plpgsql as $$
+declare v_bruger uuid;
+begin
+  perform tests.log_ud();  -- look the Medlem up past RLS
+  select user_id into v_bruger from public.medlem where id = p_medlem;
+  if v_bruger is null then
+    raise exception 'tests.log_ind_som_medlem: Medlem % has no login', p_medlem;
+  end if;
+  perform tests.log_ind_som(v_bruger);
+end $$;
+
+-- Act as a visitor with no login (role anon).
+create or replace function tests.log_ind_som_anon()
+returns void language plpgsql as $$
+begin
+  perform set_config('role', 'anon', true);
+  perform set_config('request.jwt.claims', '{"role":"anon"}', true);
+  perform set_config('request.jwt.claim.sub', '', true);
+end $$;
+
+-- Back to the superuser that runs the tests.
+create or replace function tests.log_ud()
+returns void language plpgsql as $$
+begin
+  perform set_config('role', 'postgres', true);
+  perform set_config('request.jwt.claims', '', true);
+  perform set_config('request.jwt.claim.sub', '', true);
+end $$;
+
+grant execute on all functions in schema tests to authenticated, anon;

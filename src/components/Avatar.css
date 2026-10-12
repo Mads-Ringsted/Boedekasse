@@ -1,0 +1,26 @@
+.avatar {
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-avatar-bg);
+  color: var(--color-avatar-text);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar--egen {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.avatar--stiplet {
+  background: none;
+  border: 1.5px dashed var(--color-text-faint);
+  color: var(--color-text-muted);
+}
+
+.avatar--tidligere {
+  background: var(--color-fill-strong);
+  color: var(--color-text-muted);
+}

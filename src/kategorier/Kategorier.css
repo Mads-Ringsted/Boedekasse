@@ -1,0 +1,465 @@
+/* ---------- Kategorier tab ---------- */
+.kategorier__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-right: 4px;
+}
+
+.kategorier__ny {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kategorier__fejl {
+  padding: 12px 4px;
+  font-size: 15px;
+  color: var(--color-danger);
+  text-align: left;
+}
+
+.kategorier__soeg {
+  height: 44px;
+  border-radius: 12px;
+  background: var(--color-surface);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  color: var(--color-text-muted);
+}
+
+.kategorier__soeg input {
+  flex-grow: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+}
+
+.kategorier__soeg input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.kategorier__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 4px 0;
+}
+
+.kategorier__antal {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.kategorier__sortering {
+  display: flex;
+  background: var(--color-surface);
+  border-radius: 9px;
+  padding: 2px;
+}
+
+.kategorier__sortering button {
+  padding: 4px 10px;
+  border-radius: 7px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.kategorier__sortering button[aria-pressed='true'] {
+  background: var(--color-fill-strong);
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.kategorier__liste {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.kategorier__liste li + li {
+  border-top: 1px solid var(--color-line);
+}
+
+.kategorier__raekke {
+  width: 100%;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 16px;
+  text-align: left;
+}
+
+.kategorier__raekke-tekst {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kategorier__navn {
+  font-size: 16px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.kategorier__brugt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.kategorier__pris {
+  flex-shrink: 0;
+  font-size: 16px;
+  font-weight: 600;
+  font-variant-numeric: var(--font-numeric);
+}
+
+.kategorier__liste--arkiveret .kategorier__navn,
+.kategorier__liste--arkiveret .kategorier__pris {
+  color: var(--color-text-muted);
+}
+
+.kategorier__ingen {
+  padding: 12px 4px;
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.kategorier__arkiverede {
+  align-self: center;
+  min-height: var(--size-touch);
+  padding: 4px 8px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* Empty state */
+.kategorier__tom {
+  margin-top: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.kategorier__tom-ikon {
+  width: 72px;
+  height: 72px;
+  border-radius: 22px;
+  background: var(--color-accent-pale);
+  color: var(--color-accent-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kategorier__tom-titel {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.kategorier__tom-tekst {
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.kategorier__tom-knap {
+  margin-top: 8px;
+  height: 50px;
+  padding: 0 22px;
+  border-radius: 16px;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Tags: Ofte brugt (blue), Arkiveret (grey) */
+.kategori-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-accent-text);
+  background: var(--color-accent-pale);
+  padding: 1px 7px;
+  border-radius: var(--radius-tag);
+}
+
+.kategori-tag--graa {
+  color: var(--color-text-muted);
+  background: var(--color-fill);
+}
+
+/* ---------- Ny bødekategori / Redigér ---------- */
+.kategori-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.kategori-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.kategori-form__label {
+  padding: 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.kategori-form__boks {
+  min-height: 52px;
+  border-radius: var(--radius-input);
+  background: var(--color-surface-raised);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 16px;
+}
+
+.kategori-form__boks:focus-within {
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
+.kategori-form__boks--tekst {
+  align-items: stretch;
+  padding: 14px 16px;
+}
+
+.kategori-form__input {
+  flex-grow: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 17px;
+  outline: none;
+}
+
+.kategori-form__input--pris {
+  font-weight: 600;
+  font-variant-numeric: var(--font-numeric);
+}
+
+.kategori-form__textarea {
+  font-size: 16px;
+  resize: none;
+}
+
+.kategori-form__textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+.kategori-form__enhed {
+  font-size: 17px;
+  color: var(--color-text-muted);
+}
+
+.kategori-form__hint,
+.kategori-form__fejl {
+  padding: 0 4px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--color-danger);
+}
+
+.kategori-form__note {
+  margin: 0;
+  padding: 0 4px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+.kategori-form__proev {
+  text-align: left;
+}
+
+/* Ny bødekategori: the creation Gebyr note (when the rule is on). */
+.kategori-form__gebyr {
+  margin-top: 4px;
+  border-radius: var(--radius-input);
+  background: var(--color-surface-raised);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+}
+
+.kategori-form__gebyr strong {
+  color: var(--color-text);
+}
+
+.kategori-form__gebyr-ikon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: var(--color-fill);
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kategori-form__primary {
+  width: 100%;
+  height: var(--size-button);
+  border-radius: var(--radius-button);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 17px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.kategori-form__primary:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ---------- Detail sheet ---------- */
+.kategori-detalje {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.kategori-detalje__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 4px;
+}
+
+.kategori-detalje__tags {
+  display: flex;
+  gap: 6px;
+}
+
+.kategori-detalje__tags .kategori-tag {
+  padding: 2px 8px;
+}
+
+.kategori-detalje__pris {
+  margin-left: auto;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+  font-variant-numeric: var(--font-numeric);
+}
+
+.kategori-detalje__beskrivelse {
+  margin: 0;
+  padding: 0 4px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.kategori-detalje__info {
+  margin: 0;
+  border-radius: var(--radius-input);
+  background: var(--color-surface-raised);
+}
+
+.kategori-detalje__raekke {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 16px;
+  font-size: 15px;
+}
+
+.kategori-detalje__raekke + .kategori-detalje__raekke {
+  border-top: 1px solid var(--color-line);
+}
+
+.kategori-detalje__raekke dt {
+  color: var(--color-text-muted);
+}
+
+.kategori-detalje__raekke dd {
+  margin: 0;
+  text-align: right;
+}
+
+.kategori-detalje__fejl {
+  margin: 0;
+  padding: 0 4px;
+  font-size: 14px;
+  color: var(--color-danger);
+}
+
+.kategori-detalje__giv {
+  height: 54px;
+  border-radius: var(--radius-button);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 17px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.kategori-detalje__knapper {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.kategori-detalje__knap {
+  height: 48px;
+  border-radius: 16px;
+  background: var(--color-surface-raised);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.kategori-detalje__knap--fare {
+  color: var(--color-danger);
+}
+
+.kategori-detalje__knap:disabled {
+  opacity: 0.45;
+}

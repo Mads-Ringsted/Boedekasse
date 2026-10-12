@@ -1,0 +1,103 @@
+.kasse-liste {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-radius: 20px;
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.kasse-liste li + li {
+  border-top: 1px solid var(--color-line);
+}
+
+.kasse-liste__row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  text-align: left;
+}
+
+.kasse-liste__tile {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 13px;
+  background: var(--color-accent-pale);
+  color: var(--color-accent-text);
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kasse-liste__tile--foerste {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.kasse-liste__text {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.kasse-liste__navn {
+  font-size: 17px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.kasse-liste__antal {
+  min-height: 18px; /* holds the line while the count loads */
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.kasse-liste__chevron {
+  flex-shrink: 0;
+  color: var(--color-text-faint);
+}
+
+.kasse-liste__check {
+  flex-shrink: 0;
+  color: var(--color-accent-text);
+}
+
+/* "Opret ny" and "Jeg har en kode" under the list. */
+.kasse-valg {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.kasse-valg__knap {
+  height: 52px;
+  border-radius: 16px;
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-fill-strong);
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* Inside the Skift Bødekasse sheet: raised cards on the sheet colour. */
+.skift {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 4px;
+}
+
+.skift .kasse-liste,
+.skift .kasse-valg__knap {
+  background: var(--color-surface-raised);
+}

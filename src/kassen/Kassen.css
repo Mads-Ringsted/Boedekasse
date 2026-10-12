@@ -1,0 +1,449 @@
+/* Kassen (kassen.html) */
+.kassen__titel {
+  margin-top: -4px;
+}
+
+.kassen__kort {
+  border-radius: var(--radius-card-lg);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kassen__kort-label {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.kassen__kort-beloeb {
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -1.4px;
+  line-height: 1.1;
+  font-variant-numeric: var(--font-numeric);
+}
+
+.kassen__tal {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.kassen__tal-kort {
+  min-width: 0;
+  border-radius: 16px;
+  background: var(--color-surface);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kassen__tal-label {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.kassen__tal-beloeb {
+  font-size: 17px;
+  font-weight: 700;
+  font-variant-numeric: var(--font-numeric);
+}
+
+.kassen__tal-beloeb--ind {
+  color: var(--color-success);
+}
+
+.kassen__tal-beloeb--mangler {
+  color: var(--color-danger);
+}
+
+/* One equal column per button: Registrér indbetaling, and Hæv penge (#61). */
+.kassen__knapper {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+.kassen__knap {
+  height: 50px;
+  border-radius: 16px;
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-line-strong);
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* At 375 px "Registrér indbetaling" and its icon must fit half the row (kassen.html). */
+@media (max-width: 389px) {
+  .kassen__knap {
+    font-size: 14px;
+    gap: 4px;
+  }
+
+  .kassen__knap svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.kassen__knap--primaer {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  box-shadow: none;
+}
+
+.kassen__fejl {
+  padding: 12px 4px;
+  font-size: 15px;
+  color: var(--color-danger);
+  text-align: left;
+}
+
+.kassen__sektion {
+  padding: 6px 4px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.kassen__tom {
+  padding: 0 4px;
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.kassen__liste {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.kassen__raekke + .kassen__raekke {
+  border-top: 1px solid var(--color-line);
+}
+
+.kassen-post {
+  width: 100%;
+  min-height: var(--size-touch);
+  padding: 11px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+
+.kassen-post__tekst {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kassen-post__navn {
+  font-size: 15px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.kassen-post__under {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.kassen-post__beloeb {
+  flex-shrink: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-success);
+  font-variant-numeric: var(--font-numeric);
+}
+
+.kassen-post--annulleret .kassen-post__navn {
+  color: var(--color-text-muted);
+}
+
+.kassen-post--annulleret .kassen-post__beloeb {
+  color: var(--color-text-faint);
+  text-decoration: line-through;
+}
+
+/* Annullér indbetaling (partial sheet, like boede-annuller.html) */
+.annuller-ind__linje {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.annuller-ind__top {
+  margin-top: 14px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.annuller-ind__navn {
+  min-width: 0;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  overflow-wrap: anywhere;
+}
+
+.annuller-ind__beloeb {
+  flex-shrink: 0;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1;
+  color: var(--color-success);
+  font-variant-numeric: var(--font-numeric);
+}
+
+.annuller-ind__note {
+  margin-top: 6px;
+  font-size: 15px;
+  color: var(--color-text-secondary);
+}
+
+.annuller-ind__input {
+  width: 100%;
+  margin-top: 22px;
+  height: 50px;
+  border: 0;
+  border-radius: var(--radius-input);
+  padding: 0 16px;
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+}
+
+.annuller-ind__input::placeholder {
+  color: var(--color-text-faint);
+}
+
+.annuller-ind__input:focus {
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
+.annuller-ind__fejl {
+  margin-top: 12px;
+  font-size: 15px;
+  color: var(--color-danger);
+}
+
+.annuller-ind__knap {
+  width: 100%;
+  margin-top: 28px;
+  height: 54px;
+  border-radius: var(--radius-button);
+  background: var(--color-surface-raised);
+  box-shadow: inset 0 0 0 1px var(--color-danger);
+  color: var(--color-danger);
+  font-size: 17px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.annuller-ind__knap:disabled {
+  opacity: 0.45;
+}
+
+.annuller-ind__advarsel {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* Registrér indbetaling (registrer-indbetaling.html) */
+.registrer__label {
+  padding: 18px 4px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.registrer__fra,
+.registrer__betaler {
+  width: 100%;
+  border-radius: var(--radius-input);
+  background: var(--color-surface-raised);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+
+.registrer__fra-tekst {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.registrer__fra-navn {
+  font-size: 16px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.registrer__saldo {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.registrer__saldo--mangler {
+  color: var(--color-danger);
+}
+
+.registrer__saldo--til-gode {
+  color: var(--color-success);
+}
+
+.registrer__skift {
+  flex-shrink: 0;
+  font-size: 14px;
+  color: var(--color-accent-text);
+}
+
+.registrer__chevron {
+  flex-shrink: 0;
+  color: var(--color-text-faint);
+}
+
+.registrer__liste {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-radius: var(--radius-input);
+  background: var(--color-surface-raised);
+  overflow: hidden;
+}
+
+.registrer__liste li + li {
+  border-top: 1px solid var(--color-line);
+}
+
+.registrer__liste .registrer__betaler {
+  border-radius: 0;
+  background: none;
+}
+
+.registrer__beloeb {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 36px 0 28px;
+}
+
+.registrer__beloeb-label,
+.registrer__beloeb-note {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.registrer__beloeb-felt {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  max-width: 100%;
+}
+
+.registrer__beloeb-input {
+  width: 6ch;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 64px;
+  font-weight: 700;
+  letter-spacing: -2px;
+  text-align: right;
+  font-variant-numeric: var(--font-numeric);
+  outline: none;
+}
+
+.registrer__beloeb-input::placeholder {
+  color: var(--color-text-faint);
+}
+
+.registrer__beloeb-input[aria-invalid='true'] {
+  color: var(--color-danger);
+}
+
+.registrer__kr {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.registrer__note {
+  width: 100%;
+  height: 50px;
+  font-size: 16px;
+}
+
+/* Hæv penge (haev-penge.html) */
+.haev__kassen {
+  margin-top: 14px;
+  border-radius: var(--radius-input);
+  background: var(--color-accent-pale);
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.haev__kassen-label {
+  font-size: 14px;
+  color: var(--color-accent-pale-text);
+}
+
+.haev__kassen-beloeb {
+  font-size: 17px;
+  font-weight: 700;
+  font-variant-numeric: var(--font-numeric);
+}
+
+.registrer__beloeb-note.haev__over {
+  color: var(--color-danger);
+}
+
+.haev__formaal {
+  margin-top: 0;
+}
+
+.annuller-haev__beloeb {
+  color: var(--color-text);
+}
+
+/* A Hævning in Kassen's list: the amount out, without colour. */
+.kassen-post--haevning:not(.kassen-post--annulleret) .kassen-post__beloeb {
+  color: var(--color-text);
+}

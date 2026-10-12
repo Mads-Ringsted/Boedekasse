@@ -1,0 +1,94 @@
+/* Six code boxes over one invisible input (typing, paste and autofill all work). */
+.kode-felt {
+  position: relative;
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.kode-felt__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  opacity: 0;
+  font-size: 16px; /* no iOS zoom on focus */
+  caret-color: transparent;
+}
+
+.kode-felt__boks {
+  height: 60px;
+  border-radius: 14px;
+  background: var(--color-surface);
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kode-felt__boks--aktiv {
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
+.fundet-kasse {
+  margin-top: 18px;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fundet-kasse__tile {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 13px;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fundet-kasse__tekst {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.fundet-kasse__navn {
+  font-size: 17px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.fundet-kasse__antal {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.fundet-kasse__check {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-success);
+  color: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fundet-kasse + .onboarding__field {
+  margin-top: 22px;
+}

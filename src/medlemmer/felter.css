@@ -1,0 +1,94 @@
+/* Fields, notes and buttons inside the Medlemmer sheets. */
+.felt {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.felt__label {
+  padding: 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.felt__input {
+  height: 52px;
+  border: 0;
+  border-radius: var(--radius-input);
+  padding: 0 16px;
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 17px;
+  outline: none;
+}
+
+.felt__input::placeholder {
+  color: var(--color-text-faint);
+}
+
+.felt__input:focus {
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
+.felt-note {
+  margin: 14px 4px 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.felt-fejl {
+  margin: 12px 4px 0;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--color-danger);
+}
+
+.felt-knap {
+  width: 100%;
+  height: var(--size-button);
+  border-radius: var(--radius-button);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 17px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.felt-knap:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.felt-knap--naer {
+  margin-top: 20px;
+}
+
+/* Tilføj Medlem */
+.tilfoej__avatar {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0 4px;
+}
+
+.tilfoej__avatar .avatar--stiplet {
+  border-width: 2px;
+}
+
+.tilfoej__kode {
+  margin-top: 20px;
+  border-radius: var(--radius-input);
+  background: var(--color-surface-raised);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tilfoej__kode .join-kode__kode {
+  font-size: 20px;
+  letter-spacing: 3px;
+}

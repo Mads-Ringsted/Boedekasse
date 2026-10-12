@@ -1,0 +1,99 @@
+.velkommen {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: calc(env(safe-area-inset-top) + 56px) calc(env(safe-area-inset-right) + 20px)
+    calc(env(safe-area-inset-bottom) + 24px) calc(env(safe-area-inset-left) + 20px);
+}
+
+.velkommen__title {
+  margin: 0 4px;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+}
+
+.velkommen__intro {
+  margin: 8px 4px 0;
+  font-size: 16px;
+  color: var(--color-text-muted);
+}
+
+.velkommen__valg {
+  margin: 36px 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.velkommen__kort {
+  border-radius: var(--radius-card-lg);
+  background: var(--color-surface);
+  padding: 22px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-align: left;
+}
+
+.velkommen__kort--opret {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.velkommen__ikon {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 14px;
+  background: var(--color-accent-pale);
+  color: var(--color-accent-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.velkommen__kort--opret .velkommen__ikon {
+  background: color-mix(in srgb, var(--color-on-accent) 18%, transparent);
+  color: inherit;
+}
+
+.velkommen__tekst {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.velkommen__overskrift {
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.velkommen__under {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.velkommen__kort--opret .velkommen__under {
+  color: inherit;
+  opacity: 0.9;
+}
+
+.velkommen__chevron {
+  flex-shrink: 0;
+  color: var(--color-text-faint);
+}
+
+.velkommen__footer {
+  margin-top: auto;
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.velkommen__logud {
+  color: var(--color-accent-text);
+  text-decoration: underline;
+}

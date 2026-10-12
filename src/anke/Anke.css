@@ -1,0 +1,284 @@
+/* Anke intro (anke-intro.html) */
+.anke-boede {
+  margin-top: 16px;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-raised);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.anke-boede__tekst {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.anke-boede__navn {
+  font-size: 17px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.anke-boede__fra {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.anke-boede__beloeb {
+  flex-shrink: 0;
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: var(--font-numeric);
+}
+
+.anke-punkter {
+  list-style: none;
+  margin: 28px 0 0;
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.anke-punkt {
+  display: flex;
+  gap: 14px;
+}
+
+.anke-punkt__ikon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 11px;
+  background: var(--color-accent-pale);
+  color: var(--color-accent-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.anke-punkt__tekst {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.anke-punkt__titel {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.anke-punkt__under {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+.anke__fejl {
+  margin: 0 4px 12px;
+}
+
+/* The wheel (anke-hjul.html) */
+.anke-hjul {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 48px;
+  /* The spinning square layers stick out at the corners; no sideways scroll. */
+  overflow: hidden;
+}
+
+.anke-hjul__hjul {
+  position: relative;
+  width: min(300px, 80vw);
+  aspect-ratio: 1;
+}
+
+.anke-hjul__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    from -9deg,
+    var(--color-fill) 0deg 18deg,
+    var(--color-surface-raised) 18deg 36deg
+  );
+  box-shadow: inset 0 0 0 2px var(--color-fill-strong);
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.12, 0.8, 0.18, 1);
+}
+
+/* The segment it lands on; rotated to its place inside the ring. */
+.anke-hjul__valgt {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from -9deg, var(--color-accent) 0deg 18deg, transparent 18deg 360deg);
+  opacity: 0;
+  transition: opacity 250ms ease-out;
+}
+
+.anke-hjul__valgt--vist {
+  opacity: 1;
+}
+
+.anke-hjul__pil {
+  position: absolute;
+  left: 50%;
+  top: -14px;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 20px solid var(--color-text);
+}
+
+.anke-hjul__midte {
+  position: absolute;
+  inset: 19%;
+  border-radius: 50%;
+  background: var(--color-sheet);
+  box-shadow: 0 0 0 2px var(--color-fill-strong);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.anke-hjul__label {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.anke-hjul__beloeb {
+  font-size: 52px;
+  font-weight: 700;
+  letter-spacing: -1.6px;
+  line-height: 1;
+  font-variant-numeric: var(--font-numeric);
+}
+
+.anke-hjul__af {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.anke-hjul__besked {
+  margin-top: 40px;
+  min-height: 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 250ms ease-out;
+}
+
+.anke-hjul__besked--vist {
+  opacity: 1;
+}
+
+.anke-hjul__sendt {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.anke-hjul__tekst {
+  max-width: 280px;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anke-hjul__ring,
+  .anke-hjul__valgt,
+  .anke-hjul__besked {
+    transition: none;
+  }
+}
+
+/* "Anke bøden" on the Bøde detail sheet */
+.anke-knap {
+  height: 54px;
+  border-radius: var(--radius-button);
+  background: var(--color-surface-raised);
+  box-shadow: inset 0 0 0 1px var(--color-fill-strong);
+  font-size: 17px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.anke-knap__note {
+  margin: 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* "Kan ankes" on your own profile */
+.kan-ankes__raekke {
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  padding: 12px 12px 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.kan-ankes__raekke + .kan-ankes__raekke {
+  margin-top: 8px;
+}
+
+.kan-ankes__tekst {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kan-ankes__titel {
+  font-size: 15px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.kan-ankes__linje {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.kan-ankes__knap {
+  flex-shrink: 0;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: var(--color-fill);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Mere → Anker */
+.anker__intro {
+  margin: 0 4px 16px;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+.anker__tom {
+  margin: 24px 4px;
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
