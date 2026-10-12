@@ -93,3 +93,29 @@
   font-size: 14px;
   font-weight: 500;
 }
+
+.install__badged {
+  position: relative;
+  display: flex;
+}
+
+.install__badge {
+  position: absolute;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  box-shadow: 0 0 0 3px var(--color-bg);
+}
+
+.install__badge--ok {
+  color: var(--color-accent-text);
+}
+
+.install__badge--fejl {
+  color: var(--color-danger);
+}
+
+.install__title--status {
+  text-align: center;
+}

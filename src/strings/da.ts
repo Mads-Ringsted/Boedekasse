@@ -32,6 +32,12 @@ export const da = {
   'installer.krav': 'Kræver iOS 17.5 eller nyere.',
   'installer.delKnappen': 'Del-knappen er nederst i Safari',
 
+  // Email link opened in a Safari tab (codes are the way in; this is the fallback)
+  'emailLink.bekraeftetTitel': 'Email bekræftet',
+  'emailLink.bekraeftetTekst': 'Gå tilbage til {app}-appen og log ind med en kode.',
+  'emailLink.fejlTitel': 'Linket virker ikke længere',
+  'emailLink.fejlTekst': 'Gå tilbage til {app}-appen og få en ny kode.',
+
   // Log ind
   'logInd.titel': 'Log ind',
   'logInd.intro': 'Vi sender en kode til din email.',

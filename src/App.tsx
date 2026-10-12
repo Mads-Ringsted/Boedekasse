@@ -22,6 +22,8 @@ import { TidligereSaeson } from './saeson/TidligereSaeson.tsx';
 import { VaelgBodekasse } from './screens/VaelgBodekasse.tsx';
 import { Velkommen } from './screens/Velkommen.tsx';
 import { AppShell } from './shell/AppShell.tsx';
+import { EmailBekraeftet } from './shell/EmailBekraeftet.tsx';
+import { readEmailLink } from './shell/emailLink.ts';
 import { InstallGuide } from './shell/InstallGuide.tsx';
 import { isInstalled, readDisplayEnv } from './shell/installed.ts';
 import { Offline, useOnline } from './shell/Offline.tsx';
@@ -53,11 +55,14 @@ const router = createBrowserRouter([
 ]);
 
 const installed = isInstalled(readDisplayEnv());
+const emailLink = readEmailLink(window.location.search, window.location.hash);
+// Keep the link's tokens out of the address bar and history.
+if (emailLink) window.history.replaceState(null, '', window.location.pathname);
 
 export function App() {
   const online = useOnline();
 
-  if (!installed) return <InstallGuide />;
+  if (!installed) return emailLink ? <EmailBekraeftet link={emailLink} /> : <InstallGuide />;
 
   return (
     <>
