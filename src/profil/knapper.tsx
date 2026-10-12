@@ -32,12 +32,22 @@ export function ProfilKnap({ label, Icon, primaer = false, under, onClick }: Pro
   );
 }
 
-/** "Giv bøde": opens Giv bøder with this person picked. Hidden in a Pause. */
+/**
+ * "Giv bøde": opens Giv bøder with this person picked (you too, on your own
+ * profile, where Betal stays the main button). Hidden in a Pause.
+ */
 export function GivBoedeKnap({ profil, visning }: ProfilDelProps) {
   const { aabn } = useGivBoeder();
   const { pause } = useSaeson();
   if (!visning.kanGiveBoede || pause) return null;
-  return <ProfilKnap primaer Icon={Plus} label={t('profil.givBoede')} onClick={() => aabn({ medlemId: profil.id })} />;
+  return (
+    <ProfilKnap
+      primaer={!visning.egen}
+      Icon={Plus}
+      label={t('profil.givBoede')}
+      onClick={() => aabn({ medlemId: profil.id })}
+    />
+  );
 }
 
 /** "Betal" on your own profile while you owe: opens the Betal sheet. */

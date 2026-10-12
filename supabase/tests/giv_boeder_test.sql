@@ -2,7 +2,7 @@
 -- and one feed entry per receiver. Fortryd removes the whole batch.
 begin;
 \ir _hjaelpere.psql
-select plan(24);
+select plan(25);
 
 select tests.opret_bodekasse('Kasse A') as kasse \gset
 select tests.opret_medlem_med_login(:'kasse', 'Jonas Holm') as jonas \gset
@@ -76,10 +76,15 @@ select throws_ok(
          :'kasse', :'emil', :'for_sent'),
   'P0001', 'antal_ugyldig', 'a count must be at least 1');
 
-select throws_ok(
-  format($$ select public.giv_boeder(gen_random_uuid(), %L, jsonb_build_array(tests.linje(%L, %L))) $$,
-         :'kasse', :'jonas', :'for_sent'),
-  'P0001', 'ikke_dig_selv', 'you cannot give yourself a Bøde');
+-- You can give yourself a Bøde; you bear it like any other.
+select public.giv_boeder(gen_random_uuid(), :'kasse', jsonb_build_array(tests.linje(:'jonas', :'for_sent')))
+  ->> 'batch_id' as selv_batch \gset
+select results_eq(
+  format($$ select giver_id, modtager_id, pris from public.bode where batch_id = %L $$, :'selv_batch'),
+  format($$ values (%1$L::uuid, %1$L::uuid, 75) $$, :'jonas'),
+  'you can give yourself a Bøde');
+select is((select saldo from public.medlem_saldo where medlem_id = :'jonas'), 75,
+  'you bear the Bøde you gave yourself');
 
 -- The whole submit fails on one bad line: nothing is given.
 select tests.opret_bodekasse('Kasse B') as kasse_b \gset

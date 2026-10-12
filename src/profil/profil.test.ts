@@ -23,11 +23,11 @@ describe('profilVisning (what a Medlem profile shows)', () => {
     expect(v.kanBetale).toBe(false);
   });
 
-  it('gives your own profile Betal while you owe, and no Giv bøde (you cannot fine yourself)', () => {
+  it('gives your own profile Betal while you owe, and Giv bøde (you can fine yourself)', () => {
     const v = profilVisning(jonas, 'jonas');
     expect(v.egen).toBe(true);
     expect(v.kanBetale).toBe(true);
-    expect(v.kanGiveBoede).toBe(false);
+    expect(v.kanGiveBoede).toBe(true);
   });
 
   it('shows Til gode on your own profile when you paid too much, with no Betal', () => {
