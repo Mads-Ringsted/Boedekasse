@@ -30,7 +30,7 @@ export interface ProfilVisning {
   tags: ProfilTag[];
   /** "Mangler at betale" or "Til gode". */
   status: MinStatus;
-  /** "Giv bøde": not on your own profile, not for an Udmeldt. */
+  /** "Giv bøde": also on your own profile, not for an Udmeldt. */
   kanGiveBoede: boolean;
   /** "Betal": your own profile, while you owe something. */
   kanBetale: boolean;
@@ -51,7 +51,7 @@ export function profilVisning(p: Profil, migId: string): ProfilVisning {
     egen,
     tags,
     status,
-    kanGiveBoede: !egen && !p.udmeldt,
+    kanGiveBoede: !p.udmeldt,
     kanBetale: egen && status.kanBetale,
     overfoert:
       p.overfoert === 0

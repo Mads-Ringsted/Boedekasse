@@ -96,6 +96,9 @@ export function GivBoeder({ open, onOpenChange, forvalg, onGivet }: GivBoederPro
   const modtagerFor = new Map(modtagere.map((m) => [m.id, m]));
   const sum = opsummer(valg, kategorier);
   const valgte = valg.personer.flatMap((id) => modtagerFor.get(id) ?? []);
+  // In sentences you are "dig" ("Gælder for dig og Emil") or "du" ("Du har Frikøb").
+  const valgteDig = valgte.map((m) => iSaetning(m, 'giv.dig'));
+  const valgteDu = valgte.map((m) => iSaetning(m, 'giv.du'));
   const person = personId ? modtagerFor.get(personId) : undefined;
 
   function aendr(f: (v: Valg) => Valg) {
@@ -158,33 +161,32 @@ export function GivBoeder({ open, onOpenChange, forvalg, onGivet }: GivBoederPro
     indhold = null;
   } else if (trin === 1) {
     const alleValgt = modtagere.length > 0 && modtagere.every((m) => erValgt(valg, m.id));
-    indhold =
-      modtagere.length === 0 ? (
-        <p className="giv__tom">{t('giv.ingenAndre')}</p>
-      ) : (
-        <>
-          <div className="giv__vaelg-alle">
-            <button
-              type="button"
-              onClick={() =>
-                aendr((v) => (alleValgt ? fravaelgAlle(v) : vaelgAlle(v, modtagere.map((m) => m.id), regler)))
-              }
-            >
-              {t(alleValgt ? 'giv.fravaelgAlle' : 'giv.vaelgAlle')}
-            </button>
-          </div>
-          <div className="giv__personer">
-            {modtagere.map((m) => (
-              <PersonFlise
-                key={m.id}
-                modtager={m}
-                valgt={erValgt(valg, m.id)}
-                onClick={() => aendr((v) => skiftPerson(v, m.id, regler))}
-              />
-            ))}
-          </div>
-        </>
-      );
+    indhold = (
+      <>
+        <div className="giv__vaelg-alle">
+          <button
+            type="button"
+            onClick={() =>
+              aendr((v) => (alleValgt ? fravaelgAlle(v) : vaelgAlle(v, modtagere.map((m) => m.id), regler)))
+            }
+          >
+            {t(alleValgt ? 'giv.fravaelgAlle' : 'giv.vaelgAlle')}
+          </button>
+        </div>
+        <div className="giv__personer">
+          {modtagere.map((m) => (
+            <PersonFlise
+              key={m.id}
+              modtager={m}
+              valgt={erValgt(valg, m.id)}
+              onClick={() => aendr((v) => skiftPerson(v, m.id, regler))}
+            />
+          ))}
+        </div>
+        {/* Only you so far: you can fine yourself, but point to inviting others. */}
+        {modtagere.every((m) => m.egen) && <p className="giv__tom">{t('giv.ingenAndre')}</p>}
+      </>
+    );
     footer = (
       <div className="giv__footer">
         <button
@@ -208,7 +210,10 @@ export function GivBoeder({ open, onOpenChange, forvalg, onGivet }: GivBoederPro
             ))}
           </span>
           <span>
-            <T id="giv.gaelderFor" values={{ navne: <strong key="n">{navneliste(valgte.map((m) => m.kortNavn))}</strong> }} />
+            <T
+              id="giv.gaelderFor"
+              values={{ navne: <strong key="n">{navneliste(valgteDig.map((m) => m.kortNavn))}</strong> }}
+            />
           </span>
         </div>
         <KategoriVaelger
@@ -217,12 +222,12 @@ export function GivBoeder({ open, onOpenChange, forvalg, onGivet }: GivBoederPro
           onPlus={(k) => aendr((v) => plusAlle(v, k, regler))}
           onMinus={(k) => aendr((v) => minusAlle(v, k))}
           tag={(k) => {
-            const f = frikobIGiv(valgte, k.id, regler);
-            if (f) return <FrikobTag tekst={t('frikob.harFrikob', { navne: navneliste(f.holdere) })} />;
+            const f = frikobIGiv(valgteDu, k.id, regler);
+            if (f) return <FrikobTag tekst={stort(t('frikob.harFrikob', { navne: navneliste(f.holdere) }))} />;
             return k.ofteBrugt && <span className="kategori-tag">{t('kategorier.ofteBrugt')}</span>;
           }}
           note={(k) => {
-            const f = frikobIGiv(valgte, k.id, regler);
+            const f = frikobIGiv(valgteDig, k.id, regler);
             if (!f || f.modtagere.length === 0) return null;
             return <span className="giv-kat__note">{t('frikob.givesKunTil', { navne: navneliste(f.modtagere) })}</span>;
           }}
@@ -344,7 +349,7 @@ export function GivBoeder({ open, onOpenChange, forvalg, onGivet }: GivBoederPro
           key={`engangs-${engangs.nr}`}
           open={engangs.open}
           onOpenChange={(open) => setEngangs((e) => ({ ...e, open }))}
-          modtagere={engangs.personId ? (person ? [person] : []) : valgte}
+          modtagere={engangs.personId ? (person ? [iSaetning(person, 'giv.dig')] : []) : valgteDig}
           onTilfoej={({ grund, beloeb }) => {
             const ny = { id: crypto.randomUUID(), grund, beloeb };
             const forPerson = engangs.personId;
@@ -370,6 +375,14 @@ export function GivBoeder({ open, onOpenChange, forvalg, onGivet }: GivBoederPro
     </Sheet>
   );
 }
+
+/** You inside a sentence: "dig" or "du"; anyone else keeps their short name. */
+function iSaetning(m: Modtager, form: 'giv.dig' | 'giv.du'): Modtager {
+  return m.egen ? { ...m, kortNavn: t(form) } : m;
+}
+
+/** "du har Frikøb" → "Du har Frikøb". */
+const stort = (s: string) => s.charAt(0).toLocaleUpperCase('da') + s.slice(1);
 
 function PersonFlise({ modtager, valgt, onClick }: { modtager: Modtager; valgt: boolean; onClick: () => void }) {
   return (

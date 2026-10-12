@@ -101,10 +101,14 @@ select throws_ok(
             jsonb_build_array(jsonb_build_object('modtager_id', %L, 'grund', 'Hvorfor', 'beloeb', 12.5))) $$,
          :'kasse', :'emil'),
   'P0001', 'beloeb_ugyldig', 'the amount is whole kroner');
-select throws_ok(
-  format($$ select public.giv_boeder(gen_random_uuid(), %L, jsonb_build_array(tests.engangs(%L, 'Hvorfor', 10))) $$,
-         :'kasse', :'jonas'),
-  'P0001', 'ikke_dig_selv', 'you can''t give yourself an Engangsbøde');
+select public.giv_boeder(gen_random_uuid(), :'kasse', jsonb_build_array(tests.engangs(:'jonas', 'Glemte nøglerne', 40)))
+  ->> 'batch_id' as selv_batch \gset
+select results_eq(
+  format($$ select b.modtager_id, b.pris, g.medlem_id, g.beloeb
+              from public.bode b join public.gebyr g on g.bode_id = b.id
+             where b.batch_id = %L $$, :'selv_batch'),
+  format($$ values (%1$L::uuid, 40, %1$L::uuid, 10) $$, :'jonas'),
+  'you can give yourself an Engangsbøde and pay its Gebyr too');
 
 -- ---------- Off ----------
 select tests.log_ind_som_medlem(:'admin');
