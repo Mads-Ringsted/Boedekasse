@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import { Receipt } from 'lucide-react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Sheet } from '../components/Sheet.tsx';
@@ -40,6 +40,11 @@ export function KategoriFormSheet({ open, onOpenChange, kategori, onSaved, stack
   const [fejl, setFejl] = useState<string | null>(null);
   // One ID per opening, so "Prøv igen" after a lost answer never saves twice.
   const [klientId] = useState(() => crypto.randomUUID());
+  const navnFelt = useRef<HTMLInputElement>(null);
+  const aendret =
+    navn !== (kategori?.navn ?? '') ||
+    pris !== (kategori ? String(kategori.pris) : '') ||
+    beskrivelse !== (kategori?.beskrivelse ?? '');
 
   // Ny only: the creation Gebyr, if the rule is on. Wait for it, so nobody
   // pays a Gebyr they were not shown.
@@ -88,6 +93,9 @@ export function KategoriFormSheet({ open, onOpenChange, kategori, onSaved, stack
       height="full"
       stacked={stacked}
       title={t(kategori ? 'kategori.redigerTitel' : 'kategorier.ny')}
+      // A new Kategori starts with its name; editing one only opens it.
+      initialFocus={kategori ? undefined : navnFelt}
+      dirty={aendret}
       footer={
         <button type="submit" form={FORM_ID} className="kategori-form__primary" disabled={!kanGemme}>
           {kategori
@@ -103,6 +111,7 @@ export function KategoriFormSheet({ open, onOpenChange, kategori, onSaved, stack
           <span className="kategori-form__label">{t('kategori.navn')}</span>
           <span className="kategori-form__boks">
             <input
+              ref={navnFelt}
               className="kategori-form__input"
               type="text"
               value={navn}
@@ -110,7 +119,6 @@ export function KategoriFormSheet({ open, onOpenChange, kategori, onSaved, stack
               autoComplete="off"
               enterKeyHint="next"
               maxLength={60}
-              autoFocus={!kategori}
             />
           </span>
         </label>

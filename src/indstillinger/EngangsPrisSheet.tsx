@@ -8,6 +8,7 @@ import '../medlemmer/felter.css';
 import './Indstillinger.css';
 
 const MODES: readonly EngangsPrisMode[] = ['fri', 'fast', 'loft'];
+const FORM_ID = 'engangs-pris';
 
 interface EngangsPrisSheetProps {
   open: boolean;
@@ -54,8 +55,19 @@ export function EngangsPrisSheet({ open, onOpenChange, mode: startMode, pris, on
     !resultat.ok && resultat.fejl === 'ugyldig' && tekst.trim() !== '' ? t('indstillinger.beloebUgyldig') : null;
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} height="partial" title={t('indstillinger.engangsPrisTitel')}>
-      <form onSubmit={(e) => void gem(e)}>
+    <Sheet
+      open={open}
+      onOpenChange={onOpenChange}
+      height="partial"
+      title={t('indstillinger.engangsPrisTitel')}
+      dirty={aendret}
+      footer={
+        <button type="submit" form={FORM_ID} className="felt-knap" disabled={!kanGemme}>
+          {t('indstillinger.gem')}
+        </button>
+      }
+    >
+      <form id={FORM_ID} onSubmit={(e) => void gem(e)}>
         <div role="radiogroup" aria-label={t('indstillinger.engangsPrisTitel')} className="frikob-valg">
           {MODES.map((m) => {
             const valgt = m === mode;
@@ -105,9 +117,6 @@ export function EngangsPrisSheet({ open, onOpenChange, mode: startMode, pris, on
             {fejl}
           </p>
         )}
-        <button type="submit" className="felt-knap felt-knap--naer" disabled={!kanGemme}>
-          {t('indstillinger.gem')}
-        </button>
       </form>
     </Sheet>
   );

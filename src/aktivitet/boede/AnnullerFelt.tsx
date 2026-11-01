@@ -12,12 +12,8 @@ interface AnnullerFeltProps {
   onAnnulleret: () => void;
 }
 
-/**
- * The annul form (boede-annuller.html): an optional note, a red-outlined
- * button and "En annullering kan ikke fortrydes." Used for Bøder and Gebyrer.
- * Mount it fresh per opening so the one-time ID is new.
- */
-export function AnnullerFelt({ knap, annuller, onAnnulleret }: AnnullerFeltProps) {
+/** The annul form's state: the note, and running the RPC with one ID per opening. */
+export function useAnnuller(annuller: AnnullerFeltProps['annuller'], onAnnulleret: () => void) {
   const [note, setNote] = useState('');
   const [busy, setBusy] = useState(false);
   const [fejl, setFejl] = useState<string | null>(null);
@@ -36,26 +32,57 @@ export function AnnullerFelt({ knap, annuller, onAnnulleret }: AnnullerFeltProps
     onAnnulleret();
   }
 
+  return { note, setNote, busy, fejl, koer: () => void koer() };
+}
+
+type Annullering = ReturnType<typeof useAnnuller>;
+
+/** The optional note and the error. */
+export function AnnullerNote({ a }: { a: Annullering }) {
   return (
-    <div className="annuller">
+    <>
       <input
         className="annuller__input"
         type="text"
-        value={note}
-        onChange={(e) => setNote(e.target.value)}
+        value={a.note}
+        onChange={(e) => a.setNote(e.target.value)}
         placeholder={t('annuller.note')}
         aria-label={t('annuller.note')}
         enterKeyHint="done"
       />
-      {fejl && (
+      {a.fejl && (
         <p className="annuller__fejl" role="alert">
-          {fejl}
+          {a.fejl}
         </p>
       )}
-      <button type="button" className="annuller__knap" disabled={busy} onClick={() => void koer()}>
+    </>
+  );
+}
+
+/** The red-outlined button and "En annullering kan ikke fortrydes." */
+export function AnnullerKnap({ a, knap }: { a: Annullering; knap: PlainStringId }) {
+  return (
+    <>
+      <button type="button" className="annuller__knap" disabled={a.busy} onClick={a.koer}>
         {t(knap)}
       </button>
       <p className="annuller__advarsel">{t('annuller.advarsel')}</p>
+    </>
+  );
+}
+
+/**
+ * The annul form (boede-annuller.html) in one piece, for the Bøde detail
+ * sheet, where it is one action among several. A sheet of its own uses
+ * `useAnnuller` and puts `AnnullerKnap` in its footer. Mount it fresh per
+ * opening so the one-time ID is new.
+ */
+export function AnnullerFelt({ knap, annuller, onAnnulleret }: AnnullerFeltProps) {
+  const a = useAnnuller(annuller, onAnnulleret);
+  return (
+    <div className="annuller">
+      <AnnullerNote a={a} />
+      <AnnullerKnap a={a} knap={knap} />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import { Sheet } from '../components/Sheet.tsx';
 import { t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
@@ -24,6 +24,8 @@ export interface RetIndstillingSheetProps<V> {
   note?: string;
 }
 
+const FORM_ID = 'ret-indstilling';
+
 /** Everything but open/close: what a row passes to open the sheet. */
 export type RetIndhold<V> = Omit<RetIndstillingSheetProps<V>, 'open' | 'onOpenChange'>;
 
@@ -48,6 +50,7 @@ export function RetIndstillingSheet<V>({
   const [busy, setBusy] = useState(false);
   const [fejl, setFejl] = useState<string | null>(null);
   const [klientId] = useState(() => crypto.randomUUID());
+  const felt = useRef<HTMLInputElement>(null);
 
   const resultat = tjek(tekst);
   const kanGemme = resultat.ok && tekst !== start && !busy;
@@ -71,12 +74,25 @@ export function RetIndstillingSheet<V>({
   const hint = !resultat.ok && tekst.trim() !== '' ? resultat.fejl : null;
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} height="partial" title={title}>
-      <form onSubmit={(e) => void gem(e)}>
+    <Sheet
+      open={open}
+      onOpenChange={onOpenChange}
+      height="partial"
+      title={title}
+      initialFocus={felt}
+      dirty={tekst !== start}
+      footer={
+        <button type="submit" form={FORM_ID} className="felt-knap" disabled={!kanGemme}>
+          {t('indstillinger.gem')}
+        </button>
+      }
+    >
+      <form id={FORM_ID} onSubmit={(e) => void gem(e)}>
         <label className="felt">
           <span className="felt__label">{label}</span>
           <span className="indst-felt">
             <input
+              ref={felt}
               className="felt__input indst-felt__input"
               type="text"
               inputMode={inputMode}
@@ -84,7 +100,6 @@ export function RetIndstillingSheet<V>({
               onChange={(e) => setTekst(e.target.value)}
               autoComplete="off"
               enterKeyHint="done"
-              autoFocus
             />
             {enhed && <span className="indst-felt__enhed">{enhed}</span>}
           </span>
@@ -96,9 +111,6 @@ export function RetIndstillingSheet<V>({
             {fejl}
           </p>
         )}
-        <button type="submit" className="felt-knap felt-knap--naer" disabled={!kanGemme}>
-          {t('indstillinger.gem')}
-        </button>
       </form>
     </Sheet>
   );

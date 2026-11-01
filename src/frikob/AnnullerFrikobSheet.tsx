@@ -8,6 +8,8 @@ import type { AktivtFrikob } from './frikob.ts';
 import '../medlemmer/felter.css';
 import './Frikob.css';
 
+const FORM_ID = 'annuller-frikob';
+
 interface AnnullerFrikobSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -50,8 +52,14 @@ export function AnnullerFrikobSheet({ open, onOpenChange, frikob, onAnnulleret }
       onOpenChange={onOpenChange}
       height="partial"
       title={t('frikob.annullerTitel', { navn: frikob.bodekategoriNavn })}
+      dirty={note !== ''}
+      footer={
+        <button type="submit" form={FORM_ID} className="felt-knap frikob-annuller__knap" disabled={busy}>
+          {t('frikob.annuller')}
+        </button>
+      }
     >
-      <form onSubmit={(e) => void annuller(e)}>
+      <form id={FORM_ID} onSubmit={(e) => void annuller(e)}>
         <p className="frikob-annuller__tekst">
           {t('frikob.annullerTekst', {
             person: kortNavne([frikob.medlemNavn])[0] ?? frikob.medlemNavn,
@@ -68,9 +76,6 @@ export function AnnullerFrikobSheet({ open, onOpenChange, frikob, onAnnulleret }
             {fejl}
           </p>
         )}
-        <button type="submit" className="felt-knap frikob-annuller__knap" disabled={busy}>
-          {t('frikob.annuller')}
-        </button>
       </form>
     </Sheet>
   );

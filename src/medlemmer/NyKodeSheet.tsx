@@ -43,16 +43,23 @@ export function NyKodeSheet({ open, onOpenChange, kode, onFornyet }: NyKodeSheet
   }
 
   return (
-    <Sheet open={open} onOpenChange={skift} height="partial" title={t('medlemmer.nyKodeTitel')}>
+    <Sheet
+      open={open}
+      onOpenChange={skift}
+      height="partial"
+      title={t('medlemmer.nyKodeTitel')}
+      footer={
+        <button type="button" className="felt-knap" disabled={busy} onClick={() => void forny()}>
+          {t('medlemmer.nyKodeKnap')}
+        </button>
+      }
+    >
       <p className="felt-note">{t('medlemmer.nyKodeTekst', { kode })}</p>
       {fejl && (
         <p className="felt-fejl" role="alert">
           {fejl}
         </p>
       )}
-      <button type="button" className="felt-knap felt-knap--naer" disabled={busy} onClick={() => void forny()}>
-        {t('medlemmer.nyKodeKnap')}
-      </button>
     </Sheet>
   );
 }

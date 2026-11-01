@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Sheet } from '../components/Sheet.tsx';
 import { formatKr, t } from '../strings/index.ts';
@@ -32,6 +32,7 @@ export function HaevPengeSheet({ open, onOpenChange, kassen, onHaevet }: HaevPen
   const [fejl, setFejl] = useState<string | null>(null);
   // One ID per Hævning, so "Prøv igen" never takes the money out twice.
   const [klientId] = useState(() => crypto.randomUUID());
+  const beloebFelt = useRef<HTMLInputElement>(null);
   const { kr, overKassen, klar } = haevTjek(beloeb, formaal, kassen);
   const ugyldigt = beloeb !== '' && kr === null;
 
@@ -61,6 +62,8 @@ export function HaevPengeSheet({ open, onOpenChange, kassen, onHaevet }: HaevPen
       onOpenChange={onOpenChange}
       height="full"
       title={t('haev.titel')}
+      initialFocus={beloebFelt}
+      dirty={beloeb !== '' || formaal !== ''}
       footer={
         <button type="submit" form={FORM_ID} className="felt-knap" disabled={!klar || busy}>
           {kr !== null ? t('haev.knap', { beloeb: formatKr(kr) }) : t('haev.knapUdenBeloeb')}
@@ -77,6 +80,7 @@ export function HaevPengeSheet({ open, onOpenChange, kassen, onHaevet }: HaevPen
           <span className="registrer__beloeb-label">{t('registrer.beloeb')}</span>
           <label className="registrer__beloeb-felt">
             <input
+              ref={beloebFelt}
               className="registrer__beloeb-input"
               type="text"
               inputMode="numeric"
@@ -88,7 +92,6 @@ export function HaevPengeSheet({ open, onOpenChange, kassen, onHaevet }: HaevPen
               // As wide as its digits, so "300 kr" stays centred.
               style={{ width: `${Math.max(beloeb.length, 1) + 0.4}ch` }}
               autoComplete="off"
-              autoFocus
             />
             <span className="registrer__kr">{t('registrer.kr')}</span>
           </label>

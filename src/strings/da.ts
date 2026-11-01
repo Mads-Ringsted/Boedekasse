@@ -580,6 +580,9 @@ export const da = {
   'sheet.luk': 'Luk',
   'sheet.annuller': 'Annullér',
   'sheet.tilbage': 'Tilbage',
+  'sheet.kasserTitel': 'Luk uden at gemme? Det, du har skrevet, forsvinder.',
+  'sheet.fortsaet': 'Fortsæt',
+  'sheet.kasser': 'Luk uden at gemme',
 
   // Giv bøder
   'giv.titel': 'Giv bøder',

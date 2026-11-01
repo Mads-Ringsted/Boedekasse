@@ -241,6 +241,5 @@
 }
 
 .frikob-annuller__knap {
-  margin-top: 16px;
   background: var(--color-danger);
 }

@@ -71,6 +71,7 @@ export function TilfoejMedlemSheet({ open, onOpenChange, kode, onTilfoejet }: Ti
       onOpenChange={skift}
       height="full"
       title={t('tilfoej.titel')}
+      dirty={navn !== '' || email !== ''}
       footer={
         <button type="submit" form={FORM_ID} className="felt-knap" disabled={!kanTilfoeje}>
           {fornavnet ? t('tilfoej.knap', { navn: fornavnet }) : t('tilfoej.knapUdenNavn')}

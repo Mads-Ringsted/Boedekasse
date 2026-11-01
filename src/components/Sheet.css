@@ -6,15 +6,23 @@
   animation: sheet-fade 200ms ease-out;
 }
 
+/*
+ * The sheet rests on the keyboard. useKeyboardInset sets --keyboard-inset
+ * (how far the keyboard reaches up) and --viewport-height (what is visible
+ * above it) from visualViewport, because iOS keeps fixed elements behind the
+ * keyboard. Without them the sheet sits at the bottom of 100dvh.
+ */
 .sheet {
+  --sheet-gap: 12px;
+  --sheet-room: calc(var(--viewport-height, 100dvh) - env(safe-area-inset-top) - var(--sheet-gap));
   position: fixed;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: var(--keyboard-inset, 0px);
   z-index: 101;
   display: flex;
   flex-direction: column;
-  max-height: calc(100% - env(safe-area-inset-top) - 12px);
+  max-height: var(--sheet-room);
   border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
   background: var(--color-sheet);
   color: var(--color-text);
@@ -22,13 +30,13 @@
   outline: none;
 }
 
+/* A height, not a top: with the keyboard up, the top follows the visible part. */
 .sheet--full {
-  top: calc(env(safe-area-inset-top) + 12px);
+  height: var(--sheet-room);
 }
 
 .sheet--stacked {
-  top: calc(env(safe-area-inset-top) + 28px);
-  max-height: calc(100% - env(safe-area-inset-top) - 28px);
+  --sheet-gap: 28px;
 }
 
 .sheet[data-state='closed'] {
@@ -121,6 +129,65 @@
   padding: 12px 16px calc(env(safe-area-inset-bottom) + 12px);
   border-top: 1px solid var(--color-line);
   background: var(--color-sheet);
+}
+
+/* The keyboard covers the home indicator, so its safe area is not needed. */
+.sheet[data-keyboard='open'] .sheet__footer {
+  padding-bottom: 12px;
+}
+
+.sheet--partial[data-keyboard='open'] .sheet__body:last-child {
+  padding-bottom: 16px;
+}
+
+/* "Luk uden at gemme?" over the bottom of a sheet with unsaved input. */
+.sheet__ask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 16px calc(env(safe-area-inset-bottom) + 12px);
+  border-top: 1px solid var(--color-line);
+  background: var(--color-sheet);
+  box-shadow: 0 -12px 24px color-mix(in srgb, var(--color-scrim) 30%, transparent);
+}
+
+.sheet[data-keyboard='open'] .sheet__ask {
+  padding-bottom: 12px;
+}
+
+.sheet__ask-title {
+  margin: 0 4px;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.sheet__ask-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.sheet__ask-stay,
+.sheet__ask-close {
+  flex: 1;
+  height: var(--size-button);
+  border-radius: var(--radius-button);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.sheet__ask-stay {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.sheet__ask-close {
+  background: var(--color-fill);
+  color: var(--color-danger);
 }
 
 @keyframes sheet-up {
