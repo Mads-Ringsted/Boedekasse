@@ -54,6 +54,11 @@ const tjekGange: Tjek<number> = (tekst) => {
   return gange === null ? { ok: false, fejl: t('indstillinger.gangeUgyldig') } : { ok: true, vaerdi: gange };
 };
 
+const tjekAntal: Tjek<number> = (tekst) => {
+  const antal = parsePris(tekst);
+  return antal === null ? { ok: false, fejl: t('indstillinger.catchUpAntalUgyldig') } : { ok: true, vaerdi: antal };
+};
+
 const tjekBeloeb: Tjek<number> = (tekst) => {
   const beloeb = parsePris(tekst);
   return beloeb === null ? { ok: false, fejl: t('indstillinger.beloebUgyldig') } : { ok: true, vaerdi: beloeb };
@@ -131,6 +136,19 @@ function IndstillingerSkaerm() {
       note: t('indstillinger.ankeVindueNote'),
       tjek: tjekTimer,
       onGem: (anke_vindue_timer, klientId) => gem({ anke_vindue_timer }, klientId),
+    });
+  }
+
+  function retCatchUpAntal() {
+    if (!ind) return;
+    aabn<number>({
+      title: t('indstillinger.catchUpAntal'),
+      label: t('indstillinger.catchUpAntalLabel'),
+      start: String(ind.catch_up_antal),
+      inputMode: 'numeric',
+      note: t('indstillinger.catchUpAntalNote'),
+      tjek: tjekAntal,
+      onGem: (catch_up_antal, klientId) => gem({ catch_up_antal }, klientId),
     });
   }
 
@@ -280,6 +298,23 @@ function IndstillingerSkaerm() {
                 onClick={() =>
                   retBeloeb('fravaersgebyr', t('indstillinger.fravaersgebyr'), t('indstillinger.fravaersgebyrNote'))
                 }
+              />
+            )}
+            <SwitchRaekke
+              label={t('indstillinger.catchUp')}
+              under={t('indstillinger.catchUpUnder', {
+                antal: ind.catch_up_antal,
+                beloeb: formatKr(ind.catch_up_beloeb),
+              })}
+              til={ind.catch_up_til}
+              onSkift={(til) => skift({ catch_up_til: til })}
+              onAabn={() => retBeloeb('catch_up_beloeb', t('indstillinger.catchUp'), t('indstillinger.catchUpNote'))}
+            />
+            {ind.catch_up_til && (
+              <LinkRaekke
+                label={t('indstillinger.catchUpAntal')}
+                vaerdi={String(ind.catch_up_antal)}
+                onClick={retCatchUpAntal}
               />
             )}
           </Gruppe>
