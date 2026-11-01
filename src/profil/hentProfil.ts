@@ -11,7 +11,7 @@ export async function hentProfil(bodekasseId: string, medlemId: string): Promise
   const [medlem, saldo, saesonId] = await Promise.all([
     supabase
       .from('medlem')
-      .select('id, navn, er_admin, user_id, udmeldt, konto_slettet')
+      .select('id, navn, er_admin, er_kasserer, user_id, udmeldt, konto_slettet')
       .eq('bodekasse_id', bodekasseId)
       .eq('id', medlemId)
       .maybeSingle(),
@@ -43,6 +43,7 @@ export async function hentProfil(bodekasseId: string, medlemId: string): Promise
     id: m.id,
     navn: m.navn,
     erAdmin: m.er_admin,
+    erKasserer: m.er_kasserer,
     loggetInd: m.user_id !== null,
     kontoSlettet: m.konto_slettet !== null,
     udmeldt: m.udmeldt !== null,

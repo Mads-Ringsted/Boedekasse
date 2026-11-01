@@ -55,11 +55,11 @@ select throws_ok(
   format($$ select public.haev(gen_random_uuid(), %L, 0, 'Øl') $$, :'kasse'),
   'P0001', 'beloeb_ugyldig', 'the amount must be over 0 kr');
 
--- Only Admins.
+-- Only Admins and Kasserere.
 select tests.log_ind_som_medlem(:'bo');
 select throws_ok(
   format($$ select public.haev(gen_random_uuid(), %L, 10, 'Øl') $$, :'kasse'),
-  '42501', 'ikke_admin', 'a plain Medlem cannot make a Hævning');
+  '42501', 'ikke_kasserer', 'a plain Medlem cannot make a Hævning');
 
 -- A Pause: the Sæson has ended, and a Hævning still lands in it.
 select tests.log_ud();

@@ -17,12 +17,18 @@ describe('afventerTilMig (the reports I can confirm or reject)', () => {
     melding('3', 'bo', '2026-10-11T09:00:00Z'),
   ];
 
-  it("shows everyone's report but my own, oldest first", () => {
-    expect(afventerTilMig(meldinger, 'mig', false).map((m) => m.id)).toEqual(['3', '2']);
+  it("shows a Kasserer everyone's report but their own, oldest first", () => {
+    const kasserer = { erAdmin: false, kanHaandterePenge: true };
+    expect(afventerTilMig(meldinger, 'mig', kasserer).map((m) => m.id)).toEqual(['3', '2']);
   });
 
   it('shows my own report too when I am an Admin', () => {
-    expect(afventerTilMig(meldinger, 'mig', true).map((m) => m.id)).toEqual(['3', '1', '2']);
+    const admin = { erAdmin: true, kanHaandterePenge: true };
+    expect(afventerTilMig(meldinger, 'mig', admin).map((m) => m.id)).toEqual(['3', '1', '2']);
+  });
+
+  it('shows a plain Medlem nothing: only Admins and Kasserere confirm', () => {
+    expect(afventerTilMig(meldinger, 'mig', { erAdmin: false, kanHaandterePenge: false })).toEqual([]);
   });
 });
 

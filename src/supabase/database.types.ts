@@ -1455,14 +1455,14 @@ isOneToOne: false
                   ]
                 },"medlem": {
                   Row: {
-                    "bodekasse_id": string,"email": string | null,"er_admin": boolean,"id": string,"konto_slettet": string | null,"navn": string,"oprettet": string,"udmeldt": string | null,"user_id": string | null
+                    "bodekasse_id": string,"email": string | null,"er_admin": boolean,"er_kasserer": boolean,"id": string,"konto_slettet": string | null,"navn": string,"oprettet": string,"udmeldt": string | null,"user_id": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "bodekasse_id": string,"email"?: string | null,"er_admin"?: boolean,"id"?: string,"konto_slettet"?: string | null,"navn": string,"oprettet"?: string,"udmeldt"?: string | null,"user_id"?: string | null
+                    "bodekasse_id": string,"email"?: string | null,"er_admin"?: boolean,"er_kasserer"?: boolean,"id"?: string,"konto_slettet"?: string | null,"navn": string,"oprettet"?: string,"udmeldt"?: string | null,"user_id"?: string | null
                   }
                   Update: {
-                    "bodekasse_id"?: string,"email"?: string | null,"er_admin"?: boolean,"id"?: string,"konto_slettet"?: string | null,"navn"?: string,"oprettet"?: string,"udmeldt"?: string | null,"user_id"?: string | null
+                    "bodekasse_id"?: string,"email"?: string | null,"er_admin"?: boolean,"er_kasserer"?: boolean,"id"?: string,"konto_slettet"?: string | null,"navn"?: string,"oprettet"?: string,"udmeldt"?: string | null,"user_id"?: string | null
                   }
                   Relationships: [
                     {
@@ -2589,6 +2589,9 @@ isOneToOne: false
                            },
 "saet_admin":
 { Args: { "p_bodekasse": string,"p_er_admin": boolean,"p_klient_id": string,"p_medlem": string }; Returns: Json
+                           },
+"saet_kasserer":
+{ Args: { "p_bodekasse": string,"p_er_kasserer": boolean,"p_klient_id": string,"p_medlem": string }; Returns: Json
                            },
 "saet_slutdato":
 { Args: { "p_bodekasse": string,"p_klient_id": string,"p_slutdato": string }; Returns: Json
