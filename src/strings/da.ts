@@ -914,6 +914,9 @@ export const da = {
   'notifikationer.art.betaling_bekraeftet': 'Din betaling er bekræftet',
   'notifikationer.art.automatisk_gebyr': 'Automatiske gebyrer',
   'notifikationer.art.betalingspaamindelse': 'Påmindelser om betaling',
+  'notifikationer.art.andres_aktivitet': 'Aktivitet fra andre',
+  'notifikationer.art.andres_aktivitetUnder':
+    'Valgfri. Få besked om alt, hvad de andre gør i dine bødekasser. Det kan blive til mange notifikationer.',
   'fejl.abonnementUgyldigt': 'Enheden kunne ikke slå notifikationer til. Prøv igen.',
   'aktivitet.fikCatchUp': '{hvem} fik catch-up for {maaned}',
   'aktivitet.catchUpLinje': 'Blandt de laveste i sæsonen · {total} i alt',

@@ -40,7 +40,7 @@ describe('notifikationTilstand (which card Profil shows)', () => {
 });
 
 describe('praeferencer', () => {
-  it('has every kind on when nothing is stored', () => {
+  it('has every kind on when nothing is stored, except the opt-in Aktivitet fra andre', () => {
     expect(praeferencer(null)).toEqual({
       bode_modtaget: true,
       anke_afstemning: true,
@@ -49,7 +49,16 @@ describe('praeferencer', () => {
       betaling_bekraeftet: true,
       automatisk_gebyr: true,
       betalingspaamindelse: true,
+      andres_aktivitet: false,
     });
+  });
+
+  it('keeps Aktivitet fra andre off when other toggles are stored without it', () => {
+    expect(praeferencer({ bode_modtaget: false }).andres_aktivitet).toBe(false);
+  });
+
+  it('keeps Aktivitet fra andre on once it is turned on', () => {
+    expect(praeferencer({ andres_aktivitet: true }).andres_aktivitet).toBe(true);
   });
 
   it('keeps what is stored', () => {
