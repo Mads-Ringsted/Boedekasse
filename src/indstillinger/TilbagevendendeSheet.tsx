@@ -1,7 +1,10 @@
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
+import { Field } from '../components/Field.tsx';
+import { primaryAction, visibleError } from '../components/fieldRules.ts';
 import { Sheet } from '../components/Sheet.tsx';
-import { kortDato } from '../kategorier/kategoriListe.ts';
+import { SheetAction } from '../components/SheetAction.tsx';
+import { kortDato, parsePris } from '../kategorier/kategoriListe.ts';
 import { t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import { gemTilbagevendende, stopTilbagevendende, type TilbagevendendeMedlem } from './hentTilbagevendende.ts';
@@ -12,11 +15,19 @@ import {
   type Frekvens,
   type TilbagevendendeGebyr,
 } from './tilbagevendende.ts';
-import '../frikob/Frikob.css';
+import '../styles/valg-liste.css';
 import '../medlemmer/felter.css';
 import './Indstillinger.css';
 
 const FORM_ID = 'tilbagevendende-form';
+
+/** Why Opret/Gem is off, for the form's first problem. */
+function aarsag(fejl: 'navn' | 'beloeb' | 'dag' | 'medlemmer', beloeb: string): string {
+  if (fejl === 'navn') return t('aarsag.skrivNavn');
+  if (fejl === 'beloeb') return t(beloeb.trim() === '' ? 'aarsag.skrivBeloeb' : 'aarsag.retBeloeb');
+  if (fejl === 'dag') return t('aarsag.vaelgDag');
+  return t('fejl.medlemmerMangler');
+}
 const FREKVENSER: readonly Frekvens[] = ['uge', 'maaned'];
 const UGEDAGE = [1, 2, 3, 4, 5, 6, 7];
 const MAANEDSDAGE = Array.from({ length: 28 }, (_, i) => i + 1);
@@ -55,12 +66,20 @@ export function TilbagevendendeSheet({
   const [bekraefterStop, setBekraefterStop] = useState(false);
   const [klientId] = useState(() => crypto.randomUUID());
   const [stopId] = useState(() => crypto.randomUUID());
+  const navnFelt = useRef<HTMLInputElement>(null);
+  // Typed text only: the frequency and Medlemmer are quick to pick again.
+  const aendret =
+    navn !== (tilbagevendende?.navn ?? '') || beloeb !== (tilbagevendende ? String(tilbagevendende.beloeb) : '');
 
   // Active Medlemmer, plus Udmeldte it already lists (so they can be taken off).
   const viste = medlemmer.filter((m) => !m.udmeldt || valgte.has(m.id));
   const alleValgt = viste.length > 0 && viste.every((m) => valgte.has(m.id));
   const resultat = tjekTilbagevendende({ navn, beloeb, frekvens, dag, medlemmer: [...valgte] });
-  const kanGemme = resultat.ok && !busy;
+  const handling = primaryAction(
+    [[resultat.ok, resultat.ok ? '' : aarsag(resultat.fejl, beloeb)]],
+    { busy },
+  );
+  const kanGemme = handling.enabled;
 
   function skiftFrekvens(ny: Frekvens) {
     setFrekvens(ny);
@@ -104,54 +123,43 @@ export function TilbagevendendeSheet({
     void koer(() => stopTilbagevendende(stopId, tilbagevendende.id));
   }
 
-  const beloebHint = beloeb.trim() !== '' && !resultat.ok && resultat.fejl === 'beloeb';
-
   return (
     <Sheet
       open={open}
       onOpenChange={onOpenChange}
       height="full"
       title={t(tilbagevendende ? 'tilbagevendende.retTitel' : 'tilbagevendende.nyTitel')}
+      initialFocus={tilbagevendende ? undefined : navnFelt}
+      dirty={aendret}
       footer={
-        <button type="submit" form={FORM_ID} className="felt-knap" disabled={!kanGemme}>
+        <SheetAction form={FORM_ID} disabled={!kanGemme} reason={handling.reason} error={fejl}>
           {t(tilbagevendende ? 'tilbagevendende.gem' : 'tilbagevendende.opret')}
-        </button>
+        </SheetAction>
       }
     >
       <form id={FORM_ID} onSubmit={gem}>
-        <label className="felt">
-          <span className="felt__label">{t('tilbagevendende.navn')}</span>
-          <input
-            className="felt__input"
-            type="text"
-            value={navn}
-            onChange={(e) => setNavn(e.target.value)}
-            placeholder={t('tilbagevendende.navnPladsholder')}
-            autoComplete="off"
-            maxLength={60}
-            autoFocus={!tilbagevendende}
-          />
-        </label>
+        <Field
+          ref={navnFelt}
+          label={t('tilbagevendende.navn')}
+          value={navn}
+          onChange={setNavn}
+          placeholder={t('tilbagevendende.navnPladsholder')}
+          maxLength={60}
+          enterKeyHint="next"
+        />
 
-        <label className="felt">
-          <span className="felt__label">{t('tilbagevendende.beloeb')}</span>
-          <span className="indst-felt">
-            <input
-              className="felt__input indst-felt__input"
-              type="text"
-              inputMode="numeric"
-              value={beloeb}
-              onChange={(e) => setBeloeb(e.target.value)}
-              autoComplete="off"
-            />
-            <span className="indst-felt__enhed">{t('kategori.kr')}</span>
-          </span>
-        </label>
-        {beloebHint && <p className="felt-fejl">{t('tilbagevendende.beloebUgyldig')}</p>}
+        <Field
+          label={t('tilbagevendende.beloeb')}
+          kind="integer"
+          unit={t('kategori.kr')}
+          value={beloeb}
+          onChange={setBeloeb}
+          error={visibleError(beloeb, parsePris(beloeb) === null ? t('tilbagevendende.beloebUgyldig') : null)}
+        />
 
         <div className="felt">
           <span className="felt__label">{t('tilbagevendende.hvorOfte')}</span>
-          <div role="radiogroup" aria-label={t('tilbagevendende.hvorOfte')} className="frikob-valg">
+          <div role="radiogroup" aria-label={t('tilbagevendende.hvorOfte')} className="valg-liste">
             {FREKVENSER.map((f) => {
               const valgt = f === frekvens;
               return (
@@ -160,12 +168,12 @@ export function TilbagevendendeSheet({
                   type="button"
                   role="radio"
                   aria-checked={valgt}
-                  className={`frikob-valg__raekke${valgt ? ' frikob-valg__raekke--valgt' : ''}`}
+                  className={`valg-liste__raekke${valgt ? ' valg-liste__raekke--valgt' : ''}`}
                   onClick={() => skiftFrekvens(f)}
                 >
-                  <span className="frikob-valg__radio" aria-hidden="true" />
-                  <span className="frikob-valg__tekst">
-                    <span className="frikob-valg__navn">
+                  <span className="valg-liste__radio" aria-hidden="true" />
+                  <span className="valg-liste__tekst">
+                    <span className="valg-liste__navn">
                       {t(f === 'uge' ? 'tilbagevendende.ugentlig' : 'tilbagevendende.maanedlig')}
                     </span>
                   </span>
@@ -199,7 +207,7 @@ export function TilbagevendendeSheet({
               {t(alleValgt ? 'tilbagevendende.fravaelgAlle' : 'tilbagevendende.vaelgAlle')}
             </button>
           </span>
-          <div className="frikob-valg">
+          <div className="valg-liste">
             {viste.map((m) => {
               const valgt = valgte.has(m.id);
               return (
@@ -208,12 +216,12 @@ export function TilbagevendendeSheet({
                   type="button"
                   role="checkbox"
                   aria-checked={valgt}
-                  className={`frikob-valg__raekke${valgt ? ' frikob-valg__raekke--valgt' : ''}`}
+                  className={`valg-liste__raekke${valgt ? ' valg-liste__raekke--valgt' : ''}`}
                   onClick={() => skiftMedlem(m.id)}
                 >
-                  <span className="frikob-valg__radio tilb__boks" aria-hidden="true" />
-                  <span className="frikob-valg__tekst">
-                    <span className="frikob-valg__navn">{m.navn}</span>
+                  <span className="valg-liste__radio tilb__boks" aria-hidden="true" />
+                  <span className="valg-liste__tekst">
+                    <span className="valg-liste__navn">{m.navn}</span>
                   </span>
                 </button>
               );
@@ -224,11 +232,6 @@ export function TilbagevendendeSheet({
         <p className="felt-note">
           {t('tilbagevendende.note', { naeste: kortDato(`${naesteForekomst(frekvens, dag)}T12:00:00Z`) })}
         </p>
-        {fejl && (
-          <p className="felt-fejl" role="alert">
-            {fejl}
-          </p>
-        )}
 
         {tilbagevendende && (
           <>

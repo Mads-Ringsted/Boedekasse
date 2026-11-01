@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from './auth/AuthProvider.tsx';
 import { LogInd } from './auth/LogInd.tsx';
 import { BodekasseProvider, useMedlemskaber } from './bodekasse/BodekasseProvider.tsx';
 import { Kassen } from './kassen/Kassen.tsx';
+import { Gebyrer } from './indstillinger/Gebyrer.tsx';
 import { Indstillinger } from './indstillinger/Indstillinger.tsx';
 import { Kategorier } from './kategorier/Kategorier.tsx';
 import { KonkurrenceDetalje } from './konkurrence/KonkurrenceDetalje.tsx';
@@ -19,6 +20,7 @@ import { Medlemmer } from './screens/Medlemmer.tsx';
 import { Mere } from './screens/Mere.tsx';
 import { ProfilRute } from './profil/ProfilSkaerm.tsx';
 import { foelgPushLink, lytEfterPushTryk } from './push/aabnPush.ts';
+import { Notifikationer } from './push/Notifikationer.tsx';
 import { TidligereSaeson } from './saeson/TidligereSaeson.tsx';
 import { VaelgBodekasse } from './screens/VaelgBodekasse.tsx';
 import { Velkommen } from './screens/Velkommen.tsx';
@@ -51,8 +53,10 @@ const router = createBrowserRouter([
       { path: 'kassen', element: <Kassen /> },
       { path: 'anker', element: <Anker /> },
       { path: 'konkurrencer', element: <Konkurrencer /> },
+      { path: 'notifikationer', element: <Notifikationer /> },
       { path: 'konkurrencer/:id', element: <KonkurrenceDetalje /> },
       { path: 'indstillinger', element: <Indstillinger /> },
+      { path: 'indstillinger/gebyrer', element: <Gebyrer /> },
       { path: 'saeson/:saesonId', element: <TidligereSaeson /> },
       { path: '*', element: <Hjem /> },
     ],

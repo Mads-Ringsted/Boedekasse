@@ -1,7 +1,10 @@
 import { useMemo, useState, type FormEvent } from 'react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
+import { Field } from '../components/Field.tsx';
+import { primaryAction } from '../components/fieldRules.ts';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { formatKr, t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import { useHent } from '../supabase/useHent.ts';
@@ -64,7 +67,17 @@ export function KonkurrenceSheet({ open, onOpenChange, konkurrence, onGemt }: Ko
     ? opsummer(r, deltagbare.map((d) => d.medlemId), regler.placeringer, regler.fravaersgebyr)
     : null;
 
-  const kanGemme = titel.trim() !== '' && dato !== '' && r.ids.length > 0 && regler !== undefined && !busy;
+  const handling = primaryAction(
+    [
+      [titel.trim() !== '', t('fejl.titelMangler')],
+      [dato !== '', t('aarsag.vaelgDato')],
+      [r.ids.length > 0, t('aarsag.placerDeltager')],
+      // While the rules load (or failed, which shows in the form), there is nothing more to say.
+      [regler !== undefined, ''],
+    ],
+    { busy },
+  );
+  const kanGemme = handling.enabled;
 
   async function gem(event: FormEvent) {
     event.preventDefault();
@@ -93,6 +106,7 @@ export function KonkurrenceSheet({ open, onOpenChange, konkurrence, onGemt }: Ko
       onOpenChange={onOpenChange}
       height="full"
       title={t(konkurrence ? 'konkurrence.ret' : 'konkurrencer.ny')}
+      dirty={titel !== (konkurrence?.titel ?? '')}
       footer={
         <div className="kny__footer">
           {sum && (
@@ -103,37 +117,23 @@ export function KonkurrenceSheet({ open, onOpenChange, konkurrence, onGemt }: Ko
               <span className="kny__sum-beloeb">{formatKr(sum.total)}</span>
             </div>
           )}
-          <button type="submit" form={FORM_ID} className="felt-knap" disabled={!kanGemme}>
+          <SheetAction form={FORM_ID} disabled={!kanGemme} reason={handling.reason} error={fejl}>
             {t(konkurrence ? 'konkurrence.gemRettelse' : 'konkurrence.gem')}
-          </button>
+          </SheetAction>
         </div>
       }
     >
       <form id={FORM_ID} className="kny" onSubmit={(e) => void gem(e)}>
         <div className="kny__felter">
-          <label className="kny__felt">
-            <span className="kny__label">{t('konkurrence.titel')}</span>
-            <input
-              className="kny__input"
-              type="text"
-              value={titel}
-              onChange={(e) => setTitel(e.target.value)}
-              placeholder={t('konkurrence.titelPladsholder')}
-              autoComplete="off"
-              enterKeyHint="done"
-              maxLength={60}
-            />
-          </label>
-          <label className="kny__felt">
-            <span className="kny__label">{t('konkurrence.dato')}</span>
-            <input
-              className="kny__input kny__input--dato"
-              type="date"
-              value={dato}
-              onChange={(e) => setDato(e.target.value)}
-              required
-            />
-          </label>
+          <Field
+            variant="row"
+            label={t('konkurrence.titel')}
+            value={titel}
+            onChange={setTitel}
+            placeholder={t('konkurrence.titelPladsholder')}
+            maxLength={60}
+          />
+          <Field variant="row" kind="date" label={t('konkurrence.dato')} value={dato} onChange={setDato} required />
         </div>
 
         <div className="kny__overskrift">
@@ -176,7 +176,7 @@ export function KonkurrenceSheet({ open, onOpenChange, konkurrence, onGemt }: Ko
                     className="kny__person"
                     onClick={() => setRaekkefoelge((x) => tryk(x, d.medlemId))}
                   >
-                    <Avatar navn={d.navn} size={36} egen={d.medlemId === medlemId} stiplet={!d.loggetInd} />
+                    <Avatar navn={d.navn} size={36} egen={d.medlemId === medlemId} stiplet={!d.loggetInd} medlemId={d.medlemId} />
                     <span className="kny__navn">{navn(d)}</span>
                     <span className="kny__beloeb">{formatKr(gebyrForPlads(plads, regler.placeringer))}</span>
                   </button>
@@ -191,7 +191,7 @@ export function KonkurrenceSheet({ open, onOpenChange, konkurrence, onGemt }: Ko
                   className="kny__person"
                   onClick={() => setRaekkefoelge((x) => tryk(x, d.medlemId))}
                 >
-                  <Avatar navn={d.navn} size={36} egen={d.medlemId === medlemId} stiplet={!d.loggetInd} />
+                  <Avatar navn={d.navn} size={36} egen={d.medlemId === medlemId} stiplet={!d.loggetInd} medlemId={d.medlemId} />
                   <span className="kny__navn kny__navn--fravaer">{navn(d)}</span>
                   <span className="kny__fravaer">
                     {t('konkurrence.fravaerendeBeloeb', { beloeb: formatKr(regler.fravaersgebyr) })}
@@ -204,11 +204,6 @@ export function KonkurrenceSheet({ open, onOpenChange, konkurrence, onGemt }: Ko
 
         {r.ids.length > 1 && <p className="felt-note">{t('konkurrence.delHint')}</p>}
         {konkurrence && <p className="felt-note">{t('konkurrence.retNote')}</p>}
-        {fejl && (
-          <p className="felt-fejl" role="alert">
-            {fejl}
-          </p>
-        )}
       </form>
     </Sheet>
   );

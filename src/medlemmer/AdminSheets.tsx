@@ -1,5 +1,8 @@
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
+import { Field } from '../components/Field.tsx';
+import { primaryAction } from '../components/fieldRules.ts';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import './felter.css';
@@ -7,6 +10,8 @@ import './AdminHandlinger.css';
 
 /** An RPC call with the sheet's one-time ID; resolves to supabase-js's `{ error }`. */
 type Kald<A extends unknown[] = []> = (klientId: string, ...args: A) => PromiseLike<{ error: unknown }>;
+
+const FORM_ID = 'ret-felt';
 
 interface BekraeftSheetProps {
   open: boolean;
@@ -42,21 +47,28 @@ export function BekraeftSheet({ open, onOpenChange, titel, tekst, knap, farlig =
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} height="partial" title={titel}>
+    <Sheet
+      open={open}
+      onOpenChange={onOpenChange}
+      height="partial"
+      title={titel}
+      footer={
+        <button
+          type="button"
+          className={`felt-knap${farlig ? ' felt-knap--farlig' : ''}`}
+          disabled={busy}
+          onClick={() => void bekraeft()}
+        >
+          {knap}
+        </button>
+      }
+    >
       <p className="felt-note">{tekst}</p>
       {fejl && (
         <p className="felt-fejl" role="alert">
           {fejl}
         </p>
       )}
-      <button
-        type="button"
-        className={`felt-knap felt-knap--naer${farlig ? ' felt-knap--farlig' : ''}`}
-        disabled={busy}
-        onClick={() => void bekraeft()}
-      >
-        {knap}
-      </button>
     </Sheet>
   );
 }
@@ -79,7 +91,12 @@ export function RetFeltSheet({ open, onOpenChange, titel, label, type, start, no
   const [vaerdi, setVaerdi] = useState(start);
   const [busy, setBusy] = useState(false);
   const [fejl, setFejl] = useState<string | null>(null);
-  const kanGemme = vaerdi.trim() !== '' && vaerdi.trim() !== start && !busy;
+  const felt = useRef<HTMLInputElement>(null);
+  const handling = primaryAction([[vaerdi.trim() !== '', t(type === 'email' ? 'aarsag.skrivEmail' : 'aarsag.skrivNavn')]], {
+    busy,
+    unchanged: vaerdi.trim() === start,
+  });
+  const kanGemme = handling.enabled;
 
   async function gem(event: FormEvent) {
     event.preventDefault();
@@ -96,30 +113,28 @@ export function RetFeltSheet({ open, onOpenChange, titel, label, type, start, no
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} height="partial" title={titel}>
-      <form onSubmit={(e) => void gem(e)}>
-        <label className="felt">
-          <span className="felt__label">{label}</span>
-          <input
-            className="felt__input"
-            type={type}
-            value={vaerdi}
-            onChange={(e) => setVaerdi(e.target.value)}
-            autoComplete="off"
-            autoCapitalize={type === 'email' ? 'none' : 'words'}
-            inputMode={type === 'email' ? 'email' : 'text'}
-            enterKeyHint="done"
-          />
-        </label>
-        {note && <p className="felt-note">{note}</p>}
-        {fejl && (
-          <p className="felt-fejl" role="alert">
-            {fejl}
-          </p>
-        )}
-        <button type="submit" className="felt-knap felt-knap--naer" disabled={!kanGemme}>
+    <Sheet
+      open={open}
+      onOpenChange={onOpenChange}
+      height="partial"
+      title={titel}
+      initialFocus={felt}
+      dirty={vaerdi !== start}
+      footer={
+        <SheetAction form={FORM_ID} disabled={!kanGemme} reason={handling.reason} error={fejl}>
           {t('adminHandlinger.gem')}
-        </button>
+        </SheetAction>
+      }
+    >
+      <form id={FORM_ID} onSubmit={(e) => void gem(e)}>
+        <Field
+          ref={felt}
+          label={label}
+          kind={type === 'email' ? 'email' : 'name'}
+          value={vaerdi}
+          onChange={setVaerdi}
+          note={note}
+        />
       </form>
     </Sheet>
   );

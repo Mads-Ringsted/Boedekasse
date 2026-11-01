@@ -4,7 +4,10 @@ import { looksLikeEmail, normalizeEmail } from '../auth/input.ts';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { delInvitation } from '../bodekasse/delInvitation.ts';
 import { Avatar } from '../components/Avatar.tsx';
+import { Field } from '../components/Field.tsx';
+import { primaryAction, typedRequirement } from '../components/fieldRules.ts';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { t } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
@@ -32,7 +35,14 @@ export function TilfoejMedlemSheet({ open, onOpenChange, kode, onTilfoejet }: Ti
   const [klientId, setKlientId] = useState(() => crypto.randomUUID());
 
   const fornavnet = fornavn(navn);
-  const kanTilfoeje = navn.trim() !== '' && looksLikeEmail(email) && !busy;
+  const handling = primaryAction(
+    [
+      [navn.trim() !== '', t('aarsag.skrivNavn')],
+      typedRequirement(email, looksLikeEmail(email), t('aarsag.skrivEmail'), t('aarsag.retEmail')),
+    ],
+    { busy },
+  );
+  const kanTilfoeje = handling.enabled;
 
   function skift(aaben: boolean) {
     if (!aaben) {
@@ -71,10 +81,11 @@ export function TilfoejMedlemSheet({ open, onOpenChange, kode, onTilfoejet }: Ti
       onOpenChange={skift}
       height="full"
       title={t('tilfoej.titel')}
+      dirty={navn !== '' || email !== ''}
       footer={
-        <button type="submit" form={FORM_ID} className="felt-knap" disabled={!kanTilfoeje}>
+        <SheetAction form={FORM_ID} disabled={!kanTilfoeje} reason={handling.reason} error={fejl}>
           {fornavnet ? t('tilfoej.knap', { navn: fornavnet }) : t('tilfoej.knapUdenNavn')}
-        </button>
+        </SheetAction>
       }
     >
       <form id={FORM_ID} onSubmit={(e) => void tilfoej(e)}>
@@ -82,43 +93,16 @@ export function TilfoejMedlemSheet({ open, onOpenChange, kode, onTilfoejet }: Ti
           <Avatar navn={navn} size={72} stiplet />
         </div>
 
-        <label className="felt">
-          <span className="felt__label">{t('tilfoej.navn')}</span>
-          <input
-            className="felt__input"
-            type="text"
-            value={navn}
-            onChange={(e) => setNavn(e.target.value)}
-            autoComplete="off"
-            enterKeyHint="next"
-          />
-        </label>
+        <Field label={t('tilfoej.navn')} kind="name" value={navn} onChange={setNavn} enterKeyHint="next" />
 
-        <label className="felt">
-          <span className="felt__label">{t('tilfoej.email')}</span>
-          <input
-            className="felt__input"
-            type="email"
-            inputMode="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={t('tilfoej.emailEksempel')}
-            autoComplete="off"
-            autoCapitalize="none"
-            autoCorrect="off"
-            spellCheck={false}
-            enterKeyHint="done"
-          />
-        </label>
-
-        <p className="felt-note">
-          {fornavnet ? t('tilfoej.note', { navn: fornavnet }) : t('tilfoej.noteUdenNavn')}
-        </p>
-        {fejl && (
-          <p className="felt-fejl" role="alert">
-            {fejl}
-          </p>
-        )}
+        <Field
+          label={t('tilfoej.email')}
+          kind="email"
+          value={email}
+          onChange={setEmail}
+          placeholder={t('tilfoej.emailEksempel')}
+          note={fornavnet ? t('tilfoej.note', { navn: fornavnet }) : t('tilfoej.noteUdenNavn')}
+        />
       </form>
 
       {kode && (

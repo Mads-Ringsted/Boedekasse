@@ -1,6 +1,9 @@
 import { useState, type FormEvent } from 'react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
+import { Field } from '../components/Field.tsx';
+import { primaryAction, typedRequirement, visibleError } from '../components/fieldRules.ts';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { t } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
@@ -8,6 +11,8 @@ import { iDagIKoebenhavn, tjekSlutdato } from './saeson.ts';
 import { useSaeson } from './SaesonProvider.tsx';
 import '../medlemmer/felter.css';
 import './Saeson.css';
+
+const SLUTDATO_FORM = 'slutdato';
 
 interface SheetProps {
   open: boolean;
@@ -66,19 +71,26 @@ export function StartSaesonSheet({ open, onOpenChange }: SheetProps) {
     pause || !saeson ? t('saeson.startTekstPause') : t('saeson.startTekst', { saeson: saeson.navn });
 
   return (
-    <Sheet open={open} onOpenChange={skift} height="partial" title={t('saeson.startTitel')}>
+    <Sheet
+      open={open}
+      onOpenChange={skift}
+      height="partial"
+      title={t('saeson.startTitel')}
+      footer={
+        <button
+          type="button"
+          className="felt-knap"
+          disabled={busy}
+          onClick={() =>
+            void kald((id) => supabase.rpc('start_saeson', { p_klient_id: id, p_bodekasse: bodekasseId }))
+          }
+        >
+          {t('saeson.start')}
+        </button>
+      }
+    >
       <p className="felt-note">{tekst}</p>
       <Fejl fejl={fejl} />
-      <button
-        type="button"
-        className="felt-knap felt-knap--naer"
-        disabled={busy}
-        onClick={() =>
-          void kald((id) => supabase.rpc('start_saeson', { p_klient_id: id, p_bodekasse: bodekasseId }))
-        }
-      >
-        {t('saeson.start')}
-      </button>
     </Sheet>
   );
 }
@@ -90,19 +102,26 @@ export function AfslutSaesonSheet({ open, onOpenChange }: SheetProps) {
   const { busy, fejl, skift, kald } = useSaesonKald(onOpenChange);
 
   return (
-    <Sheet open={open} onOpenChange={skift} height="partial" title={t('saeson.afslutTitel')}>
+    <Sheet
+      open={open}
+      onOpenChange={skift}
+      height="partial"
+      title={t('saeson.afslutTitel')}
+      footer={
+        <button
+          type="button"
+          className="felt-knap felt-knap--fare"
+          disabled={busy}
+          onClick={() =>
+            void kald((id) => supabase.rpc('afslut_saeson', { p_klient_id: id, p_bodekasse: bodekasseId }))
+          }
+        >
+          {t('saeson.afslutKnap')}
+        </button>
+      }
+    >
       <p className="felt-note">{t('saeson.afslutTekst', { saeson: saeson?.navn ?? '' })}</p>
       <Fejl fejl={fejl} />
-      <button
-        type="button"
-        className="felt-knap felt-knap--naer felt-knap--fare"
-        disabled={busy}
-        onClick={() =>
-          void kald((id) => supabase.rpc('afslut_saeson', { p_klient_id: id, p_bodekasse: bodekasseId }))
-        }
-      >
-        {t('saeson.afslutKnap')}
-      </button>
     </Sheet>
   );
 }
@@ -115,6 +134,10 @@ export function SlutdatoSheet({ open, onOpenChange }: SheetProps) {
   const start = saeson?.slutdato ?? '';
   const [dato, setDato] = useState(start);
   const resultat = tjekSlutdato(dato);
+  const handling = primaryAction(
+    [typedRequirement(dato, resultat.ok, t('aarsag.vaelgDato'), t('aarsag.retDato'))],
+    { busy, unchanged: dato === start },
+  );
 
   const gem = (slutdato: string | null) =>
     kald((id) =>
@@ -124,37 +147,39 @@ export function SlutdatoSheet({ open, onOpenChange }: SheetProps) {
 
   function submit(event: FormEvent) {
     event.preventDefault();
-    if (resultat.ok && dato !== start && !busy) void gem(resultat.vaerdi);
+    if (resultat.ok && handling.enabled) void gem(resultat.vaerdi);
   }
 
   return (
-    <Sheet open={open} onOpenChange={skift} height="partial" title={t('saeson.slutdatoTitel')}>
-      <form onSubmit={submit}>
-        <label className="felt">
-          <span className="felt__label">{t('saeson.slutdatoLabel')}</span>
-          <input
-            className="felt__input saeson-dato"
-            type="date"
-            min={iDagIKoebenhavn()}
-            value={dato}
-            onChange={(e) => setDato(e.target.value)}
-          />
-        </label>
-        {!resultat.ok && dato !== '' && <p className="felt-fejl">{resultat.fejl}</p>}
-        <p className="felt-note">{t('saeson.slutdatoNote')}</p>
-        <Fejl fejl={fejl} />
-        <button
-          type="submit"
-          className="felt-knap felt-knap--naer"
-          disabled={!resultat.ok || dato === start || busy}
-        >
-          {t('indstillinger.gem')}
-        </button>
-        {start !== '' && (
-          <button type="button" className="saeson-fjern" disabled={busy} onClick={() => void gem(null)}>
-            {t('saeson.fjernSlutdato')}
-          </button>
-        )}
+    <Sheet
+      open={open}
+      onOpenChange={skift}
+      height="partial"
+      title={t('saeson.slutdatoTitel')}
+      dirty={dato !== start}
+      footer={
+        <>
+          <SheetAction form={SLUTDATO_FORM} disabled={!handling.enabled} reason={handling.reason} error={fejl}>
+            {t('indstillinger.gem')}
+          </SheetAction>
+          {start !== '' && (
+            <button type="button" className="saeson-fjern" disabled={busy} onClick={() => void gem(null)}>
+              {t('saeson.fjernSlutdato')}
+            </button>
+          )}
+        </>
+      }
+    >
+      <form id={SLUTDATO_FORM} onSubmit={submit}>
+        <Field
+          label={t('saeson.slutdatoLabel')}
+          kind="date"
+          min={iDagIKoebenhavn()}
+          value={dato}
+          onChange={setDato}
+          error={visibleError(dato, resultat.ok ? null : resultat.fejl)}
+          note={t('saeson.slutdatoNote')}
+        />
       </form>
     </Sheet>
   );

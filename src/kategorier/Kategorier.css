@@ -28,7 +28,7 @@
 
 .kategorier__soeg {
   height: 44px;
-  border-radius: 12px;
+  border-radius: var(--radius-search);
   background: var(--color-surface);
   display: flex;
   align-items: center;
@@ -226,69 +226,10 @@
   padding-top: 8px;
 }
 
-.kategori-form__field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.field.kategori-form__felt {
+  margin-top: 0;
 }
 
-.kategori-form__label {
-  padding: 0 4px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-muted);
-}
-
-.kategori-form__boks {
-  min-height: 52px;
-  border-radius: var(--radius-input);
-  background: var(--color-surface-raised);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 16px;
-}
-
-.kategori-form__boks:focus-within {
-  box-shadow: inset 0 0 0 2px var(--color-accent);
-}
-
-.kategori-form__boks--tekst {
-  align-items: stretch;
-  padding: 14px 16px;
-}
-
-.kategori-form__input {
-  flex-grow: 1;
-  min-width: 0;
-  border: 0;
-  background: none;
-  color: var(--color-text);
-  font: inherit;
-  font-size: 17px;
-  outline: none;
-}
-
-.kategori-form__input--pris {
-  font-weight: 600;
-  font-variant-numeric: var(--font-numeric);
-}
-
-.kategori-form__textarea {
-  font-size: 16px;
-  resize: none;
-}
-
-.kategori-form__textarea::placeholder {
-  color: var(--color-text-muted);
-}
-
-.kategori-form__enhed {
-  font-size: 17px;
-  color: var(--color-text-muted);
-}
-
-.kategori-form__hint,
 .kategori-form__fejl {
   padding: 0 4px;
   margin: 0;

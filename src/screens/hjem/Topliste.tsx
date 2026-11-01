@@ -37,7 +37,7 @@ export function Topliste({ topliste, medlemId, onVaelg }: ToplisteProps) {
               `podie__knap${p.medlemId === medlemId ? ' podie__knap--egen' : ''}`,
               <>
                 <span className="podie__avatar">
-                  <Avatar navn={p.navn} size={p.trin === 1 ? 56 : 48} egen={p.medlemId === medlemId} />
+                  <Avatar navn={p.navn} size={p.trin === 1 ? 56 : 48} egen={p.medlemId === medlemId} medlemId={p.medlemId} />
                   <span className="podie__nr">{p.plads}</span>
                 </span>
                 <span className="podie__navn">{navn(p.medlemId, p.navn)}</span>
@@ -60,7 +60,7 @@ export function Topliste({ topliste, medlemId, onVaelg }: ToplisteProps) {
                 `topliste__rad${r.medlemId === medlemId ? ' topliste__rad--egen' : ''}`,
                 <>
                   <span className="topliste__nr">{r.plads}</span>
-                  <Avatar navn={r.navn} size={36} egen={r.medlemId === medlemId} />
+                  <Avatar navn={r.navn} size={36} egen={r.medlemId === medlemId} medlemId={r.medlemId} />
                   <span className="topliste__tekst">
                     <span className="topliste__beloeb">{formatKr(r.boederIAlt)}</span>
                     <span className="topliste__under">

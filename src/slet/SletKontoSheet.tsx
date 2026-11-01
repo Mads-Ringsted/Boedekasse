@@ -10,7 +10,7 @@ import './Slet.css';
 const liste = new Intl.ListFormat('da', { type: 'conjunction' });
 
 /**
- * Slet konto, from the bottom of your own profile. Deletes your login; your
+ * Slet konto, from Mere (under Log ud). Deletes your login; your
  * Medlemmer stay with name and history as unclaimed spots. While you are the
  * last Admin of a box, it says so instead of offering the button. Afterwards
  * the app logs out on this device and shows Log ind.
@@ -42,7 +42,24 @@ export function SletKontoSheet({ open, onOpenChange }: { open: boolean; onOpenCh
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} height="partial" title={t('sletKonto.titel')}>
+    <Sheet
+      open={open}
+      onOpenChange={onOpenChange}
+      height="partial"
+      title={t('sletKonto.titel')}
+      footer={
+        !blokeret && (
+          <button
+            type="button"
+            className="slet__knap"
+            disabled={busy || kasser.status !== 'ready'}
+            onClick={() => void slet()}
+          >
+            {t('sletKonto.knap')}
+          </button>
+        )
+      }
+    >
       {blokeret ? (
         <p className="slet__note" role="alert">
           {t('sletKonto.sidsteAdmin', { kasser: liste.format(kasser.data) })}
@@ -59,16 +76,6 @@ export function SletKontoSheet({ open, onOpenChange }: { open: boolean; onOpenCh
         <p className="slet__fejl" role="alert">
           {fejl}
         </p>
-      )}
-      {!blokeret && (
-        <button
-          type="button"
-          className="slet__knap slet__knap--naer"
-          disabled={busy || kasser.status !== 'ready'}
-          onClick={() => void slet()}
-        >
-          {t('sletKonto.knap')}
-        </button>
       )}
     </Sheet>
   );

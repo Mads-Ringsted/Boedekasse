@@ -1,0 +1,54 @@
+/* Vælg Profilbillede (ProfilbilledeSheet.tsx). */
+.profilbillede__forhaand {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0 4px;
+}
+
+.profilbillede__note {
+  margin: 14px 4px 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* "Brug også i mine andre bødekasser": one checkbox row. */
+.profilbillede__andre {
+  margin-top: 16px;
+}
+
+.valg-liste__radio.profilbillede__boks {
+  border-radius: 6px;
+}
+
+.valg-liste__raekke--valgt .profilbillede__boks::after {
+  border-radius: 2px;
+}
+
+/* Crop step: quiet text under Gem to pick another photo. */
+.profilbillede__andet {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 4px;
+  color: var(--color-accent-text);
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Quiet red text under the primary action. */
+.profilbillede__fjern {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 4px;
+  color: var(--color-danger);
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.profilbillede__fjern:disabled {
+  opacity: 0.45;
+  cursor: default;
+}

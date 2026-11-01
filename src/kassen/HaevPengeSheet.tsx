@@ -1,6 +1,9 @@
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
+import { Field } from '../components/Field.tsx';
+import { primaryAction, typedRequirement } from '../components/fieldRules.ts';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { formatKr, t } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
@@ -32,12 +35,21 @@ export function HaevPengeSheet({ open, onOpenChange, kassen, onHaevet }: HaevPen
   const [fejl, setFejl] = useState<string | null>(null);
   // One ID per Hævning, so "Prøv igen" never takes the money out twice.
   const [klientId] = useState(() => crypto.randomUUID());
-  const { kr, overKassen, klar } = haevTjek(beloeb, formaal, kassen);
-  const ugyldigt = beloeb !== '' && kr === null;
+  const beloebFelt = useRef<HTMLInputElement>(null);
+  const { kr, overKassen } = haevTjek(beloeb, formaal, kassen);
+  const ugyldigt = beloeb.trim() !== '' && kr === null;
+  const handling = primaryAction(
+    [
+      typedRequirement(beloeb, kr !== null && !overKassen, t('aarsag.skrivBeloeb'), t('aarsag.retBeloeb')),
+      [formaal.trim() !== '', t('fejl.formaalMangler')],
+    ],
+    { busy },
+  );
+  const hoejst = kassen <= 0 ? t('haev.tom') : t('haev.hoejst', { beloeb: formatKr(kassen) });
 
   async function haev(event: FormEvent) {
     event.preventDefault();
-    if (!klar || kr === null || busy) return;
+    if (!handling.enabled || kr === null) return;
     setBusy(true);
     setFejl(null);
     const { error } = await supabase.rpc('haev', {
@@ -61,10 +73,12 @@ export function HaevPengeSheet({ open, onOpenChange, kassen, onHaevet }: HaevPen
       onOpenChange={onOpenChange}
       height="full"
       title={t('haev.titel')}
+      initialFocus={beloebFelt}
+      dirty={beloeb !== '' || formaal !== ''}
       footer={
-        <button type="submit" form={FORM_ID} className="felt-knap" disabled={!klar || busy}>
+        <SheetAction form={FORM_ID} disabled={!handling.enabled} reason={handling.reason} error={fejl}>
           {kr !== null ? t('haev.knap', { beloeb: formatKr(kr) }) : t('haev.knapUdenBeloeb')}
-        </button>
+        </SheetAction>
       }
     >
       <form id={FORM_ID} onSubmit={(e) => void haev(e)}>
@@ -73,53 +87,29 @@ export function HaevPengeSheet({ open, onOpenChange, kassen, onHaevet }: HaevPen
           <span className="haev__kassen-beloeb">{formatKr(kassen)}</span>
         </div>
 
-        <div className="registrer__beloeb">
-          <span className="registrer__beloeb-label">{t('registrer.beloeb')}</span>
-          <label className="registrer__beloeb-felt">
-            <input
-              className="registrer__beloeb-input"
-              type="text"
-              inputMode="numeric"
-              value={beloeb}
-              onChange={(e) => setBeloeb(e.target.value)}
-              placeholder="0"
-              aria-label={t('registrer.beloebLabel')}
-              aria-invalid={ugyldigt || overKassen}
-              // As wide as its digits, so "300 kr" stays centred.
-              style={{ width: `${Math.max(beloeb.length, 1) + 0.4}ch` }}
-              autoComplete="off"
-              autoFocus
-            />
-            <span className="registrer__kr">{t('registrer.kr')}</span>
-          </label>
-          <span className={`registrer__beloeb-note${overKassen ? ' haev__over' : ''}`}>
-            {ugyldigt
-              ? t('registrer.ugyldigt')
-              : kassen <= 0
-                ? t('haev.tom')
-                : t('haev.hoejst', { beloeb: formatKr(kassen) })}
-          </span>
-        </div>
+        <Field
+          ref={beloebFelt}
+          variant="amount"
+          kind="integer"
+          label={t('registrer.beloeb')}
+          unit={t('registrer.kr')}
+          value={beloeb}
+          onChange={setBeloeb}
+          placeholder="0"
+          enterKeyHint="next"
+          error={ugyldigt ? t('registrer.ugyldigt') : overKassen ? hoejst : null}
+          note={ugyldigt || overKassen ? null : hoejst}
+        />
 
-        <label className="felt haev__formaal">
-          <span className="felt__label">{t('haev.formaal')}</span>
-          <input
-            className="felt__input"
-            type="text"
-            value={formaal}
-            onChange={(e) => setFormaal(e.target.value)}
-            placeholder={t('haev.formaalEksempel')}
-            required
-            enterKeyHint="done"
-          />
-        </label>
-        <p className="felt-note">{t('haev.info')}</p>
-
-        {fejl && (
-          <p className="felt-fejl" role="alert">
-            {fejl}
-          </p>
-        )}
+        <Field
+          className="haev__formaal"
+          label={t('haev.formaal')}
+          value={formaal}
+          onChange={setFormaal}
+          placeholder={t('haev.formaalEksempel')}
+          required
+          note={t('haev.info')}
+        />
       </form>
     </Sheet>
   );

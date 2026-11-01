@@ -18,6 +18,10 @@ _Avoid_: User, player, participant
 A former Medlem an Admin has taken out of the Bødekasse. Their history and any unpaid Saldo stay in the Bødekasse, and an Admin can bring them back.
 _Avoid_: Slettet, inaktiv, forladt
 
+**Profilbillede** (Profile picture):
+A Medlem's own picture in one Bødekasse, shown instead of their initials on the avatar. It belongs to the Medlem, not the login, so a person can have a different one in each Bødekasse. Only Medlemmer of that Bødekasse can see it; an Udmeldt Medlem's shows greyed out.
+_Avoid_: Avatar (the round tile that shows the Profilbillede or the initials), profilfoto
+
 **Admin**:
 A Medlem who can change a Bødekasse's settings and manage Medlemmer, and who can always do everything a Kasserer can. The creator is the first Admin.
 _Avoid_: Owner, moderator
@@ -79,6 +83,10 @@ _Avoid_: Deadline, forfaldsdag
 **Betalingspåmindelse** (Payment reminder):
 A push sent at 10:00 to a Medlem who hasn't yet paid what they owed at the end of last month: 2 days before the Betalingsdag, on the Betalingsdag, and on each late day. At most one a day. Only while Sen betaling is on, and never in a Pause.
 _Avoid_: Rykker, påmindelse
+
+**Aktivitet fra andre** (Activity from others):
+An opt-in push about everything the others do in your Bødekasser, from the activity feed. It leaves out what you did yourself and anything another push already tells you. Off until you turn it on.
+_Avoid_: Alle notifikationer, feed-push
 
 **Tilbagevendende Gebyr** (Recurring fee):
 A Gebyr an Admin sets up to hit chosen Medlemmer on a fixed weekly or monthly schedule.

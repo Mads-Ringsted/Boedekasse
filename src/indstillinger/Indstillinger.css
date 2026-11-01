@@ -61,6 +61,11 @@
   overflow-wrap: anywhere;
 }
 
+/* A rule that is off: "Fra", fainter than an on rule's status. */
+.indst-raekke__vaerdi--fra {
+  color: var(--color-text-faint);
+}
+
 .indst-raekke__chevron {
   flex-shrink: 0;
   color: var(--color-text-faint);
@@ -135,25 +140,40 @@
   }
 }
 
-/* The field in RetIndstillingSheet, with an optional unit ("kr"). */
-.indst-felt {
-  position: relative;
-  display: flex;
+/* RegelSheet (#94): sections, each with its switch first. */
+.regel-sektion + .regel-sektion {
+  margin-top: 28px;
 }
 
-.indst-felt__input {
+.regel-sektion__titel {
+  margin: 0 0 8px;
+  padding: 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.regel-sektion > .regel-switch:first-child {
+  margin-top: 4px;
+}
+
+.regel-switch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 0 16px;
+  border-radius: var(--radius-input);
+  background: var(--color-surface-raised);
+  font-size: 17px;
+}
+
+.regel-switch__label {
   flex-grow: 1;
   min-width: 0;
 }
 
-.indst-felt__enhed {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 17px;
-  color: var(--color-text-muted);
-  pointer-events: none;
+.regel-valg {
+  margin-top: 4px;
 }
 
 /* Tilbagevendende Gebyr (#79): the Medlemmer picker and Stop. */
@@ -169,12 +189,12 @@
   color: var(--color-accent-text);
 }
 
-.frikob-valg__radio.tilb__boks,
-.frikob-valg__raekke--valgt .tilb__boks::after {
+.valg-liste__radio.tilb__boks,
+.valg-liste__raekke--valgt .tilb__boks::after {
   border-radius: 6px;
 }
 
-.frikob-valg__raekke--valgt .tilb__boks::after {
+.valg-liste__raekke--valgt .tilb__boks::after {
   border-radius: 2px;
 }
 

@@ -1,12 +1,16 @@
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
+import { Field } from '../components/Field.tsx';
+import { primaryAction, typedRequirement, visibleError, type FieldKind } from '../components/fieldRules.ts';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
+import type { Tjekket } from './regel.ts';
 import '../medlemmer/felter.css';
 import './Indstillinger.css';
 
 /** Turns the typed text into the value to save, or a Danish error. */
-export type Tjek<V> = (tekst: string) => { ok: true; vaerdi: V } | { ok: false; fejl: string };
+export type Tjek<V> = (tekst: string) => Tjekket<V>;
 
 export interface RetIndstillingSheetProps<V> {
   open: boolean;
@@ -18,11 +22,12 @@ export interface RetIndstillingSheetProps<V> {
   tjek: Tjek<V>;
   /** Saves; throws the RPC error. Gets one one-time ID per opening. */
   onGem: (vaerdi: V, klientId: string) => Promise<void>;
-  /** Shown after the field, e.g. "kr". */
-  enhed?: string;
-  inputMode?: 'text' | 'numeric';
+  /** The keyboard; plain text when left out. */
+  kind?: FieldKind;
   note?: string;
 }
+
+const FORM_ID = 'ret-indstilling';
 
 /** Everything but open/close: what a row passes to open the sheet. */
 export type RetIndhold<V> = Omit<RetIndstillingSheetProps<V>, 'open' | 'onOpenChange'>;
@@ -40,17 +45,21 @@ export function RetIndstillingSheet<V>({
   start,
   tjek,
   onGem,
-  enhed,
-  inputMode = 'text',
+  kind = 'text',
   note,
 }: RetIndstillingSheetProps<V>) {
   const [tekst, setTekst] = useState(start);
   const [busy, setBusy] = useState(false);
   const [fejl, setFejl] = useState<string | null>(null);
   const [klientId] = useState(() => crypto.randomUUID());
+  const felt = useRef<HTMLInputElement>(null);
 
   const resultat = tjek(tekst);
-  const kanGemme = resultat.ok && tekst !== start && !busy;
+  const handling = primaryAction(
+    [typedRequirement(tekst, resultat.ok, t('aarsag.skrivVaerdi'), t('aarsag.retVaerdien'))],
+    { busy, unchanged: tekst === start },
+  );
+  const kanGemme = handling.enabled;
 
   async function gem(event: FormEvent) {
     event.preventDefault();
@@ -68,37 +77,32 @@ export function RetIndstillingSheet<V>({
   }
 
   // Only complain once something has been typed.
-  const hint = !resultat.ok && tekst.trim() !== '' ? resultat.fejl : null;
+  const hint = visibleError(tekst, resultat.ok ? null : resultat.fejl);
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} height="partial" title={title}>
-      <form onSubmit={(e) => void gem(e)}>
-        <label className="felt">
-          <span className="felt__label">{label}</span>
-          <span className="indst-felt">
-            <input
-              className="felt__input indst-felt__input"
-              type="text"
-              inputMode={inputMode}
-              value={tekst}
-              onChange={(e) => setTekst(e.target.value)}
-              autoComplete="off"
-              enterKeyHint="done"
-              autoFocus
-            />
-            {enhed && <span className="indst-felt__enhed">{enhed}</span>}
-          </span>
-        </label>
-        {hint && <p className="felt-fejl">{hint}</p>}
-        {note && <p className="felt-note">{note}</p>}
-        {fejl && (
-          <p className="felt-fejl" role="alert">
-            {fejl}
-          </p>
-        )}
-        <button type="submit" className="felt-knap felt-knap--naer" disabled={!kanGemme}>
+    <Sheet
+      open={open}
+      onOpenChange={onOpenChange}
+      height="partial"
+      title={title}
+      initialFocus={felt}
+      dirty={tekst !== start}
+      footer={
+        <SheetAction form={FORM_ID} disabled={!kanGemme} reason={handling.reason} error={fejl}>
           {t('indstillinger.gem')}
-        </button>
+        </SheetAction>
+      }
+    >
+      <form id={FORM_ID} onSubmit={(e) => void gem(e)}>
+        <Field
+          ref={felt}
+          label={label}
+          kind={kind}
+          value={tekst}
+          onChange={setTekst}
+          error={hint}
+          note={note}
+        />
       </form>
     </Sheet>
   );

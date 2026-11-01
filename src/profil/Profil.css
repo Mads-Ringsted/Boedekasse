@@ -38,6 +38,28 @@
   text-align: left;
 }
 
+/* Your own avatar opens the Profilbillede sheet; a small camera badge says so. */
+.profil__avatar-knap {
+  position: relative;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.profil__avatar-maerke {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  box-shadow: 0 0 0 2px var(--color-bg), inset 0 0 0 1px var(--color-line-strong);
+  color: var(--color-accent-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .profil__hoved-tekst {
   flex-grow: 1;
   min-width: 0;
@@ -237,12 +259,9 @@
   gap: 10px;
 }
 
-/* ---------- Own profile ---------- */
-.profil__slet-konto {
-  align-self: center;
-  min-height: var(--size-touch);
-  margin-top: 12px;
-  padding: 0 16px;
-  font-size: 15px;
-  color: var(--color-danger);
+/* "Venter på dig" (own profile): the heading, then a card per thing. */
+.profil__venter {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }

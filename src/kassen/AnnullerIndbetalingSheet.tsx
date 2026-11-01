@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { Field } from '../components/Field.tsx';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { formatKr, t } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
@@ -41,7 +43,21 @@ export function AnnullerIndbetalingSheet({ post, open, onOpenChange, onAnnullere
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} height="partial" title={t('annullerIndbetaling.titel')}>
+    <Sheet
+      open={open}
+      onOpenChange={onOpenChange}
+      height="partial"
+      title={t('annullerIndbetaling.titel')}
+      dirty={note !== ''}
+      footer={
+        <>
+          <SheetAction className="annuller-ind__knap" disabled={busy} onClick={() => void annuller()} error={fejl}>
+            {t('annullerIndbetaling.knap')}
+          </SheetAction>
+          <p className="annuller-ind__advarsel">{t('annullerIndbetaling.advarsel')}</p>
+        </>
+      }
+    >
       <p className="annuller-ind__linje">
         {t(post.bekraeftet ? 'annullerIndbetaling.linjeBekraeftet' : 'annullerIndbetaling.linje', {
           af: post.registreretAf,
@@ -54,25 +70,14 @@ export function AnnullerIndbetalingSheet({ post, open, onOpenChange, onAnnullere
       </div>
       {post.note && <p className="annuller-ind__note">{post.note}</p>}
 
-      <input
-        className="annuller-ind__input"
-        type="text"
+      <Field
+        className="annuller-ind__felt"
+        label={t('annullerIndbetaling.note')}
+        hideLabel
         value={note}
-        onChange={(e) => setNote(e.target.value)}
+        onChange={setNote}
         placeholder={t('annullerIndbetaling.note')}
-        aria-label={t('annullerIndbetaling.note')}
-        enterKeyHint="done"
       />
-
-      {fejl && (
-        <p className="annuller-ind__fejl" role="alert">
-          {fejl}
-        </p>
-      )}
-      <button type="button" className="annuller-ind__knap" disabled={busy} onClick={() => void annuller()}>
-        {t('annullerIndbetaling.knap')}
-      </button>
-      <p className="annuller-ind__advarsel">{t('annullerIndbetaling.advarsel')}</p>
     </Sheet>
   );
 }

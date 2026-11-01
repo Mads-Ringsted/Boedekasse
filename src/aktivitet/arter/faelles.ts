@@ -1,5 +1,14 @@
 import { formatKr, t } from '../../strings/index.ts';
 import type { Gebyr, Haendelse } from '../haendelse.ts';
+import type { Ikon, Kontekst } from '../visning.ts';
+
+/** A row's avatar for this Medlem: their picture or initials, main colour when it's you. */
+export const avatarIkon = (id: string | null, navn: string | null, ctx: Kontekst): Ikon => ({
+  slags: 'avatar',
+  navn: navn ?? '',
+  egen: id === ctx.migId,
+  medlemId: id,
+});
 
 /** A text field from the entry's data snapshot ('' when missing). */
 export const dataTekst = (h: Haendelse, felt: string): string => {

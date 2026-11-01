@@ -45,7 +45,7 @@ export function BoedeDetaljeSheet({ boedeId, open, onOpenChange, onAendret }: Bo
       <div className="boede-detalje__fra">
         {boede && (
           <>
-            <Avatar navn={boede.giverNavn} size={28} egen={boede.giverId === medlemId} />
+            <Avatar navn={boede.giverNavn} size={28} egen={boede.giverId === medlemId} medlemId={boede.giverId} />
             <span>{fraTil(boede, ctx)}</span>
           </>
         )}

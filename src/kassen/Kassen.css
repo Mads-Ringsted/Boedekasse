@@ -221,37 +221,12 @@
   color: var(--color-text-secondary);
 }
 
-.annuller-ind__input {
-  width: 100%;
+.field.annuller-ind__felt {
   margin-top: 22px;
-  height: 50px;
-  border: 0;
-  border-radius: var(--radius-input);
-  padding: 0 16px;
-  background: var(--color-surface-raised);
-  color: var(--color-text);
-  font: inherit;
-  font-size: 16px;
-  outline: none;
-}
-
-.annuller-ind__input::placeholder {
-  color: var(--color-text-faint);
-}
-
-.annuller-ind__input:focus {
-  box-shadow: inset 0 0 0 2px var(--color-accent);
-}
-
-.annuller-ind__fejl {
-  margin-top: 12px;
-  font-size: 15px;
-  color: var(--color-danger);
 }
 
 .annuller-ind__knap {
   width: 100%;
-  margin-top: 28px;
   height: 54px;
   border-radius: var(--radius-button);
   background: var(--color-surface-raised);
@@ -349,63 +324,8 @@
   background: none;
 }
 
-.registrer__beloeb {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 36px 0 28px;
-}
-
-.registrer__beloeb-label,
-.registrer__beloeb-note {
-  font-size: 13px;
-  color: var(--color-text-muted);
-  text-align: center;
-}
-
-.registrer__beloeb-felt {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 6px;
-  max-width: 100%;
-}
-
-.registrer__beloeb-input {
-  width: 6ch;
-  min-width: 0;
-  border: 0;
-  padding: 0;
-  background: none;
-  color: var(--color-text);
-  font: inherit;
-  font-size: 64px;
-  font-weight: 700;
-  letter-spacing: -2px;
-  text-align: right;
-  font-variant-numeric: var(--font-numeric);
-  outline: none;
-}
-
-.registrer__beloeb-input::placeholder {
-  color: var(--color-text-faint);
-}
-
-.registrer__beloeb-input[aria-invalid='true'] {
-  color: var(--color-danger);
-}
-
-.registrer__kr {
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--color-text-muted);
-}
-
-.registrer__note {
-  width: 100%;
-  height: 50px;
-  font-size: 16px;
+.field.registrer__note {
+  margin-top: 0;
 }
 
 /* Hæv penge (haev-penge.html) */
@@ -431,11 +351,7 @@
   font-variant-numeric: var(--font-numeric);
 }
 
-.registrer__beloeb-note.haev__over {
-  color: var(--color-danger);
-}
-
-.haev__formaal {
+.field.haev__formaal {
   margin-top: 0;
 }
 

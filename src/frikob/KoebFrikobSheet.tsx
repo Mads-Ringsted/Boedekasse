@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { ChevronLeft, Search, ShieldCheck } from 'lucide-react';
+import { ChevronLeft, ShieldCheck } from 'lucide-react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
+import { Field } from '../components/Field.tsx';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { kortNavne } from '../giv/navne.ts';
 import { kortDato, soegKategorier } from '../kategorier/kategoriListe.ts';
 import { formatKr, t } from '../strings/index.ts';
@@ -11,6 +13,7 @@ import { useHent } from '../supabase/useHent.ts';
 import { FrikobTag } from './FrikobTag.tsx';
 import { hentKoebValg, type FrikobStatus } from './hentFrikoeb.ts';
 import '../medlemmer/felter.css';
+import '../styles/valg-liste.css';
 import './Frikob.css';
 
 interface KoebFrikobSheetProps {
@@ -71,20 +74,13 @@ export function KoebFrikobSheet({ open, onOpenChange, medlem, status, onKoebt }:
   const slut = status.saeson?.slutdato;
   const footer =
     trin === 1 ? (
-      <button type="button" className="felt-knap" disabled={!valgt} onClick={() => setTrin(2)}>
+      <SheetAction disabled={!valgt} reason={t('aarsag.vaelgKategori')} onClick={() => setTrin(2)}>
         {t('frikob.naeste')}
-      </button>
+      </SheetAction>
     ) : (
-      <>
-        {fejl && (
-          <p className="felt-fejl frikob__fejl" role="alert">
-            {fejl}
-          </p>
-        )}
-        <button type="button" className="felt-knap" disabled={busy} onClick={() => void koeb()}>
-          {t(egen ? 'frikob.koeb' : 'frikob.registrer', { beloeb: pris })}
-        </button>
-      </>
+      <SheetAction disabled={busy} onClick={() => void koeb()} error={fejl}>
+        {t(egen ? 'frikob.koeb' : 'frikob.registrer', { beloeb: pris })}
+      </SheetAction>
     );
 
   return (
@@ -108,16 +104,15 @@ export function KoebFrikobSheet({ open, onOpenChange, medlem, status, onKoebt }:
       {trin === 1 ? (
         <>
           <p className="frikob__intro">{t('frikob.prisLinje', { beloeb: pris })}</p>
-          <label className="frikob__soeg">
-            <Search size={18} strokeWidth={2} aria-hidden="true" />
-            <input
-              type="search"
-              aria-label={t('giv.soeg')}
-              placeholder={t('giv.soeg')}
-              value={soeg}
-              onChange={(e) => setSoeg(e.target.value)}
-            />
-          </label>
+          <Field
+            className="frikob__soeg"
+            kind="search"
+            label={t('giv.soeg')}
+            hideLabel
+            value={soeg}
+            onChange={setSoeg}
+            placeholder={t('giv.soeg')}
+          />
           {valg.status === 'error' && (
             <button type="button" className="felt-fejl" onClick={valg.reload}>
               {rpcErrorText(valg.error)}
@@ -127,7 +122,7 @@ export function KoebFrikobSheet({ open, onOpenChange, medlem, status, onKoebt }:
             <p className="felt-note">{t('frikob.ingenKategorier')}</p>
           )}
           {viste.length > 0 && (
-            <div role="radiogroup" aria-label={t('frikob.titel')} className="frikob-valg">
+            <div role="radiogroup" aria-label={t('frikob.titel')} className="valg-liste">
               {viste.map((k) => {
                 const tjekket = k.id === valgtId && !k.koebt;
                 return (
@@ -137,16 +132,16 @@ export function KoebFrikobSheet({ open, onOpenChange, medlem, status, onKoebt }:
                     role="radio"
                     aria-checked={tjekket}
                     disabled={k.koebt}
-                    className={`frikob-valg__raekke${tjekket ? ' frikob-valg__raekke--valgt' : ''}`}
+                    className={`valg-liste__raekke${tjekket ? ' valg-liste__raekke--valgt' : ''}`}
                     onClick={() => setValgtId(k.id)}
                   >
-                    <span className="frikob-valg__radio" aria-hidden="true" />
-                    <span className="frikob-valg__tekst">
-                      <span className="frikob-valg__navn">
+                    <span className="valg-liste__radio" aria-hidden="true" />
+                    <span className="valg-liste__tekst">
+                      <span className="valg-liste__navn">
                         {k.navn}
                         {k.koebt && <FrikobTag />}
                       </span>
-                      <span className="frikob-valg__under">
+                      <span className="valg-liste__under">
                         {k.koebt
                           ? t('frikob.alleredeKoebt')
                           : t(egen ? 'frikob.kategoriLinje' : 'frikob.kategoriLinjeAnden', {

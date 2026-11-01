@@ -125,7 +125,7 @@ export function AnkeSheet({ open, onOpenChange, boede, regler, stacked = false, 
       }
     >
       <div className="anke-boede">
-        <Avatar navn={boede.giverNavn} size={40} />
+        <Avatar navn={boede.giverNavn} size={40} medlemId={boede.giverId} />
         <span className="anke-boede__tekst">
           <span className="anke-boede__navn">{boede.navn}</span>
           <span className="anke-boede__fra">{t('anke.fra', { giver, siden: siden(boede.givet) })}</span>

@@ -62,6 +62,7 @@
   --radius-card: 18px;              /* lists and cards */
   --radius-button: 18px;            /* 56px primary buttons */
   --radius-input: 16px;
+  --radius-search: 12px;            /* 44px search fields */
   --radius-chip: 999px;
   --radius-tag: 6px;
 

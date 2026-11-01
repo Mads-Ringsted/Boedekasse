@@ -194,31 +194,8 @@
   margin-left: -8px;
 }
 
-.giv-soeg {
+.field.giv-soeg {
   margin: 18px 0 12px;
-  height: 44px;
-  border-radius: 12px;
-  background: var(--color-surface-raised);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 12px;
-  color: var(--color-text-muted);
-}
-
-.giv-soeg input {
-  flex-grow: 1;
-  min-width: 0;
-  border: 0;
-  background: none;
-  color: var(--color-text);
-  font: inherit;
-  font-size: 16px;
-  outline: none;
-}
-
-.giv-soeg input::placeholder {
-  color: var(--color-text-muted);
 }
 
 .giv-kat-liste {
@@ -562,6 +539,14 @@
   font-weight: 600;
 }
 
+.field.engangs__felt {
+  margin-top: 0;
+}
+
+.field.engangs__beloeb {
+  padding: 16px 0 8px;
+}
+
 .engangs__beloeb {
   display: flex;
   flex-direction: column;
@@ -581,21 +566,6 @@
   gap: 6px;
 }
 
-.engangs__beloeb-felt input {
-  width: 160px;
-  border: 0;
-  background: none;
-  color: var(--color-text);
-  font: inherit;
-  font-size: 60px;
-  font-weight: 700;
-  letter-spacing: -2px;
-  text-align: right;
-  font-variant-numeric: var(--font-numeric);
-  outline: none;
-}
-
-/* Fast (#76): the fixed amount, styled like the field but not editable. */
 .engangs__beloeb-felt .engangs__beloeb-fast {
   min-width: 160px;
   color: var(--color-text);
@@ -610,10 +580,6 @@
   padding: 0 4px;
   font-size: 14px;
   line-height: 1.4;
-  color: var(--color-text-muted);
-}
-
-.engangs__beloeb-felt input::placeholder {
   color: var(--color-text-muted);
 }
 

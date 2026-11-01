@@ -6,7 +6,9 @@ import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { BackButton } from '../components/BackButton.tsx';
 import { Screen } from '../components/Screen.tsx';
+import { Field } from '../components/Field.tsx';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { kortNavne } from '../giv/navne.ts';
 import { formatKr, t, type PlainStringId } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
@@ -125,7 +127,7 @@ function Resultat({ k, medlemId, children }: { k: Konkurrence; medlemId: string;
   const raekke = (d: Deltager) => (
     <li key={d.medlemId} className={`konk-detalje__raekke${d.medlemId === medlemId ? ' konk-detalje__raekke--egen' : ''}`}>
       <span className="konk-detalje__nr">{d.plads ?? ''}</span>
-      <Avatar navn={d.navn} size={34} egen={d.medlemId === medlemId} stiplet={!d.loggetInd} />
+      <Avatar navn={d.navn} size={34} egen={d.medlemId === medlemId} stiplet={!d.loggetInd} medlemId={d.medlemId} />
       <span className={`konk-detalje__navn${d.plads === null ? ' konk-detalje__navn--fravaer' : ''}`}>{navn(d)}</span>
       <span className="konk-detalje__beloeb">{formatKr(d.beloeb)}</span>
     </li>
@@ -173,7 +175,7 @@ function Resultat({ k, medlemId, children }: { k: Konkurrence; medlemId: string;
             <div key={d.medlemId} className={`podie__plads podie__plads--${trin}`}>
               <div className={`podie__knap${d.medlemId === medlemId ? ' podie__knap--egen' : ''}`}>
                 <span className="podie__avatar">
-                  <Avatar navn={d.navn} size={trin === 1 ? 56 : 48} egen={d.medlemId === medlemId} stiplet={!d.loggetInd} />
+                  <Avatar navn={d.navn} size={trin === 1 ? 56 : 48} egen={d.medlemId === medlemId} stiplet={!d.loggetInd} medlemId={d.medlemId} />
                 </span>
                 <span className="podie__navn">{navn(d)}</span>
                 <span className="podie__blok">
@@ -204,6 +206,8 @@ function Resultat({ k, medlemId, children }: { k: Konkurrence; medlemId: string;
     </div>
   );
 }
+
+const ANNULLER_FORM = 'annuller-konkurrence';
 
 /** Annullér konkurrence: what goes, an optional note, and the red button. */
 function AnnullerSheet({
@@ -237,30 +241,23 @@ function AnnullerSheet({
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} height="partial" title={t('konkurrence.annuller')}>
-      <form onSubmit={(e) => void annuller(e)}>
+    <Sheet
+      open={open}
+      onOpenChange={onOpenChange}
+      height="partial"
+      title={t('konkurrence.annuller')}
+      dirty={note !== ''}
+      footer={
+        <SheetAction form={ANNULLER_FORM} className="felt-knap konk-annuller__knap" disabled={busy} error={fejl}>
+          {t('konkurrence.annuller')}
+        </SheetAction>
+      }
+    >
+      <form id={ANNULLER_FORM} onSubmit={(e) => void annuller(e)}>
         <p className="felt-note konk-annuller__tekst">
           {t('konkurrence.annullerTekst', { antal: k.antalGebyrer, beloeb: formatKr(k.total) })}
         </p>
-        <label className="felt">
-          <span className="felt__label">{t('konkurrence.note')}</span>
-          <input
-            className="felt__input"
-            type="text"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            autoComplete="off"
-            maxLength={200}
-          />
-        </label>
-        {fejl && (
-          <p className="felt-fejl" role="alert">
-            {fejl}
-          </p>
-        )}
-        <button type="submit" className="felt-knap felt-knap--naer konk-annuller__knap" disabled={busy}>
-          {t('konkurrence.annuller')}
-        </button>
+        <Field label={t('konkurrence.note')} value={note} onChange={setNote} maxLength={200} />
       </form>
     </Sheet>
   );

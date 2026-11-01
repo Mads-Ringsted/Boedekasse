@@ -147,40 +147,21 @@
   color: var(--color-text-muted);
 }
 
-.betal__beloeb {
-  margin-bottom: 10px;
-  height: 52px;
+.field.betal__beloeb {
+  margin: 0 0 10px;
   border-radius: var(--radius-input);
   background: var(--color-surface-raised);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+}
+
+.betal__beloeb .field__main {
+  min-height: 52px;
   padding: 0 18px;
-  font-size: 16px;
 }
 
-.betal__beloeb-label {
-  color: var(--color-text-muted);
-}
-
-.betal__beloeb-felt {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+.betal__beloeb .field__input,
+.betal__beloeb .field__unit {
   font-weight: 700;
-}
-
-.betal__beloeb-input {
-  width: 80px;
-  text-align: right;
-  font: inherit;
-  font-size: 17px;
-  font-weight: 700;
-  font-variant-numeric: var(--font-numeric);
   color: var(--color-text);
-  background: none;
-  border: 0;
-  outline: none;
 }
 
 .betal__faerdig {
