@@ -1,20 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { base64UrlTilBytes, notifikationTilstand, praeferencer, type EnhedPush } from './push.ts';
+import { base64UrlTilBytes, notifikationStatus, notifikationTilstand, praeferencer, type EnhedPush } from './push.ts';
 
 const installeret: EnhedPush = {
-  installeret: true,
   understoettet: true,
   harNoegle: true,
   tilladelse: 'default',
   abonneret: false,
 };
 
-describe('notifikationTilstand (which card Profil shows)', () => {
-  it('asks you to install the app in a browser tab', () => {
-    expect(notifikationTilstand({ ...installeret, installeret: false })).toBe('installer');
-  });
-
-  it('offers "Slå notifikationer til" in the installed app', () => {
+describe('notifikationTilstand (what the Notifikationer screen shows)', () => {
+  it('offers "Slå notifikationer til" on a device that can do push', () => {
     expect(notifikationTilstand(installeret)).toBe('slaaTil');
   });
 
@@ -36,6 +31,53 @@ describe('notifikationTilstand (which card Profil shows)', () => {
 
   it('says push is not available when the app has no VAPID key', () => {
     expect(notifikationTilstand({ ...installeret, harNoegle: false })).toBe('ikkeUnderstoettet');
+  });
+});
+
+describe('notifikationStatus (the "Notifikationer" row on Mere)', () => {
+  const abonneret: EnhedPush = { ...installeret, tilladelse: 'granted', abonneret: true };
+
+  it('says Til when this device is subscribed and a kind is on', () => {
+    expect(notifikationStatus(abonneret, praeferencer(null))).toBe('Til');
+  });
+
+  it('says Til when only the opt-in Aktivitet fra andre is on', () => {
+    const kunAndre = praeferencer({
+      bode_modtaget: false,
+      anke_afstemning: false,
+      anke_resultat: false,
+      betalingsmelding_venter: false,
+      betaling_bekraeftet: false,
+      automatisk_gebyr: false,
+      betalingspaamindelse: false,
+      andres_aktivitet: true,
+    });
+    expect(notifikationStatus(abonneret, kunAndre)).toBe('Til');
+  });
+
+  it('says Fra when every kind is off', () => {
+    const alleFra = praeferencer({
+      bode_modtaget: false,
+      anke_afstemning: false,
+      anke_resultat: false,
+      betalingsmelding_venter: false,
+      betaling_bekraeftet: false,
+      automatisk_gebyr: false,
+      betalingspaamindelse: false,
+    });
+    expect(notifikationStatus(abonneret, alleFra)).toBe('Fra');
+  });
+
+  it('says Fra when this device is not subscribed', () => {
+    expect(notifikationStatus(installeret, praeferencer(null))).toBe('Fra');
+  });
+
+  it('says Fra after you said no, even with an old subscription', () => {
+    expect(notifikationStatus({ ...abonneret, tilladelse: 'denied' }, praeferencer(null))).toBe('Fra');
+  });
+
+  it('says Fra when the app has no VAPID key', () => {
+    expect(notifikationStatus({ ...abonneret, harNoegle: false }, praeferencer(null))).toBe('Fra');
   });
 });
 

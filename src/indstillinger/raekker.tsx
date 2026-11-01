@@ -57,32 +57,21 @@ export function LinkRaekke({ label, under, vaerdi, status, onClick, art = 'link'
 
 interface SwitchRaekkeProps {
   label: string;
-  /** Small, under the label: the rule's amount or window. */
+  /** Small, under the label. */
   under?: string;
   til: boolean;
   onSkift: (til: boolean) => void;
-  /** Tapping the text opens the rule's details (amount etc.). */
-  onAabn?: () => void;
   disabled?: boolean;
 }
 
-/** A Særlig regel: on/off, with its amount under the name. */
-export function SwitchRaekke({ label, under, til, onSkift, onAabn, disabled = false }: SwitchRaekkeProps) {
-  const tekst = (
-    <>
-      <span className="indst-raekke__label">{label}</span>
-      {under && <span className="indst-raekke__under">{under}</span>}
-    </>
-  );
+/** A label (with an optional line under it) and a switch that acts at once: the Notifikationer toggles. */
+export function SwitchRaekke({ label, under, til, onSkift, disabled = false }: SwitchRaekkeProps) {
   return (
     <div className="indst-raekke indst-raekke--switch">
-      {onAabn ? (
-        <button type="button" className="indst-raekke__tekst" onClick={onAabn}>
-          {tekst}
-        </button>
-      ) : (
-        <span className="indst-raekke__tekst">{tekst}</span>
-      )}
+      <span className="indst-raekke__tekst">
+        <span className="indst-raekke__label">{label}</span>
+        {under && <span className="indst-raekke__under">{under}</span>}
+      </span>
       <Switch label={label} til={til} onSkift={onSkift} disabled={disabled} />
     </div>
   );

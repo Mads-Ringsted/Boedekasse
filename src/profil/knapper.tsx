@@ -2,7 +2,6 @@ import { useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Plus, Wallet } from 'lucide-react';
 import { BetalSheet } from '../betal/BetalSheet.tsx';
-import { MinAfventendeMelding } from '../betal/MinMeldingKort.tsx';
 import { useGivBoeder } from '../giv/GivBoederProvider.tsx';
 import { RegistrerIndbetalingSheet } from '../kassen/RegistrerIndbetalingSheet.tsx';
 import { useSaeson } from '../saeson/SaesonProvider.tsx';
@@ -63,15 +62,6 @@ export function BetalKnap({ visning, opdater }: ProfilDelProps) {
       )}
     </>
   );
-}
-
-/**
- * Your own report that afventer (orange card with Fortryd), on your own
- * profile. It reloads with the profile: `opdater()` gives a new `profil`.
- */
-export function MinMeldingProfilKort({ profil, visning, opdater }: ProfilDelProps) {
-  if (!visning.egen) return null;
-  return <MinAfventendeMelding opdater={profil} onFortrudt={opdater} />;
 }
 
 /** "Registrér indbetaling" (Admin or Kasserer) on someone else's profile, with them picked. */

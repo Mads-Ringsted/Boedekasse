@@ -1,4 +1,3 @@
-import { isInstalled, readDisplayEnv } from '../shell/installed.ts';
 import { supabase } from '../supabase/index.ts';
 import { base64UrlTilBytes, type EnhedPush } from './push.ts';
 
@@ -17,11 +16,9 @@ function harWebPush(): boolean {
 
 /** What this device can do about push, and its current subscription. */
 export async function laesEnhed(): Promise<Enhed> {
-  const installeret = isInstalled(readDisplayEnv());
   const registrering = harWebPush() ? ((await navigator.serviceWorker.getRegistration()) ?? null) : null;
   const abonnement = registrering ? await registrering.pushManager.getSubscription() : null;
   return {
-    installeret,
     understoettet: registrering !== null,
     harNoegle: VAPID_NOEGLE !== '',
     tilladelse: harWebPush() ? Notification.permission : 'default',
@@ -29,6 +26,16 @@ export async function laesEnhed(): Promise<Enhed> {
     registrering,
     abonnement,
   };
+}
+
+/**
+ * `laesEnhed`, and while this device is subscribed, tells the server again
+ * (best effort), so its copy is current for whoever is logged in now.
+ */
+export async function laesOgOpfriskEnhed(): Promise<Enhed> {
+  const enhed = await laesEnhed();
+  if (enhed.abonnement && enhed.tilladelse === 'granted') void gemAbonnement(enhed.abonnement).catch(() => {});
+  return enhed;
 }
 
 /** Tells the server about this device, for the logged-in person. */
