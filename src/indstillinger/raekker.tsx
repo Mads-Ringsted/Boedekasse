@@ -1,5 +1,6 @@
 import { Children, type ReactNode } from 'react';
 import { ChevronRight } from 'lucide-react';
+import type { RegelStatus } from './regel.ts';
 import './Indstillinger.css';
 
 /** A titled card of rows. Hidden while it has no rows. */
@@ -40,6 +41,21 @@ export function LinkRaekke({ label, under, vaerdi, onClick, art = 'link' }: Link
       {art === 'link' && (
         <ChevronRight className="indst-raekke__chevron" size={16} strokeWidth={2.2} aria-hidden="true" />
       )}
+    </button>
+  );
+}
+
+/**
+ * A rule row (#94): the label, its status ("Til · 300 kr" or a muted "Fra")
+ * and a chevron. The whole row opens the rule's sheet; the switch lives only
+ * there. Build the status with the rule's helper (see `regler.ts`).
+ */
+export function RegelRaekke({ label, status, onClick }: { label: string; status: RegelStatus; onClick: () => void }) {
+  return (
+    <button type="button" className="indst-raekke indst-raekke--link" onClick={onClick}>
+      <span className="indst-raekke__label">{label}</span>
+      <span className={`indst-raekke__vaerdi${status.til ? '' : ' indst-raekke__vaerdi--fra'}`}>{status.tekst}</span>
+      <ChevronRight className="indst-raekke__chevron" size={16} strokeWidth={2.2} aria-hidden="true" />
     </button>
   );
 }
