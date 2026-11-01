@@ -4,8 +4,14 @@ import { Sheet } from '../components/Sheet.tsx';
 import { kortDato } from '../kategorier/kategoriListe.ts';
 import { t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
-import { gemTilbagevendende, stopTilbagevendende, type RegelMedlem } from './hentTilbagevendende.ts';
-import { naesteForekomst, tjekRegel, ugedagNavn, type Frekvens, type Regel } from './tilbagevendende.ts';
+import { gemTilbagevendende, stopTilbagevendende, type TilbagevendendeMedlem } from './hentTilbagevendende.ts';
+import {
+  naesteForekomst,
+  tjekTilbagevendende,
+  ugedagNavn,
+  type Frekvens,
+  type TilbagevendendeGebyr,
+} from './tilbagevendende.ts';
 import '../frikob/Frikob.css';
 import '../medlemmer/felter.css';
 import './Indstillinger.css';
@@ -19,9 +25,9 @@ interface TilbagevendendeSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   /** Ret this one; without it, Nyt gebyr. */
-  regel?: Regel;
+  tilbagevendende?: TilbagevendendeGebyr;
   /** Every Medlem of the box, by name. */
-  medlemmer: readonly RegelMedlem[];
+  medlemmer: readonly TilbagevendendeMedlem[];
   /** Saved or stopped. */
   onGemt: () => void;
 }
@@ -31,23 +37,29 @@ interface TilbagevendendeSheetProps {
  * frequency and the Medlemmer it hits; Ret also offers Stop. Mount it with a
  * new `key` per opening so the fields and the one-time IDs start fresh.
  */
-export function TilbagevendendeSheet({ open, onOpenChange, regel, medlemmer, onGemt }: TilbagevendendeSheetProps) {
+export function TilbagevendendeSheet({
+  open,
+  onOpenChange,
+  tilbagevendende,
+  medlemmer,
+  onGemt,
+}: TilbagevendendeSheetProps) {
   const { bodekasseId } = useBodekasse();
-  const [navn, setNavn] = useState(regel?.navn ?? '');
-  const [beloeb, setBeloeb] = useState(regel ? String(regel.beloeb) : '');
-  const [frekvens, setFrekvens] = useState<Frekvens>(regel?.frekvens ?? 'uge');
-  const [dag, setDag] = useState(regel?.dag ?? 1);
-  const [valgte, setValgte] = useState<ReadonlySet<string>>(() => new Set(regel?.medlemmer ?? []));
+  const [navn, setNavn] = useState(tilbagevendende?.navn ?? '');
+  const [beloeb, setBeloeb] = useState(tilbagevendende ? String(tilbagevendende.beloeb) : '');
+  const [frekvens, setFrekvens] = useState<Frekvens>(tilbagevendende?.frekvens ?? 'uge');
+  const [dag, setDag] = useState(tilbagevendende?.dag ?? 1);
+  const [valgte, setValgte] = useState<ReadonlySet<string>>(() => new Set(tilbagevendende?.medlemmer ?? []));
   const [busy, setBusy] = useState(false);
   const [fejl, setFejl] = useState<string | null>(null);
   const [bekraefterStop, setBekraefterStop] = useState(false);
   const [klientId] = useState(() => crypto.randomUUID());
   const [stopId] = useState(() => crypto.randomUUID());
 
-  // Active Medlemmer, plus Udmeldte the rule already lists (so they can be taken off).
+  // Active Medlemmer, plus Udmeldte it already lists (so they can be taken off).
   const viste = medlemmer.filter((m) => !m.udmeldt || valgte.has(m.id));
   const alleValgt = viste.length > 0 && viste.every((m) => valgte.has(m.id));
-  const resultat = tjekRegel({ navn, beloeb, frekvens, dag, medlemmer: [...valgte] });
+  const resultat = tjekTilbagevendende({ navn, beloeb, frekvens, dag, medlemmer: [...valgte] });
   const kanGemme = resultat.ok && !busy;
 
   function skiftFrekvens(ny: Frekvens) {
@@ -80,16 +92,16 @@ export function TilbagevendendeSheet({ open, onOpenChange, regel, medlemmer, onG
   function gem(event: FormEvent) {
     event.preventDefault();
     if (!kanGemme || !resultat.ok) return;
-    void koer(() => gemTilbagevendende(klientId, bodekasseId, regel?.id ?? null, resultat.vaerdi));
+    void koer(() => gemTilbagevendende(klientId, bodekasseId, tilbagevendende?.id ?? null, resultat.vaerdi));
   }
 
   function stop() {
-    if (!regel) return;
+    if (!tilbagevendende) return;
     if (!bekraefterStop) {
       setBekraefterStop(true);
       return;
     }
-    void koer(() => stopTilbagevendende(stopId, regel.id));
+    void koer(() => stopTilbagevendende(stopId, tilbagevendende.id));
   }
 
   const beloebHint = beloeb.trim() !== '' && !resultat.ok && resultat.fejl === 'beloeb';
@@ -99,10 +111,10 @@ export function TilbagevendendeSheet({ open, onOpenChange, regel, medlemmer, onG
       open={open}
       onOpenChange={onOpenChange}
       height="full"
-      title={t(regel ? 'tilbagevendende.retTitel' : 'tilbagevendende.nyTitel')}
+      title={t(tilbagevendende ? 'tilbagevendende.retTitel' : 'tilbagevendende.nyTitel')}
       footer={
         <button type="submit" form={FORM_ID} className="felt-knap" disabled={!kanGemme}>
-          {t(regel ? 'tilbagevendende.gem' : 'tilbagevendende.opret')}
+          {t(tilbagevendende ? 'tilbagevendende.gem' : 'tilbagevendende.opret')}
         </button>
       }
     >
@@ -117,7 +129,7 @@ export function TilbagevendendeSheet({ open, onOpenChange, regel, medlemmer, onG
             placeholder={t('tilbagevendende.navnPladsholder')}
             autoComplete="off"
             maxLength={60}
-            autoFocus={!regel}
+            autoFocus={!tilbagevendende}
           />
         </label>
 
@@ -218,7 +230,7 @@ export function TilbagevendendeSheet({ open, onOpenChange, regel, medlemmer, onG
           </p>
         )}
 
-        {regel && (
+        {tilbagevendende && (
           <>
             <button type="button" className="tilb__stop" onClick={stop} disabled={busy}>
               {t(bekraefterStop ? 'tilbagevendende.stopBekraeft' : 'tilbagevendende.stop')}

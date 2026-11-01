@@ -106,7 +106,7 @@ function IndstillingerSkaerm() {
   const [fejl, setFejl] = useState<string | null>(null);
   const [sheet, setSheet] = useState<{ n: number; open: boolean; indhold: SheetIndhold } | null>(null);
   const [eksport, setEksport] = useState<{ n: number; open: boolean } | null>(null);
-  const [engangsPris, setEngangsPris] = useState<{ n: number; open: boolean } | null>(null);
+  const [engangsPrisSheet, setEngangsPrisSheet] = useState<{ n: number; open: boolean } | null>(null);
   // Slet Bødekasse: each opening mounts a fresh sheet (new one-time ID).
   const [sletter, setSletter] = useState(0);
 
@@ -245,7 +245,7 @@ function IndstillingerSkaerm() {
             <LinkRaekke
               label={t('indstillinger.engangsPris')}
               vaerdi={engangsPrisVaerdi(ind)}
-              onClick={() => setEngangsPris((e) => ({ n: (e?.n ?? 0) + 1, open: true }))}
+              onClick={() => setEngangsPrisSheet((e) => ({ n: (e?.n ?? 0) + 1, open: true }))}
             />
             <SwitchRaekke
               label={t('indstillinger.engangsGebyr')}
@@ -442,11 +442,11 @@ function IndstillingerSkaerm() {
         />
       )}
 
-      {engangsPris && ind && (
+      {engangsPrisSheet && ind && (
         <EngangsPrisSheet
-          key={engangsPris.n}
-          open={engangsPris.open}
-          onOpenChange={(open) => setEngangsPris((e) => e && { ...e, open })}
+          key={engangsPrisSheet.n}
+          open={engangsPrisSheet.open}
+          onOpenChange={(open) => setEngangsPrisSheet((e) => e && { ...e, open })}
           mode={ind.engangs_pris_mode}
           pris={ind.engangs_pris}
           onGem={gem}

@@ -16,9 +16,13 @@ interface AnnullerGebyrSheetProps {
 }
 
 /**
- * Admin: annul a single creation, Anke or Catch-up Gebyr from its feed row
- * (#62), with an optional note. An Admin or a Kasserer: a single late day
- * (#80). Mount with a fresh `key` per opening.
+ * Annul a single Gebyr from its feed row, with an optional note. Mirrors
+ * `annuller_gebyr` (and `maaAnnullereGebyr`):
+ * - an Admin: a creation (#62), Anke (#62), Catch-up (#78) or Tilbagevendende
+ *   (#79) Gebyr;
+ * - an Admin or a Kasserer: a single late day of Sen betaling (#80) or a
+ *   Dos-bonus (#77, spec #74 review).
+ * Mount with a fresh `key` per opening.
  */
 export function AnnullerGebyrSheet({ gebyr, titel, open, onOpenChange, onAnnulleret }: AnnullerGebyrSheetProps) {
   const { medlemId } = useBodekasse();

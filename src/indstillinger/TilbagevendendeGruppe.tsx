@@ -6,23 +6,27 @@ import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import { useHent } from '../supabase/useHent.ts';
 import { hentTilbagevendende } from './hentTilbagevendende.ts';
 import { Gruppe, LinkRaekke } from './raekker.tsx';
-import { frekvensTekst, naesteForekomst, type Regel } from './tilbagevendende.ts';
+import { frekvensTekst, naesteForekomst, type TilbagevendendeGebyr } from './tilbagevendende.ts';
 import { TilbagevendendeSheet } from './TilbagevendendeSheet.tsx';
 import './Indstillinger.css';
 
 /**
  * The settings card of Tilbagevendende Gebyrer (#79): one row per running
- * rule (tap to edit or stop it) and a row to make a new one. Admin only, like
+ * Tilbagevendende Gebyr (tap to edit or stop it) and a row to make a new one. Admin only, like
  * the screen it sits on.
  */
 export function TilbagevendendeGruppe() {
   const { bodekasseId } = useBodekasse();
   const hentet = useHent(() => hentTilbagevendende(bodekasseId), [bodekasseId]);
-  // Each opening mounts a fresh sheet (new one-time IDs); `regel` null = Nyt.
-  const [sheet, setSheet] = useState<{ n: number; open: boolean; regel: Regel | null } | null>(null);
+  // Each opening mounts a fresh sheet (new one-time IDs); `tilbagevendende` null = Nyt.
+  const [sheet, setSheet] = useState<{
+    n: number;
+    open: boolean;
+    tilbagevendende: TilbagevendendeGebyr | null;
+  } | null>(null);
 
-  function aabn(regel: Regel | null) {
-    setSheet((s) => ({ n: (s?.n ?? 0) + 1, open: true, regel }));
+  function aabn(tilbagevendende: TilbagevendendeGebyr | null) {
+    setSheet((s) => ({ n: (s?.n ?? 0) + 1, open: true, tilbagevendende }));
   }
 
   return (
@@ -34,7 +38,7 @@ export function TilbagevendendeGruppe() {
           </button>
         )}
         {hentet.status === 'ready' &&
-          hentet.data.regler.map((r) => (
+          hentet.data.tilbagevendende.map((r) => (
             <LinkRaekke
               key={r.id}
               label={r.navn}
@@ -56,7 +60,7 @@ export function TilbagevendendeGruppe() {
           key={sheet.n}
           open={sheet.open}
           onOpenChange={(open) => setSheet((s) => s && { ...s, open })}
-          {...(sheet.regel ? { regel: sheet.regel } : {})}
+          {...(sheet.tilbagevendende ? { tilbagevendende: sheet.tilbagevendende } : {})}
           medlemmer={hentet.data.medlemmer}
           onGemt={() => {
             setSheet((s) => s && { ...s, open: false });

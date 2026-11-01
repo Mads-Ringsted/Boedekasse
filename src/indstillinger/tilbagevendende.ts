@@ -6,7 +6,7 @@ import type { Enums } from '../supabase/database.types.ts';
 export type Frekvens = Enums<'tilbagevendende_frekvens'>;
 
 /** A Tilbagevendende Gebyr as the settings screen shows it. */
-export interface Regel {
+export interface TilbagevendendeGebyr {
   id: string;
   navn: string;
   beloeb: number;
@@ -36,7 +36,7 @@ const dansk = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Copenhagen' }
 /**
  * The date (YYYY-MM-DD) of the next charge after today, by the Copenhagen
  * calendar. Never today: today's occurrence was charged at midnight, and a
- * rule made or edited today counts from tomorrow (as the server does).
+ * Tilbagevendende Gebyr made or edited today counts from tomorrow (as the server does).
  */
 export function naesteForekomst(frekvens: Frekvens, dag: number, nu: Date = new Date()): string {
   const [aar, maaned, dato] = dansk.format(nu).split('-').map(Number);
@@ -49,7 +49,7 @@ export function naesteForekomst(frekvens: Frekvens, dag: number, nu: Date = new 
   return d.toISOString().slice(0, 10);
 }
 
-export interface RegelForm {
+export interface TilbagevendendeForm {
   navn: string;
   beloeb: string;
   frekvens: Frekvens;
@@ -57,12 +57,12 @@ export interface RegelForm {
   medlemmer: readonly string[];
 }
 
-export type RegelTjek =
-  | { ok: true; vaerdi: Omit<Regel, 'id'> }
+export type TilbagevendendeTjek =
+  | { ok: true; vaerdi: Omit<TilbagevendendeGebyr, 'id'> }
   | { ok: false; fejl: 'navn' | 'beloeb' | 'dag' | 'medlemmer' };
 
 /** The form as the RPCs take it, or the first thing wrong. Mirrors `private.tjek_tilbagevendende`. */
-export function tjekRegel(form: RegelForm): RegelTjek {
+export function tjekTilbagevendende(form: TilbagevendendeForm): TilbagevendendeTjek {
   const navn = form.navn.trim();
   if (navn === '') return { ok: false, fejl: 'navn' };
   const beloeb = parsePris(form.beloeb);
