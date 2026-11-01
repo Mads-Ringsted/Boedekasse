@@ -889,6 +889,13 @@ export const da = {
   'indstillinger.catchUpAntalLabel': 'Laveste sæsontotaler',
   'indstillinger.catchUpAntalNote': 'Så mange medlemmer med den laveste sæsontotal betaler catch-up hver måned, plus alle, der står lige med den sidste.',
   'indstillinger.catchUpAntalUgyldig': 'Skriv et helt antal medlemmer over 0.',
+
+  'dosBonus.tag': 'Dos-bonus',
+  'indstillinger.dosBonus': 'Dos-bonus',
+  'indstillinger.dosBonusNote':
+    'Betales af den, der får to bøder fra samme bødekategori samme dag (kl. 06 til 06). Én pr. par, og dagens dos-bonusser parres igen. Beløbet gælder kun nye.',
+  'aktivitet.fikDosBonus': '{hvem} fik en Dos-bonus',
+  'aktivitet.dosBonusDag': 'dagen {dag}',
 } as const;
 
 export type Catalogue = typeof da;
