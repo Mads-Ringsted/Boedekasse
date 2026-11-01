@@ -95,8 +95,10 @@ export async function kopierMitBillede(
     p_stier: kopieret,
   });
   if (error) {
-    // Nothing was set: don't leave the copies waiting in the folders.
-    await lager.remove(kopieret).catch(() => {});
+    // The server rejected it, so nothing was set: don't leave the copies
+    // waiting in the folders. Without a code the answer was lost and the RPC
+    // may have set them, so keep them (Slet medlem clears the folder anyway).
+    if (error.code) await lager.remove(kopieret).catch(() => {});
     return { error, mangler: til.length };
   }
   return { error: null, mangler: til.length - kopieret.length };
