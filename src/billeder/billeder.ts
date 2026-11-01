@@ -55,6 +55,14 @@ export async function uploadBillede(
 }
 
 /**
+ * Deletes an upload that was never set (e.g. `saetMitBillede` failed), so it
+ * doesn't wait in your folder. Best effort: errors are ignored.
+ */
+export async function sletUpload(sti: string): Promise<void> {
+  await supabase.storage.from(BUCKET).remove([sti]).catch(() => {});
+}
+
+/**
  * Points your Medlem in this box at an uploaded picture. Errors (map with
  * `rpcErrorText`): ikke_medlem, billede_sti_ugyldig, billede_findes_ikke.
  * Afterwards call `opdater()` from `useBilleder()`.
