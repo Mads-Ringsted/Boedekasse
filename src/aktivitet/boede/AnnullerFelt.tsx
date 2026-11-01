@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Field } from '../../components/Field.tsx';
+import { SheetAction } from '../../components/SheetAction.tsx';
 import { t, type PlainStringId } from '../../strings/index.ts';
 import { rpcErrorText } from '../../supabase/rpcErrors.ts';
 import './Annuller.css';
@@ -37,35 +39,27 @@ export function useAnnuller(annuller: AnnullerFeltProps['annuller'], onAnnullere
 
 type Annullering = ReturnType<typeof useAnnuller>;
 
-/** The optional note and the error. */
+/** The optional note. */
 export function AnnullerNote({ a }: { a: Annullering }) {
   return (
-    <>
-      <input
-        className="annuller__input"
-        type="text"
-        value={a.note}
-        onChange={(e) => a.setNote(e.target.value)}
-        placeholder={t('annuller.note')}
-        aria-label={t('annuller.note')}
-        enterKeyHint="done"
-      />
-      {a.fejl && (
-        <p className="annuller__fejl" role="alert">
-          {a.fejl}
-        </p>
-      )}
-    </>
+    <Field
+      className="annuller__felt"
+      label={t('annuller.note')}
+      hideLabel
+      value={a.note}
+      onChange={a.setNote}
+      placeholder={t('annuller.note')}
+    />
   );
 }
 
-/** The red-outlined button and "En annullering kan ikke fortrydes." */
+/** The red-outlined button, the error and "En annullering kan ikke fortrydes." */
 export function AnnullerKnap({ a, knap }: { a: Annullering; knap: PlainStringId }) {
   return (
     <>
-      <button type="button" className="annuller__knap" disabled={a.busy} onClick={a.koer}>
+      <SheetAction className="annuller__knap" disabled={a.busy} onClick={a.koer} error={a.fejl}>
         {t(knap)}
-      </button>
+      </SheetAction>
       <p className="annuller__advarsel">{t('annuller.advarsel')}</p>
     </>
   );

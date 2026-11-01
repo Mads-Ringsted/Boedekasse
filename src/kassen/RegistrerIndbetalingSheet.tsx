@@ -2,7 +2,10 @@ import { useState, type FormEvent } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
+import { Field } from '../components/Field.tsx';
+import { primaryAction, typedRequirement, visibleError } from '../components/field.ts';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { kortNavne } from '../giv/navne.ts';
 import { parsePris } from '../kategorier/kategoriListe.ts';
 import { formatKr, t } from '../strings/index.ts';
@@ -47,7 +50,14 @@ export function RegistrerIndbetalingSheet({ open, onOpenChange, medlemId, onRegi
   const tekst = beloeb ?? (valgt ? forudfyldtBeloeb(valgt.saldo) : '');
   const kr = parsePris(tekst);
   const fornavn = valgt ? (kortNavne([valgt.navn])[0] ?? valgt.navn) : '';
-  const kanRegistrere = valgt && kr !== null && !busy;
+  const handling = primaryAction(
+    [
+      [Boolean(valgt), t('aarsag.vaelgMedlem')],
+      typedRequirement(tekst, kr !== null, t('aarsag.skrivBeloeb'), t('aarsag.retBeloeb')),
+    ],
+    { busy },
+  );
+  const kanRegistrere = valgt && handling.enabled;
 
   function vaelg(b: Betaler) {
     setValgtId(b.id);
@@ -57,7 +67,7 @@ export function RegistrerIndbetalingSheet({ open, onOpenChange, medlemId, onRegi
 
   async function registrer(event: FormEvent) {
     event.preventDefault();
-    if (!kanRegistrere) return;
+    if (!kanRegistrere || kr === null) return;
     setBusy(true);
     setFejl(null);
     const { error } = await supabase.rpc('registrer_indbetaling', {
@@ -87,9 +97,9 @@ export function RegistrerIndbetalingSheet({ open, onOpenChange, medlemId, onRegi
       dirty={beloeb !== null || note !== ''}
       footer={
         !vaelger && (
-          <button type="submit" form={FORM_ID} className="felt-knap" disabled={!kanRegistrere}>
+          <SheetAction form={FORM_ID} disabled={!kanRegistrere} reason={handling.reason} error={fejl}>
             {kr !== null ? t('registrer.knap', { beloeb: formatKr(kr) }) : t('registrer.knapUdenBeloeb')}
-          </button>
+          </SheetAction>
         )
       }
     >
@@ -124,50 +134,35 @@ export function RegistrerIndbetalingSheet({ open, onOpenChange, medlemId, onRegi
             <span className="registrer__skift">{t('registrer.skift')}</span>
           </button>
 
-          <div className="registrer__beloeb">
-            <span className="registrer__beloeb-label">{t('registrer.beloeb')}</span>
-            <label className="registrer__beloeb-felt">
-              <input
-                className="registrer__beloeb-input"
-                type="text"
-                inputMode="numeric"
-                value={tekst}
-                onChange={(e) => setBeloeb(e.target.value)}
-                placeholder="0"
-                aria-label={t('registrer.beloebLabel')}
-                aria-invalid={tekst !== '' && kr === null}
-                // As wide as its digits, so "120 kr" stays centred.
-                style={{ width: `${Math.max(tekst.length, 1) + 0.4}ch` }}
-                autoComplete="off"
-              />
-              <span className="registrer__kr">{t('registrer.kr')}</span>
-            </label>
-            <span className="registrer__beloeb-note">
-              {tekst !== '' && kr === null
-                ? t('registrer.ugyldigt')
+          <Field
+            variant="amount"
+            kind="integer"
+            label={t('registrer.beloeb')}
+            unit={t('registrer.kr')}
+            value={tekst}
+            onChange={setBeloeb}
+            placeholder="0"
+            enterKeyHint="next"
+            error={visibleError(tekst, kr === null ? t('registrer.ugyldigt') : null)}
+            note={
+              tekst.trim() !== '' && kr === null
+                ? null
                 : valgt.saldo <= 0
                   ? t('registrer.skylderIntetNote', { navn: fornavn })
                   : beloeb === null
                     ? t('registrer.udfyldt', { navn: fornavn })
-                    : '\u00a0'}
-            </span>
-          </div>
-
-          <input
-            className="felt__input registrer__note"
-            type="text"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder={t('registrer.note')}
-            aria-label={t('registrer.note')}
-            enterKeyHint="done"
+                    : '\u00a0'
+            }
           />
 
-          {fejl && (
-            <p className="felt-fejl" role="alert">
-              {fejl}
-            </p>
-          )}
+          <Field
+            className="registrer__note"
+            label={t('registrer.note')}
+            hideLabel
+            value={note}
+            onChange={setNote}
+            placeholder={t('registrer.note')}
+          />
         </form>
       )}
     </Sheet>

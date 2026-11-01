@@ -176,27 +176,6 @@
   margin-top: 4px;
 }
 
-/* The field in RetIndstillingSheet, with an optional unit ("kr"). */
-.indst-felt {
-  position: relative;
-  display: flex;
-}
-
-.indst-felt__input {
-  flex-grow: 1;
-  min-width: 0;
-}
-
-.indst-felt__enhed {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 17px;
-  color: var(--color-text-muted);
-  pointer-events: none;
-}
-
 /* Tilbagevendende Gebyr (#79): the Medlemmer picker and Stop. */
 .tilb__overskrift {
   display: flex;

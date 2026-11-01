@@ -1,5 +1,8 @@
 import { useId, useState, type FormEvent } from 'react';
+import { Field } from '../components/Field.tsx';
+import { primaryAction, type FieldKind, type Requirement } from '../components/field.ts';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import type { IndstillingAendringer, Indstillinger } from './indstillinger.ts';
@@ -46,6 +49,13 @@ export function RegelSheet({ open, onOpenChange, regel, indstillinger, gem }: Re
   const [klientId] = useState(() => crypto.randomUUID());
 
   const r = udkastResultat(regel, start, udkast);
+  const handling = primaryAction(
+    regel.sektioner
+      .flatMap((s) => s.felter)
+      .filter((felt) => r.synlige.has(felt.noegle))
+      .map((felt): Requirement => [!r.fejl[felt.noegle], t('aarsag.retFelt', { felt: feltLabel(felt, r) })]),
+    { busy, unchanged: !r.aendret },
+  );
 
   function skriv(noegle: IndstillingNoegle, tekst: string) {
     setUdkast((u) => ({ ...u, [noegle]: tekst }));
@@ -83,9 +93,14 @@ export function RegelSheet({ open, onOpenChange, regel, indstillinger, gem }: Re
       title={regel.titel}
       dirty={r.aendret}
       footer={
-        <button type="submit" form={FORM_ID} className="felt-knap" disabled={!r.kanGemme || busy}>
+        <SheetAction
+          form={FORM_ID}
+          disabled={!r.kanGemme || busy}
+          reason={handling.reason}
+          error={gemFejl && gemFejl.noegle === null ? gemFejl.tekst : null}
+        >
           {t('indstillinger.gem')}
-        </button>
+        </SheetAction>
       }
     >
       <form id={FORM_ID} onSubmit={(e) => void gemUdkast(e)}>
@@ -118,11 +133,6 @@ export function RegelSheet({ open, onOpenChange, regel, indstillinger, gem }: Re
             {sektion.note && <p className="felt-note">{sektion.note}</p>}
           </section>
         ))}
-        {gemFejl && gemFejl.noegle === null && (
-          <p className="felt-fejl" role="alert">
-            {gemFejl.tekst}
-          </p>
-        )}
       </form>
     </Sheet>
   );
@@ -169,6 +179,13 @@ function feltLabel(felt: { label: string | ((laes: UdkastResultat['laes']) => st
   return typeof felt.label === 'function' ? felt.label(r.laes) : felt.label;
 }
 
+/** The keyboard for a rule field: whole numbers, decimals ("1,5", Placeringer) or text. */
+const FELT_ART: Record<TekstFelt<IndstillingNoegle>['inputMode'], FieldKind> = {
+  numeric: 'integer',
+  decimal: 'decimal',
+  text: 'text',
+};
+
 function TekstFeltVis({
   felt,
   r,
@@ -180,39 +197,19 @@ function TekstFeltVis({
   gemFejl: string | null;
   onSkriv: (tekst: string) => void;
 }) {
-  const id = useId();
   // Only complain once the Admin has changed something.
   const fejl = gemFejl ?? (r.aendret ? (r.fejl[felt.noegle] ?? null) : null);
   return (
-    <>
-      <label className="felt">
-        <span className="felt__label">{feltLabel(felt, r)}</span>
-        <span className="indst-felt">
-          <input
-            className="felt__input indst-felt__input"
-            type="text"
-            inputMode={felt.inputMode}
-            value={r.laes(felt.noegle)}
-            onChange={(e) => onSkriv(e.target.value)}
-            autoComplete="off"
-            enterKeyHint="done"
-            aria-invalid={fejl ? true : undefined}
-            aria-describedby={fejl ? `${id}-fejl` : felt.note ? `${id}-note` : undefined}
-          />
-          {felt.enhed && <span className="indst-felt__enhed">{felt.enhed}</span>}
-        </span>
-      </label>
-      {fejl && (
-        <p id={`${id}-fejl`} className="felt-fejl" role={gemFejl ? 'alert' : undefined}>
-          {fejl}
-        </p>
-      )}
-      {felt.note && (
-        <p id={`${id}-note`} className="felt-note">
-          {felt.note}
-        </p>
-      )}
-    </>
+    <Field
+      label={feltLabel(felt, r)}
+      kind={FELT_ART[felt.inputMode]}
+      unit={felt.enhed}
+      value={r.laes(felt.noegle)}
+      onChange={onSkriv}
+      error={fejl}
+      errorIsAlert={gemFejl !== null}
+      note={felt.note}
+    />
   );
 }
 

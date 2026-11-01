@@ -172,47 +172,6 @@
   flex-direction: column;
 }
 
-.kny__felt {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  min-height: 50px;
-  padding: 0 16px;
-  font-size: 16px;
-}
-
-.kny__felt + .kny__felt {
-  border-top: 1px solid var(--color-line);
-}
-
-.kny__label {
-  flex-shrink: 0;
-  color: var(--color-text-muted);
-}
-
-.kny__input {
-  min-width: 0;
-  flex-grow: 1;
-  border: 0;
-  background: transparent;
-  color: var(--color-text);
-  font: inherit;
-  font-weight: 600;
-  text-align: right;
-  outline: none;
-}
-
-.kny__input::placeholder {
-  color: var(--color-text-faint);
-  font-weight: 400;
-}
-
-.kny__input--dato {
-  flex-grow: 0;
-  color-scheme: light dark;
-}
-
 .kny__overskrift {
   display: flex;
   align-items: center;

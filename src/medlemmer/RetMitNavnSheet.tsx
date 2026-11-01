@@ -1,6 +1,9 @@
 import { useRef, useState, type FormEvent } from 'react';
 import { useBodekasse, useMedlemskaber } from '../bodekasse/BodekasseProvider.tsx';
+import { Field } from '../components/Field.tsx';
+import { primaryAction } from '../components/field.ts';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { t } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
@@ -18,7 +21,11 @@ export function RetMitNavnSheet({ open, onOpenChange }: { open: boolean; onOpenC
   const [klientId, setKlientId] = useState(() => crypto.randomUUID());
   const felt = useRef<HTMLInputElement>(null);
 
-  const kanGemme = navn.trim() !== '' && navn.trim() !== nuvaerende && !busy;
+  const handling = primaryAction([[navn.trim() !== '', t('fejl.mitNavnMangler')]], {
+    busy,
+    unchanged: navn.trim() === nuvaerende,
+  });
+  const kanGemme = handling.enabled;
 
   function skift(aaben: boolean) {
     setNavn(nuvaerende);
@@ -57,30 +64,21 @@ export function RetMitNavnSheet({ open, onOpenChange }: { open: boolean; onOpenC
       initialFocus={felt}
       dirty={navn !== nuvaerende}
       footer={
-        <button type="submit" form={FORM_ID} className="felt-knap" disabled={!kanGemme}>
+        <SheetAction form={FORM_ID} disabled={!kanGemme} reason={handling.reason} error={fejl}>
           {t('mitNavn.gem')}
-        </button>
+        </SheetAction>
       }
     >
       <form id={FORM_ID} onSubmit={(e) => void gem(e)}>
-        <label className="felt">
-          <span className="felt__label">{t('mitNavn.label', { bodekasse: bodekasseNavn })}</span>
-          <input
-            ref={felt}
-            className="felt__input"
-            type="text"
-            value={navn}
-            onChange={(e) => setNavn(e.target.value)}
-            autoComplete="name"
-            enterKeyHint="done"
-          />
-        </label>
-        <p className="felt-note">{t('mitNavn.note')}</p>
-        {fejl && (
-          <p className="felt-fejl" role="alert">
-            {fejl}
-          </p>
-        )}
+        <Field
+          ref={felt}
+          label={t('mitNavn.label', { bodekasse: bodekasseNavn })}
+          kind="name"
+          value={navn}
+          onChange={setNavn}
+          autoComplete="name"
+          note={t('mitNavn.note')}
+        />
       </form>
     </Sheet>
   );

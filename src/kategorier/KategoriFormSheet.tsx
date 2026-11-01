@@ -1,7 +1,10 @@
 import { useRef, useState, type FormEvent } from 'react';
 import { Receipt } from 'lucide-react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
+import { Field } from '../components/Field.tsx';
+import { primaryAction, typedRequirement, visibleError } from '../components/field.ts';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { T } from '../components/T.tsx';
 import { hentIndstillinger } from '../indstillinger/hentIndstillinger.ts';
 import { gebyrVedOprettelse } from '../indstillinger/indstillinger.ts';
@@ -56,11 +59,20 @@ export function KategoriFormSheet({ open, onOpenChange, kategori, onSaved, stack
     regler.status === 'ready' && regler.data ? gebyrVedOprettelse(regler.data.indstillinger, regler.data.pause) : null;
 
   const prisTal = parsePris(pris);
-  const kanGemme = navn.trim() !== '' && prisTal !== null && !busy && regler.status === 'ready';
+  const handling = primaryAction(
+    [
+      [navn.trim() !== '', t('aarsag.skrivNavn')],
+      typedRequirement(pris, prisTal !== null, t('aarsag.skrivPris'), t('aarsag.retPris')),
+      // While the rules load (or failed, which shows below), there is nothing more to say.
+      [regler.status === 'ready', ''],
+    ],
+    { busy },
+  );
+  const kanGemme = handling.enabled;
 
   async function gem(event: FormEvent) {
     event.preventDefault();
-    if (!kanGemme) return;
+    if (!kanGemme || prisTal === null) return;
     setBusy(true);
     setFejl(null);
     const svar = kategori
@@ -97,64 +109,52 @@ export function KategoriFormSheet({ open, onOpenChange, kategori, onSaved, stack
       initialFocus={kategori ? undefined : navnFelt}
       dirty={aendret}
       footer={
-        <button type="submit" form={FORM_ID} className="kategori-form__primary" disabled={!kanGemme}>
+        <SheetAction
+          form={FORM_ID}
+          className="kategori-form__primary"
+          disabled={!kanGemme}
+          reason={handling.reason}
+          error={fejl}
+        >
           {kategori
             ? t('kategori.gem')
             : gebyr !== null
               ? t('kategori.opretMedGebyr', { beloeb: formatKr(gebyr) })
               : t('kategori.opret')}
-        </button>
+        </SheetAction>
       }
     >
       <form id={FORM_ID} className="kategori-form" onSubmit={(e) => void gem(e)}>
-        <label className="kategori-form__field">
-          <span className="kategori-form__label">{t('kategori.navn')}</span>
-          <span className="kategori-form__boks">
-            <input
-              ref={navnFelt}
-              className="kategori-form__input"
-              type="text"
-              value={navn}
-              onChange={(e) => setNavn(e.target.value)}
-              autoComplete="off"
-              enterKeyHint="next"
-              maxLength={60}
-            />
-          </span>
-        </label>
+        <Field
+          ref={navnFelt}
+          className="kategori-form__felt"
+          label={t('kategori.navn')}
+          value={navn}
+          onChange={setNavn}
+          enterKeyHint="next"
+          maxLength={60}
+        />
 
-        <label className="kategori-form__field">
-          <span className="kategori-form__label">{t('kategori.pris')}</span>
-          <span className="kategori-form__boks">
-            <input
-              className="kategori-form__input kategori-form__input--pris"
-              type="text"
-              inputMode="numeric"
-              value={pris}
-              onChange={(e) => setPris(e.target.value)}
-              autoComplete="off"
-              enterKeyHint="next"
-            />
-            <span className="kategori-form__enhed">{t('kategori.kr')}</span>
-          </span>
-          {pris.trim() !== '' && prisTal === null && (
-            <span className="kategori-form__hint">{t('kategori.prisUgyldig')}</span>
-          )}
-        </label>
+        <Field
+          className="kategori-form__felt"
+          label={t('kategori.pris')}
+          kind="integer"
+          unit={t('kategori.kr')}
+          value={pris}
+          onChange={setPris}
+          enterKeyHint="next"
+          error={visibleError(pris, prisTal === null ? t('kategori.prisUgyldig') : null)}
+        />
 
-        <label className="kategori-form__field">
-          <span className="kategori-form__label">{t('kategori.beskrivelse')}</span>
-          <span className="kategori-form__boks kategori-form__boks--tekst">
-            <textarea
-              className="kategori-form__input kategori-form__textarea"
-              value={beskrivelse}
-              onChange={(e) => setBeskrivelse(e.target.value)}
-              placeholder={t('kategori.beskrivelsePladsholder')}
-              maxLength={300}
-              rows={3}
-            />
-          </span>
-        </label>
+        <Field
+          className="kategori-form__felt"
+          label={t('kategori.beskrivelse')}
+          value={beskrivelse}
+          onChange={setBeskrivelse}
+          placeholder={t('kategori.beskrivelsePladsholder')}
+          maxLength={300}
+          rows={3}
+        />
 
         {kategori && <p className="kategori-form__note">{t('kategori.redigerNote')}</p>}
         {gebyr !== null && (
@@ -171,11 +171,6 @@ export function KategoriFormSheet({ open, onOpenChange, kategori, onSaved, stack
           <button type="button" className="kategori-form__fejl kategori-form__proev" onClick={regler.reload}>
             {rpcErrorText(regler.error)} · {t('handling.proevIgen')}
           </button>
-        )}
-        {fejl && (
-          <p className="kategori-form__fejl" role="alert">
-            {fejl}
-          </p>
         )}
       </form>
     </Sheet>

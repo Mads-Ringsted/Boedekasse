@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { soegKategorier } from '../kategorier/kategoriListe.ts';
-import { Minus, Plus, Search } from 'lucide-react';
+import { Minus, Plus } from 'lucide-react';
+import { Field } from '../components/Field.tsx';
 import type { Kategori } from '../kategorier/hentKategorier.ts';
 import { formatKr, t } from '../strings/index.ts';
 import { MAKS_ANTAL, type Engangsbode } from './valg.ts';
@@ -46,16 +47,15 @@ export function KategoriVaelger({
 
   return (
     <>
-      <label className="giv-soeg">
-        <Search size={18} strokeWidth={2} aria-hidden="true" />
-        <input
-          type="search"
-          aria-label={t('giv.soeg')}
-          placeholder={t('giv.soeg')}
-          value={soeg}
-          onChange={(e) => setSoeg(e.target.value)}
-        />
-      </label>
+      <Field
+        className="giv-soeg"
+        kind="search"
+        label={t('giv.soeg')}
+        hideLabel
+        value={soeg}
+        onChange={setSoeg}
+        placeholder={t('giv.soeg')}
+      />
 
       <ul className="giv-kat-liste">
         {viste.map((k) => {

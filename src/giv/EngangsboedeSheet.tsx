@@ -2,7 +2,10 @@ import { useRef, useState, type FormEvent } from 'react';
 import { Receipt } from 'lucide-react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
+import { Field } from '../components/Field.tsx';
+import { primaryAction, typedRequirement, visibleError } from '../components/field.ts';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { T } from '../components/T.tsx';
 import { hentIndstillinger } from '../indstillinger/hentIndstillinger.ts';
 import { formatKr, t } from '../strings/index.ts';
@@ -47,7 +50,13 @@ export function EngangsboedeSheet({ open, onOpenChange, modtagere, onTilfoej }: 
   const pris = ind ? engangsPris(ind) : ({ mode: 'fri' } as const);
 
   const beloebTal = engangsBeloeb(pris, beloeb);
-  const kanTilfoeje = grund.trim() !== '' && beloebTal !== null && ind !== null;
+  const handling = primaryAction([
+    [grund.trim() !== '', t('aarsag.skrivGrund')],
+    typedRequirement(beloeb, beloebTal !== null, t('aarsag.skrivBeloeb'), t('aarsag.retBeloeb')),
+    // While the rules load (or failed, which shows below), there is nothing more to say.
+    [ind !== null, ''],
+  ]);
+  const kanTilfoeje = handling.enabled && beloebTal !== null;
   const flere = modtagere.length > 1;
 
   function tilfoej(event: FormEvent) {
@@ -67,11 +76,11 @@ export function EngangsboedeSheet({ open, onOpenChange, modtagere, onTilfoej }: 
       dirty={grund !== '' || beloeb !== ''}
       footer={
         <div className="giv__footer">
-          <button type="submit" form={FORM_ID} className="giv__primaer" disabled={!kanTilfoeje}>
+          <SheetAction form={FORM_ID} className="giv__primaer" disabled={!kanTilfoeje} reason={handling.reason}>
             {beloebTal === null
               ? t('giv.engangs.tilfoejTom')
               : t(flere ? 'giv.engangs.tilfoejHver' : 'giv.engangs.tilfoej', { beloeb: formatKr(beloebTal) })}
-          </button>
+          </SheetAction>
         </div>
       }
     >
@@ -90,58 +99,39 @@ export function EngangsboedeSheet({ open, onOpenChange, modtagere, onTilfoej }: 
           </span>
         </div>
 
-        <label className="kategori-form__field">
-          <span className="kategori-form__label">{t('giv.engangs.hvorfor')}</span>
-          <span className="kategori-form__boks">
-            <input
-              ref={grundFelt}
-              className="kategori-form__input"
-              type="text"
-              value={grund}
-              onChange={(e) => setGrund(e.target.value)}
-              autoComplete="off"
-              enterKeyHint="next"
-              maxLength={MAKS_GRUND}
-            />
-          </span>
-        </label>
+        <Field
+          ref={grundFelt}
+          className="engangs__felt"
+          label={t('giv.engangs.hvorfor')}
+          value={grund}
+          onChange={setGrund}
+          enterKeyHint={pris.mode === 'fast' ? 'done' : 'next'}
+          maxLength={MAKS_GRUND}
+        />
 
-        <div className="engangs__beloeb">
-          <span className="engangs__beloeb-label">{t('giv.engangs.beloeb')}</span>
-          {pris.mode === 'fast' ? (
-            <>
-              <span className="engangs__beloeb-felt">
-                <span className="engangs__beloeb-fast">{pris.beloeb}</span>
-                <span>{t('kategori.kr')}</span>
-              </span>
-              <span className="engangs__beloeb-note">{t('giv.engangs.fast')}</span>
-            </>
-          ) : (
-            <>
-              <label className="engangs__beloeb-felt">
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  placeholder="0"
-                  value={beloeb}
-                  onChange={(e) => setBeloeb((forrige) => begraensBeloeb(pris, forrige, e.target.value))}
-                  aria-label={t('giv.engangs.beloebLabel')}
-                  autoComplete="off"
-                />
-                <span>{t('kategori.kr')}</span>
-              </label>
-              {beloeb.trim() !== '' && beloebTal === null ? (
-                <span className="kategori-form__hint">{t('fejl.beloebUgyldig')}</span>
-              ) : (
-                pris.mode === 'loft' && (
-                  <span className="engangs__beloeb-note">
-                    {t('giv.engangs.loft', { beloeb: formatKr(pris.loft) })}
-                  </span>
-                )
-              )}
-            </>
-          )}
-        </div>
+        {pris.mode === 'fast' ? (
+          <div className="engangs__beloeb">
+            <span className="engangs__beloeb-label">{t('giv.engangs.beloeb')}</span>
+            <span className="engangs__beloeb-felt">
+              <span className="engangs__beloeb-fast">{pris.beloeb}</span>
+              <span>{t('kategori.kr')}</span>
+            </span>
+            <span className="engangs__beloeb-note">{t('giv.engangs.fast')}</span>
+          </div>
+        ) : (
+          <Field
+            className="engangs__beloeb"
+            variant="amount"
+            kind="integer"
+            label={t('giv.engangs.beloeb')}
+            unit={t('kategori.kr')}
+            placeholder="0"
+            value={beloeb}
+            onChange={(ny) => setBeloeb((forrige) => begraensBeloeb(pris, forrige, ny))}
+            error={visibleError(beloeb, beloebTal === null ? t('fejl.beloebUgyldig') : null)}
+            note={pris.mode === 'loft' ? t('giv.engangs.loft', { beloeb: formatKr(pris.loft) }) : null}
+          />
+        )}
 
         {ind && (
           <div className="kategori-form__gebyr">
