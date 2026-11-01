@@ -961,6 +961,16 @@ export const da = {
   // Profilbillede (#100)
   'fejl.billedeUgyldigt': 'Billedet kunne ikke gemmes. Vælg det igen.',
   'fejl.billedeFindesIkke': 'Billedet blev ikke uploadet. Prøv igen.',
+  // Vælg Profilbillede (#101)
+  'profilbillede.titel': 'Profilbillede',
+  'profilbillede.skift': 'Skift profilbillede',
+  'profilbillede.note': 'Billedet gælder kun i {bodekasse}. Kun Medlemmer her kan se det.',
+  'profilbillede.vaelg': 'Vælg billede',
+  'profilbillede.fjern': 'Fjern billede',
+  'profilbillede.gemmer': 'Gemmer …',
+  'profilbillede.fjerner': 'Fjerner …',
+  'fejl.billedeAabn': 'Billedet kunne ikke åbnes. Vælg et andet.',
+  'fejl.billedeUpload': 'Billedet kunne ikke uploades. Prøv igen.',
   'indstillinger.tilbagevendendeNy': 'Nyt tilbagevendende gebyr',
   'indstillinger.tilbagevendendeUnder': '{beloeb} · {frekvens} · næste {naeste}',
   'tilbagevendende.hverUge': 'Hver {ugedag}',

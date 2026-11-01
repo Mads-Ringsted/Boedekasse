@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Pencil } from 'lucide-react';
+import { Camera, Pencil } from 'lucide-react';
 import { useParams } from 'react-router';
 import { Feed } from '../aktivitet/Feed.tsx';
 import { useBoedeDetalje } from '../aktivitet/boede/BoedeDetaljeProvider.tsx';
 import { TagMaerke } from '../aktivitet/TagMaerke.tsx';
 import type { Tag } from '../aktivitet/visning.ts';
 import { useBilleder } from '../billeder/BilledProvider.tsx';
+import { ProfilbilledeSheet } from '../billeder/ProfilbilledeSheet.tsx';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { BackButton } from '../components/BackButton.tsx';
@@ -167,15 +168,29 @@ function AndensToppen({ profil, visning }: { profil: Profil; visning: ProfilVisn
   );
 }
 
-/** Your own profile: avatar beside your name (with Ret navn), then three figures in a row. */
+/**
+ * Your own profile: avatar beside your name (with Ret navn), then three
+ * figures in a row. Tapping your avatar opens the Profilbillede sheet.
+ */
 function EgenToppen({ profil, visning, navn }: { profil: Profil; visning: ProfilVisning; navn: string }) {
   const [retterNavn, setRetterNavn] = useState(false);
+  const [vaelgerBillede, setVaelgerBillede] = useState(false);
   const tilGode = visning.status.art === 'tilGode';
   const { billede } = useBilleder();
   return (
     <>
       <div className="profil__hoved profil__hoved--egen">
-        <Avatar navn={navn} size={64} egen billede={billede(profil.id)} />
+        <button
+          type="button"
+          className="profil__avatar-knap"
+          aria-label={t('profilbillede.skift')}
+          onClick={() => setVaelgerBillede(true)}
+        >
+          <Avatar navn={navn} size={64} egen billede={billede(profil.id)} />
+          <span className="profil__avatar-maerke" aria-hidden="true">
+            <Camera size={13} strokeWidth={2.4} />
+          </span>
+        </button>
         <span className="profil__hoved-tekst">
           <span className="profil__navn-linje">
             <h1 className="profil__navn">{navn}</h1>
@@ -201,6 +216,7 @@ function EgenToppen({ profil, visning, navn }: { profil: Profil; visning: Profil
         <Tal label={t('profil.betalt')} beloeb={profil.betalt} className="profil__beloeb--betalt" />
       </div>
       <RetMitNavnSheet open={retterNavn} onOpenChange={setRetterNavn} />
+      <ProfilbilledeSheet open={vaelgerBillede} onOpenChange={setVaelgerBillede} />
     </>
   );
 }
