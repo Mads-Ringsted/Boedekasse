@@ -8,6 +8,7 @@ import { FeedRaekke } from './FeedRaekke.tsx';
 import { beskrivRaekke } from './raekke.ts';
 import type { Raekke } from './visning.ts';
 import { iDag, iDage, siden } from './tid.ts';
+import { maaAnnullereGebyr } from './tryk.ts';
 import { useFeed } from './useFeed.ts';
 import './Feed.css';
 
@@ -24,15 +25,17 @@ interface FeedProps {
  * Used by the Aktivitet tab and, filtered with `medlemId`, by profiles.
  */
 export function Feed({ medlemId, saesonId }: FeedProps) {
-  const { bodekasseId, medlemId: migId, erAdmin } = useBodekasse();
+  const { bodekasseId, medlemId: migId, erAdmin, kanHaandterePenge } = useBodekasse();
   const { version: givVersion } = useGivBoeder();
   const { aabn: aabnBoede, version: boedeVersion, aendret } = useBoedeDetalje();
   // Admin: the row whose Gebyr is being annulled (#62). A new nr per opening.
   const [gebyrRaekke, setGebyrRaekke] = useState<{ nr: number; raekke: Raekke } | null>(null);
   const [gebyrAaben, setGebyrAaben] = useState(false);
   const feed = useFeed(bodekasseId, medlemId, [givVersion, boedeVersion], saesonId);
-  // A past Sæson is read-only (#68): no Annullér Gebyr there.
-  const kanAnnullereGebyr = erAdmin && !saesonId;
+  // A past Sæson is read-only (#68): no Annullér Gebyr there. A late day is
+  // for an Admin or a Kasserer, every other Gebyr for an Admin (#80).
+  const kanAnnullereGebyr = (r: Raekke) =>
+    !saesonId && !!r.annullerGebyr && maaAnnullereGebyr(r.annullerGebyr.art, { erAdmin, kanHaandterePenge });
 
   const dage = useMemo(() => {
     const nu = new Date();
@@ -86,7 +89,7 @@ export function Feed({ medlemId, saesonId }: FeedProps) {
                 tid={p.idag ? siden(p.tid) : undefined}
                 onAabnBoede={aabnBoede}
                 onAnnullerGebyr={
-                  kanAnnullereGebyr
+                  kanAnnullereGebyr(p.raekke)
                     ? (raekke) => {
                         setGebyrRaekke((g) => ({ nr: (g?.nr ?? 0) + 1, raekke }));
                         setGebyrAaben(true);

@@ -13,7 +13,9 @@ import { formatKr, t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import {
   gangeTekst,
+  parseBetalingsdag,
   parseGange,
+  rensLoft,
   rensMobilePay,
   type IndstillingAendringer,
   type Indstillinger as IndstillingerData,
@@ -57,6 +59,16 @@ const tjekGange: Tjek<number> = (tekst) => {
 const tjekAntal: Tjek<number> = (tekst) => {
   const antal = parsePris(tekst);
   return antal === null ? { ok: false, fejl: t('indstillinger.catchUpAntalUgyldig') } : { ok: true, vaerdi: antal };
+};
+
+const tjekBetalingsdag: Tjek<number> = (tekst) => {
+  const dag = parseBetalingsdag(tekst);
+  return dag === null ? { ok: false, fejl: t('indstillinger.betalingsdagUgyldig') } : { ok: true, vaerdi: dag };
+};
+
+const tjekLoft: Tjek<number | null> = (tekst) => {
+  const r = rensLoft(tekst);
+  return r.ok ? r : { ok: false, fejl: t('indstillinger.beloebUgyldig') };
 };
 
 const tjekBeloeb: Tjek<number> = (tekst) => {
@@ -149,6 +161,33 @@ function IndstillingerSkaerm() {
       note: t('indstillinger.catchUpAntalNote'),
       tjek: tjekAntal,
       onGem: (catch_up_antal, klientId) => gem({ catch_up_antal }, klientId),
+    });
+  }
+
+  function retBetalingsdag() {
+    if (!ind) return;
+    aabn<number>({
+      title: t('indstillinger.betalingsdag'),
+      label: t('indstillinger.betalingsdagLabel'),
+      start: String(ind.betalingsdag),
+      inputMode: 'numeric',
+      note: t('indstillinger.betalingsdagNote'),
+      tjek: tjekBetalingsdag,
+      onGem: (betalingsdag, klientId) => gem({ betalingsdag }, klientId),
+    });
+  }
+
+  function retSenBetalingLoft() {
+    if (!ind) return;
+    aabn<number | null>({
+      title: t('indstillinger.senBetalingLoft'),
+      label: t('indstillinger.beloeb'),
+      start: ind.sen_betaling_loft === null ? '' : String(ind.sen_betaling_loft),
+      enhed: t('kategori.kr'),
+      inputMode: 'numeric',
+      note: t('indstillinger.senBetalingLoftNote'),
+      tjek: tjekLoft,
+      onGem: (sen_betaling_loft, klientId) => gem({ sen_betaling_loft }, klientId),
     });
   }
 
@@ -326,6 +365,44 @@ function IndstillingerSkaerm() {
                 retBeloeb('dos_bonus_beloeb', t('indstillinger.dosBonus'), t('indstillinger.dosBonusNote'))
               }
             />
+            <SwitchRaekke
+              label={t('indstillinger.senBetaling')}
+              under={
+                ind.sen_betaling_loft === null
+                  ? t('indstillinger.senBetalingUnder', {
+                      beloeb: formatKr(ind.sen_betaling_beloeb),
+                      dag: ind.betalingsdag,
+                    })
+                  : t('indstillinger.senBetalingUnderLoft', {
+                      beloeb: formatKr(ind.sen_betaling_beloeb),
+                      dag: ind.betalingsdag,
+                      loft: formatKr(ind.sen_betaling_loft),
+                    })
+              }
+              til={ind.sen_betaling_til}
+              onSkift={(til) => skift({ sen_betaling_til: til })}
+              onAabn={() =>
+                retBeloeb('sen_betaling_beloeb', t('indstillinger.senBetaling'), t('indstillinger.senBetalingNote'))
+              }
+            />
+            {ind.sen_betaling_til && (
+              <>
+                <LinkRaekke
+                  label={t('indstillinger.betalingsdag')}
+                  vaerdi={t('indstillinger.betalingsdagVaerdi', { dag: ind.betalingsdag })}
+                  onClick={retBetalingsdag}
+                />
+                <LinkRaekke
+                  label={t('indstillinger.senBetalingLoft')}
+                  vaerdi={
+                    ind.sen_betaling_loft === null
+                      ? t('indstillinger.senBetalingLoftIngen')
+                      : formatKr(ind.sen_betaling_loft)
+                  }
+                  onClick={retSenBetalingLoft}
+                />
+              </>
+            )}
           </Gruppe>
 
           <Gruppe titel={t('indstillinger.saesonOgData')}>

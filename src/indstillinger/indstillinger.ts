@@ -50,6 +50,24 @@ export function gangeTekst(gange: number): string {
   return String(gange).replace('.', ',');
 }
 
+/** The Betalingsdag as typed: a whole day 1–28 (the column's check). Null when it isn't one. */
+export function parseBetalingsdag(input: string): number | null {
+  const tekst = input.trim();
+  if (!/^\d{1,2}$/.test(tekst)) return null;
+  const dag = Number(tekst);
+  return dag >= 1 && dag <= 28 ? dag : null;
+}
+
+/**
+ * The optional monthly cap on late fees as typed: empty means no cap,
+ * otherwise whole kroner above 0.
+ */
+export function rensLoft(input: string): { ok: true; vaerdi: number | null } | { ok: false } {
+  if (input.trim() === '') return { ok: true, vaerdi: null };
+  const loft = parsePris(input);
+  return loft === null ? { ok: false } : { ok: true, vaerdi: loft };
+}
+
 /** How an Engangsbøde is priced: Fri, Fast or Loft. */
 export type EngangsPrisMode = Enums<'engangs_pris_mode'>;
 

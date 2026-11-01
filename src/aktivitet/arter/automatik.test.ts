@@ -75,3 +75,49 @@ describe('a Gebyr annulment row', () => {
     expect(r?.linje).toBe('Catch-up · 50 kr');
   });
 });
+
+function senBetaling(over: Partial<Haendelse> = {}): Haendelse {
+  return catchUp({
+    art: 'sen_betaling',
+    refId: 'g2',
+    data: { dag: '2026-02-06', beloeb: 25, skyldig: 100, betalt: 60 },
+    ...over,
+  });
+}
+
+describe('a Sen betaling row', () => {
+  it('names who paid late, the day, what they owed and paid, and the amount', () => {
+    expect(beskrivRaekke(senBetaling(), ctx)).toMatchObject({
+      titel: 'Emil fik gebyr for sen betaling 6. februar',
+      linje: 'Skyldte 100 kr fra sidste måned · 60 kr betalt',
+      beloeb: { tekst: '25 kr' },
+      annulleret: false,
+    });
+  });
+
+  it('offers to annul that one day from the row', () => {
+    expect(beskrivRaekke(senBetaling(), ctx)?.annullerGebyr).toEqual({
+      id: 'g2',
+      art: 'sen_betaling',
+      beloeb: 25,
+      medlemId: 'emil',
+      medlemNavn: 'Emil Bach',
+      annullering: null,
+    });
+  });
+
+  it('names a late day as the kind when it is annulled', () => {
+    const r = beskrivRaekke(
+      senBetaling({
+        art: 'gebyr_annulleret',
+        aktoerId: 'frederik',
+        aktoerNavn: 'Frederik Lund',
+        refTabel: null,
+        refId: null,
+        data: { gebyr_id: 'g2', art: 'sen_betaling', navn: null, beloeb: 25, note: null },
+      }),
+      ctx,
+    );
+    expect(r?.linje).toBe('Sen betaling · 25 kr');
+  });
+});

@@ -4,7 +4,7 @@
 -- Later #74 tickets add their own default-box checks here.
 begin;
 \ir _hjaelpere.psql
-select plan(4);
+select plan(5);
 
 select tests.opret_bodekasse('Kasse A') as kasse \gset
 select tests.opret_medlem_med_login(:'kasse', 'Mads', true) as admin \gset
@@ -32,6 +32,14 @@ select is(
   (select saldo from public.medlem_saldo where medlem_id = :'emil'),
   1274,
   'the receiver owes exactly the Bøder given');
+
+-- Sen betaling (#80): the receiver still owes next month, well after the
+-- Betalingsdag, but a default box charges no late fees.
+select tests.log_ud();
+select private.koer_automatik(date_trunc('month', now()) + interval '1 month 9 days 12 hours');
+select is_empty(
+  format($$ select 1 from public.gebyr where bodekasse_id = %L and art = 'sen_betaling' $$, :'kasse'),
+  'a default box charges no Sen betaling');
 
 -- #82: the Anke and payment pushes only add outbox rows. In a default box,
 -- reporting and confirming a payment writes the same feed entries as before.
