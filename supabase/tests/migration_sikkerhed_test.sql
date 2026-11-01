@@ -4,7 +4,7 @@
 -- Later #74 tickets add their own default-box checks here.
 begin;
 \ir _hjaelpere.psql
-select plan(6);
+select plan(7);
 
 select tests.opret_bodekasse('Kasse A') as kasse \gset
 select tests.opret_medlem_med_login(:'kasse', 'Mads', true) as admin \gset
@@ -63,6 +63,17 @@ select results_eq(
   format($$ select medlem_id, art::text, beloeb from public.gebyr where bodekasse_id = %L $$, :'kasse'),
   format($$ values (%L::uuid, 'engangsbode', 10) $$, :'jonas'),
   'scheduler runs over a default box charge no Tilbagevendende or other automatic Gebyr');
+
+-- #83: payment reminders belong to Sen betaling, which is off. Emil still
+-- owes; the 10:00 runs 2 days before, on and after the default Betalingsdag
+-- (the 1st) queue no reminder, and no automatic Gebyr means no Gebyr push.
+select private.koer_automatik(private.lokal_tid(d::date, '10:00'))
+  from generate_series(date_trunc('month', now()) + interval '1 month' - interval '2 days',
+                       date_trunc('month', now()) + interval '1 month 3 days', interval '1 day') d;
+select is_empty(
+  format($$ select art from public.push_udbakke
+             where bodekasse_id = %L and art in ('betalingspaamindelse', 'automatisk_gebyr') $$, :'kasse'),
+  'a default box queues no payment reminder and no automatic-Gebyr push');
 
 select * from finish();
 rollback;
