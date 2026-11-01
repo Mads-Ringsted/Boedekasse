@@ -1,7 +1,7 @@
 import { useRef, useState, type FormEvent } from 'react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Field } from '../components/Field.tsx';
-import { primaryAction, typedRequirement } from '../components/field.ts';
+import { primaryAction, typedRequirement } from '../components/fieldRules.ts';
 import { Sheet } from '../components/Sheet.tsx';
 import { SheetAction } from '../components/SheetAction.tsx';
 import { formatKr, t } from '../strings/index.ts';
@@ -36,7 +36,7 @@ export function HaevPengeSheet({ open, onOpenChange, kassen, onHaevet }: HaevPen
   // One ID per Hævning, so "Prøv igen" never takes the money out twice.
   const [klientId] = useState(() => crypto.randomUUID());
   const beloebFelt = useRef<HTMLInputElement>(null);
-  const { kr, overKassen, klar } = haevTjek(beloeb, formaal, kassen);
+  const { kr, overKassen } = haevTjek(beloeb, formaal, kassen);
   const ugyldigt = beloeb.trim() !== '' && kr === null;
   const handling = primaryAction(
     [
@@ -49,7 +49,7 @@ export function HaevPengeSheet({ open, onOpenChange, kassen, onHaevet }: HaevPen
 
   async function haev(event: FormEvent) {
     event.preventDefault();
-    if (!klar || kr === null || busy) return;
+    if (!handling.enabled || kr === null) return;
     setBusy(true);
     setFejl(null);
     const { error } = await supabase.rpc('haev', {
@@ -76,7 +76,7 @@ export function HaevPengeSheet({ open, onOpenChange, kassen, onHaevet }: HaevPen
       initialFocus={beloebFelt}
       dirty={beloeb !== '' || formaal !== ''}
       footer={
-        <SheetAction form={FORM_ID} disabled={!klar || !handling.enabled} reason={handling.reason} error={fejl}>
+        <SheetAction form={FORM_ID} disabled={!handling.enabled} reason={handling.reason} error={fejl}>
           {kr !== null ? t('haev.knap', { beloeb: formatKr(kr) }) : t('haev.knapUdenBeloeb')}
         </SheetAction>
       }

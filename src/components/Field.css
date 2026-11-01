@@ -91,7 +91,7 @@ textarea.field__input {
 /* Search: a slimmer box, as in Giv bøder. */
 .field:has(input[type='search']) .field__box {
   min-height: 44px;
-  border-radius: 12px;
+  border-radius: var(--radius-search);
   padding: 0 12px;
   gap: 8px;
 }

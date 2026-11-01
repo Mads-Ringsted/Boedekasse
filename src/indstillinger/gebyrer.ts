@@ -1,39 +1,44 @@
 import { formatKr, t } from '../strings/index.ts';
 import type { Indstillinger } from './indstillinger.ts';
 import type { Regel, RegelStatus, TilNoegle } from './regel.ts';
-import { ENGANGSGEBYR_SEKTION, regelStatus, tjekAntal, tjekBeloeb, tjekBetalingsdag, tjekLoft } from './regler.ts';
+import {
+  ENGANGSGEBYR_SEKTION,
+  kronerRegel,
+  kronerStatus,
+  regelStatus,
+  tjekAntal,
+  tjekBeloeb,
+  tjekBetalingsdag,
+  tjekLoft,
+} from './regler.ts';
 
 /**
  * The Gebyrer page (#95): its rules and their status helpers. Each Gebyr is a
- * `Regel`, so `RegelRaekke` and `RegelSheet` draw it like the hub's rules.
+ * `Regel`, so `LinkRaekke` and `RegelSheet` draw it like the hub's rules.
  */
+
+// ── The single-amount Gebyrer's status helpers ───────────────────────────
+
+/** Ny bødekategori: "Til · 25 kr". */
+export const oprettelsesgebyrStatus = kronerStatus('oprettelsesgebyr_til', 'oprettelsesgebyr');
+
+/** The Engangsbøde Gebyr: "Til · 10 kr". */
+export const engangsgebyrStatus = kronerStatus('engangsgebyr_til', 'engangsgebyr');
+
+/** Dos-bonus: "Til · 50 kr". */
+export const dosBonusStatus = kronerStatus('dos_bonus_til', 'dos_bonus_beloeb');
 
 // ── The rules ────────────────────────────────────────────────────────────
 
 const kr = t('kategori.kr');
 
-export const OPRETTELSESGEBYR: Regel = {
+export const OPRETTELSESGEBYR: Regel = kronerRegel({
   id: 'oprettelsesgebyr',
   titel: t('indstillinger.oprettelsesgebyr'),
-  status: oprettelsesgebyrStatus,
-  sektioner: [
-    {
-      til: { noegle: 'oprettelsesgebyr_til', label: t('indstillinger.oprettelsesgebyr') },
-      felter: [
-        {
-          art: 'tekst',
-          noegle: 'oprettelsesgebyr',
-          label: t('indstillinger.beloeb'),
-          enhed: kr,
-          inputMode: 'numeric',
-          note: t('indstillinger.oprettelsesgebyrNote'),
-          start: (ind) => String(ind.oprettelsesgebyr),
-          tjek: tjekBeloeb,
-        },
-      ],
-    },
-  ],
-};
+  til: 'oprettelsesgebyr_til',
+  beloeb: 'oprettelsesgebyr',
+  note: t('indstillinger.oprettelsesgebyrNote'),
+});
 
 /** The same setting as in the Engangsbøder sheet; one section, so no heading. */
 export const ENGANGSGEBYR: Regel = {
@@ -43,28 +48,13 @@ export const ENGANGSGEBYR: Regel = {
   sektioner: [{ ...ENGANGSGEBYR_SEKTION, titel: undefined }],
 };
 
-export const DOS_BONUS: Regel = {
+export const DOS_BONUS: Regel = kronerRegel({
   id: 'dosBonus',
   titel: t('indstillinger.dosBonus'),
-  status: dosBonusStatus,
-  sektioner: [
-    {
-      til: { noegle: 'dos_bonus_til', label: t('indstillinger.dosBonus') },
-      felter: [
-        {
-          art: 'tekst',
-          noegle: 'dos_bonus_beloeb',
-          label: t('indstillinger.beloeb'),
-          enhed: kr,
-          inputMode: 'numeric',
-          note: t('indstillinger.dosBonusNote'),
-          start: (ind) => String(ind.dos_bonus_beloeb),
-          tjek: tjekBeloeb,
-        },
-      ],
-    },
-  ],
-};
+  til: 'dos_bonus_til',
+  beloeb: 'dos_bonus_beloeb',
+  note: t('indstillinger.dosBonusNote'),
+});
 
 export const CATCH_UP: Regel = {
   id: 'catchUp',
@@ -79,7 +69,7 @@ export const CATCH_UP: Regel = {
           noegle: 'catch_up_beloeb',
           label: t('indstillinger.beloeb'),
           enhed: kr,
-          inputMode: 'numeric',
+          kind: 'integer',
           start: (ind) => String(ind.catch_up_beloeb),
           tjek: tjekBeloeb,
         },
@@ -87,7 +77,7 @@ export const CATCH_UP: Regel = {
           art: 'tekst',
           noegle: 'catch_up_antal',
           label: t('indstillinger.catchUpAntal'),
-          inputMode: 'numeric',
+          kind: 'integer',
           note: t('indstillinger.catchUpAntalNote'),
           start: (ind) => String(ind.catch_up_antal),
           tjek: tjekAntal,
@@ -111,7 +101,7 @@ export const SEN_BETALING: Regel = {
           noegle: 'sen_betaling_beloeb',
           label: t('indstillinger.senBetalingBeloeb'),
           enhed: kr,
-          inputMode: 'numeric',
+          kind: 'integer',
           start: (ind) => String(ind.sen_betaling_beloeb),
           tjek: tjekBeloeb,
         },
@@ -119,7 +109,7 @@ export const SEN_BETALING: Regel = {
           art: 'tekst',
           noegle: 'betalingsdag',
           label: t('indstillinger.betalingsdag'),
-          inputMode: 'numeric',
+          kind: 'integer',
           note: t('indstillinger.betalingsdagNote'),
           start: (ind) => String(ind.betalingsdag),
           tjek: tjekBetalingsdag,
@@ -129,7 +119,7 @@ export const SEN_BETALING: Regel = {
           noegle: 'sen_betaling_loft',
           label: t('indstillinger.senBetalingLoft'),
           enhed: kr,
-          inputMode: 'numeric',
+          kind: 'integer',
           note: t('indstillinger.senBetalingLoftNote'),
           start: (ind) => (ind.sen_betaling_loft === null ? '' : String(ind.sen_betaling_loft)),
           tjek: tjekLoft,
@@ -147,23 +137,6 @@ export const GEBYRER_NAAR_NOGEN: readonly Regel[] = [OPRETTELSESGEBYR, ENGANGSGE
 export const GEBYRER_AUTOMATISKE: readonly Regel[] = [DOS_BONUS, CATCH_UP, SEN_BETALING];
 
 // ── Status helpers: one per Gebyr ────────────────────────────────────────
-
-/** Ny bødekategori: "Til · 25 kr". */
-export function oprettelsesgebyrStatus(
-  ind: Pick<Indstillinger, 'oprettelsesgebyr_til' | 'oprettelsesgebyr'>,
-): RegelStatus {
-  return regelStatus(ind.oprettelsesgebyr_til, formatKr(ind.oprettelsesgebyr));
-}
-
-/** The Engangsbøde Gebyr: "Til · 10 kr". */
-export function engangsgebyrStatus(ind: Pick<Indstillinger, 'engangsgebyr_til' | 'engangsgebyr'>): RegelStatus {
-  return regelStatus(ind.engangsgebyr_til, formatKr(ind.engangsgebyr));
-}
-
-/** Dos-bonus: "Til · 50 kr". */
-export function dosBonusStatus(ind: Pick<Indstillinger, 'dos_bonus_til' | 'dos_bonus_beloeb'>): RegelStatus {
-  return regelStatus(ind.dos_bonus_til, formatKr(ind.dos_bonus_beloeb));
-}
 
 /** Catch-up: "Til · De 2 laveste betaler 20 kr d. 1." */
 export function catchUpStatus(
@@ -193,19 +166,15 @@ export function senBetalingStatus(
 }
 
 /** The switches the hub's Gebyrer row counts: every Gebyr with an on/off. */
-const GEBYR_SWITCHES = [
-  'oprettelsesgebyr_til',
-  'engangsgebyr_til',
-  'dos_bonus_til',
-  'catch_up_til',
-  'sen_betaling_til',
-] as const satisfies readonly TilNoegle[];
+const GEBYR_SWITCHES: readonly TilNoegle[] = [...GEBYRER_NAAR_NOGEN, ...GEBYRER_AUTOMATISKE].flatMap((regel) =>
+  regel.sektioner.flatMap((sektion) => (sektion.til ? [sektion.til.noegle] : [])),
+);
 
 /**
  * The hub's Gebyrer row: "3 slået til", or a muted "Ingen slået til".
  * Tilbagevendende Gebyrer have no switch, so they don't count.
  */
-export function gebyrerStatus(ind: Pick<Indstillinger, (typeof GEBYR_SWITCHES)[number]>): RegelStatus {
+export function gebyrerStatus(ind: Partial<Pick<Indstillinger, TilNoegle>>): RegelStatus {
   const antal = GEBYR_SWITCHES.filter((noegle) => ind[noegle]).length;
   return antal === 0
     ? { til: false, tekst: t('indstillinger.gebyrerIngenSlaaetTil') }

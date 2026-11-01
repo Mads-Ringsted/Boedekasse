@@ -3,7 +3,7 @@ import { Receipt } from 'lucide-react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Field } from '../components/Field.tsx';
-import { primaryAction, typedRequirement, visibleError } from '../components/field.ts';
+import { primaryAction, typedRequirement, visibleError } from '../components/fieldRules.ts';
 import { Sheet } from '../components/Sheet.tsx';
 import { SheetAction } from '../components/SheetAction.tsx';
 import { T } from '../components/T.tsx';
@@ -56,12 +56,11 @@ export function EngangsboedeSheet({ open, onOpenChange, modtagere, onTilfoej }: 
     // While the rules load (or failed, which shows below), there is nothing more to say.
     [ind !== null, ''],
   ]);
-  const kanTilfoeje = handling.enabled && beloebTal !== null;
   const flere = modtagere.length > 1;
 
   function tilfoej(event: FormEvent) {
     event.preventDefault();
-    if (!kanTilfoeje) return;
+    if (!handling.enabled || beloebTal === null) return;
     onTilfoej({ grund: grund.trim(), beloeb: beloebTal });
   }
 
@@ -76,7 +75,7 @@ export function EngangsboedeSheet({ open, onOpenChange, modtagere, onTilfoej }: 
       dirty={grund !== '' || beloeb !== ''}
       footer={
         <div className="giv__footer">
-          <SheetAction form={FORM_ID} className="giv__primaer" disabled={!kanTilfoeje} reason={handling.reason}>
+          <SheetAction form={FORM_ID} className="giv__primaer" disabled={!handling.enabled} reason={handling.reason}>
             {beloebTal === null
               ? t('giv.engangs.tilfoejTom')
               : t(flere ? 'giv.engangs.tilfoejHver' : 'giv.engangs.tilfoej', { beloeb: formatKr(beloebTal) })}

@@ -1,7 +1,7 @@
 import { useRef, useState, type FormEvent } from 'react';
 import { useBodekasse, useMedlemskaber } from '../bodekasse/BodekasseProvider.tsx';
 import { Field } from '../components/Field.tsx';
-import { primaryAction } from '../components/field.ts';
+import { primaryAction } from '../components/fieldRules.ts';
 import { Sheet } from '../components/Sheet.tsx';
 import { SheetAction } from '../components/SheetAction.tsx';
 import { t } from '../strings/index.ts';

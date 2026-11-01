@@ -28,7 +28,7 @@
 
 .kategorier__soeg {
   height: 44px;
-  border-radius: 12px;
+  border-radius: var(--radius-search);
   background: var(--color-surface);
   display: flex;
   align-items: center;

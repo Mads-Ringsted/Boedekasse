@@ -13,6 +13,7 @@ import { useHent } from '../supabase/useHent.ts';
 import { FrikobTag } from './FrikobTag.tsx';
 import { hentKoebValg, type FrikobStatus } from './hentFrikoeb.ts';
 import '../medlemmer/felter.css';
+import '../styles/valg-liste.css';
 import './Frikob.css';
 
 interface KoebFrikobSheetProps {
@@ -121,7 +122,7 @@ export function KoebFrikobSheet({ open, onOpenChange, medlem, status, onKoebt }:
             <p className="felt-note">{t('frikob.ingenKategorier')}</p>
           )}
           {viste.length > 0 && (
-            <div role="radiogroup" aria-label={t('frikob.titel')} className="frikob-valg">
+            <div role="radiogroup" aria-label={t('frikob.titel')} className="valg-liste">
               {viste.map((k) => {
                 const tjekket = k.id === valgtId && !k.koebt;
                 return (
@@ -131,16 +132,16 @@ export function KoebFrikobSheet({ open, onOpenChange, medlem, status, onKoebt }:
                     role="radio"
                     aria-checked={tjekket}
                     disabled={k.koebt}
-                    className={`frikob-valg__raekke${tjekket ? ' frikob-valg__raekke--valgt' : ''}`}
+                    className={`valg-liste__raekke${tjekket ? ' valg-liste__raekke--valgt' : ''}`}
                     onClick={() => setValgtId(k.id)}
                   >
-                    <span className="frikob-valg__radio" aria-hidden="true" />
-                    <span className="frikob-valg__tekst">
-                      <span className="frikob-valg__navn">
+                    <span className="valg-liste__radio" aria-hidden="true" />
+                    <span className="valg-liste__tekst">
+                      <span className="valg-liste__navn">
                         {k.navn}
                         {k.koebt && <FrikobTag />}
                       </span>
-                      <span className="frikob-valg__under">
+                      <span className="valg-liste__under">
                         {k.koebt
                           ? t('frikob.alleredeKoebt')
                           : t(egen ? 'frikob.kategoriLinje' : 'frikob.kategoriLinjeAnden', {
