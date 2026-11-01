@@ -19,8 +19,12 @@ A former Medlem an Admin has taken out of the Bødekasse. Their history and any 
 _Avoid_: Slettet, inaktiv, forladt
 
 **Admin**:
-A Medlem who can change a Bødekasse's settings, manage Medlemmer, register Indbetalinger, and make Hævninger. The creator is the first Admin.
-_Avoid_: Kasserer, owner, moderator
+A Medlem who can change a Bødekasse's settings and manage Medlemmer, and who can always do everything a Kasserer can. The creator is the first Admin.
+_Avoid_: Owner, moderator
+
+**Kasserer** (Treasurer):
+A Medlem an Admin has given money powers without making them Admin: confirming Betalingsmeldinger, registering and annulling Indbetalinger, and making and annulling Hævninger. Optional; a Bødekasse can have none or several.
+_Avoid_: Admin, bogholder
 
 **Sæson** (Season):
 A period in which a Bødekasse is active: Medlemmer give Bøder and Gebyrer arise. An Admin starts it and it ends on its end date or when an Admin ends it; unpaid Saldo carries over into the next one.
@@ -41,11 +45,11 @@ A fine one Medlem gives another, either from a Bødekategori or as an Engangsbø
 _Avoid_: Penalty, charge
 
 **Engangsbøde** (One-off fine):
-A Bøde given with a free-text reason and amount instead of a Bødekategori. The giver is charged a Gebyr for it.
+A Bøde given with a free-text reason instead of a Bødekategori. Its price follows the Bødekasse's setting: free (the giver chooses), fixed, or capped. The giver is charged a Gebyr for it.
 _Avoid_: Custom Bøde, ad-hoc Bøde
 
 **Gebyr** (Fee):
-A charge the Bødekasse imposes itself rather than one Medlem giving another, e.g. for creating a Bødekategori, giving an Engangsbøde, filing an Anke, placing in a Konkurrence, or buying Frikøb.
+A charge the Bødekasse imposes itself rather than one Medlem giving another, e.g. for creating a Bødekategori, giving an Engangsbøde, filing an Anke, placing in a Konkurrence, buying Frikøb, or automatically as a Dos-bonus, Catch-up, Sen betaling or Tilbagevendende Gebyr.
 _Avoid_: Afgift, ankebøde
 
 **Frikøb** (Buy-out):
@@ -56,6 +60,30 @@ _Avoid_: Amnesti, amnesty
 A Medlem's challenge of a Bøde they received. Filing one always costs a Gebyr (a random amount between 1 kr and twice the Bøde's price). The other Medlemmer decide the outcome; whoever loses bears the Bøde, so a won Anke moves it to the Medlem who gave it.
 _Avoid_: Klage, dispute
 
+**Dos-bonus** (Double bonus):
+An automatic Gebyr for receiving two Bøder from the same Bødekategori on the same day (06:00 to 06:00). One per full pair, and Dos-bonuses from the same day pair up again the same way. Engangsbøder and Gebyrer don't count.
+_Avoid_: Dobbeltbøde
+
+**Catch-up**:
+An automatic Gebyr given on the 1st of each month to the Medlemmer with the lowest Sæson total (all their Bøder and Gebyrer so far), so they catch up with the rest. Everyone tied at the cutoff gets it.
+_Avoid_: Minimumsgebyr
+
+**Sen betaling** (Late payment):
+An automatic Gebyr for each day after the Betalingsdag that a Medlem still hasn't paid what they owed at the end of last month. A Betalingsmelding stops it from the day it is reported.
+_Avoid_: Rykkergebyr, strafrente
+
+**Betalingsdag** (Payment day):
+The day of the month by which each Medlem pays what they owed at the end of the previous month.
+_Avoid_: Deadline, forfaldsdag
+
+**Betalingspåmindelse** (Payment reminder):
+A push sent at 10:00 to a Medlem who hasn't yet paid what they owed at the end of last month: 2 days before the Betalingsdag, on the Betalingsdag, and on each late day. At most one a day. Only while Sen betaling is on, and never in a Pause.
+_Avoid_: Rykker, påmindelse
+
+**Tilbagevendende Gebyr** (Recurring fee):
+A Gebyr an Admin sets up to hit chosen Medlemmer on a fixed weekly or monthly schedule.
+_Avoid_: Fast gebyr, abonnement
+
 **Konkurrence** (Competition):
 A contest among a Bødekasse's Medlemmer, held whenever the group likes. Each placement results in a Gebyr, and every Medlem who didn't take part gets an absent Gebyr.
 _Avoid_: Game, spil
@@ -63,11 +91,11 @@ _Avoid_: Game, spil
 ### Money
 
 **Indbetaling** (Payment):
-Money a Medlem has paid into the Bødekasse. Counts against their whole Saldo, not specific Bøder. Either registered by an Admin or a confirmed Betalingsmelding.
+Money a Medlem has paid into the Bødekasse. Counts against their whole Saldo, not specific Bøder. Either registered by an Admin or Kasserer, or a confirmed Betalingsmelding.
 _Avoid_: Transaction, settlement
 
 **Betalingsmelding** (Payment report):
-A Medlem's own report that they have paid ("Jeg har betalt"). It doesn't count until another Medlem (or, for an Admin's own report, that Admin) confirms it, which turns it into an Indbetaling.
+A Medlem's own report that they have paid ("Jeg har betalt"). It doesn't count until an Admin or Kasserer confirms it, which turns it into an Indbetaling. Only an Admin may confirm their own.
 _Avoid_: Kvittering, claim
 
 **Saldo** (Balance):
@@ -75,7 +103,7 @@ What a Medlem currently owes: their Bøder and Gebyrer minus their Indbetalinger
 _Avoid_: Debt, gæld
 
 **Hævning** (Withdrawal):
-Money an Admin takes out of the Bødekasse for a stated purpose. Lowers the box's money, never any Medlem's Saldo.
+Money an Admin or Kasserer takes out of the Bødekasse for a stated purpose. Lowers the box's money, never any Medlem's Saldo.
 _Avoid_: Udbetaling, expense
 
 ### Corrections

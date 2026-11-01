@@ -4,6 +4,7 @@ import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { BackButton } from '../components/BackButton.tsx';
 import { Screen } from '../components/Screen.tsx';
 import { EksportSheet } from '../eksport/EksportSheet.tsx';
+import { engangsPris } from '../giv/engangsPris.ts';
 import { SaesonRaekker } from '../saeson/SaesonRaekker.tsx';
 import { SletBodekasseSheet } from '../slet/SletBodekasseSheet.tsx';
 import { parsePris } from '../kategorier/kategoriListe.ts';
@@ -12,13 +13,17 @@ import { formatKr, t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import {
   gangeTekst,
+  parseBetalingsdag,
   parseGange,
+  rensLoft,
   rensMobilePay,
   type IndstillingAendringer,
   type Indstillinger as IndstillingerData,
 } from './indstillinger.ts';
+import { EngangsPrisSheet } from './EngangsPrisSheet.tsx';
 import { Gruppe, LinkRaekke, SwitchRaekke } from './raekker.tsx';
 import { RetIndstillingSheet, type RetIndhold, type Tjek } from './RetIndstillingSheet.tsx';
+import { TilbagevendendeGruppe } from './TilbagevendendeGruppe.tsx';
 import { useIndstillinger } from './useIndstillinger.ts';
 import './Indstillinger.css';
 
@@ -52,10 +57,33 @@ const tjekGange: Tjek<number> = (tekst) => {
   return gange === null ? { ok: false, fejl: t('indstillinger.gangeUgyldig') } : { ok: true, vaerdi: gange };
 };
 
+const tjekAntal: Tjek<number> = (tekst) => {
+  const antal = parsePris(tekst);
+  return antal === null ? { ok: false, fejl: t('indstillinger.catchUpAntalUgyldig') } : { ok: true, vaerdi: antal };
+};
+
+const tjekBetalingsdag: Tjek<number> = (tekst) => {
+  const dag = parseBetalingsdag(tekst);
+  return dag === null ? { ok: false, fejl: t('indstillinger.betalingsdagUgyldig') } : { ok: true, vaerdi: dag };
+};
+
+const tjekLoft: Tjek<number | null> = (tekst) => {
+  const r = rensLoft(tekst);
+  return r.ok ? r : { ok: false, fejl: t('indstillinger.beloebUgyldig') };
+};
+
 const tjekBeloeb: Tjek<number> = (tekst) => {
   const beloeb = parsePris(tekst);
   return beloeb === null ? { ok: false, fejl: t('indstillinger.beloebUgyldig') } : { ok: true, vaerdi: beloeb };
 };
+
+/** The Engangsbøde price row's value: "Fri", "Fast · 30 kr" or "Højst 50 kr". */
+function engangsPrisVaerdi(ind: Pick<IndstillingerData, 'engangs_pris_mode' | 'engangs_pris'>): string {
+  const pris = engangsPris(ind);
+  if (pris.mode === 'fast') return t('indstillinger.engangsVaerdi.fast', { beloeb: formatKr(pris.beloeb) });
+  if (pris.mode === 'loft') return t('indstillinger.engangsVaerdi.loft', { beloeb: formatKr(pris.loft) });
+  return t('indstillinger.engangsMode.fri');
+}
 
 /**
  * Indstillinger (Admin only): the box's name and MobilePay Box number, the
@@ -78,6 +106,7 @@ function IndstillingerSkaerm() {
   const [fejl, setFejl] = useState<string | null>(null);
   const [sheet, setSheet] = useState<{ n: number; open: boolean; indhold: SheetIndhold } | null>(null);
   const [eksport, setEksport] = useState<{ n: number; open: boolean } | null>(null);
+  const [engangsPrisSheet, setEngangsPrisSheet] = useState<{ n: number; open: boolean } | null>(null);
   // Slet Bødekasse: each opening mounts a fresh sheet (new one-time ID).
   const [sletter, setSletter] = useState(0);
 
@@ -120,6 +149,46 @@ function IndstillingerSkaerm() {
       note: t('indstillinger.ankeVindueNote'),
       tjek: tjekTimer,
       onGem: (anke_vindue_timer, klientId) => gem({ anke_vindue_timer }, klientId),
+    });
+  }
+
+  function retCatchUpAntal() {
+    if (!ind) return;
+    aabn<number>({
+      title: t('indstillinger.catchUpAntal'),
+      label: t('indstillinger.catchUpAntalLabel'),
+      start: String(ind.catch_up_antal),
+      inputMode: 'numeric',
+      note: t('indstillinger.catchUpAntalNote'),
+      tjek: tjekAntal,
+      onGem: (catch_up_antal, klientId) => gem({ catch_up_antal }, klientId),
+    });
+  }
+
+  function retBetalingsdag() {
+    if (!ind) return;
+    aabn<number>({
+      title: t('indstillinger.betalingsdag'),
+      label: t('indstillinger.betalingsdagLabel'),
+      start: String(ind.betalingsdag),
+      inputMode: 'numeric',
+      note: t('indstillinger.betalingsdagNote'),
+      tjek: tjekBetalingsdag,
+      onGem: (betalingsdag, klientId) => gem({ betalingsdag }, klientId),
+    });
+  }
+
+  function retSenBetalingLoft() {
+    if (!ind) return;
+    aabn<number | null>({
+      title: t('indstillinger.senBetalingLoft'),
+      label: t('indstillinger.beloeb'),
+      start: ind.sen_betaling_loft === null ? '' : String(ind.sen_betaling_loft),
+      enhed: t('kategori.kr'),
+      inputMode: 'numeric',
+      note: t('indstillinger.senBetalingLoftNote'),
+      tjek: tjekLoft,
+      onGem: (sen_betaling_loft, klientId) => gem({ sen_betaling_loft }, klientId),
     });
   }
 
@@ -172,6 +241,23 @@ function IndstillingerSkaerm() {
             />
           </Gruppe>
 
+          <Gruppe titel={t('indstillinger.engangsboede')}>
+            <LinkRaekke
+              label={t('indstillinger.engangsPris')}
+              vaerdi={engangsPrisVaerdi(ind)}
+              onClick={() => setEngangsPrisSheet((e) => ({ n: (e?.n ?? 0) + 1, open: true }))}
+            />
+            <SwitchRaekke
+              label={t('indstillinger.engangsGebyr')}
+              under={formatKr(ind.engangsgebyr)}
+              til={ind.engangsgebyr_til}
+              onSkift={(til) => skift({ engangsgebyr_til: til })}
+              onAabn={() =>
+                retBeloeb('engangsgebyr', t('indstillinger.engangsgebyr'), t('indstillinger.engangsgebyrNote'))
+              }
+            />
+          </Gruppe>
+
           <Gruppe titel={t('indstillinger.saerligeRegler')}>
             <SwitchRaekke
               label={t('indstillinger.oprettelsesgebyr')}
@@ -180,15 +266,6 @@ function IndstillingerSkaerm() {
               onSkift={(til) => skift({ oprettelsesgebyr_til: til })}
               onAabn={() =>
                 retBeloeb('oprettelsesgebyr', t('indstillinger.oprettelsesgebyr'), t('indstillinger.oprettelsesgebyrNote'))
-              }
-            />
-            <SwitchRaekke
-              label={t('indstillinger.engangsgebyr')}
-              under={formatKr(ind.engangsgebyr)}
-              til={ind.engangsgebyr_til}
-              onSkift={(til) => skift({ engangsgebyr_til: til })}
-              onAabn={() =>
-                retBeloeb('engangsgebyr', t('indstillinger.engangsgebyr'), t('indstillinger.engangsgebyrNote'))
               }
             />
             <SwitchRaekke
@@ -263,7 +340,73 @@ function IndstillingerSkaerm() {
                 }
               />
             )}
+            <SwitchRaekke
+              label={t('indstillinger.catchUp')}
+              under={t('indstillinger.catchUpUnder', {
+                antal: ind.catch_up_antal,
+                beloeb: formatKr(ind.catch_up_beloeb),
+              })}
+              til={ind.catch_up_til}
+              onSkift={(til) => skift({ catch_up_til: til })}
+              onAabn={() => retBeloeb('catch_up_beloeb', t('indstillinger.catchUp'), t('indstillinger.catchUpNote'))}
+            />
+            {ind.catch_up_til && (
+              <LinkRaekke
+                label={t('indstillinger.catchUpAntal')}
+                vaerdi={String(ind.catch_up_antal)}
+                onClick={retCatchUpAntal}
+              />
+            )}
+            <SwitchRaekke
+              label={t('indstillinger.dosBonus')}
+              under={formatKr(ind.dos_bonus_beloeb)}
+              til={ind.dos_bonus_til}
+              onSkift={(til) => skift({ dos_bonus_til: til })}
+              onAabn={() =>
+                retBeloeb('dos_bonus_beloeb', t('indstillinger.dosBonus'), t('indstillinger.dosBonusNote'))
+              }
+            />
+            <SwitchRaekke
+              label={t('indstillinger.senBetaling')}
+              under={
+                ind.sen_betaling_loft === null
+                  ? t('indstillinger.senBetalingUnder', {
+                      beloeb: formatKr(ind.sen_betaling_beloeb),
+                      dag: ind.betalingsdag,
+                    })
+                  : t('indstillinger.senBetalingUnderLoft', {
+                      beloeb: formatKr(ind.sen_betaling_beloeb),
+                      dag: ind.betalingsdag,
+                      loft: formatKr(ind.sen_betaling_loft),
+                    })
+              }
+              til={ind.sen_betaling_til}
+              onSkift={(til) => skift({ sen_betaling_til: til })}
+              onAabn={() =>
+                retBeloeb('sen_betaling_beloeb', t('indstillinger.senBetaling'), t('indstillinger.senBetalingNote'))
+              }
+            />
+            {ind.sen_betaling_til && (
+              <>
+                <LinkRaekke
+                  label={t('indstillinger.betalingsdag')}
+                  vaerdi={t('indstillinger.betalingsdagVaerdi', { dag: ind.betalingsdag })}
+                  onClick={retBetalingsdag}
+                />
+                <LinkRaekke
+                  label={t('indstillinger.senBetalingLoft')}
+                  vaerdi={
+                    ind.sen_betaling_loft === null
+                      ? t('indstillinger.senBetalingLoftIngen')
+                      : formatKr(ind.sen_betaling_loft)
+                  }
+                  onClick={retSenBetalingLoft}
+                />
+              </>
+            )}
           </Gruppe>
+
+          <TilbagevendendeGruppe />
 
           <Gruppe titel={t('indstillinger.saesonOgData')}>
             <SaesonRaekker />
@@ -296,6 +439,17 @@ function IndstillingerSkaerm() {
           key={eksport.n}
           open={eksport.open}
           onOpenChange={(open) => setEksport((e) => e && { ...e, open })}
+        />
+      )}
+
+      {engangsPrisSheet && ind && (
+        <EngangsPrisSheet
+          key={engangsPrisSheet.n}
+          open={engangsPrisSheet.open}
+          onOpenChange={(open) => setEngangsPrisSheet((e) => e && { ...e, open })}
+          mode={ind.engangs_pris_mode}
+          pris={ind.engangs_pris}
+          onGem={gem}
         />
       )}
 

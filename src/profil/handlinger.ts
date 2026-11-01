@@ -2,6 +2,7 @@ import type { ComponentType } from 'react';
 import { KanAnkesKort } from '../anke/profilDel.tsx';
 import { FrikobKort, KoebFrikobKnap } from '../frikob/profilDele.tsx';
 import { AdminHandlingerKnap } from '../medlemmer/AdminHandlinger.tsx';
+import { NotifikationerKort } from '../push/Notifikationer.tsx';
 import { BetalKnap, GivBoedeKnap, MinMeldingProfilKort, RegistrerIndbetalingKnap } from './knapper.tsx';
 import type { Profil, ProfilVisning } from './profil.ts';
 
@@ -11,8 +12,8 @@ export interface ProfilDelProps {
   profil: Profil;
   /** Own profile or not, tags, Mangler / Til gode (see `profilVisning`). */
   visning: ProfilVisning;
-  /** Who is looking. */
-  mig: { medlemId: string; erAdmin: boolean };
+  /** Who is looking. `kanHaandterePenge`: Admin or Kasserer. */
+  mig: { medlemId: string; erAdmin: boolean; kanHaandterePenge: boolean };
   /** Something changed: reloads the profile's figures and its history. */
   opdater: () => void;
 }
@@ -27,7 +28,7 @@ export type ProfilDel = ComponentType<ProfilDelProps>;
 /**
  * The action buttons under the figures, in a 2-column grid (a lone button
  * fills the row). Render each with `<ProfilKnap>` from `knapper.tsx`.
- * - Someone else: Giv bøde, then Registrér indbetaling (Admin).
+ * - Someone else: Giv bøde, then Registrér indbetaling (Admin or Kasserer).
  * - Your own: Betal, then Køb Frikøb (when Frikøb is on).
  * - Someone else, Admin: Registrér frikøb (the same Frikøb part).
  */
@@ -37,9 +38,9 @@ export const PROFIL_KNAPPER: readonly ProfilDel[] = [GivBoedeKnap, RegistrerIndb
  * Cards between the buttons and Historik, top to bottom. Use the
  * `.profil__kort` and `.profil__sektion` classes from `Profil.css`.
  * Your own report that afventer (#60), "Frikøb i sæson …" chips (#65), then
- * "Kan ankes" (#63, own profile).
+ * "Kan ankes" (#63, own profile), then Notifikationer (#81, own profile).
  */
-export const PROFIL_KORT: readonly ProfilDel[] = [MinMeldingProfilKort, FrikobKort, KanAnkesKort];
+export const PROFIL_KORT: readonly ProfilDel[] = [MinMeldingProfilKort, FrikobKort, KanAnkesKort, NotifikationerKort];
 
 /**
  * Small buttons at the top right, beside the back button.

@@ -43,6 +43,10 @@ const GEBYR: Record<GebyrArt, PlainStringId> = {
   frikob: 'eksport.gebyr.frikob',
   placering: 'eksport.gebyr.placering',
   fravaer: 'eksport.gebyr.fravaer',
+  dos_bonus: 'eksport.gebyr.dosBonus',
+  catch_up: 'eksport.gebyr.catchUp',
+  sen_betaling: 'eksport.gebyr.senBetaling',
+  tilbagevendende: 'eksport.gebyr.tilbagevendende',
 };
 
 const ANKE: Record<string, PlainStringId> = {

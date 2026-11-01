@@ -20,15 +20,15 @@ import './Kassen.css';
 export const FRA_MERE = { fra: 'mere' } as const;
 
 /**
- * Kassen: I bødekassen, then Indbetalt / Hævet / Mangler, the Admin buttons,
- * and every Indbetaling and Hævning. An Admin taps one from the latest Sæson
- * to annul it.
+ * Kassen: I bødekassen, then Indbetalt / Hævet / Mangler, the money buttons
+ * (Admin or Kasserer), and every Indbetaling and Hævning. An Admin or Kasserer
+ * taps one from the latest Sæson to annul it.
  */
 export function Kassen() {
-  const { bodekasseId, erAdmin } = useBodekasse();
+  const { bodekasseId, kanHaandterePenge } = useBodekasse();
   const navigate = useNavigate();
   const fraMere = (useLocation().state as { fra?: string } | null)?.fra === 'mere';
-  const kassen = useHent(() => hentKassen(bodekasseId, erAdmin), [bodekasseId, erAdmin]);
+  const kassen = useHent(() => hentKassen(bodekasseId, kanHaandterePenge), [bodekasseId, kanHaandterePenge]);
   const data = kassen.status === 'ready' ? kassen.data : null;
   const [registrerer, setRegistrerer] = useState(0);
   const [haever, setHaever] = useState(0);
@@ -53,7 +53,7 @@ export function Kassen() {
         <Tal label={t('kassen.mangler')} beloeb={data?.mangler} tone="mangler" />
       </div>
 
-      {erAdmin && (
+      {kanHaandterePenge && (
         // One column per button.
         <div className="kassen__knapper">
           <button type="button" className="kassen__knap kassen__knap--primaer" onClick={() => setRegistrerer((n) => n + 1)}>
@@ -90,7 +90,7 @@ export function Kassen() {
         </>
       )}
 
-      {erAdmin && registrerer > 0 && (
+      {kanHaandterePenge && registrerer > 0 && (
         <RegistrerIndbetalingSheet
           key={`registrer-${registrerer}`}
           open
@@ -98,7 +98,7 @@ export function Kassen() {
           onRegistreret={kassen.reload}
         />
       )}
-      {erAdmin && haever > 0 && data && (
+      {kanHaandterePenge && haever > 0 && data && (
         <HaevPengeSheet
           key={`haev-${haever}`}
           open

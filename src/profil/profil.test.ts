@@ -5,6 +5,7 @@ const jonas: Profil = {
   id: 'jonas',
   navn: 'Jonas Holm',
   erAdmin: false,
+  erKasserer: false,
   loggetInd: true,
   kontoSlettet: false,
   udmeldt: false,
@@ -43,6 +44,11 @@ describe('profilVisning (what a Medlem profile shows)', () => {
       'admin',
       'ikkeLoggetInd',
     ]);
+  });
+
+  it('tags a Kasserer after Admin', () => {
+    expect(profilVisning({ ...jonas, erKasserer: true }, 'mads').tags).toEqual(['kasserer']);
+    expect(profilVisning({ ...jonas, erAdmin: true, erKasserer: true }, 'mads').tags).toEqual(['admin', 'kasserer']);
   });
 
   it('tags a Medlem whose login was deleted as Konto slettet, not as not logged in yet', () => {

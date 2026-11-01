@@ -1,3 +1,4 @@
+import type { Enums } from '../supabase/database.types.ts';
 import type { Gebyr } from './haendelse.ts';
 import type { Raekke } from './visning.ts';
 
@@ -8,9 +9,21 @@ export type Tryk =
   | { art: 'link'; link: string };
 
 /**
+ * Who may annul a Gebyr from its feed row: a late day (Sen betaling) or a
+ * Dos-bonus an Admin or a Kasserer, every other kind an Admin. Mirrors
+ * `annuller_gebyr`.
+ */
+export function maaAnnullereGebyr(
+  art: Enums<'gebyr_art'>,
+  mig: { erAdmin: boolean; kanHaandterePenge: boolean },
+): boolean {
+  return art === 'sen_betaling' || art === 'dos_bonus' ? mig.kanHaandterePenge : mig.erAdmin;
+}
+
+/**
  * A Bøde row always opens the Bøde detail (an Anke Gebyr is annulled from
- * there). A row with only a Gebyr to annul opens "Annullér gebyr" for an
- * Admin. Otherwise the row's link, or nothing.
+ * there). A row with only a Gebyr to annul opens "Annullér gebyr" for whoever
+ * may annul it (`maaAnnullereGebyr`). Otherwise the row's link, or nothing.
  */
 export function trykPaaRaekke(r: Raekke, kanAnnullereGebyr: boolean): Tryk | null {
   if (r.boedeId) return { art: 'boede', boedeId: r.boedeId };

@@ -185,7 +185,7 @@ describe('every kind of row', () => {
 describe('Bødekategori rows', () => {
   const kategori = (art: string, data: Haendelse['data'], over: Partial<Haendelse> = {}) =>
     beskrivRaekke(andet({ art, data, refTabel: 'bodekategori', refId: 'k1', ...over }), ctx);
-  const gebyr = (over: Partial<Haendelse['gebyrer'][number]> = {}) => ({
+  const gebyr = (over: Partial<Haendelse['gebyrer'][number]> = {}): Haendelse['gebyrer'][number] => ({
     id: 'g1', art: 'oprettelse', beloeb: 25, medlemId: JONAS, medlemNavn: 'Jonas Holm', annullering: null, ...over,
   });
 

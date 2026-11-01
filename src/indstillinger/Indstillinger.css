@@ -155,3 +155,41 @@
   color: var(--color-text-muted);
   pointer-events: none;
 }
+
+/* Tilbagevendende Gebyr (#79): the Medlemmer picker and Stop. */
+.tilb__overskrift {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.tilb__alle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-accent-text);
+}
+
+.frikob-valg__radio.tilb__boks,
+.frikob-valg__raekke--valgt .tilb__boks::after {
+  border-radius: 6px;
+}
+
+.frikob-valg__raekke--valgt .tilb__boks::after {
+  border-radius: 2px;
+}
+
+.tilb__stop {
+  width: 100%;
+  margin-top: 24px;
+  height: var(--size-button);
+  border-radius: var(--radius-button);
+  background: var(--color-surface-raised);
+  color: var(--color-danger);
+  font-size: 17px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.tilb__stop:disabled {
+  opacity: 0.45;
+}

@@ -15,6 +15,8 @@ const BY_KEY: Record<string, PlainStringId> = {
   kode_ukendt: 'fejl.kodeUkendt',
   udmeldt: 'fejl.udmeldt',
   ikke_admin: 'fejl.ikkeAdmin',
+  // Kasserer (#75)
+  ikke_kasserer: 'fejl.ikkeKasserer',
   // Admin actions on a Medlem (#69)
   sidste_admin: 'fejl.sidsteAdmin',
   medlem_udmeldt: 'fejl.medlemUdmeldt',
@@ -45,6 +47,8 @@ const BY_KEY: Record<string, PlainStringId> = {
   // Engangsbøde (#58); beloeb_ugyldig is shared with #59
   grund_mangler: 'fejl.grundMangler',
   grund_for_lang: 'fejl.grundForLang',
+  // Engangsbøde price modes (#76)
+  beloeb_over_loft: 'fejl.beloebOverLoft',
   // Kassen and Registrér indbetaling (#59)
   medlem_ukendt: 'fejl.medlemUkendt',
   beloeb_ugyldig: 'fejl.beloebUgyldig',
@@ -89,6 +93,12 @@ const BY_KEY: Record<string, PlainStringId> = {
   allerede_afgjort: 'fejl.alleredeAfgjort',
   anke_ikke_afgjort: 'fejl.ankeIkkeAfgjort',
   samme_afgoerelse: 'fejl.sammeAfgoerelse',
+  // Push (#81)
+  abonnement_ugyldigt: 'fejl.abonnementUgyldigt',
+  // Tilbagevendende Gebyr (#79); navn_mangler, beloeb_ugyldig, medlem_ukendt are shared
+  frekvens_ugyldig: 'fejl.frekvensUgyldig',
+  medlemmer_mangler: 'fejl.medlemmerMangler',
+  tilbagevendende_stoppet: 'fejl.tilbagevendendeStoppet',
 };
 
 /**

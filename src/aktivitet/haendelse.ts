@@ -4,6 +4,7 @@ import type { Database, Json } from '../supabase/database.types.ts';
 type AktivitetRow = Database['public']['Views']['aktivitet']['Row'];
 type BoedeRow = Database['public']['Views']['aktivitet_bode']['Row'];
 export type Afgoerelse = Database['public']['Enums']['anke_afgoerelse'];
+export type GebyrArt = Database['public']['Enums']['gebyr_art'];
 
 /** Who annulled something, when, and their note. */
 export interface Annullering {
@@ -60,7 +61,7 @@ export interface Afgjort {
 /** One Gebyr on a feed entry's cause. */
 export interface Gebyr {
   id: string;
-  art: string;
+  art: GebyrArt;
   beloeb: number;
   medlemId: string;
   medlemNavn: string;
@@ -170,7 +171,7 @@ export function tilHaendelse(r: AktivitetRow): Haendelse {
     boeder: liste(r.boeder).map(tilBoede),
     gebyrer: liste(r.gebyrer).map((g) => ({
       id: str(g.id),
-      art: str(g.art),
+      art: str(g.art) as GebyrArt,
       beloeb: tal(g.beloeb),
       medlemId: str(g.medlem_id),
       medlemNavn: str(g.medlem_navn),

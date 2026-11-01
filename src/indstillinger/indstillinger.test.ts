@@ -1,5 +1,67 @@
 import { describe, expect, it } from 'vitest';
-import { gangeTekst, gebyrVedOprettelse, parseGange, rensMobilePay } from './indstillinger.ts';
+import {
+  gangeTekst,
+  gebyrVedOprettelse,
+  parseBetalingsdag,
+  parseGange,
+  rensLoft,
+  rensMobilePay,
+  tjekEngangsPris,
+} from './indstillinger.ts';
+
+describe('parseBetalingsdag', () => {
+  it('takes a whole day 1–28', () => {
+    expect(parseBetalingsdag('1')).toBe(1);
+    expect(parseBetalingsdag(' 28 ')).toBe(28);
+  });
+
+  it('rejects anything else, 29–31 included', () => {
+    expect(parseBetalingsdag('0')).toBeNull();
+    expect(parseBetalingsdag('29')).toBeNull();
+    expect(parseBetalingsdag('5,5')).toBeNull();
+    expect(parseBetalingsdag('')).toBeNull();
+  });
+});
+
+describe('rensLoft (the optional monthly cap on late fees)', () => {
+  it('empty means no cap', () => {
+    expect(rensLoft('  ')).toEqual({ ok: true, vaerdi: null });
+  });
+
+  it('takes whole kroner above 0', () => {
+    expect(rensLoft(' 200 ')).toEqual({ ok: true, vaerdi: 200 });
+    expect(rensLoft('0')).toEqual({ ok: false });
+    expect(rensLoft('abc')).toEqual({ ok: false });
+  });
+});
+
+describe('tjekEngangsPris (saving the Engangsbøde price mode)', () => {
+  it('Fri needs no amount and keeps the stored one for later', () => {
+    expect(tjekEngangsPris('fri', '')).toEqual({ ok: true, aendringer: { engangs_pris_mode: 'fri' } });
+    expect(tjekEngangsPris('fri', 'abc')).toEqual({ ok: true, aendringer: { engangs_pris_mode: 'fri' } });
+  });
+
+  it('Fast and Loft save the mode with the amount', () => {
+    expect(tjekEngangsPris('fast', '30')).toEqual({
+      ok: true,
+      aendringer: { engangs_pris_mode: 'fast', engangs_pris: 30 },
+    });
+    expect(tjekEngangsPris('loft', ' 1.000 ')).toEqual({
+      ok: true,
+      aendringer: { engangs_pris_mode: 'loft', engangs_pris: 1000 },
+    });
+  });
+
+  it('Fast and Loft without an amount are rejected', () => {
+    expect(tjekEngangsPris('fast', '')).toEqual({ ok: false, fejl: 'mangler' });
+    expect(tjekEngangsPris('loft', '  ')).toEqual({ ok: false, fejl: 'mangler' });
+  });
+
+  it('rejects an amount that is not whole kroner above 0', () => {
+    expect(tjekEngangsPris('fast', '0')).toEqual({ ok: false, fejl: 'ugyldig' });
+    expect(tjekEngangsPris('loft', '12,5')).toEqual({ ok: false, fejl: 'ugyldig' });
+  });
+});
 
 describe('gebyrVedOprettelse', () => {
   it('is the amount when the rule is on and a Sæson runs', () => {
