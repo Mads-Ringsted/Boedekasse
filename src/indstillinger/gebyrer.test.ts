@@ -79,10 +79,8 @@ describe('gebyrerStatus (the Gebyrer row on the hub)', () => {
   };
 
   it('counts the Gebyrer that are on', () => {
-    expect(gebyrerStatus({ ...alleFra, oprettelsesgebyr_til: true, dos_bonus_til: true, sen_betaling_til: true })).toEqual({
-      til: true,
-      tekst: '3 slået til',
-    });
+    const tre = { ...alleFra, oprettelsesgebyr_til: true, dos_bonus_til: true, sen_betaling_til: true };
+    expect(gebyrerStatus(tre)).toEqual({ til: true, tekst: '3 slået til' });
     expect(gebyrerStatus({ ...alleFra, catch_up_til: true }).tekst).toBe('1 slået til');
   });
 

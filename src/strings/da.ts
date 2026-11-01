@@ -925,7 +925,6 @@ export const da = {
   'indstillinger.catchUpResumeEn': 'Den laveste betaler {beloeb} d. 1.',
   'indstillinger.catchUpNote': 'Den 1. i hver måned betaler de medlemmer med den laveste sæsontotal gebyret. Alle, der står lige med den sidste, betaler også. Intet gebyr i en pause.',
   'indstillinger.catchUpAntal': 'Antal medlemmer',
-  'indstillinger.catchUpAntalLabel': 'Laveste sæsontotaler',
   'indstillinger.catchUpAntalNote': 'Så mange medlemmer med den laveste sæsontotal betaler catch-up hver måned, plus alle, der står lige med den sidste.',
   'indstillinger.catchUpAntalUgyldig': 'Skriv et helt antal medlemmer over 0.',
   // Sen betaling (#80)
@@ -937,12 +936,9 @@ export const da = {
   'indstillinger.senBetalingResumeLoft': '{beloeb} pr. dag efter den {dag}., højst {loft} om måneden',
   'indstillinger.senBetalingNote': 'Hver dag efter betalingsdagen betaler et medlem gebyret, indtil det har betalt det, det skyldte ved sidste måneds udgang. En betalingsmelding stopper gebyret, så snart den er sendt. Intet gebyr i en pause.',
   'indstillinger.betalingsdag': 'Betalingsdag',
-  'indstillinger.betalingsdagVaerdi': 'Den {dag}.',
-  'indstillinger.betalingsdagLabel': 'Dag i måneden',
   'indstillinger.betalingsdagNote': 'Den dag i måneden, hvor medlemmerne senest betaler det, de skyldte ved sidste måneds udgang. Vælg 1–28.',
   'indstillinger.betalingsdagUgyldig': 'Skriv en dag fra 1 til 28.',
   'indstillinger.senBetalingLoft': 'Loft pr. måned',
-  'indstillinger.senBetalingLoftIngen': 'Intet loft',
   'indstillinger.senBetalingLoftNote': 'Gebyrerne for sen betaling i én måned bliver aldrig højere end loftet. Lad feltet stå tomt for intet loft.',
 
   'dosBonus.tag': 'Dos-bonus',
@@ -959,7 +955,6 @@ export const da = {
   'fejl.frekvensUgyldig': 'Vælg en ugedag eller en dag fra 1 til 28.',
   'fejl.medlemmerMangler': 'Vælg mindst ét medlem.',
   'fejl.tilbagevendendeStoppet': 'Gebyret er stoppet og kan ikke rettes.',
-  'indstillinger.tilbagevendende': 'Tilbagevendende gebyrer',
   'indstillinger.tilbagevendendeNy': 'Nyt tilbagevendende gebyr',
   'indstillinger.tilbagevendendeUnder': '{beloeb} · {frekvens} · næste {naeste}',
   'tilbagevendende.hverUge': 'Hver {ugedag}',

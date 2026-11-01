@@ -31,7 +31,7 @@ export function TilbagevendendeGruppe() {
 
   return (
     <>
-      <Gruppe titel={t('indstillinger.tilbagevendende')}>
+      <Gruppe titel={t('indstillinger.gebyrerTilbagevendende')}>
         {hentet.status === 'error' && (
           <button type="button" className="indst__fejl indst-raekke" onClick={hentet.reload}>
             {rpcErrorText(hentet.error)} · {t('handling.proevIgen')}
