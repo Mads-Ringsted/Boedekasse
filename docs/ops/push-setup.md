@@ -31,7 +31,7 @@ Supabase gives the function `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` by it
 
 Take a backup first (see [backup-and-rollback.md](backup-and-rollback.md)).
 
-1. **Deploy the migration** as usual. It adds the tables and the outbox, schedules the cron jobs `push-sweep` and `cron-oprydning`, and enables `pg_net` and `pg_cron`.
+1. **Deploy the migration** as usual. It adds the tables and the outbox, schedules the cron jobs `push_sweep` and `cron_oprydning`, and enables `pg_net` and `pg_cron`.
 
 2. **Make a VAPID key pair.** Do it once, and keep the keys. A new pair makes every phone subscribe again.
 
@@ -80,7 +80,7 @@ Take a backup first (see [backup-and-rollback.md](backup-and-rollback.md)).
     order by start_time desc limit 5;
    ```
 
-   You should see `push-sweep` every 30 seconds and `cron-oprydning` once a day.
+   You should see `push_sweep` every 30 seconds and `cron_oprydning` once a day.
 
 ## Check on a phone
 

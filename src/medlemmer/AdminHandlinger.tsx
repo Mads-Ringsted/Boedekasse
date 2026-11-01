@@ -131,6 +131,25 @@ function AdminSheet({ profil, visning, opdater, art, vaelg, luk }: AdminSheetPro
         />
       );
     }
+    case 'goerTilKasserer':
+    case 'fjernSomKasserer': {
+      const goer = art === 'goerTilKasserer';
+      return (
+        <BekraeftSheet
+          open
+          onOpenChange={onOpenChange}
+          titel={t(goer ? 'adminHandlinger.goerTilKassererTitel' : 'adminHandlinger.fjernSomKassererTitel', { navn })}
+          tekst={t(goer ? 'adminHandlinger.goerTilKassererTekst' : 'adminHandlinger.fjernSomKassererTekst', { navn })}
+          knap={t(goer ? 'adminHandlinger.goerTilKasserer' : 'adminHandlinger.fjernSomKasserer')}
+          kald={(id) => supabase.rpc('saet_kasserer', { p_klient_id: id, ...base, p_er_kasserer: goer })}
+          onFaerdig={() => {
+            // Your own role lives on your Medlemskab (money buttons).
+            if (visning.egen) void genindlaesMedlemskaber();
+            faerdig();
+          }}
+        />
+      );
+    }
     case 'retNavn':
       return (
         <RetFeltSheet
@@ -214,7 +233,7 @@ function AdminListe({
   vaelg: (art: Art) => void;
 }) {
   const { hoved, farlig } = adminHandlinger(
-    { erAdmin: profil.erAdmin, loggetInd: profil.loggetInd, udmeldt: profil.udmeldt, email: data?.email ?? null },
+    { erAdmin: profil.erAdmin, erKasserer: profil.erKasserer, loggetInd: profil.loggetInd, udmeldt: profil.udmeldt, email: data?.email ?? null },
     { egen: visning.egen, sletGrund: data?.sletGrund ?? null, frikob: data?.frikob.kanKoebe ?? false },
   );
   const under = profil.udmeldt
@@ -225,7 +244,9 @@ function AdminListe({
         ? t('profil.tag.ikkeLoggetInd')
         : profil.erAdmin
           ? t('profil.tag.admin')
-          : null;
+          : profil.erKasserer
+            ? t('profil.tag.kasserer')
+            : null;
 
   return (
     <>
@@ -287,6 +308,10 @@ function raekkeTekst(h: AdminHandling): string {
       return t('adminHandlinger.goerTilAdmin');
     case 'fjernSomAdmin':
       return t('adminHandlinger.fjernSomAdmin');
+    case 'goerTilKasserer':
+      return t('adminHandlinger.goerTilKasserer');
+    case 'fjernSomKasserer':
+      return t('adminHandlinger.fjernSomKasserer');
     case 'retNavn':
       return t('adminHandlinger.retNavn');
     case 'retEmail':

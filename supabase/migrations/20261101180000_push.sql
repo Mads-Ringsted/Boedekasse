@@ -20,8 +20,9 @@
 -- Later tickets (#82 Anke and payments, #83 reminders and automatic Gebyrer)
 -- only call private.push(); everything after step 1 is shared.
 
-create extension if not exists pg_net;
-create extension if not exists pg_cron;
+-- Both are already on since #78; repeated so this file stands on its own.
+create extension if not exists pg_cron with schema pg_catalog;
+create extension if not exists pg_net with schema extensions;
 
 -- ---------- Types and tables ----------
 
@@ -185,10 +186,17 @@ create trigger skub after insert on public.push_udbakke
   for each statement execute function private.push_udbakke_skub();
 
 -- The sweep: catches rows that waited (send_efter) and any missed wake-up.
--- The cron.job_run_details cleanup keeps the sweep's log from growing forever.
-select cron.schedule('push-sweep', '30 seconds', 'select private.skub_push()');
-select cron.schedule('cron-oprydning', '17 3 * * *',
-  $$delete from cron.job_run_details where end_time < now() - interval '7 days'$$);
+-- The daily cron.job_run_details cleanup keeps the log of every cron job
+-- (the sweep writes ~2,900 rows a day) from growing forever. As in #78, a
+-- failure to schedule is a warning, not a failed migration.
+do $$
+begin
+  perform cron.schedule('push_sweep', '30 seconds', 'select private.skub_push()');
+  perform cron.schedule('cron_oprydning', '17 3 * * *',
+    $j$delete from cron.job_run_details where end_time < now() - interval '7 days'$j$);
+exception when others then
+  raise warning 'could not schedule the push jobs: % (%)', sqlerrm, sqlstate;
+end $$;
 
 -- ---------- First event: Bøde modtaget ----------
 

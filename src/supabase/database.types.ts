@@ -397,14 +397,14 @@ isOneToOne: false
                   ]
                 },"bodekasse": {
                   Row: {
-                    "anke_max_gange": number,"anke_min": number,"anke_til": boolean,"anke_vindue_timer": number,"engangsgebyr": number,"engangsgebyr_til": boolean,"fravaersgebyr": number,"frikob_pris": number,"frikob_til": boolean,"id": string,"konkurrence_til": boolean,"mobilepay_box": string | null,"navn": string,"oprettelsesgebyr": number,"oprettelsesgebyr_til": boolean,"oprettet": string,"placeringer": (number)[]
+                    "anke_max_gange": number,"anke_min": number,"anke_til": boolean,"anke_vindue_timer": number,"catch_up_antal": number,"catch_up_beloeb": number,"catch_up_til": boolean,"engangs_pris": number | null,"engangs_pris_mode": Database["public"]['Enums']["engangs_pris_mode"],"engangsgebyr": number,"engangsgebyr_til": boolean,"fravaersgebyr": number,"frikob_pris": number,"frikob_til": boolean,"id": string,"konkurrence_til": boolean,"mobilepay_box": string | null,"navn": string,"oprettelsesgebyr": number,"oprettelsesgebyr_til": boolean,"oprettet": string,"placeringer": (number)[]
                   }
                   ComputedFields: never
                   Insert: {
-                    "anke_max_gange"?: number,"anke_min"?: number,"anke_til"?: boolean,"anke_vindue_timer"?: number,"engangsgebyr"?: number,"engangsgebyr_til"?: boolean,"fravaersgebyr"?: number,"frikob_pris"?: number,"frikob_til"?: boolean,"id"?: string,"konkurrence_til"?: boolean,"mobilepay_box"?: string | null,"navn": string,"oprettelsesgebyr"?: number,"oprettelsesgebyr_til"?: boolean,"oprettet"?: string,"placeringer"?: (number)[]
+                    "anke_max_gange"?: number,"anke_min"?: number,"anke_til"?: boolean,"anke_vindue_timer"?: number,"catch_up_antal"?: number,"catch_up_beloeb"?: number,"catch_up_til"?: boolean,"engangs_pris"?: number | null,"engangs_pris_mode"?: Database["public"]['Enums']["engangs_pris_mode"],"engangsgebyr"?: number,"engangsgebyr_til"?: boolean,"fravaersgebyr"?: number,"frikob_pris"?: number,"frikob_til"?: boolean,"id"?: string,"konkurrence_til"?: boolean,"mobilepay_box"?: string | null,"navn": string,"oprettelsesgebyr"?: number,"oprettelsesgebyr_til"?: boolean,"oprettet"?: string,"placeringer"?: (number)[]
                   }
                   Update: {
-                    "anke_max_gange"?: number,"anke_min"?: number,"anke_til"?: boolean,"anke_vindue_timer"?: number,"engangsgebyr"?: number,"engangsgebyr_til"?: boolean,"fravaersgebyr"?: number,"frikob_pris"?: number,"frikob_til"?: boolean,"id"?: string,"konkurrence_til"?: boolean,"mobilepay_box"?: string | null,"navn"?: string,"oprettelsesgebyr"?: number,"oprettelsesgebyr_til"?: boolean,"oprettet"?: string,"placeringer"?: (number)[]
+                    "anke_max_gange"?: number,"anke_min"?: number,"anke_til"?: boolean,"anke_vindue_timer"?: number,"catch_up_antal"?: number,"catch_up_beloeb"?: number,"catch_up_til"?: boolean,"engangs_pris"?: number | null,"engangs_pris_mode"?: Database["public"]['Enums']["engangs_pris_mode"],"engangsgebyr"?: number,"engangsgebyr_til"?: boolean,"fravaersgebyr"?: number,"frikob_pris"?: number,"frikob_til"?: boolean,"id"?: string,"konkurrence_til"?: boolean,"mobilepay_box"?: string | null,"navn"?: string,"oprettelsesgebyr"?: number,"oprettelsesgebyr_til"?: boolean,"oprettet"?: string,"placeringer"?: (number)[]
                   }
                   Relationships: [
                     
@@ -669,14 +669,14 @@ isOneToOne: false
                   ]
                 },"gebyr": {
                   Row: {
-                    "anke_id": string | null,"annulleret": string | null,"annulleret_af": string | null,"annulleret_note": string | null,"art": Database["public"]['Enums']["gebyr_art"],"beloeb": number,"bode_id": string | null,"bodekasse_id": string,"bodekategori_id": string | null,"frikob_id": string | null,"id": string,"konkurrence_id": string | null,"medlem_id": string,"oprettet": string,"saeson_id": string
+                    "anke_id": string | null,"annulleret": string | null,"annulleret_af": string | null,"annulleret_note": string | null,"art": Database["public"]['Enums']["gebyr_art"],"beloeb": number,"bode_id": string | null,"bodekasse_id": string,"bodekategori_id": string | null,"frikob_id": string | null,"id": string,"konkurrence_id": string | null,"medlem_id": string,"oprettet": string,"saeson_id": string,"udloeser": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "anke_id"?: string | null,"annulleret"?: string | null,"annulleret_af"?: string | null,"annulleret_note"?: string | null,"art": Database["public"]['Enums']["gebyr_art"],"beloeb": number,"bode_id"?: string | null,"bodekasse_id": string,"bodekategori_id"?: string | null,"frikob_id"?: string | null,"id"?: string,"konkurrence_id"?: string | null,"medlem_id": string,"oprettet"?: string,"saeson_id": string
+                    "anke_id"?: string | null,"annulleret"?: string | null,"annulleret_af"?: string | null,"annulleret_note"?: string | null,"art": Database["public"]['Enums']["gebyr_art"],"beloeb": number,"bode_id"?: string | null,"bodekasse_id": string,"bodekategori_id"?: string | null,"frikob_id"?: string | null,"id"?: string,"konkurrence_id"?: string | null,"medlem_id": string,"oprettet"?: string,"saeson_id": string,"udloeser"?: string | null
                   }
                   Update: {
-                    "anke_id"?: string | null,"annulleret"?: string | null,"annulleret_af"?: string | null,"annulleret_note"?: string | null,"art"?: Database["public"]['Enums']["gebyr_art"],"beloeb"?: number,"bode_id"?: string | null,"bodekasse_id"?: string,"bodekategori_id"?: string | null,"frikob_id"?: string | null,"id"?: string,"konkurrence_id"?: string | null,"medlem_id"?: string,"oprettet"?: string,"saeson_id"?: string
+                    "anke_id"?: string | null,"annulleret"?: string | null,"annulleret_af"?: string | null,"annulleret_note"?: string | null,"art"?: Database["public"]['Enums']["gebyr_art"],"beloeb"?: number,"bode_id"?: string | null,"bodekasse_id"?: string,"bodekategori_id"?: string | null,"frikob_id"?: string | null,"id"?: string,"konkurrence_id"?: string | null,"medlem_id"?: string,"oprettet"?: string,"saeson_id"?: string,"udloeser"?: string | null
                   }
                   Relationships: [
                     {
@@ -1455,14 +1455,14 @@ isOneToOne: false
                   ]
                 },"medlem": {
                   Row: {
-                    "bodekasse_id": string,"email": string | null,"er_admin": boolean,"id": string,"konto_slettet": string | null,"navn": string,"oprettet": string,"udmeldt": string | null,"user_id": string | null
+                    "bodekasse_id": string,"email": string | null,"er_admin": boolean,"er_kasserer": boolean,"id": string,"konto_slettet": string | null,"navn": string,"oprettet": string,"udmeldt": string | null,"user_id": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "bodekasse_id": string,"email"?: string | null,"er_admin"?: boolean,"id"?: string,"konto_slettet"?: string | null,"navn": string,"oprettet"?: string,"udmeldt"?: string | null,"user_id"?: string | null
+                    "bodekasse_id": string,"email"?: string | null,"er_admin"?: boolean,"er_kasserer"?: boolean,"id"?: string,"konto_slettet"?: string | null,"navn": string,"oprettet"?: string,"udmeldt"?: string | null,"user_id"?: string | null
                   }
                   Update: {
-                    "bodekasse_id"?: string,"email"?: string | null,"er_admin"?: boolean,"id"?: string,"konto_slettet"?: string | null,"navn"?: string,"oprettet"?: string,"udmeldt"?: string | null,"user_id"?: string | null
+                    "bodekasse_id"?: string,"email"?: string | null,"er_admin"?: boolean,"er_kasserer"?: boolean,"id"?: string,"konto_slettet"?: string | null,"navn"?: string,"oprettet"?: string,"udmeldt"?: string | null,"user_id"?: string | null
                   }
                   Relationships: [
                     {
@@ -2683,6 +2683,9 @@ isOneToOne: false
 "saet_admin":
 { Args: { "p_bodekasse": string,"p_er_admin": boolean,"p_klient_id": string,"p_medlem": string }; Returns: Json
                            },
+"saet_kasserer":
+{ Args: { "p_bodekasse": string,"p_er_kasserer": boolean,"p_klient_id": string,"p_medlem": string }; Returns: Json
+                           },
 "saet_push_praeference":
 { Args: { "p_art": Database["public"]['Enums']["push_art"],"p_til": boolean }; Returns: Json
                            },
@@ -2712,7 +2715,7 @@ isOneToOne: false
                            }
           }
           Enums: {
-            "anke_afgoerelse": "modtager_vandt"|"giver_vandt"|"ikke_afgjort","gebyr_art": "oprettelse"|"engangsbode"|"anke"|"frikob"|"placering"|"fravaer","melding_status": "afventer"|"bekraeftet"|"afvist"|"trukket","push_art": "bode_modtaget"|"anke_afstemning"|"anke_resultat"|"betalingsmelding_venter"|"betaling_bekraeftet"|"automatisk_gebyr"|"betalingspaamindelse"
+            "anke_afgoerelse": "modtager_vandt"|"giver_vandt"|"ikke_afgjort","engangs_pris_mode": "fri"|"fast"|"loft","gebyr_art": "oprettelse"|"engangsbode"|"anke"|"frikob"|"placering"|"fravaer"|"dos_bonus"|"catch_up"|"sen_betaling"|"tilbagevendende","melding_status": "afventer"|"bekraeftet"|"afvist"|"trukket","push_art": "bode_modtaget"|"anke_afstemning"|"anke_resultat"|"betalingsmelding_venter"|"betaling_bekraeftet"|"automatisk_gebyr"|"betalingspaamindelse"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -2828,7 +2831,7 @@ export type CompositeTypes<
 export const Constants = {
   "public": {
           Enums: {
-            "anke_afgoerelse": ["modtager_vandt", "giver_vandt", "ikke_afgjort"],"gebyr_art": ["oprettelse", "engangsbode", "anke", "frikob", "placering", "fravaer"],"melding_status": ["afventer", "bekraeftet", "afvist", "trukket"],"push_art": ["bode_modtaget", "anke_afstemning", "anke_resultat", "betalingsmelding_venter", "betaling_bekraeftet", "automatisk_gebyr", "betalingspaamindelse"]
+            "anke_afgoerelse": ["modtager_vandt", "giver_vandt", "ikke_afgjort"],"engangs_pris_mode": ["fri", "fast", "loft"],"gebyr_art": ["oprettelse", "engangsbode", "anke", "frikob", "placering", "fravaer", "dos_bonus", "catch_up", "sen_betaling", "tilbagevendende"],"melding_status": ["afventer", "bekraeftet", "afvist", "trukket"],"push_art": ["bode_modtaget", "anke_afstemning", "anke_resultat", "betalingsmelding_venter", "betaling_bekraeftet", "automatisk_gebyr", "betalingspaamindelse"]
           }
         }
 } as const
