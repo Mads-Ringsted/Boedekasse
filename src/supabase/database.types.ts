@@ -243,6 +243,20 @@ isOneToOne: false
       referencedColumns: ["bodekasse_id","id"]
     }
                   ]
+                },"billede_oprydning": {
+                  Row: {
+                    "fejl": string | null,"forsoeg": number,"id": number,"oprettet": string,"paabegyndt": string | null,"slettet": string | null,"sti": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "fejl"?: string | null,"forsoeg"?: number,"id"?: never,"oprettet"?: string,"paabegyndt"?: string | null,"slettet"?: string | null,"sti": string
+                  }
+                  Update: {
+                    "fejl"?: string | null,"forsoeg"?: number,"id"?: never,"oprettet"?: string,"paabegyndt"?: string | null,"slettet"?: string | null,"sti"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"bode": {
                   Row: {
                     "annulleret": string | null,"annulleret_af": string | null,"annulleret_note": string | null,"batch_id": string,"bodekasse_id": string,"bodekategori_id": string | null,"giver_id": string,"givet": string,"grund": string | null,"id": string,"modtager_id": string,"pris": number,"saeson_id": string
@@ -2753,6 +2767,12 @@ isOneToOne: false
                            },
 "behandl_betalingsmelding":
 { Args: { "p_bekraeft": boolean,"p_klient_id": string,"p_melding": string }; Returns: Json
+                           },
+"billede_oprydning_hent_klar":
+{ Args: { "p_max"?: number }; Returns: Json
+                           },
+"billede_oprydning_marker":
+{ Args: { "p_fejl"?: string,"p_ids": (number)[] }; Returns: undefined
                            },
 "eksport_saeson":
 { Args: { "p_bodekasse": string,"p_saeson": string }; Returns: {

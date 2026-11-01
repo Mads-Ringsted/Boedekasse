@@ -4,7 +4,7 @@
 -- Later #74 tickets add their own default-box checks here.
 begin;
 \ir _hjaelpere.psql
-select plan(11);
+select plan(12);
 
 select tests.opret_bodekasse('Kasse A') as kasse \gset
 select tests.opret_medlem_med_login(:'kasse', 'Mads', true) as admin \gset
@@ -93,6 +93,11 @@ select is_empty(
   'no Medlem in a default box has a Profilbillede, so avatars show initials');
 select is((select public from storage.buckets where id = 'profilbilleder'), false,
   'the Profilbillede bucket is private');
+
+-- Profilbillede cleanup (#104): with no pictures, the hourly runs above
+-- queued nothing to delete, so nothing wakes the cleanup function.
+select is_empty('select 1 from public.billede_oprydning',
+  'a default box queues no Profilbillede cleanup');
 
 select * from finish();
 rollback;
