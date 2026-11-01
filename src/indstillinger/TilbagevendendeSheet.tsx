@@ -1,7 +1,7 @@
 import { useRef, useState, type FormEvent } from 'react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Field } from '../components/Field.tsx';
-import { primaryAction, visibleError } from '../components/field.ts';
+import { primaryAction, visibleError } from '../components/fieldRules.ts';
 import { Sheet } from '../components/Sheet.tsx';
 import { SheetAction } from '../components/SheetAction.tsx';
 import { kortDato, parsePris } from '../kategorier/kategoriListe.ts';
@@ -15,7 +15,7 @@ import {
   type Frekvens,
   type TilbagevendendeGebyr,
 } from './tilbagevendende.ts';
-import '../frikob/Frikob.css';
+import '../styles/valg-liste.css';
 import '../medlemmer/felter.css';
 import './Indstillinger.css';
 
@@ -26,7 +26,7 @@ function aarsag(fejl: 'navn' | 'beloeb' | 'dag' | 'medlemmer', beloeb: string): 
   if (fejl === 'navn') return t('aarsag.skrivNavn');
   if (fejl === 'beloeb') return t(beloeb.trim() === '' ? 'aarsag.skrivBeloeb' : 'aarsag.retBeloeb');
   if (fejl === 'dag') return t('aarsag.vaelgDag');
-  return t('aarsag.vaelgMedlemmer');
+  return t('fejl.medlemmerMangler');
 }
 const FREKVENSER: readonly Frekvens[] = ['uge', 'maaned'];
 const UGEDAGE = [1, 2, 3, 4, 5, 6, 7];
@@ -159,7 +159,7 @@ export function TilbagevendendeSheet({
 
         <div className="felt">
           <span className="felt__label">{t('tilbagevendende.hvorOfte')}</span>
-          <div role="radiogroup" aria-label={t('tilbagevendende.hvorOfte')} className="frikob-valg">
+          <div role="radiogroup" aria-label={t('tilbagevendende.hvorOfte')} className="valg-liste">
             {FREKVENSER.map((f) => {
               const valgt = f === frekvens;
               return (
@@ -168,12 +168,12 @@ export function TilbagevendendeSheet({
                   type="button"
                   role="radio"
                   aria-checked={valgt}
-                  className={`frikob-valg__raekke${valgt ? ' frikob-valg__raekke--valgt' : ''}`}
+                  className={`valg-liste__raekke${valgt ? ' valg-liste__raekke--valgt' : ''}`}
                   onClick={() => skiftFrekvens(f)}
                 >
-                  <span className="frikob-valg__radio" aria-hidden="true" />
-                  <span className="frikob-valg__tekst">
-                    <span className="frikob-valg__navn">
+                  <span className="valg-liste__radio" aria-hidden="true" />
+                  <span className="valg-liste__tekst">
+                    <span className="valg-liste__navn">
                       {t(f === 'uge' ? 'tilbagevendende.ugentlig' : 'tilbagevendende.maanedlig')}
                     </span>
                   </span>
@@ -207,7 +207,7 @@ export function TilbagevendendeSheet({
               {t(alleValgt ? 'tilbagevendende.fravaelgAlle' : 'tilbagevendende.vaelgAlle')}
             </button>
           </span>
-          <div className="frikob-valg">
+          <div className="valg-liste">
             {viste.map((m) => {
               const valgt = valgte.has(m.id);
               return (
@@ -216,12 +216,12 @@ export function TilbagevendendeSheet({
                   type="button"
                   role="checkbox"
                   aria-checked={valgt}
-                  className={`frikob-valg__raekke${valgt ? ' frikob-valg__raekke--valgt' : ''}`}
+                  className={`valg-liste__raekke${valgt ? ' valg-liste__raekke--valgt' : ''}`}
                   onClick={() => skiftMedlem(m.id)}
                 >
-                  <span className="frikob-valg__radio tilb__boks" aria-hidden="true" />
-                  <span className="frikob-valg__tekst">
-                    <span className="frikob-valg__navn">{m.navn}</span>
+                  <span className="valg-liste__radio tilb__boks" aria-hidden="true" />
+                  <span className="valg-liste__tekst">
+                    <span className="valg-liste__navn">{m.navn}</span>
                   </span>
                 </button>
               );

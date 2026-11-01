@@ -1,3 +1,5 @@
+import type { FieldKind, Requirement } from '../components/fieldRules.ts';
+import { t } from '../strings/index.ts';
 import type { IndstillingAendringer, Indstillinger } from './indstillinger.ts';
 
 /**
@@ -36,8 +38,8 @@ interface FeltFaelles<K extends IndstillingNoegle> {
 /** A typed field: an amount, a number or a list. */
 export interface TekstFelt<K extends IndstillingNoegle> extends FeltFaelles<K> {
   art: 'tekst';
-  /** `decimal` when a comma is needed ("1,5", "0, 10, 25"). */
-  inputMode: 'numeric' | 'decimal' | 'text';
+  /** The keyboard: `integer` for whole numbers, `decimal` when a comma is needed ("1,5", "0, 10, 25"). */
+  kind: Extract<FieldKind, 'integer' | 'decimal'>;
   /** Shown after the value, e.g. "kr". */
   enhed?: string;
   tjek: (tekst: string, laes: Laes) => Tjekket<Indstillinger[K]>;
@@ -55,7 +57,7 @@ export type Felt = { [K in IndstillingNoegle]: TekstFelt<K> | ValgFelt<K> }[Inds
 export interface Sektion {
   /** A small heading, for sheets with more than one section. */
   titel?: string;
-  /** Flips and saves at once. Turning it on keeps the stored values. */
+  /** Flips and saves at once; turning it on also saves the section's changed fields (`skiftAendringer`). */
   til?: { noegle: TilNoegle; label: string };
   felter: readonly Felt[];
   /** Under the section's fields. */
@@ -88,7 +90,8 @@ export interface UdkastResultat {
   fejl: Partial<Record<IndstillingNoegle, string>>;
   /** Some visible field differs from its stored value (the sheet is dirty). */
   aendret: boolean;
-  kanGemme: boolean;
+  /** What Gem needs, for `primaryAction`: every visible field right, in order. */
+  krav: Requirement[];
   /** The fields to draw. */
   synlige: ReadonlySet<IndstillingNoegle>;
   /** Every field's current text. */
@@ -125,11 +128,43 @@ export function udkastResultat(regel: Regel, ind: Indstillinger, udkast: Udkast)
       if (nyt) aendringer[felt.noegle] = tekst;
       continue;
     }
-    const r = felt.tjek(tekst, laes);
-    if (!r.ok) fejl[felt.noegle] = r.fejl;
-    else if (nyt) aendringer[felt.noegle] = r.vaerdi;
+    const tjekket = felt.tjek(tekst, laes);
+    if (!tjekket.ok) fejl[felt.noegle] = tjekket.fejl;
+    else if (nyt) aendringer[felt.noegle] = tjekket.vaerdi;
   }
 
-  const kanGemme = aendret && Object.keys(fejl).length === 0 && Object.keys(aendringer).length > 0;
-  return { aendringer: aendringer as IndstillingAendringer, fejl, aendret, kanGemme, synlige, laes };
+  const krav = felter
+    .filter((felt) => synlige.has(felt.noegle))
+    .map((felt): Requirement => [!fejl[felt.noegle], t('aarsag.retFelt', { felt: feltLabel(felt, laes) })]);
+  return { aendringer: aendringer as IndstillingAendringer, fejl, aendret, krav, synlige, laes };
+}
+
+/** A field's label; some depend on another field's current text. */
+export function feltLabel(felt: Pick<Felt, 'label'>, laes: Laes): string {
+  return typeof felt.label === 'function' ? felt.label(laes) : felt.label;
+}
+
+/**
+ * What flipping a section's switch saves. Turning it on also saves the
+ * section's changed fields in the same call, so the rule never goes live
+ * with the old values. A wrong changed field keeps the switch off and says
+ * which one to fix. Turning it off saves only the switch.
+ */
+export function skiftAendringer(
+  regel: Regel,
+  ind: Indstillinger,
+  udkast: Udkast,
+  noegle: TilNoegle,
+  til: boolean,
+): Tjekket<IndstillingAendringer> {
+  const skift = { [noegle]: til } as IndstillingAendringer;
+  if (!til) return { ok: true, vaerdi: skift };
+  const resultat = udkastResultat(regel, ind, udkast);
+  const aendrede = (regel.sektioner.find((s) => s.til?.noegle === noegle)?.felter ?? []).filter(
+    (f) => resultat.synlige.has(f.noegle) && resultat.laes(f.noegle) !== f.start(ind),
+  );
+  const forkert = aendrede.find((f) => resultat.fejl[f.noegle]);
+  if (forkert) return { ok: false, fejl: t('regel.retFoerTil', { felt: feltLabel(forkert, resultat.laes) }) };
+  const aendringer = Object.fromEntries(aendrede.map((f) => [f.noegle, resultat.aendringer[f.noegle]]));
+  return { ok: true, vaerdi: { ...skift, ...aendringer } };
 }

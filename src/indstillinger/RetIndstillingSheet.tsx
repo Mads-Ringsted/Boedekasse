@@ -1,15 +1,16 @@
 import { useRef, useState, type FormEvent } from 'react';
 import { Field } from '../components/Field.tsx';
-import { primaryAction, typedRequirement, visibleError } from '../components/field.ts';
+import { primaryAction, typedRequirement, visibleError, type FieldKind } from '../components/fieldRules.ts';
 import { Sheet } from '../components/Sheet.tsx';
 import { SheetAction } from '../components/SheetAction.tsx';
 import { t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
+import type { Tjekket } from './regel.ts';
 import '../medlemmer/felter.css';
 import './Indstillinger.css';
 
 /** Turns the typed text into the value to save, or a Danish error. */
-export type Tjek<V> = (tekst: string) => { ok: true; vaerdi: V } | { ok: false; fejl: string };
+export type Tjek<V> = (tekst: string) => Tjekket<V>;
 
 export interface RetIndstillingSheetProps<V> {
   open: boolean;
@@ -21,9 +22,8 @@ export interface RetIndstillingSheetProps<V> {
   tjek: Tjek<V>;
   /** Saves; throws the RPC error. Gets one one-time ID per opening. */
   onGem: (vaerdi: V, klientId: string) => Promise<void>;
-  /** Shown after the field, e.g. "kr". */
-  enhed?: string;
-  inputMode?: 'text' | 'numeric' | 'decimal';
+  /** The keyboard; plain text when left out. */
+  kind?: FieldKind;
   note?: string;
 }
 
@@ -45,8 +45,7 @@ export function RetIndstillingSheet<V>({
   start,
   tjek,
   onGem,
-  enhed,
-  inputMode = 'text',
+  kind = 'text',
   note,
 }: RetIndstillingSheetProps<V>) {
   const [tekst, setTekst] = useState(start);
@@ -98,8 +97,7 @@ export function RetIndstillingSheet<V>({
         <Field
           ref={felt}
           label={label}
-          kind={inputMode === 'numeric' ? 'integer' : inputMode}
-          unit={enhed}
+          kind={kind}
           value={tekst}
           onChange={setTekst}
           error={hint}

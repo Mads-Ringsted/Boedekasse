@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Navigate, useNavigate } from 'react-router';
-import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
+import { useNavigate } from 'react-router';
 import { BackButton } from '../components/BackButton.tsx';
 import { Screen } from '../components/Screen.tsx';
 import { EksportSheet } from '../eksport/EksportSheet.tsx';
@@ -8,15 +7,12 @@ import { SaesonRaekker } from '../saeson/SaesonRaekker.tsx';
 import { FRA_INDSTILLINGER } from '../screens/Medlemmer.tsx';
 import { SletBodekasseSheet } from '../slet/SletBodekasseSheet.tsx';
 import { t } from '../strings/index.ts';
-import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import { gebyrerStatus } from './gebyrer.ts';
 import { rensMobilePay } from './indstillinger.ts';
-import { Gruppe, LinkRaekke, RegelRaekke } from './raekker.tsx';
-import type { Regel } from './regel.ts';
-import { RegelSheet } from './RegelSheet.tsx';
+import { KunAdmin, useIndstillingerSide } from './IndstillingerSide.tsx';
+import { Gruppe, LinkRaekke } from './raekker.tsx';
 import { REGLER } from './regler.ts';
 import { RetIndstillingSheet, type RetIndhold, type Tjek } from './RetIndstillingSheet.tsx';
-import { useIndstillinger } from './useIndstillinger.ts';
 import './Indstillinger.css';
 
 type SheetIndhold = RetIndhold<unknown>;
@@ -25,8 +21,8 @@ const tjekNavn: Tjek<string> = (tekst) =>
   tekst.trim() === '' ? { ok: false, fejl: t('fejl.navnMangler') } : { ok: true, vaerdi: tekst.trim() };
 
 const tjekMobilePay: Tjek<string | null> = (tekst) => {
-  const r = rensMobilePay(tekst);
-  return r.ok ? r : { ok: false, fejl: t('fejl.mobilepayUgyldig') };
+  const renset = rensMobilePay(tekst);
+  return renset.ok ? renset : { ok: false, fejl: t('fejl.mobilepayUgyldig') };
 };
 
 /**
@@ -39,16 +35,17 @@ const tjekMobilePay: Tjek<string | null> = (tekst) => {
  * row and sheet come for free.
  */
 export function Indstillinger() {
-  const { erAdmin } = useBodekasse();
-  if (!erAdmin) return <Navigate to="/mere" replace />;
-  return <IndstillingerSkaerm />;
+  return (
+    <KunAdmin>
+      <IndstillingerSkaerm />
+    </KunAdmin>
+  );
 }
 
 function IndstillingerSkaerm() {
   const navigate = useNavigate();
-  const { status, error, reload, indstillinger: ind, gem } = useIndstillinger();
+  const { indstillinger: ind, gem, fejl, aabnRegel, regelSheet } = useIndstillingerSide();
   const [sheet, setSheet] = useState<{ n: number; open: boolean; indhold: SheetIndhold } | null>(null);
-  const [regel, setRegel] = useState<{ n: number; open: boolean; regel: Regel } | null>(null);
   const [eksport, setEksport] = useState<{ n: number; open: boolean } | null>(null);
   // Slet Bødekasse: each opening mounts a fresh sheet (new one-time ID).
   const [sletter, setSletter] = useState(0);
@@ -61,20 +58,11 @@ function IndstillingerSkaerm() {
     setSheet((s) => ({ n: (s?.n ?? 0) + 1, open: true, indhold: indhold as unknown as SheetIndhold }));
   }
 
-  function aabnRegel(r: Regel) {
-    setRegel((s) => ({ n: (s?.n ?? 0) + 1, open: true, regel: r }));
-  }
-
   return (
     <Screen>
       <BackButton label={t('tab.mere')} onClick={() => void navigate('/mere')} />
       <h1 className="screen__title">{t('mere.indstillinger')}</h1>
-
-      {status === 'error' && (
-        <button type="button" className="indst__fejl" onClick={reload}>
-          {rpcErrorText(error)} · {t('handling.proevIgen')}
-        </button>
-      )}
+      {fejl}
 
       {ind && (
         <>
@@ -100,7 +88,7 @@ function IndstillingerSkaerm() {
                   title: t('indstillinger.mobilepay'),
                   label: t('indstillinger.mobilepayLabel'),
                   start: ind.mobilepay_box ?? '',
-                  inputMode: 'numeric',
+                  kind: 'integer',
                   note: t('indstillinger.mobilepayNote'),
                   tjek: tjekMobilePay,
                   onGem: (mobilepay_box, klientId) => gem({ mobilepay_box }, klientId),
@@ -114,13 +102,18 @@ function IndstillingerSkaerm() {
           </Gruppe>
 
           <Gruppe titel={t('indstillinger.regler')}>
-            {REGLER.map((r) => (
-              <RegelRaekke key={r.id} label={r.titel} status={r.status(ind)} onClick={() => aabnRegel(r)} />
+            {REGLER.map((regel) => (
+              <LinkRaekke
+                key={regel.id}
+                label={regel.titel}
+                status={regel.status(ind)}
+                onClick={() => aabnRegel(regel)}
+              />
             ))}
           </Gruppe>
 
           <Gruppe>
-            <RegelRaekke
+            <LinkRaekke
               label={t('indstillinger.gebyrer')}
               status={gebyrerStatus(ind)}
               onClick={() => void navigate('/indstillinger/gebyrer')}
@@ -160,16 +153,7 @@ function IndstillingerSkaerm() {
         />
       )}
 
-      {regel && ind && (
-        <RegelSheet
-          key={regel.n}
-          open={regel.open}
-          onOpenChange={(open) => setRegel((s) => s && { ...s, open })}
-          regel={regel.regel}
-          indstillinger={ind}
-          gem={gem}
-        />
-      )}
+      {regelSheet}
 
       {sheet && (
         <RetIndstillingSheet

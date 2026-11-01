@@ -3,7 +3,7 @@ import { Check, Copy, X } from 'lucide-react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Field } from '../components/Field.tsx';
-import { primaryAction, typedRequirement, visibleError } from '../components/field.ts';
+import { primaryAction, typedRequirement, visibleError } from '../components/fieldRules.ts';
 import { Sheet, SheetClose, SheetTitle } from '../components/Sheet.tsx';
 import { SheetAction } from '../components/SheetAction.tsx';
 import { forudfyldtBeloeb } from '../kassen/kassen.ts';

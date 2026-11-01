@@ -20,13 +20,19 @@ interface LinkRaekkeProps {
   under?: string;
   /** Muted, before the chevron. */
   vaerdi?: string;
+  /**
+   * A rule's status instead of `vaerdi` (#94): "Til · 300 kr", or a fainter
+   * "Fra". Build it with the rule's helper (see `regler.ts`).
+   */
+  status?: RegelStatus;
   onClick: () => void;
   /** `handling`: a blue action row with no chevron; `fare`: red. */
   art?: 'link' | 'handling' | 'fare';
 }
 
-/** A row that opens something: a sheet or a screen. */
-export function LinkRaekke({ label, under, vaerdi, onClick, art = 'link' }: LinkRaekkeProps) {
+/** A row that opens something: a sheet or a screen. A rule row opens the rule's sheet, where its switch lives. */
+export function LinkRaekke({ label, under, vaerdi, status, onClick, art = 'link' }: LinkRaekkeProps) {
+  const vist = vaerdi ?? status?.tekst;
   return (
     <button type="button" className={`indst-raekke indst-raekke--${art}`} onClick={onClick}>
       {under ? (
@@ -37,25 +43,14 @@ export function LinkRaekke({ label, under, vaerdi, onClick, art = 'link' }: Link
       ) : (
         <span className="indst-raekke__label">{label}</span>
       )}
-      {vaerdi !== undefined && <span className="indst-raekke__vaerdi">{vaerdi}</span>}
+      {vist !== undefined && (
+        <span className={`indst-raekke__vaerdi${status && !status.til ? ' indst-raekke__vaerdi--fra' : ''}`}>
+          {vist}
+        </span>
+      )}
       {art === 'link' && (
         <ChevronRight className="indst-raekke__chevron" size={16} strokeWidth={2.2} aria-hidden="true" />
       )}
-    </button>
-  );
-}
-
-/**
- * A rule row (#94): the label, its status ("Til · 300 kr" or a muted "Fra")
- * and a chevron. The whole row opens the rule's sheet; the switch lives only
- * there. Build the status with the rule's helper (see `regler.ts`).
- */
-export function RegelRaekke({ label, status, onClick }: { label: string; status: RegelStatus; onClick: () => void }) {
-  return (
-    <button type="button" className="indst-raekke indst-raekke--link" onClick={onClick}>
-      <span className="indst-raekke__label">{label}</span>
-      <span className={`indst-raekke__vaerdi${status.til ? '' : ' indst-raekke__vaerdi--fra'}`}>{status.tekst}</span>
-      <ChevronRight className="indst-raekke__chevron" size={16} strokeWidth={2.2} aria-hidden="true" />
     </button>
   );
 }
@@ -88,17 +83,36 @@ export function SwitchRaekke({ label, under, til, onSkift, onAabn, disabled = fa
       ) : (
         <span className="indst-raekke__tekst">{tekst}</span>
       )}
-      <button
-        type="button"
-        role="switch"
-        aria-checked={til}
-        aria-label={label}
-        className="indst-switch"
-        disabled={disabled}
-        onClick={() => onSkift(!til)}
-      >
-        <span className="indst-switch__knop" />
-      </button>
+      <Switch label={label} til={til} onSkift={onSkift} disabled={disabled} />
     </div>
+  );
+}
+
+interface SwitchProps {
+  /** Read by VoiceOver; the visible label sits next to it. */
+  label: string;
+  til: boolean;
+  onSkift: (til: boolean) => void;
+  /** Off while a change is being saved, so a double tap sends one. */
+  disabled?: boolean;
+  /** The id of an error that explains the switch. */
+  describedBy?: string;
+}
+
+/** The on/off switch of settings rows and rule sheets. */
+export function Switch({ label, til, onSkift, disabled = false, describedBy }: SwitchProps) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={til}
+      aria-label={label}
+      aria-describedby={describedBy}
+      className="indst-switch"
+      disabled={disabled}
+      onClick={() => onSkift(!til)}
+    >
+      <span className="indst-switch__knop" />
+    </button>
   );
 }

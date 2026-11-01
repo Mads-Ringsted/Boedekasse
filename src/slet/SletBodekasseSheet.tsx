@@ -3,7 +3,7 @@ import { TriangleAlert } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useBodekasse, useMedlemskaber } from '../bodekasse/BodekasseProvider.tsx';
 import { Field } from '../components/Field.tsx';
-import { primaryAction, typedRequirement } from '../components/field.ts';
+import { primaryAction, typedRequirement } from '../components/fieldRules.ts';
 import { Sheet } from '../components/Sheet.tsx';
 import { SheetAction } from '../components/SheetAction.tsx';
 import { t } from '../strings/index.ts';

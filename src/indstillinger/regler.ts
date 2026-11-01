@@ -11,7 +11,7 @@ import {
   type EngangsPrisMode,
   type Indstillinger,
 } from './indstillinger.ts';
-import type { Regel, RegelStatus, Sektion, Tjekket } from './regel.ts';
+import type { Felt, IndstillingNoegle, Regel, RegelStatus, Sektion, TilNoegle, Tjekket } from './regel.ts';
 
 export type { RegelStatus } from './regel.ts';
 
@@ -55,8 +55,8 @@ export function tjekBetalingsdag(tekst: string): Tjekket<number> {
 
 /** The Sen betaling cap: empty for none, else whole kroner above 0. */
 export function tjekLoft(tekst: string): Tjekket<number | null> {
-  const r = rensLoft(tekst);
-  return r.ok ? r : { ok: false, fejl: t('indstillinger.beloebUgyldig') };
+  const renset = rensLoft(tekst);
+  return renset.ok ? renset : { ok: false, fejl: t('indstillinger.beloebUgyldig') };
 }
 
 // ── Status helpers: one per rule ─────────────────────────────────────────
@@ -78,10 +78,19 @@ export function ankeStatus(ind: Pick<Indstillinger, 'anke_til' | 'anke_vindue_ti
   return regelStatus(ind.anke_til, t('indstillinger.ankeVindueVaerdi', { timer: ind.anke_vindue_timer }));
 }
 
-/** Frikøb: "Til · 300 kr" (the price per Bødekategori). */
-export function frikobStatus(ind: Pick<Indstillinger, 'frikob_til' | 'frikob_pris'>): RegelStatus {
-  return regelStatus(ind.frikob_til, formatKr(ind.frikob_pris));
+/** A setting that is an amount in kr (`frikob_pris`, `dos_bonus_beloeb` …). */
+export type KronerNoegle = {
+  [K in IndstillingNoegle]-?: Indstillinger[K] extends number ? K : never;
+}[IndstillingNoegle];
+
+/** The status of a rule that is a switch and one amount: "Til · 300 kr" or "Fra". */
+export function kronerStatus<T extends TilNoegle, B extends KronerNoegle>(til: T, beloeb: B) {
+  return (ind: Pick<Indstillinger, T | B>): RegelStatus =>
+    regelStatus(ind[til] as boolean, formatKr(ind[beloeb] as number));
 }
+
+/** Frikøb: "Til · 300 kr" (the price per Bødekategori). */
+export const frikobStatus = kronerStatus('frikob_til', 'frikob_pris');
 
 /** Konkurrencer: "Til · 0–50 kr · fravær 50 kr". */
 export function konkurrenceStatus(
@@ -124,6 +133,54 @@ export function engangsStatus(
 
 const kr = t('kategori.kr');
 
+interface KronerSektionDef {
+  til: TilNoegle;
+  /** The switch's label. */
+  tilLabel: string;
+  beloeb: KronerNoegle;
+  /** The amount field's label; "Beløb" when left out. */
+  label?: string;
+  note: string;
+}
+
+/** A switch and one amount in kr: the shape of Frikøb and most Gebyrer. */
+export function kronerSektion({
+  til,
+  tilLabel,
+  beloeb,
+  label = t('indstillinger.beloeb'),
+  note,
+}: KronerSektionDef): Sektion {
+  const felt = {
+    art: 'tekst',
+    noegle: beloeb,
+    label,
+    enhed: kr,
+    kind: 'integer',
+    note,
+    start: (ind: Indstillinger) => String(ind[beloeb]),
+    tjek: tjekBeloeb,
+  } as Felt;
+  return { til: { noegle: til, label: tilLabel }, felter: [felt] };
+}
+
+/** A rule that is a switch and one amount in kr; the switch reads the rule's name. */
+export function kronerRegel({
+  id,
+  titel,
+  til,
+  beloeb,
+  label,
+  note,
+}: { id: string; titel: string } & Omit<KronerSektionDef, 'tilLabel'>): Regel {
+  return {
+    id,
+    titel,
+    status: kronerStatus(til, beloeb),
+    sektioner: [kronerSektion({ til, tilLabel: titel, beloeb, label, note })],
+  };
+}
+
 export const ANKE: Regel = {
   id: 'anke',
   titel: t('indstillinger.anke'),
@@ -137,7 +194,7 @@ export const ANKE: Regel = {
           noegle: 'anke_vindue_timer',
           label: t('indstillinger.ankeVindue'),
           enhed: t('indstillinger.timer'),
-          inputMode: 'numeric',
+          kind: 'integer',
           note: t('indstillinger.ankeVindueNote'),
           start: (ind) => String(ind.anke_vindue_timer),
           tjek: tjekTimer,
@@ -147,7 +204,7 @@ export const ANKE: Regel = {
           noegle: 'anke_min',
           label: t('indstillinger.ankeMin'),
           enhed: kr,
-          inputMode: 'numeric',
+          kind: 'integer',
           note: t('indstillinger.ankeMinNote'),
           start: (ind) => String(ind.anke_min),
           tjek: tjekBeloeb,
@@ -157,7 +214,7 @@ export const ANKE: Regel = {
           noegle: 'anke_max_gange',
           label: t('indstillinger.ankeMax'),
           enhed: t('indstillinger.gangeBoeden'),
-          inputMode: 'decimal',
+          kind: 'decimal',
           note: t('indstillinger.ankeMaxNote'),
           start: (ind) => gangeTekst(ind.anke_max_gange),
           tjek: tjekGange,
@@ -167,28 +224,14 @@ export const ANKE: Regel = {
   ],
 };
 
-export const FRIKOB: Regel = {
+export const FRIKOB: Regel = kronerRegel({
   id: 'frikob',
   titel: t('indstillinger.frikob'),
-  status: frikobStatus,
-  sektioner: [
-    {
-      til: { noegle: 'frikob_til', label: t('indstillinger.frikob') },
-      felter: [
-        {
-          art: 'tekst',
-          noegle: 'frikob_pris',
-          label: t('indstillinger.frikobPrisLabel'),
-          enhed: kr,
-          inputMode: 'numeric',
-          note: t('indstillinger.frikobNote'),
-          start: (ind) => String(ind.frikob_pris),
-          tjek: tjekBeloeb,
-        },
-      ],
-    },
-  ],
-};
+  til: 'frikob_til',
+  beloeb: 'frikob_pris',
+  label: t('indstillinger.frikobPrisLabel'),
+  note: t('indstillinger.frikobNote'),
+});
 
 export const KONKURRENCER: Regel = {
   id: 'konkurrencer',
@@ -203,7 +246,7 @@ export const KONKURRENCER: Regel = {
           noegle: 'placeringer',
           label: t('indstillinger.placeringer'),
           enhed: kr,
-          inputMode: 'decimal',
+          kind: 'decimal',
           note: t('indstillinger.placeringerNote'),
           start: (ind) => ind.placeringer.join(', '),
           tjek: tjekPlaceringer,
@@ -213,7 +256,7 @@ export const KONKURRENCER: Regel = {
           noegle: 'fravaersgebyr',
           label: t('indstillinger.fravaersgebyr'),
           enhed: kr,
-          inputMode: 'numeric',
+          kind: 'integer',
           note: t('indstillinger.fravaersgebyrNote'),
           start: (ind) => String(ind.fravaersgebyr),
           tjek: tjekBeloeb,
@@ -231,19 +274,12 @@ const ENGANGS_MODES: readonly EngangsPrisMode[] = ['fri', 'fast', 'loft'];
  */
 export const ENGANGSGEBYR_SEKTION: Sektion = {
   titel: t('indstillinger.engangsGebyr'),
-  til: { noegle: 'engangsgebyr_til', label: t('indstillinger.engangsgebyr') },
-  felter: [
-    {
-      art: 'tekst',
-      noegle: 'engangsgebyr',
-      label: t('indstillinger.beloeb'),
-      enhed: kr,
-      inputMode: 'numeric',
-      note: t('indstillinger.engangsgebyrNote'),
-      start: (ind) => String(ind.engangsgebyr),
-      tjek: tjekBeloeb,
-    },
-  ],
+  ...kronerSektion({
+    til: 'engangsgebyr_til',
+    tilLabel: t('indstillinger.engangsgebyr'),
+    beloeb: 'engangsgebyr',
+    note: t('indstillinger.engangsgebyrNote'),
+  }),
 };
 
 export const ENGANGSBOEDER: Regel = {
@@ -271,18 +307,20 @@ export const ENGANGSBOEDER: Regel = {
           label: (laes) =>
             t(laes('engangs_pris_mode') === 'loft' ? 'indstillinger.engangsBeloeb.loft' : 'indstillinger.engangsBeloeb.fast'),
           enhed: kr,
-          inputMode: 'numeric',
+          kind: 'integer',
           start: (ind) => (ind.engangs_pris === null ? '' : String(ind.engangs_pris)),
           vis: (laes) => laes('engangs_pris_mode') !== 'fri',
           tjek: (tekst, laes) => {
-            const r = tjekEngangsPris(laes('engangs_pris_mode') as EngangsPrisMode, tekst);
-            if (!r.ok) {
+            const tjekket = tjekEngangsPris(laes('engangs_pris_mode') as EngangsPrisMode, tekst);
+            if (!tjekket.ok) {
               return {
                 ok: false,
-                fejl: t(r.fejl === 'mangler' ? 'indstillinger.engangsPrisMangler' : 'indstillinger.beloebUgyldig'),
+                fejl: t(
+                  tjekket.fejl === 'mangler' ? 'indstillinger.engangsPrisMangler' : 'indstillinger.beloebUgyldig',
+                ),
               };
             }
-            return { ok: true, vaerdi: r.aendringer.engangs_pris ?? null };
+            return { ok: true, vaerdi: tjekket.aendringer.engangs_pris ?? null };
           },
         },
       ],
