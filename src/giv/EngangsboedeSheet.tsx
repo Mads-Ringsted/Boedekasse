@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import { Receipt } from 'lucide-react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
@@ -38,6 +38,7 @@ export function EngangsboedeSheet({ open, onOpenChange, modtagere, onTilfoej }: 
   const { bodekasseId } = useBodekasse();
   const [grund, setGrund] = useState('');
   const [beloeb, setBeloeb] = useState('');
+  const grundFelt = useRef<HTMLInputElement>(null);
 
   // The Gebyr, if the rule is on. Wait for it, so nobody pays a Gebyr they were not shown.
   const regler = useHent(() => hentIndstillinger(bodekasseId), [bodekasseId]);
@@ -62,6 +63,8 @@ export function EngangsboedeSheet({ open, onOpenChange, modtagere, onTilfoej }: 
       height="full"
       stacked
       title={t('giv.engangs.titel')}
+      initialFocus={grundFelt}
+      dirty={grund !== '' || beloeb !== ''}
       footer={
         <div className="giv__footer">
           <button type="submit" form={FORM_ID} className="giv__primaer" disabled={!kanTilfoeje}>
@@ -91,6 +94,7 @@ export function EngangsboedeSheet({ open, onOpenChange, modtagere, onTilfoej }: 
           <span className="kategori-form__label">{t('giv.engangs.hvorfor')}</span>
           <span className="kategori-form__boks">
             <input
+              ref={grundFelt}
               className="kategori-form__input"
               type="text"
               value={grund}
@@ -98,7 +102,6 @@ export function EngangsboedeSheet({ open, onOpenChange, modtagere, onTilfoej }: 
               autoComplete="off"
               enterKeyHint="next"
               maxLength={MAKS_GRUND}
-              autoFocus
             />
           </span>
         </label>

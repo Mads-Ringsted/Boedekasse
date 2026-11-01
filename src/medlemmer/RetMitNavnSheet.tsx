@@ -1,10 +1,12 @@
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import { useBodekasse, useMedlemskaber } from '../bodekasse/BodekasseProvider.tsx';
 import { Sheet } from '../components/Sheet.tsx';
 import { t } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import './felter.css';
+
+const FORM_ID = 'ret-mit-navn';
 
 /** Your own name in this box. Names are per box. */
 export function RetMitNavnSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
@@ -14,6 +16,7 @@ export function RetMitNavnSheet({ open, onOpenChange }: { open: boolean; onOpenC
   const [busy, setBusy] = useState(false);
   const [fejl, setFejl] = useState<string | null>(null);
   const [klientId, setKlientId] = useState(() => crypto.randomUUID());
+  const felt = useRef<HTMLInputElement>(null);
 
   const kanGemme = navn.trim() !== '' && navn.trim() !== nuvaerende && !busy;
 
@@ -46,11 +49,24 @@ export function RetMitNavnSheet({ open, onOpenChange }: { open: boolean; onOpenC
   }
 
   return (
-    <Sheet open={open} onOpenChange={skift} height="partial" title={t('mitNavn.titel')}>
-      <form onSubmit={(e) => void gem(e)}>
+    <Sheet
+      open={open}
+      onOpenChange={skift}
+      height="partial"
+      title={t('mitNavn.titel')}
+      initialFocus={felt}
+      dirty={navn !== nuvaerende}
+      footer={
+        <button type="submit" form={FORM_ID} className="felt-knap" disabled={!kanGemme}>
+          {t('mitNavn.gem')}
+        </button>
+      }
+    >
+      <form id={FORM_ID} onSubmit={(e) => void gem(e)}>
         <label className="felt">
           <span className="felt__label">{t('mitNavn.label', { bodekasse: bodekasseNavn })}</span>
           <input
+            ref={felt}
             className="felt__input"
             type="text"
             value={navn}
@@ -65,9 +81,6 @@ export function RetMitNavnSheet({ open, onOpenChange }: { open: boolean; onOpenC
             {fejl}
           </p>
         )}
-        <button type="submit" className="felt-knap felt-knap--naer" disabled={!kanGemme}>
-          {t('mitNavn.gem')}
-        </button>
       </form>
     </Sheet>
   );

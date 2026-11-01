@@ -93,6 +93,7 @@ export function KonkurrenceSheet({ open, onOpenChange, konkurrence, onGemt }: Ko
       onOpenChange={onOpenChange}
       height="full"
       title={t(konkurrence ? 'konkurrence.ret' : 'konkurrencer.ny')}
+      dirty={titel !== (konkurrence?.titel ?? '')}
       footer={
         <div className="kny__footer">
           {sum && (

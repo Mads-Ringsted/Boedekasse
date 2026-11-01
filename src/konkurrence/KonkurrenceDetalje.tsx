@@ -205,6 +205,8 @@ function Resultat({ k, medlemId, children }: { k: Konkurrence; medlemId: string;
   );
 }
 
+const ANNULLER_FORM = 'annuller-konkurrence';
+
 /** Annullér konkurrence: what goes, an optional note, and the red button. */
 function AnnullerSheet({
   open,
@@ -237,8 +239,19 @@ function AnnullerSheet({
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} height="partial" title={t('konkurrence.annuller')}>
-      <form onSubmit={(e) => void annuller(e)}>
+    <Sheet
+      open={open}
+      onOpenChange={onOpenChange}
+      height="partial"
+      title={t('konkurrence.annuller')}
+      dirty={note !== ''}
+      footer={
+        <button type="submit" form={ANNULLER_FORM} className="felt-knap konk-annuller__knap" disabled={busy}>
+          {t('konkurrence.annuller')}
+        </button>
+      }
+    >
+      <form id={ANNULLER_FORM} onSubmit={(e) => void annuller(e)}>
         <p className="felt-note konk-annuller__tekst">
           {t('konkurrence.annullerTekst', { antal: k.antalGebyrer, beloeb: formatKr(k.total) })}
         </p>
@@ -258,9 +271,6 @@ function AnnullerSheet({
             {fejl}
           </p>
         )}
-        <button type="submit" className="felt-knap felt-knap--naer konk-annuller__knap" disabled={busy}>
-          {t('konkurrence.annuller')}
-        </button>
       </form>
     </Sheet>
   );

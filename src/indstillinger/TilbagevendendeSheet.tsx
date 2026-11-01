@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Sheet } from '../components/Sheet.tsx';
 import { kortDato } from '../kategorier/kategoriListe.ts';
@@ -55,6 +55,10 @@ export function TilbagevendendeSheet({
   const [bekraefterStop, setBekraefterStop] = useState(false);
   const [klientId] = useState(() => crypto.randomUUID());
   const [stopId] = useState(() => crypto.randomUUID());
+  const navnFelt = useRef<HTMLInputElement>(null);
+  // Typed text only: the frequency and Medlemmer are quick to pick again.
+  const aendret =
+    navn !== (tilbagevendende?.navn ?? '') || beloeb !== (tilbagevendende ? String(tilbagevendende.beloeb) : '');
 
   // Active Medlemmer, plus Udmeldte it already lists (so they can be taken off).
   const viste = medlemmer.filter((m) => !m.udmeldt || valgte.has(m.id));
@@ -112,6 +116,8 @@ export function TilbagevendendeSheet({
       onOpenChange={onOpenChange}
       height="full"
       title={t(tilbagevendende ? 'tilbagevendende.retTitel' : 'tilbagevendende.nyTitel')}
+      initialFocus={tilbagevendende ? undefined : navnFelt}
+      dirty={aendret}
       footer={
         <button type="submit" form={FORM_ID} className="felt-knap" disabled={!kanGemme}>
           {t(tilbagevendende ? 'tilbagevendende.gem' : 'tilbagevendende.opret')}
@@ -122,6 +128,7 @@ export function TilbagevendendeSheet({
         <label className="felt">
           <span className="felt__label">{t('tilbagevendende.navn')}</span>
           <input
+            ref={navnFelt}
             className="felt__input"
             type="text"
             value={navn}
@@ -129,7 +136,6 @@ export function TilbagevendendeSheet({
             placeholder={t('tilbagevendende.navnPladsholder')}
             autoComplete="off"
             maxLength={60}
-            autoFocus={!tilbagevendende}
           />
         </label>
 

@@ -41,7 +41,21 @@ export function AnnullerIndbetalingSheet({ post, open, onOpenChange, onAnnullere
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} height="partial" title={t('annullerIndbetaling.titel')}>
+    <Sheet
+      open={open}
+      onOpenChange={onOpenChange}
+      height="partial"
+      title={t('annullerIndbetaling.titel')}
+      dirty={note !== ''}
+      footer={
+        <>
+          <button type="button" className="annuller-ind__knap" disabled={busy} onClick={() => void annuller()}>
+            {t('annullerIndbetaling.knap')}
+          </button>
+          <p className="annuller-ind__advarsel">{t('annullerIndbetaling.advarsel')}</p>
+        </>
+      }
+    >
       <p className="annuller-ind__linje">
         {t(post.bekraeftet ? 'annullerIndbetaling.linjeBekraeftet' : 'annullerIndbetaling.linje', {
           af: post.registreretAf,
@@ -69,10 +83,6 @@ export function AnnullerIndbetalingSheet({ post, open, onOpenChange, onAnnullere
           {fejl}
         </p>
       )}
-      <button type="button" className="annuller-ind__knap" disabled={busy} onClick={() => void annuller()}>
-        {t('annullerIndbetaling.knap')}
-      </button>
-      <p className="annuller-ind__advarsel">{t('annullerIndbetaling.advarsel')}</p>
     </Sheet>
   );
 }

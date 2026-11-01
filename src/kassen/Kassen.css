@@ -251,7 +251,6 @@
 
 .annuller-ind__knap {
   width: 100%;
-  margin-top: 28px;
   height: 54px;
   border-radius: var(--radius-button);
   background: var(--color-surface-raised);

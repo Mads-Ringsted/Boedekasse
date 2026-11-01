@@ -84,6 +84,7 @@ export function RegistrerIndbetalingSheet({ open, onOpenChange, medlemId, onRegi
       onOpenChange={onOpenChange}
       height="full"
       title={t('registrer.titel')}
+      dirty={beloeb !== null || note !== ''}
       footer={
         !vaelger && (
           <button type="submit" form={FORM_ID} className="felt-knap" disabled={!kanRegistrere}>

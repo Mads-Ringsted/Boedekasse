@@ -42,7 +42,21 @@ export function AnnullerHaevningSheet({ post, open, onOpenChange, onAnnulleret }
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} height="partial" title={t('annullerHaevning.titel')}>
+    <Sheet
+      open={open}
+      onOpenChange={onOpenChange}
+      height="partial"
+      title={t('annullerHaevning.titel')}
+      dirty={note !== ''}
+      footer={
+        <>
+          <button type="button" className="annuller-ind__knap" disabled={busy} onClick={() => void annuller()}>
+            {t('annullerHaevning.knap')}
+          </button>
+          <p className="annuller-ind__advarsel">{t('annullerIndbetaling.advarsel')}</p>
+        </>
+      }
+    >
       <p className="annuller-ind__linje">
         {t('annullerHaevning.linje', { af: post.registreretAf, dag: dagTekst(post.tid) })}
       </p>
@@ -68,10 +82,6 @@ export function AnnullerHaevningSheet({ post, open, onOpenChange, onAnnulleret }
           {fejl}
         </p>
       )}
-      <button type="button" className="annuller-ind__knap" disabled={busy} onClick={() => void annuller()}>
-        {t('annullerHaevning.knap')}
-      </button>
-      <p className="annuller-ind__advarsel">{t('annullerIndbetaling.advarsel')}</p>
     </Sheet>
   );
 }

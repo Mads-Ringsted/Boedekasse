@@ -150,6 +150,28 @@ _Researched 2026-10-10 for issue [#4](https://github.com/Mads-Ringsted/Boedekass
 - **Recommended support floor:** iOS 17.5. Reasons: Mail OTP AutoFill (17), `one-time-code` (17.2), cookie copy on install (17.2), the modern storage quota (17), and Web Push delivery fixes when the app isn't running (17.5). **[V]** release notes above.
 - **Best experience:** iOS 18.4+ (Declarative Web Push) and iOS 26+ (any site installs as a web app; manifest optional).
 
+## 7. The keyboard and bottom sheets
+
+_Added 2026-11-01 for spec [#90](https://github.com/Mads-Ringsted/Boedekasse/issues/90) / [#91](https://github.com/Mads-Ringsted/Boedekasse/issues/91)._
+
+### What iOS does in a standalone app
+
+- **The layout viewport does not shrink for the keyboard.** `window.innerHeight` stays the same; only `window.visualViewport` (`height`, `offsetTop`) changes. A `position: fixed; bottom: 0` sheet therefore ends up behind the keyboard. **[I]** Matches the app before #91; check on each new iOS.
+- **iOS pans the page to show the focused field.** It scrolls the window and/or offsets the visual viewport, and the page can stay shifted after the keyboard closes. **[I]**
+- **`interactive-widget=resizes-content` is ignored on iOS.** Chrome on Android honours it and shrinks the layout viewport, so fixed elements move up by themselves. **[V]** [MDN: viewport meta, interactive-widget](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta/name/viewport)
+- **`visualViewport` fires `resize` and `scroll`.** **[V]** [MDN: VisualViewport](https://developer.mozilla.org/en-US/docs/Web/API/VisualViewport). On iOS `resize` tends to arrive when the keyboard animation ends, not during it. **[I]**
+- **The keyboard opens only if `focus()` runs inside the user's tap.** A focus from a timer or after a fetch shows the caret but no keyboard. **[I]**
+
+### The pattern we use (`src/components/Sheet.tsx`)
+
+1. `useKeyboardInset` reads `visualViewport` and sets two CSS variables on the sheet. `--keyboard-inset` is `innerHeight − viewport height − offsetTop`, never below 0. `--viewport-height` is the visible height. The maths is the pure `keyboardInset()` in `src/components/keyboardInset.ts`, with tests.
+2. The sheet sits at `bottom: var(--keyboard-inset)`. Its height comes from `var(--viewport-height, 100dvh)`, so the header stays in view. While the keyboard is open (`data-keyboard="open"`), the bottom safe-area padding is dropped.
+3. After iOS pans, the window scroll is put back to where it was when the sheet opened, and again when the sheet closes.
+4. The primary action lives in the sheet's `footer`, so it rests right on the keyboard. A submit button reaches the form in the body with `form="…"`.
+5. `initialFocus` focuses a field in Radix's `onOpenAutoFocus` with `preventScroll`. This still runs inside the opening tap, so the keyboard opens and nothing jumps. A focused field is kept in view with `scrollIntoView({ block: 'nearest' })`.
+6. A tap outside the sheet while a field has focus only blurs the field. With `dirty`, closing asks "Luk uden at gemme?" first.
+7. `index.html` sets `interactive-widget=resizes-content` for Android; there the inset stays 0 and the browser does the work.
+
 ## Open items (need a real iPhone)
 
 - Does Mail-code AutoFill appear for our OTP email inside the installed app (iOS 26/27)?
@@ -157,3 +179,4 @@ _Researched 2026-10-10 for issue [#4](https://github.com/Mads-Ringsted/Boedekass
 - After switching to Mail for a few minutes and back, does the app resume or relaunch at `start_url`?
 - What changed in vite-plugin-pwa 2.0.0 (release notes)?
 - Does `web-push` (npm) work in a Supabase Edge Function, or should we use `@negrel/webpush`?
+- Keyboard (§7): do the sheet, its header and its footer stay above the keyboard in Ret navn, a Gebyr amount, Engangsbøde and Tilbagevendende? Does the page return to its place after the keyboard closes? Does an outside tap only hide the keyboard?

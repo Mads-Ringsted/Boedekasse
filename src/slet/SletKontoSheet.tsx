@@ -42,7 +42,24 @@ export function SletKontoSheet({ open, onOpenChange }: { open: boolean; onOpenCh
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} height="partial" title={t('sletKonto.titel')}>
+    <Sheet
+      open={open}
+      onOpenChange={onOpenChange}
+      height="partial"
+      title={t('sletKonto.titel')}
+      footer={
+        !blokeret && (
+          <button
+            type="button"
+            className="slet__knap"
+            disabled={busy || kasser.status !== 'ready'}
+            onClick={() => void slet()}
+          >
+            {t('sletKonto.knap')}
+          </button>
+        )
+      }
+    >
       {blokeret ? (
         <p className="slet__note" role="alert">
           {t('sletKonto.sidsteAdmin', { kasser: liste.format(kasser.data) })}
@@ -59,16 +76,6 @@ export function SletKontoSheet({ open, onOpenChange }: { open: boolean; onOpenCh
         <p className="slet__fejl" role="alert">
           {fejl}
         </p>
-      )}
-      {!blokeret && (
-        <button
-          type="button"
-          className="slet__knap slet__knap--naer"
-          disabled={busy || kasser.status !== 'ready'}
-          onClick={() => void slet()}
-        >
-          {t('sletKonto.knap')}
-        </button>
       )}
     </Sheet>
   );
