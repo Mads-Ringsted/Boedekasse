@@ -251,7 +251,13 @@ function AdminListe({
   return (
     <>
       <div className="admin-liste__hvem">
-        <Avatar navn={profil.navn} size={44} stiplet={!profil.loggetInd} tidligere={profil.udmeldt} />
+        <Avatar
+          navn={profil.navn}
+          size={44}
+          stiplet={!profil.loggetInd}
+          tidligere={profil.udmeldt}
+          medlemId={profil.id}
+        />
         <span className="admin-liste__hvem-tekst">
           <span className="admin-liste__navn">{profil.navn}</span>
           {under && <span className="admin-liste__under">{under}</span>}

@@ -87,7 +87,7 @@ export function EngangsboedeSheet({ open, onOpenChange, modtagere, onTilfoej }: 
         <div className="engangs__til">
           <span className="giv__stak" aria-hidden="true">
             {modtagere.slice(0, 4).map((m) => (
-              <Avatar key={m.id} navn={m.navn} size={32} stiplet={!m.loggetInd} />
+              <Avatar key={m.id} navn={m.navn} size={32} stiplet={!m.loggetInd} medlemId={m.id} />
             ))}
           </span>
           <span>

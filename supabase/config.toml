@@ -116,16 +116,20 @@ port = 54324
 # sender_name = "Admin"
 
 [storage]
-enabled = false
+enabled = true
 # The maximum file size allowed (e.g. "5MB", "500KB").
 file_size_limit = "50MiB"
 
-# Uncomment to configure local storage buckets
-# [storage.buckets.images]
-# public = false
-# file_size_limit = "50MiB"
-# allowed_mime_types = ["image/png", "image/jpeg"]
-# objects_path = "./images"
+# Profilbilleder (spec #99). The bucket and its access rules are defined in
+# migrations/20261103000000_profilbilleder.sql (that is what reaches
+# production); keep these settings equal to it. Locally, `db reset` uploads
+# the dev pictures in ./seed/profilbilleder (paths <bodekasse>/<medlem>/<fil>),
+# and seed.sql points the Medlemmer at them.
+[storage.buckets.profilbilleder]
+public = false
+file_size_limit = "1MiB"
+allowed_mime_types = ["image/webp", "image/jpeg", "image/png"]
+objects_path = "./seed/profilbilleder"
 
 # Allow connections via S3 compatible clients
 [storage.s3_protocol]
@@ -401,6 +405,11 @@ deno_version = 2
 # The push sender (#81). The database calls it with a shared secret
 # (PUSH_SEND_SECRET), not a user JWT; see docs/ops/push-setup.md.
 [functions.send-push]
+verify_jwt = false
+
+# The Profilbillede cleanup (#104). The database calls it with a shared secret
+# (RYD_BILLEDER_SECRET), not a user JWT; see docs/ops/billede-oprydning-setup.md.
+[functions.ryd-billeder]
 verify_jwt = false
 
 [analytics]

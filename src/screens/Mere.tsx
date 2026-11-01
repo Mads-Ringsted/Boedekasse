@@ -79,7 +79,7 @@ export function Mere() {
   return (
     <Screen title={t('skaerm.mere')}>
       <button type="button" className="mere__profil" onClick={() => aabnProfil(medlemId)}>
-        <Avatar navn={navn} size={52} egen />
+        <Avatar navn={navn} size={52} egen medlemId={medlemId} />
         <span className="mere__profil-tekst">
           <span className="mere__profil-navn">{navn}</span>
           <span className="mere__profil-under">{t(erAdmin ? 'mere.adminSeProfil' : 'mere.seProfil')}</span>

@@ -67,7 +67,7 @@ export function Hjem() {
           aria-label={t('hjem.dinProfil')}
           onClick={() => aabnProfil(medlemId)}
         >
-          <Avatar navn={navn} egen />
+          <Avatar navn={navn} egen medlemId={medlemId} />
         </button>
       </header>
 

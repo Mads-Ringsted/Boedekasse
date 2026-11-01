@@ -137,7 +137,7 @@ export function BetalSheet({ open, onOpenChange, onAendret }: BetalSheetProps) {
               <ul className="betal__admins-liste">
                 {data.admins.map((a) => (
                   <li key={a.id} className="betal__admin">
-                    <Avatar navn={a.navn} size={36} egen={a.id === medlemId} />
+                    <Avatar navn={a.navn} size={36} egen={a.id === medlemId} medlemId={a.id} />
                     {a.navn}
                   </li>
                 ))}

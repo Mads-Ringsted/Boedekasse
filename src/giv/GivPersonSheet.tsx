@@ -53,7 +53,7 @@ export function GivPersonSheet({
       header={
         <header className="giv-person__header">
           <span className="giv-person__hvem">
-            <Avatar navn={modtager.navn} stiplet={!modtager.loggetInd} />
+            <Avatar navn={modtager.navn} stiplet={!modtager.loggetInd} medlemId={modtager.id} />
             <span className="giv-person__navne">
               <span className="giv-person__kun">{t('giv.kunTil')}</span>
               <SheetTitle className="giv-person__navn">{modtager.kortNavn}</SheetTitle>

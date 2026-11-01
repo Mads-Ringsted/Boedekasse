@@ -52,7 +52,7 @@ export function TidligereMedlemmer({ linjer, onAabn, onGenoptaget }: TidligereMe
         {linjer.map((m) => (
           <li key={m.id} className="tidligere-linje">
             <button type="button" className="tidligere-linje__profil" onClick={() => onAabn(m.id)}>
-              <Avatar navn={m.navn} size={36} tidligere />
+              <Avatar navn={m.navn} size={36} tidligere medlemId={m.id} />
               <span className="tidligere-linje__tekst">
                 <span className="tidligere-linje__navn">{m.navn}</span>
                 <Beloeb saldo={m.saldo} />

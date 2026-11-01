@@ -982,6 +982,31 @@ export const da = {
   'tilbagevendende.stop': 'Stop gebyret',
   'tilbagevendende.stopBekraeft': 'Tryk igen for at stoppe',
   'tilbagevendende.stopNote': 'Et stoppet gebyr opkræves ikke mere. Det, der allerede er opkrævet, bliver stående.',
+
+  // Profilbilleder (#99)
+  // Beskær Profilbillede (#102)
+  'profilbillede.beskaer': 'Billedet i den runde ramme',
+  'profilbillede.beskaerHjaelp': 'Træk for at flytte billedet. Knib eller brug skyderen for at zoome.',
+  'profilbillede.zoom': 'Zoom',
+  'profilbillede.gem': 'Gem',
+  'profilbillede.vaelgAndet': 'Vælg et andet billede',
+  // Profilbillede (#100)
+  'fejl.billedeUgyldigt': 'Billedet kunne ikke gemmes. Vælg det igen.',
+  'fejl.billedeFindesIkke': 'Billedet blev ikke uploadet. Prøv igen.',
+  // Vælg Profilbillede (#101)
+  'profilbillede.titel': 'Profilbillede',
+  'profilbillede.skift': 'Skift profilbillede',
+  'profilbillede.note': 'Billedet gælder kun i {bodekasse}. Kun medlemmer her kan se det.',
+  'profilbillede.vaelg': 'Vælg billede',
+  'profilbillede.fjern': 'Fjern billede',
+  'profilbillede.gemmer': 'Gemmer …',
+  'profilbillede.fjerner': 'Fjerner …',
+  'fejl.billedeAabn': 'Billedet kunne ikke åbnes. Vælg et andet.',
+  'fejl.billedeUpload': 'Billedet kunne ikke uploades. Prøv igen.',
+  // Brug også i mine andre bødekasser (#103)
+  'profilbillede.brugOgsaa': 'Brug også i mine andre bødekasser',
+  'fejl.billedeKopi': 'Billedet er gemt her, men kom ikke med i alle dine andre bødekasser. Prøv igen.',
+  'fejl.intetBillede': 'Du har intet billede her at kopiere.',
 } as const;
 
 export type Catalogue = typeof da;

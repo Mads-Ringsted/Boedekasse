@@ -15,7 +15,7 @@ const SYMBOLER: Record<Symbol, ComponentType<{ size?: number; strokeWidth?: numb
 };
 
 function RaekkeIkon({ ikon }: { ikon: Ikon }) {
-  if (ikon.slags === 'avatar') return <Avatar navn={ikon.navn} size={40} egen={ikon.egen} />;
+  if (ikon.slags === 'avatar') return <Avatar navn={ikon.navn} size={40} egen={ikon.egen} medlemId={ikon.medlemId} />;
   const Symbol = SYMBOLER[ikon.symbol];
   return (
     <span className={`feed-raekke__symbol feed-raekke__symbol--${ikon.tone ?? 'graa'}`} aria-hidden="true">

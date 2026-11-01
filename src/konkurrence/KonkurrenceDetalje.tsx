@@ -127,7 +127,7 @@ function Resultat({ k, medlemId, children }: { k: Konkurrence; medlemId: string;
   const raekke = (d: Deltager) => (
     <li key={d.medlemId} className={`konk-detalje__raekke${d.medlemId === medlemId ? ' konk-detalje__raekke--egen' : ''}`}>
       <span className="konk-detalje__nr">{d.plads ?? ''}</span>
-      <Avatar navn={d.navn} size={34} egen={d.medlemId === medlemId} stiplet={!d.loggetInd} />
+      <Avatar navn={d.navn} size={34} egen={d.medlemId === medlemId} stiplet={!d.loggetInd} medlemId={d.medlemId} />
       <span className={`konk-detalje__navn${d.plads === null ? ' konk-detalje__navn--fravaer' : ''}`}>{navn(d)}</span>
       <span className="konk-detalje__beloeb">{formatKr(d.beloeb)}</span>
     </li>
@@ -175,7 +175,7 @@ function Resultat({ k, medlemId, children }: { k: Konkurrence; medlemId: string;
             <div key={d.medlemId} className={`podie__plads podie__plads--${trin}`}>
               <div className={`podie__knap${d.medlemId === medlemId ? ' podie__knap--egen' : ''}`}>
                 <span className="podie__avatar">
-                  <Avatar navn={d.navn} size={trin === 1 ? 56 : 48} egen={d.medlemId === medlemId} stiplet={!d.loggetInd} />
+                  <Avatar navn={d.navn} size={trin === 1 ? 56 : 48} egen={d.medlemId === medlemId} stiplet={!d.loggetInd} medlemId={d.medlemId} />
                 </span>
                 <span className="podie__navn">{navn(d)}</span>
                 <span className="podie__blok">

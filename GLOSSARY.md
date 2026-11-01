@@ -18,6 +18,10 @@ _Avoid_: User, player, participant
 A former Medlem an Admin has taken out of the Bødekasse. Their history and any unpaid Saldo stay in the Bødekasse, and an Admin can bring them back.
 _Avoid_: Slettet, inaktiv, forladt
 
+**Profilbillede** (Profile picture):
+A Medlem's own picture in one Bødekasse, shown instead of their initials on the avatar. It belongs to the Medlem, not the login, so a person can have a different one in each Bødekasse. Only Medlemmer of that Bødekasse can see it; an Udmeldt Medlem's shows greyed out.
+_Avoid_: Avatar (the round tile that shows the Profilbillede or the initials), profilfoto
+
 **Admin**:
 A Medlem who can change a Bødekasse's settings and manage Medlemmer, and who can always do everything a Kasserer can. The creator is the first Admin.
 _Avoid_: Owner, moderator

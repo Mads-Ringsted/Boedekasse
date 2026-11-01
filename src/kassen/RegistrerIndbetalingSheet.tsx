@@ -125,7 +125,7 @@ export function RegistrerIndbetalingSheet({ open, onOpenChange, medlemId, onRegi
         <form id={FORM_ID} onSubmit={(e) => void registrer(e)}>
           <h2 className="registrer__label">{t('registrer.fra')}</h2>
           <button type="button" className="registrer__fra" onClick={() => setVaelger(true)}>
-            <Avatar navn={valgt.navn} size={40} egen={valgt.id === mitId} tidligere={valgt.udmeldt} />
+            <Avatar navn={valgt.navn} size={40} egen={valgt.id === mitId} tidligere={valgt.udmeldt} medlemId={valgt.id} />
             <span className="registrer__fra-tekst">
               <span className="registrer__fra-navn">{navnFor(valgt)}</span>
               <SaldoTekst saldo={valgt.saldo} />
@@ -187,7 +187,7 @@ function BetalerListe({ betalere, navnFor, onVaelg, mitId }: BetalerListeProps) 
       {betalere.map((b) => (
         <li key={b.id}>
           <button type="button" className="registrer__betaler" onClick={() => onVaelg(b)}>
-            <Avatar navn={b.navn} size={36} egen={b.id === mitId} tidligere={b.udmeldt} />
+            <Avatar navn={b.navn} size={36} egen={b.id === mitId} tidligere={b.udmeldt} medlemId={b.id} />
             <span className="registrer__fra-tekst">
               <span className="registrer__fra-navn">{navnFor(b)}</span>
               <SaldoTekst saldo={b.saldo} />
