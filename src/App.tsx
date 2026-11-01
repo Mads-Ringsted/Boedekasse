@@ -18,6 +18,7 @@ import { Hjem } from './screens/Hjem.tsx';
 import { Medlemmer } from './screens/Medlemmer.tsx';
 import { Mere } from './screens/Mere.tsx';
 import { ProfilRute } from './profil/ProfilSkaerm.tsx';
+import { foelgPushLink, lytEfterPushTryk } from './push/aabnPush.ts';
 import { TidligereSaeson } from './saeson/TidligereSaeson.tsx';
 import { VaelgBodekasse } from './screens/VaelgBodekasse.tsx';
 import { Velkommen } from './screens/Velkommen.tsx';
@@ -29,6 +30,10 @@ import { isInstalled, readDisplayEnv } from './shell/installed.ts';
 import { Offline, useOnline } from './shell/Offline.tsx';
 import { UpdatePrompt } from './shell/UpdatePrompt.tsx';
 import { t } from './strings/index.ts';
+
+// A tapped push opens its box and screen; read it before the router does.
+foelgPushLink();
+lytEfterPushTryk();
 
 /** The screens inside a box. Shown only once a box is open. */
 const router = createBrowserRouter([

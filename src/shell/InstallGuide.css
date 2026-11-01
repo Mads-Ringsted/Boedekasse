@@ -119,3 +119,10 @@
 .install__title--status {
   text-align: center;
 }
+
+/* "Installér appen for at få notifikationer" (#81). */
+.install__notif {
+  margin-top: 16px;
+  width: 100%;
+  max-width: 420px;
+}

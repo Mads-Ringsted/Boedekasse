@@ -1491,6 +1491,84 @@ isOneToOne: false
       referencedColumns: ["bodekasse_id"]
     }
                   ]
+                },"push_abonnement": {
+                  Row: {
+                    "auth": string,"endpoint": string,"id": string,"oprettet": string,"p256dh": string,"sidst_set": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "auth": string,"endpoint": string,"id"?: string,"oprettet"?: string,"p256dh": string,"sidst_set"?: string,"user_id": string
+                  }
+                  Update: {
+                    "auth"?: string,"endpoint"?: string,"id"?: string,"oprettet"?: string,"p256dh"?: string,"sidst_set"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"push_praeference": {
+                  Row: {
+                    "anke_afstemning": boolean,"anke_resultat": boolean,"automatisk_gebyr": boolean,"betaling_bekraeftet": boolean,"betalingsmelding_venter": boolean,"betalingspaamindelse": boolean,"bode_modtaget": boolean,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "anke_afstemning"?: boolean,"anke_resultat"?: boolean,"automatisk_gebyr"?: boolean,"betaling_bekraeftet"?: boolean,"betalingsmelding_venter"?: boolean,"betalingspaamindelse"?: boolean,"bode_modtaget"?: boolean,"user_id": string
+                  }
+                  Update: {
+                    "anke_afstemning"?: boolean,"anke_resultat"?: boolean,"automatisk_gebyr"?: boolean,"betaling_bekraeftet"?: boolean,"betalingsmelding_venter"?: boolean,"betalingspaamindelse"?: boolean,"bode_modtaget"?: boolean,"user_id"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"push_udbakke": {
+                  Row: {
+                    "art": Database["public"]['Enums']["push_art"],"bodekasse_id": string,"fejl": string | null,"haendelse_id": number | null,"id": number,"oprettet": string,"paabegyndt": string | null,"send_efter": string,"sendt": string | null,"tekst": string,"titel": string,"url": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "art": Database["public"]['Enums']["push_art"],"bodekasse_id": string,"fejl"?: string | null,"haendelse_id"?: number | null,"id"?: never,"oprettet"?: string,"paabegyndt"?: string | null,"send_efter"?: string,"sendt"?: string | null,"tekst": string,"titel": string,"url": string,"user_id": string
+                  }
+                  Update: {
+                    "art"?: Database["public"]['Enums']["push_art"],"bodekasse_id"?: string,"fejl"?: string | null,"haendelse_id"?: number | null,"id"?: never,"oprettet"?: string,"paabegyndt"?: string | null,"send_efter"?: string,"sendt"?: string | null,"tekst"?: string,"titel"?: string,"url"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "push_udbakke_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "bodekasse"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "push_udbakke_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "bodekasse_saeson"
+      referencedColumns: ["bodekasse_id"]
+    },{
+      foreignKeyName: "push_udbakke_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "kassen"
+      referencedColumns: ["bodekasse_id"]
+    },{
+      foreignKeyName: "push_udbakke_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "sidste_admin_kasse"
+      referencedColumns: ["bodekasse_id"]
+    },{
+      foreignKeyName: "push_udbakke_haendelse_id_fkey"
+      columns: ["haendelse_id"]
+isOneToOne: false
+      referencedRelation: "aktivitet"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "push_udbakke_haendelse_id_fkey"
+      columns: ["haendelse_id"]
+isOneToOne: false
+      referencedRelation: "haendelse"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"saeson": {
                   Row: {
                     "afsluttet": string | null,"bodekasse_id": string,"id": string,"loebenr": number,"navn": string,"slutdato": string | null,"startet": string
@@ -2483,11 +2561,17 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "aendr_afgoerelse":
+            "abonner_push":
+{ Args: { "p_auth": string,"p_endpoint": string,"p_p256dh": string }; Returns: Json
+                           },
+"aendr_afgoerelse":
 { Args: { "p_afgoerelse": Database["public"]['Enums']["anke_afgoerelse"],"p_anke": string,"p_klient_id": string }; Returns: Json
                            },
 "afgoer_anke":
 { Args: { "p_afgoerelse": Database["public"]['Enums']["anke_afgoerelse"],"p_anke": string,"p_klient_id": string }; Returns: Json
+                           },
+"afmeld_push":
+{ Args: { "p_endpoint": string }; Returns: Json
                            },
 "afslut_saeson":
 { Args: { "p_bodekasse": string,"p_klient_id": string }; Returns: Json
@@ -2566,6 +2650,15 @@ isOneToOne: false
 "opret_bodekategori":
 { Args: { "p_beskrivelse"?: string,"p_bodekasse": string,"p_klient_id": string,"p_navn": string,"p_pris": number }; Returns: Json
                            },
+"push_fjern_abonnement":
+{ Args: { "p_endpoint": string }; Returns: undefined
+                           },
+"push_hent_klar":
+{ Args: { "p_max"?: number }; Returns: Json
+                           },
+"push_marker":
+{ Args: { "p_fejl"?: string,"p_id": number }; Returns: undefined
+                           },
 "registrer_indbetaling":
 { Args: { "p_beloeb": number,"p_bodekasse": string,"p_klient_id": string,"p_medlem": string,"p_note"?: string }; Returns: Json
                            },
@@ -2593,6 +2686,9 @@ isOneToOne: false
 "saet_kasserer":
 { Args: { "p_bodekasse": string,"p_er_kasserer": boolean,"p_klient_id": string,"p_medlem": string }; Returns: Json
                            },
+"saet_push_praeference":
+{ Args: { "p_art": Database["public"]['Enums']["push_art"],"p_til": boolean }; Returns: Json
+                           },
 "saet_slutdato":
 { Args: { "p_bodekasse": string,"p_klient_id": string,"p_slutdato": string }; Returns: Json
                            },
@@ -2619,7 +2715,7 @@ isOneToOne: false
                            }
           }
           Enums: {
-            "anke_afgoerelse": "modtager_vandt"|"giver_vandt"|"ikke_afgjort","engangs_pris_mode": "fri"|"fast"|"loft","gebyr_art": "oprettelse"|"engangsbode"|"anke"|"frikob"|"placering"|"fravaer"|"dos_bonus"|"catch_up"|"sen_betaling"|"tilbagevendende","melding_status": "afventer"|"bekraeftet"|"afvist"|"trukket"
+            "anke_afgoerelse": "modtager_vandt"|"giver_vandt"|"ikke_afgjort","engangs_pris_mode": "fri"|"fast"|"loft","gebyr_art": "oprettelse"|"engangsbode"|"anke"|"frikob"|"placering"|"fravaer"|"dos_bonus"|"catch_up"|"sen_betaling"|"tilbagevendende","melding_status": "afventer"|"bekraeftet"|"afvist"|"trukket","push_art": "bode_modtaget"|"anke_afstemning"|"anke_resultat"|"betalingsmelding_venter"|"betaling_bekraeftet"|"automatisk_gebyr"|"betalingspaamindelse"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -2735,7 +2831,7 @@ export type CompositeTypes<
 export const Constants = {
   "public": {
           Enums: {
-            "anke_afgoerelse": ["modtager_vandt", "giver_vandt", "ikke_afgjort"],"engangs_pris_mode": ["fri", "fast", "loft"],"gebyr_art": ["oprettelse", "engangsbode", "anke", "frikob", "placering", "fravaer", "dos_bonus", "catch_up", "sen_betaling", "tilbagevendende"],"melding_status": ["afventer", "bekraeftet", "afvist", "trukket"]
+            "anke_afgoerelse": ["modtager_vandt", "giver_vandt", "ikke_afgjort"],"engangs_pris_mode": ["fri", "fast", "loft"],"gebyr_art": ["oprettelse", "engangsbode", "anke", "frikob", "placering", "fravaer", "dos_bonus", "catch_up", "sen_betaling", "tilbagevendende"],"melding_status": ["afventer", "bekraeftet", "afvist", "trukket"],"push_art": ["bode_modtaget", "anke_afstemning", "anke_resultat", "betalingsmelding_venter", "betaling_bekraeftet", "automatisk_gebyr", "betalingspaamindelse"]
           }
         }
 } as const

@@ -858,6 +858,28 @@ export const da = {
   'fejl.harFrikob': 'Et af medlemmerne har Frikøb på den bødekategori.',
   'fejl.frikobFindes': 'Der er allerede Frikøb på den bødekategori i denne sæson.',
   'fejl.frikobSlaaetFra': 'Frikøb er slået fra i denne Bødekasse.',
+
+  // Push notifications (#81): Profil section and the install guide
+  'notifikationer.titel': 'Notifikationer',
+  'notifikationer.installerTitel': 'Installér appen for at få notifikationer',
+  'notifikationer.installerTekst': 'Notifikationer virker kun i appen på hjemmeskærmen.',
+  'notifikationer.slaaTilTitel': 'Slå notifikationer til',
+  'notifikationer.slaaTilTekst': 'Få besked, når du får en bøde, og når der sker noget i dine bødekasser.',
+  'notifikationer.slaaTilKnap': 'Slå notifikationer til',
+  'notifikationer.blokeret':
+    'Notifikationer er slået fra for Bødekasse. Slå dem til i telefonens indstillinger under Notifikationer.',
+  'notifikationer.ikkeUnderstoettet':
+    'Notifikationer virker ikke på denne enhed. På iPhone kræver de iOS 16.4 eller nyere.',
+  'notifikationer.note': 'Gælder alle dine bødekasser.',
+  'notifikationer.slaaFra': 'Slå fra på denne enhed',
+  'notifikationer.art.bode_modtaget': 'Bøder til dig',
+  'notifikationer.art.anke_afstemning': 'Anker du kan stemme om',
+  'notifikationer.art.anke_resultat': 'Resultat af anker',
+  'notifikationer.art.betalingsmelding_venter': 'Betalinger der venter på dig',
+  'notifikationer.art.betaling_bekraeftet': 'Din betaling er bekræftet',
+  'notifikationer.art.automatisk_gebyr': 'Automatiske gebyrer',
+  'notifikationer.art.betalingspaamindelse': 'Påmindelser om betaling',
+  'fejl.abonnementUgyldigt': 'Enheden kunne ikke slå notifikationer til. Prøv igen.',
   'aktivitet.fikCatchUp': '{hvem} fik catch-up for {maaned}',
   'aktivitet.catchUpLinje': 'Blandt de laveste i sæsonen · {total} i alt',
   'indstillinger.catchUp': 'Catch-up',

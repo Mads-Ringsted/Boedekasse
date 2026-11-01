@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { isAuthRetryableFetchError, type Session, type User } from '@supabase/supabase-js';
+import { afmeldVedLogUd } from '../push/enhed.ts';
 import { supabase } from '../supabase/index.ts';
 
 /**
@@ -68,6 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         void load();
       },
       logOut: async () => {
+        await afmeldVedLogUd();
         const { error } = await supabase.auth.signOut({ scope: 'local' });
         return !error;
       },
