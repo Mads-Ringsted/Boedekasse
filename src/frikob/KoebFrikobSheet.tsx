@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { ChevronLeft, Search, ShieldCheck } from 'lucide-react';
+import { ChevronLeft, ShieldCheck } from 'lucide-react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
+import { Field } from '../components/Field.tsx';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { kortNavne } from '../giv/navne.ts';
 import { kortDato, soegKategorier } from '../kategorier/kategoriListe.ts';
 import { formatKr, t } from '../strings/index.ts';
@@ -71,20 +73,13 @@ export function KoebFrikobSheet({ open, onOpenChange, medlem, status, onKoebt }:
   const slut = status.saeson?.slutdato;
   const footer =
     trin === 1 ? (
-      <button type="button" className="felt-knap" disabled={!valgt} onClick={() => setTrin(2)}>
+      <SheetAction disabled={!valgt} reason={t('aarsag.vaelgKategori')} onClick={() => setTrin(2)}>
         {t('frikob.naeste')}
-      </button>
+      </SheetAction>
     ) : (
-      <>
-        {fejl && (
-          <p className="felt-fejl frikob__fejl" role="alert">
-            {fejl}
-          </p>
-        )}
-        <button type="button" className="felt-knap" disabled={busy} onClick={() => void koeb()}>
-          {t(egen ? 'frikob.koeb' : 'frikob.registrer', { beloeb: pris })}
-        </button>
-      </>
+      <SheetAction disabled={busy} onClick={() => void koeb()} error={fejl}>
+        {t(egen ? 'frikob.koeb' : 'frikob.registrer', { beloeb: pris })}
+      </SheetAction>
     );
 
   return (
@@ -108,16 +103,15 @@ export function KoebFrikobSheet({ open, onOpenChange, medlem, status, onKoebt }:
       {trin === 1 ? (
         <>
           <p className="frikob__intro">{t('frikob.prisLinje', { beloeb: pris })}</p>
-          <label className="frikob__soeg">
-            <Search size={18} strokeWidth={2} aria-hidden="true" />
-            <input
-              type="search"
-              aria-label={t('giv.soeg')}
-              placeholder={t('giv.soeg')}
-              value={soeg}
-              onChange={(e) => setSoeg(e.target.value)}
-            />
-          </label>
+          <Field
+            className="frikob__soeg"
+            kind="search"
+            label={t('giv.soeg')}
+            hideLabel
+            value={soeg}
+            onChange={setSoeg}
+            placeholder={t('giv.soeg')}
+          />
           {valg.status === 'error' && (
             <button type="button" className="felt-fejl" onClick={valg.reload}>
               {rpcErrorText(valg.error)}

@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { Field } from '../components/Field.tsx';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { formatKr, t } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
@@ -49,9 +51,9 @@ export function AnnullerIndbetalingSheet({ post, open, onOpenChange, onAnnullere
       dirty={note !== ''}
       footer={
         <>
-          <button type="button" className="annuller-ind__knap" disabled={busy} onClick={() => void annuller()}>
+          <SheetAction className="annuller-ind__knap" disabled={busy} onClick={() => void annuller()} error={fejl}>
             {t('annullerIndbetaling.knap')}
-          </button>
+          </SheetAction>
           <p className="annuller-ind__advarsel">{t('annullerIndbetaling.advarsel')}</p>
         </>
       }
@@ -68,21 +70,14 @@ export function AnnullerIndbetalingSheet({ post, open, onOpenChange, onAnnullere
       </div>
       {post.note && <p className="annuller-ind__note">{post.note}</p>}
 
-      <input
-        className="annuller-ind__input"
-        type="text"
+      <Field
+        className="annuller-ind__felt"
+        label={t('annullerIndbetaling.note')}
+        hideLabel
         value={note}
-        onChange={(e) => setNote(e.target.value)}
+        onChange={setNote}
         placeholder={t('annullerIndbetaling.note')}
-        aria-label={t('annullerIndbetaling.note')}
-        enterKeyHint="done"
       />
-
-      {fejl && (
-        <p className="annuller-ind__fejl" role="alert">
-          {fejl}
-        </p>
-      )}
     </Sheet>
   );
 }

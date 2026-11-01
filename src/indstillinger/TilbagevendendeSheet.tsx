@@ -1,7 +1,10 @@
 import { useRef, useState, type FormEvent } from 'react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
+import { Field } from '../components/Field.tsx';
+import { primaryAction, visibleError } from '../components/field.ts';
 import { Sheet } from '../components/Sheet.tsx';
-import { kortDato } from '../kategorier/kategoriListe.ts';
+import { SheetAction } from '../components/SheetAction.tsx';
+import { kortDato, parsePris } from '../kategorier/kategoriListe.ts';
 import { t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import { gemTilbagevendende, stopTilbagevendende, type TilbagevendendeMedlem } from './hentTilbagevendende.ts';
@@ -17,6 +20,14 @@ import '../medlemmer/felter.css';
 import './Indstillinger.css';
 
 const FORM_ID = 'tilbagevendende-form';
+
+/** Why Opret/Gem is off, for the form's first problem. */
+function aarsag(fejl: 'navn' | 'beloeb' | 'dag' | 'medlemmer', beloeb: string): string {
+  if (fejl === 'navn') return t('aarsag.skrivNavn');
+  if (fejl === 'beloeb') return t(beloeb.trim() === '' ? 'aarsag.skrivBeloeb' : 'aarsag.retBeloeb');
+  if (fejl === 'dag') return t('aarsag.vaelgDag');
+  return t('aarsag.vaelgMedlemmer');
+}
 const FREKVENSER: readonly Frekvens[] = ['uge', 'maaned'];
 const UGEDAGE = [1, 2, 3, 4, 5, 6, 7];
 const MAANEDSDAGE = Array.from({ length: 28 }, (_, i) => i + 1);
@@ -64,7 +75,11 @@ export function TilbagevendendeSheet({
   const viste = medlemmer.filter((m) => !m.udmeldt || valgte.has(m.id));
   const alleValgt = viste.length > 0 && viste.every((m) => valgte.has(m.id));
   const resultat = tjekTilbagevendende({ navn, beloeb, frekvens, dag, medlemmer: [...valgte] });
-  const kanGemme = resultat.ok && !busy;
+  const handling = primaryAction(
+    [[resultat.ok, resultat.ok ? '' : aarsag(resultat.fejl, beloeb)]],
+    { busy },
+  );
+  const kanGemme = handling.enabled;
 
   function skiftFrekvens(ny: Frekvens) {
     setFrekvens(ny);
@@ -108,8 +123,6 @@ export function TilbagevendendeSheet({
     void koer(() => stopTilbagevendende(stopId, tilbagevendende.id));
   }
 
-  const beloebHint = beloeb.trim() !== '' && !resultat.ok && resultat.fejl === 'beloeb';
-
   return (
     <Sheet
       open={open}
@@ -119,41 +132,30 @@ export function TilbagevendendeSheet({
       initialFocus={tilbagevendende ? undefined : navnFelt}
       dirty={aendret}
       footer={
-        <button type="submit" form={FORM_ID} className="felt-knap" disabled={!kanGemme}>
+        <SheetAction form={FORM_ID} disabled={!kanGemme} reason={handling.reason} error={fejl}>
           {t(tilbagevendende ? 'tilbagevendende.gem' : 'tilbagevendende.opret')}
-        </button>
+        </SheetAction>
       }
     >
       <form id={FORM_ID} onSubmit={gem}>
-        <label className="felt">
-          <span className="felt__label">{t('tilbagevendende.navn')}</span>
-          <input
-            ref={navnFelt}
-            className="felt__input"
-            type="text"
-            value={navn}
-            onChange={(e) => setNavn(e.target.value)}
-            placeholder={t('tilbagevendende.navnPladsholder')}
-            autoComplete="off"
-            maxLength={60}
-          />
-        </label>
+        <Field
+          ref={navnFelt}
+          label={t('tilbagevendende.navn')}
+          value={navn}
+          onChange={setNavn}
+          placeholder={t('tilbagevendende.navnPladsholder')}
+          maxLength={60}
+          enterKeyHint="next"
+        />
 
-        <label className="felt">
-          <span className="felt__label">{t('tilbagevendende.beloeb')}</span>
-          <span className="indst-felt">
-            <input
-              className="felt__input indst-felt__input"
-              type="text"
-              inputMode="numeric"
-              value={beloeb}
-              onChange={(e) => setBeloeb(e.target.value)}
-              autoComplete="off"
-            />
-            <span className="indst-felt__enhed">{t('kategori.kr')}</span>
-          </span>
-        </label>
-        {beloebHint && <p className="felt-fejl">{t('tilbagevendende.beloebUgyldig')}</p>}
+        <Field
+          label={t('tilbagevendende.beloeb')}
+          kind="integer"
+          unit={t('kategori.kr')}
+          value={beloeb}
+          onChange={setBeloeb}
+          error={visibleError(beloeb, parsePris(beloeb) === null ? t('tilbagevendende.beloebUgyldig') : null)}
+        />
 
         <div className="felt">
           <span className="felt__label">{t('tilbagevendende.hvorOfte')}</span>
@@ -230,11 +232,6 @@ export function TilbagevendendeSheet({
         <p className="felt-note">
           {t('tilbagevendende.note', { naeste: kortDato(`${naesteForekomst(frekvens, dag)}T12:00:00Z`) })}
         </p>
-        {fejl && (
-          <p className="felt-fejl" role="alert">
-            {fejl}
-          </p>
-        )}
 
         {tilbagevendende && (
           <>

@@ -2,7 +2,10 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { Check, Copy, X } from 'lucide-react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
+import { Field } from '../components/Field.tsx';
+import { primaryAction, typedRequirement, visibleError } from '../components/field.ts';
 import { Sheet, SheetClose, SheetTitle } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { forudfyldtBeloeb } from '../kassen/kassen.ts';
 import { parsePris } from '../kategorier/kategoriListe.ts';
 import { formatKr, t } from '../strings/index.ts';
@@ -41,7 +44,11 @@ export function BetalSheet({ open, onOpenChange, onAendret }: BetalSheetProps) {
   const tekst = beloeb ?? (data ? forudfyldtBeloeb(data.saldo) : '');
   const kr = parsePris(tekst);
   const melding = data?.minMelding ?? null;
-  const kanMelde = data && !melding && kr !== null && !busy;
+  const handling = primaryAction(
+    [typedRequirement(tekst, kr !== null, t('aarsag.skrivBeloeb'), t('aarsag.retBeloeb'))],
+    { busy },
+  );
+  const kanMelde = data && !melding && kr !== null && handling.enabled;
 
   async function meld(event: FormEvent) {
     event.preventDefault();
@@ -88,33 +95,21 @@ export function BetalSheet({ open, onOpenChange, onAendret }: BetalSheetProps) {
           </button>
         ) : (
           <>
-            <label className="betal__beloeb">
-              <span className="betal__beloeb-label">{t('betal.beloeb')}</span>
-              <span className="betal__beloeb-felt">
-                <input
-                  className="betal__beloeb-input"
-                  type="text"
-                  inputMode="numeric"
-                  form={FORM_ID}
-                  value={tekst}
-                  onChange={(e) => setBeloeb(e.target.value)}
-                  placeholder="0"
-                  aria-label={t('betal.beloebLabel')}
-                  aria-invalid={tekst !== '' && kr === null}
-                  autoComplete="off"
-                />
-                {t('betal.kr')}
-              </span>
-            </label>
-            {tekst !== '' && kr === null && <p className="betal__fejl">{t('betal.ugyldigt')}</p>}
-            {fejl && (
-              <p className="betal__fejl" role="alert">
-                {fejl}
-              </p>
-            )}
-            <button type="submit" form={FORM_ID} className="felt-knap" disabled={!kanMelde}>
+            <Field
+              className="betal__beloeb"
+              variant="row"
+              kind="integer"
+              label={t('betal.beloeb')}
+              unit={t('betal.kr')}
+              form={FORM_ID}
+              value={tekst}
+              onChange={setBeloeb}
+              placeholder="0"
+              error={visibleError(tekst, kr === null ? t('betal.ugyldigt') : null)}
+            />
+            <SheetAction form={FORM_ID} disabled={!kanMelde} reason={handling.reason} error={fejl}>
               {kr !== null ? t('betal.knap', { beloeb: formatKr(kr) }) : t('betal.knapUdenBeloeb')}
-            </button>
+            </SheetAction>
           </>
         ))
       }

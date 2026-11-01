@@ -2,7 +2,10 @@ import { useState, type FormEvent } from 'react';
 import { TriangleAlert } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useBodekasse, useMedlemskaber } from '../bodekasse/BodekasseProvider.tsx';
+import { Field } from '../components/Field.tsx';
+import { primaryAction, typedRequirement } from '../components/field.ts';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import { useHent } from '../supabase/useHent.ts';
@@ -32,7 +35,18 @@ export function SletBodekasseSheet({ open, onOpenChange, onEksporter }: SletBode
   const [skrevet, setSkrevet] = useState('');
   const [busy, setBusy] = useState(false);
   const [fejl, setFejl] = useState<string | null>(null);
-  const kanSlette = navnPasser(skrevet, bodekasseNavn) && !busy;
+  const handling = primaryAction(
+    [
+      typedRequirement(
+        skrevet,
+        navnPasser(skrevet, bodekasseNavn),
+        t('aarsag.skrivKassenavn'),
+        t('aarsag.kassenavnPasserIkke'),
+      ),
+    ],
+    { busy },
+  );
+  const kanSlette = handling.enabled;
 
   async function slet(event?: FormEvent) {
     event?.preventDefault();
@@ -58,14 +72,9 @@ export function SletBodekasseSheet({ open, onOpenChange, onEksporter }: SletBode
       height="full"
       title={t('sletKasse.titel')}
       footer={
-        <button
-          type="submit"
-          form="slet-kasse"
-          className="slet__knap"
-          disabled={!kanSlette}
-        >
+        <SheetAction form="slet-kasse" className="slet__knap" disabled={!kanSlette} reason={handling.reason} error={fejl}>
           {t('sletKasse.knap')}
-        </button>
+        </SheetAction>
       }
     >
       <div className="slet__advarsel">
@@ -84,26 +93,16 @@ export function SletBodekasseSheet({ open, onOpenChange, onEksporter }: SletBode
       </div>
 
       <form id="slet-kasse" onSubmit={(e) => void slet(e)}>
-        <label className="slet__felt">
-          <span className="slet__label">{t('sletKasse.skriv', { navn: bodekasseNavn })}</span>
-          <input
-            className="slet__input"
-            type="text"
-            value={skrevet}
-            onChange={(e) => setSkrevet(e.target.value)}
-            autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="off"
-            spellCheck={false}
-            enterKeyHint="done"
-          />
-        </label>
+        <Field
+          className="slet__felt"
+          label={t('sletKasse.skriv', { navn: bodekasseNavn })}
+          value={skrevet}
+          onChange={setSkrevet}
+          autoCorrect="off"
+          autoCapitalize="none"
+          spellCheck={false}
+        />
       </form>
-      {fejl && (
-        <p className="slet__fejl" role="alert">
-          {fejl}
-        </p>
-      )}
     </Sheet>
   );
 }

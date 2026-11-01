@@ -6,7 +6,9 @@ import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { BackButton } from '../components/BackButton.tsx';
 import { Screen } from '../components/Screen.tsx';
+import { Field } from '../components/Field.tsx';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { kortNavne } from '../giv/navne.ts';
 import { formatKr, t, type PlainStringId } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
@@ -246,31 +248,16 @@ function AnnullerSheet({
       title={t('konkurrence.annuller')}
       dirty={note !== ''}
       footer={
-        <button type="submit" form={ANNULLER_FORM} className="felt-knap konk-annuller__knap" disabled={busy}>
+        <SheetAction form={ANNULLER_FORM} className="felt-knap konk-annuller__knap" disabled={busy} error={fejl}>
           {t('konkurrence.annuller')}
-        </button>
+        </SheetAction>
       }
     >
       <form id={ANNULLER_FORM} onSubmit={(e) => void annuller(e)}>
         <p className="felt-note konk-annuller__tekst">
           {t('konkurrence.annullerTekst', { antal: k.antalGebyrer, beloeb: formatKr(k.total) })}
         </p>
-        <label className="felt">
-          <span className="felt__label">{t('konkurrence.note')}</span>
-          <input
-            className="felt__input"
-            type="text"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            autoComplete="off"
-            maxLength={200}
-          />
-        </label>
-        {fejl && (
-          <p className="felt-fejl" role="alert">
-            {fejl}
-          </p>
-        )}
+        <Field label={t('konkurrence.note')} value={note} onChange={setNote} maxLength={200} />
       </form>
     </Sheet>
   );
