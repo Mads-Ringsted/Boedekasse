@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { billedSti, skalSigneres, visBillede } from './billede.ts';
+import { andreKasser, billedSti, kopiStier, skalSigneres, visBillede } from './billede.ts';
 
 describe('billedSti', () => {
   it('puts the file in the Medlem’s folder in that box, with a fresh name', () => {
@@ -56,5 +56,32 @@ describe('skalSigneres: which paths need a new signed URL', () => {
 
   it('signs nothing when every URL is fresh', () => {
     expect(skalSigneres(['frisk'], cache, nu)).toEqual([]);
+  });
+});
+
+describe('Brug også i mine andre bødekasser', () => {
+  const mine = [
+    { bodekasseId: 'kasse-a', medlemId: 'mig-a' },
+    { bodekasseId: 'kasse-b', medlemId: 'mig-b' },
+    { bodekasseId: 'kasse-c', medlemId: 'mig-c' },
+  ];
+
+  it('targets your Medlem in every other box, not the one you saved in', () => {
+    expect(andreKasser(mine, 'kasse-b')).toEqual([
+      { bodekasseId: 'kasse-a', medlemId: 'mig-a' },
+      { bodekasseId: 'kasse-c', medlemId: 'mig-c' },
+    ]);
+  });
+
+  it('has no targets when you are in one box only', () => {
+    expect(andreKasser([{ bodekasseId: 'kasse-a', medlemId: 'mig-a' }], 'kasse-a')).toEqual([]);
+  });
+
+  it('puts each copy in that Medlem’s own folder, with a fresh name and the same type', () => {
+    const navne = ['n1', 'n2'];
+    expect(kopiStier(mine, 'kasse-a', 'image/jpeg', () => navne.shift()!)).toEqual([
+      'kasse-b/mig-b/n1.jpg',
+      'kasse-c/mig-c/n2.jpg',
+    ]);
   });
 });

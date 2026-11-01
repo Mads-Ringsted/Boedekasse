@@ -2812,6 +2812,9 @@ isOneToOne: false
 "koeb_frikob":
 { Args: { "p_bodekasse": string,"p_bodekategori": string,"p_klient_id": string,"p_medlem"?: string }; Returns: Json
                            },
+"kopier_mit_billede":
+{ Args: { "p_bodekasse": string,"p_klient_id": string,"p_stier": (string)[] }; Returns: Json
+                           },
 "meld_betaling":
 { Args: { "p_beloeb": number,"p_bodekasse": string,"p_klient_id": string }; Returns: Json
                            },

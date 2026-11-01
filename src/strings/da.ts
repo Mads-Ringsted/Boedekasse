@@ -971,6 +971,10 @@ export const da = {
   'profilbillede.fjerner': 'Fjerner …',
   'fejl.billedeAabn': 'Billedet kunne ikke åbnes. Vælg et andet.',
   'fejl.billedeUpload': 'Billedet kunne ikke uploades. Prøv igen.',
+  // Brug også i mine andre bødekasser (#103)
+  'profilbillede.brugOgsaa': 'Brug også i mine andre bødekasser',
+  'fejl.billedeKopi': 'Billedet er gemt her, men kom ikke med i alle dine andre bødekasser. Prøv igen.',
+  'fejl.intetBillede': 'Du har intet billede her at kopiere.',
   'indstillinger.tilbagevendendeNy': 'Nyt tilbagevendende gebyr',
   'indstillinger.tilbagevendendeUnder': '{beloeb} · {frekvens} · næste {naeste}',
   'tilbagevendende.hverUge': 'Hver {ugedag}',

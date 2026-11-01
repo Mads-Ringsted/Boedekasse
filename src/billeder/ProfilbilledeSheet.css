@@ -13,6 +13,19 @@
   text-align: center;
 }
 
+/* "Brug også i mine andre bødekasser": one checkbox row. */
+.profilbillede__andre {
+  margin-top: 16px;
+}
+
+.valg-liste__radio.profilbillede__boks {
+  border-radius: 6px;
+}
+
+.valg-liste__raekke--valgt .profilbillede__boks::after {
+  border-radius: 2px;
+}
+
 /* Quiet red text under the primary action. */
 .profilbillede__fjern {
   width: 100%;

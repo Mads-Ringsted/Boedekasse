@@ -27,6 +27,35 @@ export function billedSti(bodekasseId: string, medlemId: string, type: BilledTyp
   return `${bodekasseId}/${medlemId}/${id}.${ENDELSE[type]}`;
 }
 
+/** Your Medlem in one box. */
+export interface MitMedlem {
+  bodekasseId: string;
+  medlemId: string;
+}
+
+/**
+ * "Brug også i mine andre bødekasser": your Medlemmer in every box except the
+ * one you saved in. Pass your active Medlemmer (`useMedlemskaber`). Empty
+ * means the checkbox doesn't show.
+ */
+export function andreKasser<T extends MitMedlem>(mine: readonly T[], bodekasseId: string): T[] {
+  return mine.filter((m) => m.bodekasseId !== bodekasseId);
+}
+
+/**
+ * Where each copy goes: a fresh path in your Medlem's own folder in each
+ * other box, with the source's type. Each box keeps its own file, so its
+ * Storage rules still hold. Set them with `kopier_mit_billede`.
+ */
+export function kopiStier(
+  mine: readonly MitMedlem[],
+  bodekasseId: string,
+  type: BilledType,
+  nyId: () => string = () => crypto.randomUUID(),
+): string[] {
+  return andreKasser(mine, bodekasseId).map((m) => billedSti(m.bodekasseId, m.medlemId, type, nyId()));
+}
+
 /**
  * Picture or initials. Initials when there is no URL, for a Medlem who
  * hasn't signed up (dashed style), and when this URL failed to load.
