@@ -61,6 +61,11 @@
   overflow-wrap: anywhere;
 }
 
+/* A rule that is off: "Fra", fainter than an on rule's status. */
+.indst-raekke__vaerdi--fra {
+  color: var(--color-text-faint);
+}
+
 .indst-raekke__chevron {
   flex-shrink: 0;
   color: var(--color-text-faint);
@@ -133,6 +138,42 @@
   .indst-switch__knop {
     transition: none;
   }
+}
+
+/* RegelSheet (#94): sections, each with its switch first. */
+.regel-sektion + .regel-sektion {
+  margin-top: 28px;
+}
+
+.regel-sektion__titel {
+  margin: 0 0 8px;
+  padding: 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.regel-sektion > .regel-switch:first-child {
+  margin-top: 4px;
+}
+
+.regel-switch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 0 16px;
+  border-radius: var(--radius-input);
+  background: var(--color-surface-raised);
+  font-size: 17px;
+}
+
+.regel-switch__label {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.regel-valg {
+  margin-top: 4px;
 }
 
 /* The field in RetIndstillingSheet, with an optional unit ("kr"). */

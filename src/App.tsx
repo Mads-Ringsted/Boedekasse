@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from './auth/AuthProvider.tsx';
 import { LogInd } from './auth/LogInd.tsx';
 import { BodekasseProvider, useMedlemskaber } from './bodekasse/BodekasseProvider.tsx';
 import { Kassen } from './kassen/Kassen.tsx';
+import { Gebyrer } from './indstillinger/Gebyrer.tsx';
 import { Indstillinger } from './indstillinger/Indstillinger.tsx';
 import { Kategorier } from './kategorier/Kategorier.tsx';
 import { KonkurrenceDetalje } from './konkurrence/KonkurrenceDetalje.tsx';
@@ -53,6 +54,7 @@ const router = createBrowserRouter([
       { path: 'konkurrencer', element: <Konkurrencer /> },
       { path: 'konkurrencer/:id', element: <KonkurrenceDetalje /> },
       { path: 'indstillinger', element: <Indstillinger /> },
+      { path: 'indstillinger/gebyrer', element: <Gebyrer /> },
       { path: 'saeson/:saesonId', element: <TidligereSaeson /> },
       { path: '*', element: <Hjem /> },
     ],
