@@ -67,7 +67,7 @@ describe('kassePoster (the list of Indbetalinger on Kassen)', () => {
   ];
 
   it('lists newest first with who paid, who registered it and the note', () => {
-    const poster = kassePoster(rows, { navne, senesteSaesonId: 's2', erAdmin: false });
+    const poster = kassePoster(rows, { navne, senesteSaesonId: 's2', kanHaandterePenge: false });
     expect(poster.map((p) => p.id)).toEqual(['ny', 'fjernet', 'gammel']);
     expect(poster[0]).toMatchObject({ navn: 'Kasper', beloeb: 80, registreretAf: 'Frederik', note: 'Kontant' });
   });
@@ -75,20 +75,20 @@ describe('kassePoster (the list of Indbetalinger on Kassen)', () => {
   it('says who confirmed it when it came from a Betalingsmelding, else who registered it', () => {
     const [bekraeftet, registreret] = kassePoster(
       [raekke({ id: 'b', betalingsmelding_id: 'm1', registreret: '2026-10-11T12:00:00Z' }), raekke({ id: 'r' })],
-      { navne, senesteSaesonId: 's2', erAdmin: false },
+      { navne, senesteSaesonId: 's2', kanHaandterePenge: false },
     );
     expect(bekraeftet).toMatchObject({ registreretAf: 'Frederik', bekraeftet: true });
     expect(registreret).toMatchObject({ registreretAf: 'Frederik', bekraeftet: false });
   });
 
   it('marks an annulled one with who did it and the note', () => {
-    const [, fjernet] = kassePoster(rows, { navne, senesteSaesonId: 's2', erAdmin: true });
+    const [, fjernet] = kassePoster(rows, { navne, senesteSaesonId: 's2', kanHaandterePenge: true });
     expect(fjernet?.annulleret).toEqual({ af: 'Frederik', tid: '2026-10-08T11:00:00Z', note: 'Forkert person' });
   });
 
-  it('lets only an Admin annul, only in the latest Sæson, and only once', () => {
-    const kan = (erAdmin: boolean) =>
-      kassePoster(rows, { navne, senesteSaesonId: 's2', erAdmin }).map((p) => [p.id, p.kanAnnulleres]);
+  it('lets only an Admin or Kasserer annul, only in the latest Sæson, and only once', () => {
+    const kan = (kanHaandterePenge: boolean) =>
+      kassePoster(rows, { navne, senesteSaesonId: 's2', kanHaandterePenge }).map((p) => [p.id, p.kanAnnulleres]);
     expect(kan(true)).toEqual([
       ['ny', true],
       ['fjernet', false],
@@ -124,12 +124,12 @@ describe('kassePoster (the list of Indbetalinger on Kassen)', () => {
     ];
 
     it('lists Indbetalinger and Hævninger together, newest first', () => {
-      const poster = kassePoster(rows, { navne, senesteSaesonId: 's2', erAdmin: false }, haevninger);
+      const poster = kassePoster(rows, { navne, senesteSaesonId: 's2', kanHaandterePenge: false }, haevninger);
       expect(poster.map((p) => p.id)).toEqual(['ny', 'depositum', 'fjernet', 'bowling', 'gammel']);
     });
 
     it('gives a Hævning its purpose, who took it out, and any annulment', () => {
-      const poster = kassePoster([], { navne, senesteSaesonId: 's2', erAdmin: true }, haevninger);
+      const poster = kassePoster([], { navne, senesteSaesonId: 's2', kanHaandterePenge: true }, haevninger);
       expect(poster).toEqual([
         {
           art: 'haevning',
@@ -155,7 +155,7 @@ describe('kassePoster (the list of Indbetalinger on Kassen)', () => {
     });
 
     it('lets only an Admin annul a Hævning from the latest Sæson', () => {
-      const poster = kassePoster([], { navne, senesteSaesonId: 's2', erAdmin: false }, haevninger);
+      const poster = kassePoster([], { navne, senesteSaesonId: 's2', kanHaandterePenge: false }, haevninger);
       expect(poster.every((p) => !p.kanAnnulleres)).toBe(true);
     });
   });
