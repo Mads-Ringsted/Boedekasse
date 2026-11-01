@@ -1,10 +1,8 @@
 import { useState } from 'react';
-import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { formatKr, t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
-import { useHent } from '../supabase/useHent.ts';
-import { minMelding, type Melding } from './betal.ts';
-import { fortrydBetalingsmelding, hentMeldinger } from './hentBetal.ts';
+import type { Melding } from './betal.ts';
+import { fortrydBetalingsmelding } from './hentBetal.ts';
 import './Betal.css';
 
 interface MinMeldingKortProps {
@@ -12,32 +10,8 @@ interface MinMeldingKortProps {
   erAdmin: boolean;
   /** Called after Fortryd withdrew the report; reload what you show. */
   onFortrudt: () => void;
-  /** On a screen (your profile) instead of inside the Betal sheet. */
+  /** On a screen ("Venter på dig" on your profile) instead of inside the Betal sheet. */
   paaSkaerm?: boolean;
-}
-
-/**
- * For your own profile: loads your report that afventer and shows
- * `MinMeldingKort`, or nothing when there is none. It loads again whenever
- * `opdater` changes (any value; compared with Object.is).
- */
-export function MinAfventendeMelding({ opdater, onFortrudt }: { opdater?: unknown; onFortrudt?: () => void }) {
-  const { bodekasseId, medlemId, erAdmin } = useBodekasse();
-  const hentet = useHent(() => hentMeldinger(bodekasseId), [bodekasseId, opdater]);
-  const melding = hentet.status === 'ready' ? minMelding(hentet.data, medlemId) : null;
-  if (!melding) return null;
-  return (
-    <MinMeldingKort
-      key={melding.id}
-      melding={melding}
-      erAdmin={erAdmin}
-      paaSkaerm
-      onFortrudt={() => {
-        hentet.reload();
-        onFortrudt?.();
-      }}
-    />
-  );
 }
 
 /**

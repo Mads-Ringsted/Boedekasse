@@ -10,7 +10,7 @@ import './Slet.css';
 const liste = new Intl.ListFormat('da', { type: 'conjunction' });
 
 /**
- * Slet konto, from the bottom of your own profile. Deletes your login; your
+ * Slet konto, from Mere (under Log ud). Deletes your login; your
  * Medlemmer stay with name and history as unclaimed spots. While you are the
  * last Admin of a box, it says so instead of offering the button. Afterwards
  * the app logs out on this device and shows Log ind.

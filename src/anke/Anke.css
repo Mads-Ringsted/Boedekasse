@@ -236,10 +236,6 @@
   gap: 12px;
 }
 
-.kan-ankes__raekke + .kan-ankes__raekke {
-  margin-top: 8px;
-}
-
 .kan-ankes__tekst {
   flex: 1 1 auto;
   min-width: 0;

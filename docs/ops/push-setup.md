@@ -100,8 +100,8 @@ Do both phones. Use two logins, so one can give the other a Bøde.
 
 1. Open the app's URL in Safari. Tap Del → Føj til hjemmeskærm. In a Safari tab, the install guide shows "Installér appen for at få notifikationer".
 2. Open the app from the home screen and log in.
-3. Go to your profile. Under Notifikationer, tap "Slå notifikationer til". Allow notifications.
-4. The card turns into seven toggles. "Bøder til dig" is on.
+3. Go to Mere → Notifikationer (the row says "Fra"). Tap "Slå notifikationer til". Allow notifications.
+4. The card turns into eight toggles. "Bøder til dig" is on, "Aktivitet fra andre" is off. Back on Mere, the row says "Til".
 5. Lock the phone. From the other login, give this person two Bøder in one go.
 6. Within about a minute, one notification arrives. It says "2 nye bøder i <Bødekasse>", who gave them and the total.
 7. Tap it. The app opens on your profile in that Bødekasse.
