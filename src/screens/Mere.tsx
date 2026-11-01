@@ -3,6 +3,7 @@ import { ArrowLeftRight, ChevronRight, Coins, LogOut, Pencil, Scale, Settings, T
 import { useNavigate } from 'react-router';
 import { hentAntalAabneAnker } from '../anke/hentAnke.ts';
 import { useAuth } from '../auth/AuthProvider.tsx';
+import { useBilleder } from '../billeder/BilledProvider.tsx';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { SkiftBodekasseSheet } from '../bodekasse/SkiftBodekasseSheet.tsx';
 import { Avatar } from '../components/Avatar.tsx';
@@ -66,6 +67,7 @@ function Row({ Icon, label, onClick, trailing }: RowProps) {
 export function Mere() {
   const { logOut } = useAuth();
   const { bodekasseId, medlemId, navn, erAdmin } = useBodekasse();
+  const { billede } = useBilleder();
   const navigate = useNavigate();
   const aabnProfil = useAabnProfil('tab.mere');
   const [skifter, setSkifter] = useState(false);
@@ -77,7 +79,7 @@ export function Mere() {
     <Screen title={t('skaerm.mere')}>
       <div className="mere__profil-kort">
         <button type="button" className="mere__profil" onClick={() => aabnProfil(medlemId)}>
-          <Avatar navn={navn} size={52} egen />
+          <Avatar navn={navn} size={52} egen billede={billede(medlemId)} />
           <span className="mere__profil-tekst">
             <span className="mere__profil-navn">{navn}</span>
             <span className="mere__profil-under">{t(erAdmin ? 'mere.adminSeProfil' : 'mere.seProfil')}</span>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useBilleder } from '../billeder/BilledProvider.tsx';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { formatKr, t } from '../strings/index.ts';
@@ -22,6 +23,7 @@ export function TidligereMedlemmer({ linjer, onAabn, onGenoptaget }: TidligereMe
   const { bodekasseId, erAdmin } = useBodekasse();
   const [busy, setBusy] = useState<string | null>(null);
   const [fejl, setFejl] = useState<string | null>(null);
+  const { billede } = useBilleder();
   if (linjer.length === 0) return null;
 
   async function genoptag(medlemId: string) {
@@ -52,7 +54,7 @@ export function TidligereMedlemmer({ linjer, onAabn, onGenoptaget }: TidligereMe
         {linjer.map((m) => (
           <li key={m.id} className="tidligere-linje">
             <button type="button" className="tidligere-linje__profil" onClick={() => onAabn(m.id)}>
-              <Avatar navn={m.navn} size={36} tidligere />
+              <Avatar navn={m.navn} size={36} tidligere billede={billede(m.id)} />
               <span className="tidligere-linje__tekst">
                 <span className="tidligere-linje__navn">{m.navn}</span>
                 <Beloeb saldo={m.saldo} />

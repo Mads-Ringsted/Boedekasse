@@ -23,7 +23,7 @@ function maaned(dato: string): string {
 export const catchUp: Beskriver = (h, ctx) => {
   const beloeb = dataTal(h, 'beloeb');
   return {
-    ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId },
+    ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId, medlemId: h.modtagerId },
     titel: t('aktivitet.fikCatchUp', {
       hvem: hvem(h.modtagerId, h.modtagerNavn, ctx),
       maaned: maaned(dataTekst(h, 'maaned')),
@@ -63,7 +63,7 @@ export const dosBonus: Beskriver = (h, ctx) => {
   const dag = dataTekst(h, 'dag');
   const beloeb = dataTal(h, 'beloeb');
   return {
-    ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId },
+    ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId, medlemId: h.modtagerId },
     titel: t('aktivitet.fikDosBonus', { hvem: hvem(h.modtagerId, h.modtagerNavn, ctx) }),
     tag: { tekst: t('dosBonus.tag'), tone: 'advarsel' },
     linje: [kategorier(h.data.kategorier), dag && t('aktivitet.dosBonusDag', { dag: kortDato(`${dag}T12:00:00Z`) })]
@@ -102,7 +102,7 @@ function langDato(dato: string): string {
 export const senBetaling: Beskriver = (h, ctx) => {
   const beloeb = dataTal(h, 'beloeb');
   return {
-    ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId },
+    ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId, medlemId: h.modtagerId },
     titel: t('aktivitet.fikSenBetaling', {
       hvem: hvem(h.modtagerId, h.modtagerNavn, ctx),
       dag: langDato(dataTekst(h, 'dag')),
@@ -136,7 +136,7 @@ export const senBetaling: Beskriver = (h, ctx) => {
 export const tilbagevendende: Beskriver = (h, ctx) => {
   const beloeb = dataTal(h, 'beloeb');
   return {
-    ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId },
+    ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId, medlemId: h.modtagerId },
     titel: t('aktivitet.fikTilbagevendende', {
       hvem: hvem(h.modtagerId, h.modtagerNavn, ctx),
       navn: dataTekst(h, 'navn'),

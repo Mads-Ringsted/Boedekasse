@@ -5,6 +5,7 @@ import { Feed } from '../aktivitet/Feed.tsx';
 import { useBoedeDetalje } from '../aktivitet/boede/BoedeDetaljeProvider.tsx';
 import { TagMaerke } from '../aktivitet/TagMaerke.tsx';
 import type { Tag } from '../aktivitet/visning.ts';
+import { useBilleder } from '../billeder/BilledProvider.tsx';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { BackButton } from '../components/BackButton.tsx';
@@ -154,10 +155,17 @@ function Tags({ tags }: { tags: ProfilTag[] }) {
 /** Someone else's profile: centred avatar and name, then "Mangler at betale" large. */
 function AndensToppen({ profil, visning }: { profil: Profil; visning: ProfilVisning }) {
   const tilGode = visning.status.art === 'tilGode';
+  const { billede } = useBilleder();
   return (
     <>
       <div className="profil__hoved">
-        <Avatar navn={profil.navn} size={80} stiplet={!profil.loggetInd} tidligere={profil.udmeldt} />
+        <Avatar
+          navn={profil.navn}
+          size={80}
+          stiplet={!profil.loggetInd}
+          tidligere={profil.udmeldt}
+          billede={billede(profil.id)}
+        />
         <h1 className="profil__navn">{profil.navn}</h1>
         <Tags tags={visning.tags} />
       </div>
@@ -179,10 +187,11 @@ function AndensToppen({ profil, visning }: { profil: Profil; visning: ProfilVisn
 function EgenToppen({ profil, visning, navn }: { profil: Profil; visning: ProfilVisning; navn: string }) {
   const [retterNavn, setRetterNavn] = useState(false);
   const tilGode = visning.status.art === 'tilGode';
+  const { billede } = useBilleder();
   return (
     <>
       <div className="profil__hoved profil__hoved--egen">
-        <Avatar navn={navn} size={64} egen />
+        <Avatar navn={navn} size={64} egen billede={billede(profil.id)} />
         <span className="profil__hoved-tekst">
           <span className="profil__navn-linje">
             <h1 className="profil__navn">{navn}</h1>

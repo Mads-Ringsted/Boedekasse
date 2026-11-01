@@ -99,6 +99,9 @@ const BY_KEY: Record<string, PlainStringId> = {
   frekvens_ugyldig: 'fejl.frekvensUgyldig',
   medlemmer_mangler: 'fejl.medlemmerMangler',
   tilbagevendende_stoppet: 'fejl.tilbagevendendeStoppet',
+  // Profilbillede (#100)
+  billede_sti_ugyldig: 'fejl.billedeUgyldigt',
+  billede_findes_ikke: 'fejl.billedeFindesIkke',
 };
 
 /**

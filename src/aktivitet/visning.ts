@@ -40,7 +40,8 @@ export interface BoedeLinje {
 }
 
 export type Ikon =
-  | { slags: 'avatar'; navn: string; egen?: boolean }
+  /** `medlemId`: whose Profilbillede to show (initials without one). */
+  | { slags: 'avatar'; navn: string; egen?: boolean; medlemId?: string | null }
   /** A round icon tile; `FeedRaekke` maps the symbol to a lucide icon. */
   | { slags: 'symbol'; symbol: Symbol; tone?: 'graa' | 'groen' | 'blaa' };
 

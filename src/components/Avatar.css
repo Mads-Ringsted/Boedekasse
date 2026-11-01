@@ -24,3 +24,21 @@
   background: var(--color-fill-strong);
   color: var(--color-text-muted);
 }
+
+/* A Profilbillede fills the circle; Udmeldte are greyed out like their initials. */
+.avatar--billede {
+  overflow: hidden;
+  background: var(--color-avatar-bg);
+}
+
+.avatar__billede {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatar--tidligere .avatar__billede {
+  filter: grayscale(1);
+  opacity: 0.6;
+}

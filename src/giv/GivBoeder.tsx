@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ArrowRight, Check, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { useBilleder } from '../billeder/BilledProvider.tsx';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { frikobIGiv, frikobRegler } from '../frikob/frikob.ts';
 import { FrikobTag } from '../frikob/FrikobTag.tsx';
@@ -65,6 +66,7 @@ type Trin = 1 | 2 | 3;
  */
 export function GivBoeder({ open, onOpenChange, forvalg, onGivet }: GivBoederProps) {
   const { bodekasseId, medlemId } = useBodekasse();
+  const { billede } = useBilleder();
   const hentet = useHent(() => hentGiv(bodekasseId, medlemId), [bodekasseId, medlemId]);
   const data = hentet.status === 'ready' ? hentet.data : null;
   // Frikøb: nobody gets a Bødekategori they have bought out.
@@ -206,7 +208,7 @@ export function GivBoeder({ open, onOpenChange, forvalg, onGivet }: GivBoederPro
         <div className="giv__gaelder">
           <span className="giv__stak" aria-hidden="true">
             {valgte.slice(0, 4).map((m) => (
-              <Avatar key={m.id} navn={m.navn} size={28} egen />
+              <Avatar key={m.id} navn={m.navn} size={28} egen billede={billede(m.id)} />
             ))}
           </span>
           <span>
@@ -268,7 +270,7 @@ export function GivBoeder({ open, onOpenChange, forvalg, onGivet }: GivBoederPro
           return (
             <section key={p.id} className="giv-kort" aria-label={m.kortNavn}>
               <button type="button" className="giv-kort__top" onClick={aabn3b}>
-                <Avatar navn={m.navn} stiplet={!m.loggetInd} />
+                <Avatar navn={m.navn} stiplet={!m.loggetInd} billede={billede(m.id)} />
                 <span className="giv-kort__navn">{m.kortNavn}</span>
                 <span className="giv-kort__beloeb">{formatKr(p.beloeb)}</span>
                 <ChevronRight size={20} strokeWidth={2.2} aria-hidden="true" className="giv-kort__chevron" />
@@ -385,9 +387,10 @@ function iSaetning(m: Modtager, form: 'giv.dig' | 'giv.du'): Modtager {
 const stort = (s: string) => s.charAt(0).toLocaleUpperCase('da') + s.slice(1);
 
 function PersonFlise({ modtager, valgt, onClick }: { modtager: Modtager; valgt: boolean; onClick: () => void }) {
+  const { billede } = useBilleder();
   return (
     <button type="button" className="giv-flise" aria-pressed={valgt} onClick={onClick}>
-      <Avatar navn={modtager.navn} size={56} egen={valgt} stiplet={!valgt && !modtager.loggetInd} />
+      <Avatar navn={modtager.navn} size={56} egen={valgt} stiplet={!valgt && !modtager.loggetInd} billede={billede(modtager.id)} />
       <span className="giv-flise__navn">{modtager.kortNavn}</span>
       {valgt && (
         <span className="giv-flise__flueben" aria-hidden="true">

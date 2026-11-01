@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { ChevronRight } from 'lucide-react';
+import { useBilleder } from '../billeder/BilledProvider.tsx';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Field } from '../components/Field.tsx';
@@ -34,6 +35,7 @@ const FORM_ID = 'registrer-indbetaling';
  */
 export function RegistrerIndbetalingSheet({ open, onOpenChange, medlemId, onRegistreret }: RegistrerIndbetalingSheetProps) {
   const { bodekasseId, medlemId: mitId } = useBodekasse();
+  const { billede } = useBilleder();
   const liste = useHent(() => hentBetalere(bodekasseId), [bodekasseId]);
   const klar = liste.status === 'ready' ? liste.data : null;
   const [valgtId, setValgtId] = useState<string | null>(medlemId ?? null);
@@ -126,7 +128,7 @@ export function RegistrerIndbetalingSheet({ open, onOpenChange, medlemId, onRegi
         <form id={FORM_ID} onSubmit={(e) => void registrer(e)}>
           <h2 className="registrer__label">{t('registrer.fra')}</h2>
           <button type="button" className="registrer__fra" onClick={() => setVaelger(true)}>
-            <Avatar navn={valgt.navn} size={40} egen={valgt.id === mitId} tidligere={valgt.udmeldt} />
+            <Avatar navn={valgt.navn} size={40} egen={valgt.id === mitId} tidligere={valgt.udmeldt} billede={billede(valgt.id)} />
             <span className="registrer__fra-tekst">
               <span className="registrer__fra-navn">{navnFor(valgt)}</span>
               <SaldoTekst saldo={valgt.saldo} />
@@ -183,12 +185,13 @@ interface BetalerListeProps {
 }
 
 function BetalerListe({ betalere, navnFor, onVaelg, mitId }: BetalerListeProps) {
+  const { billede } = useBilleder();
   return (
     <ul className="registrer__liste">
       {betalere.map((b) => (
         <li key={b.id}>
           <button type="button" className="registrer__betaler" onClick={() => onVaelg(b)}>
-            <Avatar navn={b.navn} size={36} egen={b.id === mitId} tidligere={b.udmeldt} />
+            <Avatar navn={b.navn} size={36} egen={b.id === mitId} tidligere={b.udmeldt} billede={billede(b.id)} />
             <span className="registrer__fra-tekst">
               <span className="registrer__fra-navn">{navnFor(b)}</span>
               <SaldoTekst saldo={b.saldo} />

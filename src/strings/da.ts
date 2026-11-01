@@ -955,6 +955,9 @@ export const da = {
   'fejl.frekvensUgyldig': 'Vælg en ugedag eller en dag fra 1 til 28.',
   'fejl.medlemmerMangler': 'Vælg mindst ét medlem.',
   'fejl.tilbagevendendeStoppet': 'Gebyret er stoppet og kan ikke rettes.',
+  // Profilbillede (#100)
+  'fejl.billedeUgyldigt': 'Billedet kunne ikke gemmes. Vælg det igen.',
+  'fejl.billedeFindesIkke': 'Billedet blev ikke uploadet. Prøv igen.',
   'indstillinger.tilbagevendendeNy': 'Nyt tilbagevendende gebyr',
   'indstillinger.tilbagevendendeUnder': '{beloeb} · {frekvens} · næste {naeste}',
   'tilbagevendende.hverUge': 'Hver {ugedag}',
