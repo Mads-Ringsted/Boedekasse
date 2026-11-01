@@ -6,3 +6,5 @@ dev-dist
 .vercel
 .claude/worktrees/
 backups/
+# Local Edge Function secrets (VAPID keys etc.); see docs/ops/push-setup.md
+supabase/functions/.env

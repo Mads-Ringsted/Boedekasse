@@ -1,0 +1,52 @@
+/* Notifikationer on your profile (#81), and the install card on the install guide. */
+.notif__kort {
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.notif__titel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.notif__tekst {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+.notif__knap {
+  margin-top: 4px;
+  height: var(--size-button);
+  border-radius: var(--radius-button);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.notif__knap:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.notif__note {
+  margin: -4px 4px 0;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.notif__fejl {
+  margin: 0 4px;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--color-danger);
+}

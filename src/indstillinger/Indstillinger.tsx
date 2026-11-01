@@ -357,6 +357,15 @@ function IndstillingerSkaerm() {
               />
             )}
             <SwitchRaekke
+              label={t('indstillinger.dosBonus')}
+              under={formatKr(ind.dos_bonus_beloeb)}
+              til={ind.dos_bonus_til}
+              onSkift={(til) => skift({ dos_bonus_til: til })}
+              onAabn={() =>
+                retBeloeb('dos_bonus_beloeb', t('indstillinger.dosBonus'), t('indstillinger.dosBonusNote'))
+              }
+            />
+            <SwitchRaekke
               label={t('indstillinger.senBetaling')}
               under={
                 ind.sen_betaling_loft === null
