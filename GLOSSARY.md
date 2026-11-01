@@ -80,6 +80,10 @@ _Avoid_: Deadline, forfaldsdag
 A push sent at 10:00 to a Medlem who hasn't yet paid what they owed at the end of last month: 2 days before the Betalingsdag, on the Betalingsdag, and on each late day. At most one a day. Only while Sen betaling is on, and never in a Pause.
 _Avoid_: Rykker, påmindelse
 
+**Aktivitet fra andre** (Activity from others):
+An opt-in push about everything the others do in your Bødekasser, from the activity feed. It leaves out what you did yourself and anything another push already tells you. Off until you turn it on.
+_Avoid_: Alle notifikationer, feed-push
+
 **Tilbagevendende Gebyr** (Recurring fee):
 A Gebyr an Admin sets up to hit chosen Medlemmer on a fixed weekly or monthly schedule.
 _Avoid_: Fast gebyr, abonnement

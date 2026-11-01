@@ -18,6 +18,12 @@ const LABEL: Record<PushArt, PlainStringId> = {
   betaling_bekraeftet: 'notifikationer.art.betaling_bekraeftet',
   automatisk_gebyr: 'notifikationer.art.automatisk_gebyr',
   betalingspaamindelse: 'notifikationer.art.betalingspaamindelse',
+  andres_aktivitet: 'notifikationer.art.andres_aktivitet',
+};
+
+/** A line under the toggle, for kinds that need one. */
+const UNDER: Partial<Record<PushArt, PlainStringId>> = {
+  andres_aktivitet: 'notifikationer.art.andres_aktivitetUnder',
 };
 
 async function hentPraeferencer(): Promise<Record<PushArt, boolean>> {
@@ -121,9 +127,18 @@ function Toggles({ onSlaaFra }: { onSlaaFra: () => void }) {
   return (
     <>
       <Gruppe>
-        {PUSH_ARTER.map((art) => (
-          <SwitchRaekke key={art} label={t(LABEL[art])} til={til[art]} onSkift={(v) => void skift(art, v)} />
-        ))}
+        {PUSH_ARTER.map((art) => {
+          const under = UNDER[art];
+          return (
+            <SwitchRaekke
+              key={art}
+              label={t(LABEL[art])}
+              {...(under ? { under: t(under) } : {})}
+              til={til[art]}
+              onSkift={(v) => void skift(art, v)}
+            />
+          );
+        })}
         <LinkRaekke art="handling" label={t('notifikationer.slaaFra')} onClick={onSlaaFra} />
       </Gruppe>
       <p className="notif__note">{t('notifikationer.note')}</p>

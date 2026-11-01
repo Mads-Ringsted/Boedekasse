@@ -66,8 +66,8 @@ select is_empty('select * from public.push_praeference', 'no toggles stored unti
 select is(public.saet_push_praeference('bode_modtaget', false),
   '{"bode_modtaget": false, "anke_afstemning": true, "anke_resultat": true,
     "betalingsmelding_venter": true, "betaling_bekraeftet": true, "automatisk_gebyr": true,
-    "betalingspaamindelse": true}'::jsonb,
-  'turning one kind off answers with every toggle, the rest on');
+    "betalingspaamindelse": true, "andres_aktivitet": false}'::jsonb,
+  'turning one kind off answers with every toggle, the rest at their default (opt-in #88 off)');
 select results_eq('select bode_modtaget, anke_resultat from public.push_praeference',
   $$ values (false, true) $$, 'you can read your own toggles');
 select tests.log_ind_som(:'kasper_login');
