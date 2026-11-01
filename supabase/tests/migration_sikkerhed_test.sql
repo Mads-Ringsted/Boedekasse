@@ -4,7 +4,7 @@
 -- Later #74 tickets add their own default-box checks here.
 begin;
 \ir _hjaelpere.psql
-select plan(5);
+select plan(6);
 
 select tests.opret_bodekasse('Kasse A') as kasse \gset
 select tests.opret_medlem_med_login(:'kasse', 'Mads', true) as admin \gset
@@ -52,6 +52,17 @@ select results_eq(
   format($$ select art from public.haendelse where bodekasse_id = %L and art like 'betaling%%' $$, :'kasse'),
   $$ values ('betaling_bekraeftet') $$,
   'a default box''s payment flow writes the same feed entry as before the pushes');
+
+-- The scheduler (#78) with its steps, Tilbagevendende Gebyr (#79) among
+-- them: a box has no rules until an Admin makes one, so a week and a 1st of
+-- the month of runs charge nothing new.
+select private.koer_automatik(d)
+  from generate_series(now(), now() + interval '8 days', interval '1 day') d;
+select private.koer_automatik(date_trunc('month', now()) + interval '1 month 1 hour');
+select results_eq(
+  format($$ select medlem_id, art::text, beloeb from public.gebyr where bodekasse_id = %L $$, :'kasse'),
+  format($$ values (%L::uuid, 'engangsbode', 10) $$, :'jonas'),
+  'scheduler runs over a default box charge no Tilbagevendende or other automatic Gebyr');
 
 select * from finish();
 rollback;

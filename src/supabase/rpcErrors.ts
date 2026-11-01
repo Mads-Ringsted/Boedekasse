@@ -95,6 +95,10 @@ const BY_KEY: Record<string, PlainStringId> = {
   samme_afgoerelse: 'fejl.sammeAfgoerelse',
   // Push (#81)
   abonnement_ugyldigt: 'fejl.abonnementUgyldigt',
+  // Tilbagevendende Gebyr (#79); navn_mangler, beloeb_ugyldig, medlem_ukendt are shared
+  frekvens_ugyldig: 'fejl.frekvensUgyldig',
+  medlemmer_mangler: 'fejl.medlemmerMangler',
+  tilbagevendende_stoppet: 'fejl.tilbagevendendeStoppet',
 };
 
 /**

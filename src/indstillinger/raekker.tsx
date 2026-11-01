@@ -15,6 +15,8 @@ export function Gruppe({ titel, children }: { titel?: string; children?: ReactNo
 
 interface LinkRaekkeProps {
   label: string;
+  /** Small, under the label. */
+  under?: string;
   /** Muted, before the chevron. */
   vaerdi?: string;
   onClick: () => void;
@@ -23,10 +25,17 @@ interface LinkRaekkeProps {
 }
 
 /** A row that opens something: a sheet or a screen. */
-export function LinkRaekke({ label, vaerdi, onClick, art = 'link' }: LinkRaekkeProps) {
+export function LinkRaekke({ label, under, vaerdi, onClick, art = 'link' }: LinkRaekkeProps) {
   return (
     <button type="button" className={`indst-raekke indst-raekke--${art}`} onClick={onClick}>
-      <span className="indst-raekke__label">{label}</span>
+      {under ? (
+        <span className="indst-raekke__tekst">
+          <span className="indst-raekke__label">{label}</span>
+          <span className="indst-raekke__under">{under}</span>
+        </span>
+      ) : (
+        <span className="indst-raekke__label">{label}</span>
+      )}
       {vaerdi !== undefined && <span className="indst-raekke__vaerdi">{vaerdi}</span>}
       {art === 'link' && (
         <ChevronRight className="indst-raekke__chevron" size={16} strokeWidth={2.2} aria-hidden="true" />

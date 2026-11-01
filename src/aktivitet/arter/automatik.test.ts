@@ -121,3 +121,49 @@ describe('a Sen betaling row', () => {
     expect(r?.linje).toBe('Sen betaling · 25 kr');
   });
 });
+
+function tilbagevendende(over: Partial<Haendelse> = {}): Haendelse {
+  return catchUp({
+    art: 'tilbagevendende',
+    refId: 'g3',
+    data: { navn: 'Kontingent', beloeb: 25, dato: '2026-03-02' },
+    ...over,
+  });
+}
+
+describe('a Tilbagevendende Gebyr row', () => {
+  it('names who paid, the rule, the occurrence date and the amount', () => {
+    expect(beskrivRaekke(tilbagevendende(), ctx)).toMatchObject({
+      titel: 'Emil fik gebyret Kontingent',
+      linje: 'Tilbagevendende gebyr · 2. marts',
+      beloeb: { tekst: '25 kr' },
+      annulleret: false,
+    });
+  });
+
+  it('lets an Admin annul that one occurrence from the row', () => {
+    expect(beskrivRaekke(tilbagevendende(), ctx)?.annullerGebyr).toEqual({
+      id: 'g3',
+      art: 'tilbagevendende',
+      beloeb: 25,
+      medlemId: 'emil',
+      medlemNavn: 'Emil Bach',
+      annullering: null,
+    });
+  });
+
+  it('names the rule when it is annulled', () => {
+    const r = beskrivRaekke(
+      tilbagevendende({
+        art: 'gebyr_annulleret',
+        aktoerId: 'frederik',
+        aktoerNavn: 'Frederik Lund',
+        refTabel: null,
+        refId: null,
+        data: { gebyr_id: 'g3', art: 'tilbagevendende', navn: 'Kontingent', beloeb: 25, note: null },
+      }),
+      ctx,
+    );
+    expect(r?.linje).toBe('Tilbagevendende: Kontingent · 25 kr');
+  });
+});
