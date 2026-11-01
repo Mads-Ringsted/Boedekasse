@@ -403,6 +403,10 @@ export const da = {
   'eksport.gebyr.frikob': 'Gebyr: frikøb',
   'eksport.gebyr.placering': 'Gebyr: placering',
   'eksport.gebyr.fravaer': 'Gebyr: fravær',
+  'eksport.gebyr.dos_bonus': 'Gebyr: dos-bonus',
+  'eksport.gebyr.catch_up': 'Gebyr: catch-up',
+  'eksport.gebyr.sen_betaling': 'Gebyr: sen betaling',
+  'eksport.gebyr.tilbagevendende': 'Gebyr: tilbagevendende',
   'eksport.anke.afventer': 'Afventer',
   'eksport.anke.modtagerVandt': 'Anke vundet',
   'eksport.anke.giverVandt': 'Anke tabt',
@@ -823,6 +827,13 @@ export const da = {
   'fejl.harFrikob': 'Et af medlemmerne har Frikøb på den bødekategori.',
   'fejl.frikobFindes': 'Der er allerede Frikøb på den bødekategori i denne sæson.',
   'fejl.frikobSlaaetFra': 'Frikøb er slået fra i denne Bødekasse.',
+
+  'dosBonus.tag': 'Dos-bonus',
+  'indstillinger.dosBonus': 'Dos-bonus',
+  'indstillinger.dosBonusNote':
+    'Betales af den, der får to bøder fra samme bødekategori samme dag (kl. 06 til 06). Én pr. par, og dagens dos-bonusser parres igen. Beløbet gælder kun nye.',
+  'aktivitet.fikDosBonus': '{hvem} fik en Dos-bonus',
+  'aktivitet.dosBonusDag': 'dagen {dag}',
 } as const;
 
 export type Catalogue = typeof da;

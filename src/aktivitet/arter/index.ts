@@ -2,6 +2,7 @@ import type { Beskriver } from '../visning.ts';
 import { ankeAfgjort, ankeIndgivet } from './anke.ts';
 import { bodeAnnulleret, gebyrAnnulleret } from './annulleringer.ts';
 import { boederGivet } from './boeder.ts';
+import { dosBonus } from './dosBonus.ts';
 import { frikobAnnulleret, frikobKoebt } from './frikob.ts';
 import { bodekategoriArkiveret, bodekategoriOmpriset, bodekategoriOprettet } from './kategorier.ts';
 import { medlemGenoptaget, medlemTilfoejet, medlemTilmeldt, medlemUdmeldt } from './medlemmer.ts';
@@ -45,4 +46,5 @@ export const ARTER: Record<string, Beskriver> = {
   konkurrence_annulleret: konkurrenceAnnulleret,
   haevning,
   haevning_annulleret: haevningAnnulleret,
+  dos_bonus: dosBonus,
 };
