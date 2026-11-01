@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Plus, RefreshCw, Share } from 'lucide-react';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { delInvitation } from '../bodekasse/delInvitation.ts';
 import { Avatar } from '../components/Avatar.tsx';
@@ -18,6 +18,9 @@ import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import { useHent } from '../supabase/useHent.ts';
 import './Medlemmer.css';
 
+/** Navigate here with this state to get "‹ Indstillinger" as the back button (default "‹ Mere"). */
+export const FRA_INDSTILLINGER = { fra: 'indstillinger' } as const;
+
 /**
  * Medlemmer: every active Medlem with what they owe. Admins also get the join
  * code (Del, Ny kode) and Tilføj Medlem. Udmeldte sit under Tidligere medlemmer.
@@ -25,6 +28,7 @@ import './Medlemmer.css';
 export function Medlemmer() {
   const { bodekasseId, bodekasseNavn, medlemId, erAdmin } = useBodekasse();
   const navigate = useNavigate();
+  const fraIndstillinger = (useLocation().state as { fra?: string } | null)?.fra === FRA_INDSTILLINGER.fra;
   const aabnProfil = useAabnProfil('mere.medlemmer');
   const data = useHent(() => hentMedlemmer(bodekasseId, medlemId, erAdmin), [bodekasseId, medlemId, erAdmin]);
   const frikoeb = useHent(() => hentFrikoeb(bodekasseId), [bodekasseId]);
@@ -37,7 +41,10 @@ export function Medlemmer() {
 
   return (
     <Screen>
-      <BackButton label={t('tab.mere')} onClick={() => void navigate('/mere')} />
+      <BackButton
+        label={t(fraIndstillinger ? 'mere.indstillinger' : 'tab.mere')}
+        onClick={() => void navigate(fraIndstillinger ? '/indstillinger' : '/mere')}
+      />
       <div className="medlemmer__top">
         <h1 className="screen__title medlemmer__titel">{t('mere.medlemmer')}</h1>
         {erAdmin && (
