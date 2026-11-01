@@ -1,4 +1,6 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useLocation, useNavigate } from 'react-router';
+import { laesBoedeLink } from '../../push/pushLink.ts';
 import { BoedeDetaljeSheet } from './BoedeDetaljeSheet.tsx';
 
 interface BoedeDetaljeApi {
@@ -21,7 +23,11 @@ export function useBoedeDetalje(): BoedeDetaljeApi {
   return api;
 }
 
-/** Owns the one Bøde detail sheet, so any screen can open a Bøde by id. */
+/**
+ * Owns the one Bøde detail sheet, so any screen can open a Bøde by id. An
+ * address with `?bode=<id>` (an Anke push, `/anker?bode=<id>`) opens that
+ * Bøde over the screen and drops the parameter.
+ */
 export function BoedeDetaljeProvider({ children }: { children: ReactNode }) {
   // A new key per opening, so each opening loads fresh; the last one stays
   // mounted while it animates closed.
@@ -34,6 +40,15 @@ export function BoedeDetaljeProvider({ children }: { children: ReactNode }) {
     setAaben(true);
   }, []);
   const aendret = useCallback(() => setVersion((v) => v + 1), []);
+
+  const { pathname, search, hash } = useLocation();
+  const navigate = useNavigate();
+  useEffect(() => {
+    const link = laesBoedeLink(search);
+    if (!link) return;
+    aabn(link.boedeId);
+    void navigate(pathname + link.search + hash, { replace: true });
+  }, [pathname, search, hash, aabn, navigate]);
 
   const api = useMemo(() => ({ aabn, version, aendret }), [aabn, version, aendret]);
 
