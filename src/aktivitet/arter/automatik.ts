@@ -1,3 +1,4 @@
+import { kortDato } from '../../kategorier/kategoriListe.ts';
 import { formatKr, t } from '../../strings/index.ts';
 import { hvem } from '../navne.ts';
 import type { Beskriver } from '../visning.ts';
@@ -42,5 +43,31 @@ export const catchUp: Beskriver = (h, ctx) => {
           },
         }
       : {}),
+  };
+};
+
+/** The Bødekategori names in the entry's data, joined: "For sent, Øl". */
+function kategorier(v: unknown): string {
+  return Array.isArray(v) ? v.filter((n): n is string => typeof n === 'string').join(', ') : '';
+}
+
+/**
+ * 'dos_bonus' {dag, beloeb, kategorier} (#77): written by the Dos-bonus
+ * recompute in the RPCs (not the scheduler) when the payer bore two Bøder
+ * from one Bødekategori on Dos-bonus day `dag` (YYYY-MM-DD, 06:00 to 06:00).
+ * `kategorier` are the day's paired Bødekategorier. Annulled (struck through)
+ * when its pair is broken; it can't be annulled by hand.
+ */
+export const dosBonus: Beskriver = (h, ctx) => {
+  const dag = dataTekst(h, 'dag');
+  return {
+    ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId },
+    titel: t('aktivitet.fikDosBonus', { hvem: hvem(h.modtagerId, h.modtagerNavn, ctx) }),
+    tag: { tekst: t('dosBonus.tag'), tone: 'advarsel' },
+    linje: [kategorier(h.data.kategorier), dag && t('aktivitet.dosBonusDag', { dag: kortDato(`${dag}T12:00:00Z`) })]
+      .filter(Boolean)
+      .join(' · '),
+    beloeb: { tekst: formatKr(dataTal(h, 'beloeb')) },
+    annulleret: false,
   };
 };
