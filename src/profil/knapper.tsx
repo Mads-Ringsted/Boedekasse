@@ -74,16 +74,16 @@ export function MinMeldingProfilKort({ profil, visning, opdater }: ProfilDelProp
   return <MinAfventendeMelding opdater={profil} onFortrudt={opdater} />;
 }
 
-/** "Registrér indbetaling" (Admin) on someone else's profile, with them picked. */
+/** "Registrér indbetaling" (Admin or Kasserer) on someone else's profile, with them picked. */
 export function RegistrerIndbetalingKnap({ profil, visning, mig, opdater }: ProfilDelProps) {
   // Each opening mounts a fresh sheet (new one-time ID).
   const [aabning, setAabning] = useState(0);
-  if (!mig.erAdmin || visning.egen) return null;
+  if (!mig.kanHaandterePenge || visning.egen) return null;
   return (
     <>
       <ProfilKnap
         label={t('kassen.registrer')}
-        under={t('profil.kunAdmin')}
+        under={t('profil.kunPenge')}
         onClick={() => setAabning((n) => n + 1)}
       />
       {aabning > 0 && (

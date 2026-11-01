@@ -51,7 +51,7 @@ select public.registrer_indbetaling(gen_random_uuid(), :'kasse', :'bo', 40) ->> 
 select tests.log_ind_som_medlem(:'bo');
 select throws_ok(
   format($$ select public.annuller_indbetaling(gen_random_uuid(), %L) $$, :'i3'),
-  '42501', 'ikke_admin', 'a plain Medlem cannot annul an Indbetaling');
+  '42501', 'ikke_kasserer', 'a plain Medlem cannot annul an Indbetaling');
 
 -- In a Pause the ended Sæson is still the latest, so annulling works.
 select tests.log_ud();

@@ -65,7 +65,8 @@ interface PostKontekst {
   /** Medlem id → name, Udmeldte included. */
   navne: ReadonlyMap<string, string>;
   senesteSaesonId: string | null;
-  erAdmin: boolean;
+  /** Admin or Kasserer: may annul. */
+  kanHaandterePenge: boolean;
 }
 
 /** Kassen's list: every Indbetaling and Hævning, newest first. */
@@ -81,7 +82,7 @@ export function kassePoster(
     registreretAf: navn(r.registreret_af),
     tid: r.registreret,
     annulleret: r.annulleret ? { af: navn(r.annulleret_af), tid: r.annulleret, note: r.annulleret_note } : null,
-    kanAnnulleres: ctx.erAdmin && !r.annulleret && r.saeson_id === ctx.senesteSaesonId,
+    kanAnnulleres: ctx.kanHaandterePenge && !r.annulleret && r.saeson_id === ctx.senesteSaesonId,
   });
   return [
     ...rows.map(

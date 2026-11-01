@@ -15,6 +15,8 @@ const BY_KEY: Record<string, PlainStringId> = {
   kode_ukendt: 'fejl.kodeUkendt',
   udmeldt: 'fejl.udmeldt',
   ikke_admin: 'fejl.ikkeAdmin',
+  // Kasserer (#75)
+  ikke_kasserer: 'fejl.ikkeKasserer',
   // Admin actions on a Medlem (#69)
   sidste_admin: 'fejl.sidsteAdmin',
   medlem_udmeldt: 'fejl.medlemUdmeldt',

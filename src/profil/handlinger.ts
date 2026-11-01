@@ -11,8 +11,8 @@ export interface ProfilDelProps {
   profil: Profil;
   /** Own profile or not, tags, Mangler / Til gode (see `profilVisning`). */
   visning: ProfilVisning;
-  /** Who is looking. */
-  mig: { medlemId: string; erAdmin: boolean };
+  /** Who is looking. `kanHaandterePenge`: Admin or Kasserer. */
+  mig: { medlemId: string; erAdmin: boolean; kanHaandterePenge: boolean };
   /** Something changed: reloads the profile's figures and its history. */
   opdater: () => void;
 }
@@ -27,7 +27,7 @@ export type ProfilDel = ComponentType<ProfilDelProps>;
 /**
  * The action buttons under the figures, in a 2-column grid (a lone button
  * fills the row). Render each with `<ProfilKnap>` from `knapper.tsx`.
- * - Someone else: Giv bøde, then Registrér indbetaling (Admin).
+ * - Someone else: Giv bøde, then Registrér indbetaling (Admin or Kasserer).
  * - Your own: Betal, then Køb Frikøb (when Frikøb is on).
  * - Someone else, Admin: Registrér frikøb (the same Frikøb part).
  */

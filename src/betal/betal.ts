@@ -15,12 +15,17 @@ export interface Melding {
 }
 
 /**
- * The reports I can confirm or reject, oldest first: everyone's but my own,
- * and my own too when I am an Admin.
+ * The reports I can confirm or reject, oldest first. Only Admins and
+ * Kasserere handle reports: everyone's but their own, and an Admin their own too.
  */
-export function afventerTilMig(meldinger: readonly Melding[], migId: string, erAdmin: boolean): Melding[] {
+export function afventerTilMig(
+  meldinger: readonly Melding[],
+  migId: string,
+  mig: { erAdmin: boolean; kanHaandterePenge: boolean },
+): Melding[] {
+  if (!mig.kanHaandterePenge) return [];
   return meldinger
-    .filter((m) => erAdmin || m.medlemId !== migId)
+    .filter((m) => mig.erAdmin || m.medlemId !== migId)
     .sort((a, b) => (a.meldt < b.meldt ? -1 : a.meldt > b.meldt ? 1 : 0));
 }
 

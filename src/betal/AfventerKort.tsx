@@ -19,14 +19,14 @@ interface AfventerKortProps {
 
 /**
  * "Afventer bekræftelse": the reports you can act on, with Afvis / Bekræft.
- * Every Medlem sees the others' reports; an Admin sees their own too.
+ * Admins and Kasserere see the others' reports; an Admin sees their own too.
  * Renders nothing when there is nothing to act on.
  */
 export function AfventerKort({ variant, opdater = 0, onBehandlet }: AfventerKortProps) {
-  const { bodekasseId, medlemId, erAdmin } = useBodekasse();
+  const { bodekasseId, medlemId, erAdmin, kanHaandterePenge } = useBodekasse();
   const hentet = useHent(() => hentMeldinger(bodekasseId), [bodekasseId, opdater]);
   if (hentet.status !== 'ready') return null;
-  const meldinger = afventerTilMig(hentet.data, medlemId, erAdmin);
+  const meldinger = afventerTilMig(hentet.data, medlemId, { erAdmin, kanHaandterePenge });
   if (meldinger.length === 0) return null;
 
   const behandlet = () => {
