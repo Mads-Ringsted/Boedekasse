@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { ArrowLeftRight, ChevronRight, Coins, LogOut, Pencil, Scale, Settings, Trophy, Users, type LucideIcon } from 'lucide-react';
+import { ArrowLeftRight, Bell, ChevronRight, Coins, LogOut, Scale, Settings, Trophy, Users, type LucideIcon } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { hentAntalAabneAnker } from '../anke/hentAnke.ts';
 import { useAuth } from '../auth/AuthProvider.tsx';
@@ -9,8 +9,9 @@ import { SkiftBodekasseSheet } from '../bodekasse/SkiftBodekasseSheet.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Screen } from '../components/Screen.tsx';
 import { FRA_MERE } from '../kassen/Kassen.tsx';
-import { RetMitNavnSheet } from '../medlemmer/RetMitNavnSheet.tsx';
 import { useAabnProfil } from '../profil/aabnProfil.ts';
+import { hentNotifikationStatus } from '../push/Notifikationer.tsx';
+import { SletKontoSheet } from '../slet/SletKontoSheet.tsx';
 import { formatKr, t, type PlainStringId } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
 import { useHent } from '../supabase/useHent.ts';
@@ -61,8 +62,8 @@ function Row({ Icon, label, onClick, trailing }: RowProps) {
 }
 
 /**
- * Mere: your profile row, the box's screens, Skift Bødekasse and Log ud.
- * Rows open stand-in screens until their tickets build them.
+ * Mere: your profile row, the box's screens, then the person-level items:
+ * Notifikationer, Skift Bødekasse, Log ud and Slet konto.
  */
 export function Mere() {
   const { logOut } = useAuth();
@@ -71,25 +72,22 @@ export function Mere() {
   const navigate = useNavigate();
   const aabnProfil = useAabnProfil('tab.mere');
   const [skifter, setSkifter] = useState(false);
-  const [retterNavn, setRetterNavn] = useState(false);
+  // Each opening mounts a fresh Slet konto sheet (new one-time ID).
+  const [sletAabning, setSletAabning] = useState(0);
   const tal = useHent(() => hentMere(bodekasseId), [bodekasseId]);
   const data = tal.status === 'ready' ? tal.data : null;
+  const notifikationer = useHent(hentNotifikationStatus, []);
 
   return (
     <Screen title={t('skaerm.mere')}>
-      <div className="mere__profil-kort">
-        <button type="button" className="mere__profil" onClick={() => aabnProfil(medlemId)}>
-          <Avatar navn={navn} size={52} egen billede={billede(medlemId)} />
-          <span className="mere__profil-tekst">
-            <span className="mere__profil-navn">{navn}</span>
-            <span className="mere__profil-under">{t(erAdmin ? 'mere.adminSeProfil' : 'mere.seProfil')}</span>
-          </span>
-          <ChevronRight className="mere__chevron" size={20} strokeWidth={2.2} aria-hidden="true" />
-        </button>
-        <button type="button" className="mere__ret-navn" aria-label={t('mitNavn.ret')} onClick={() => setRetterNavn(true)}>
-          <Pencil size={16} strokeWidth={2.2} aria-hidden="true" />
-        </button>
-      </div>
+      <button type="button" className="mere__profil" onClick={() => aabnProfil(medlemId)}>
+        <Avatar navn={navn} size={52} egen billede={billede(medlemId)} />
+        <span className="mere__profil-tekst">
+          <span className="mere__profil-navn">{navn}</span>
+          <span className="mere__profil-under">{t(erAdmin ? 'mere.adminSeProfil' : 'mere.seProfil')}</span>
+        </span>
+        <ChevronRight className="mere__chevron" size={20} strokeWidth={2.2} aria-hidden="true" />
+      </button>
 
       <div className="mere__gruppe">
         <Row
@@ -130,6 +128,14 @@ export function Mere() {
             trailing={<span className="mere__tag">{t('mere.admin')}</span>}
           />
         )}
+        <Row
+          Icon={Bell}
+          label="notifikationer.titel"
+          onClick={() => void navigate('/notifikationer')}
+          trailing={
+            notifikationer.status === 'ready' && <span className="mere__vaerdi">{notifikationer.data}</span>
+          }
+        />
         <Row Icon={ArrowLeftRight} label="mere.skift" onClick={() => setSkifter(true)} />
       </div>
 
@@ -137,9 +143,14 @@ export function Mere() {
         <LogOut size={20} aria-hidden="true" />
         {t('logUd')}
       </button>
+      <button type="button" className="mere__slet-konto" onClick={() => setSletAabning((n) => n + 1)}>
+        {t('mere.sletKonto')}
+      </button>
 
       <SkiftBodekasseSheet open={skifter} onOpenChange={setSkifter} />
-      <RetMitNavnSheet open={retterNavn} onOpenChange={setRetterNavn} />
+      {sletAabning > 0 && (
+        <SletKontoSheet key={sletAabning} open onOpenChange={(aaben) => !aaben && setSletAabning(0)} />
+      )}
     </Screen>
   );
 }

@@ -1527,14 +1527,14 @@ isOneToOne: false
                   ]
                 },"push_praeference": {
                   Row: {
-                    "anke_afstemning": boolean,"anke_resultat": boolean,"automatisk_gebyr": boolean,"betaling_bekraeftet": boolean,"betalingsmelding_venter": boolean,"betalingspaamindelse": boolean,"bode_modtaget": boolean,"user_id": string
+                    "andres_aktivitet": boolean,"anke_afstemning": boolean,"anke_resultat": boolean,"automatisk_gebyr": boolean,"betaling_bekraeftet": boolean,"betalingsmelding_venter": boolean,"betalingspaamindelse": boolean,"bode_modtaget": boolean,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "anke_afstemning"?: boolean,"anke_resultat"?: boolean,"automatisk_gebyr"?: boolean,"betaling_bekraeftet"?: boolean,"betalingsmelding_venter"?: boolean,"betalingspaamindelse"?: boolean,"bode_modtaget"?: boolean,"user_id": string
+                    "andres_aktivitet"?: boolean,"anke_afstemning"?: boolean,"anke_resultat"?: boolean,"automatisk_gebyr"?: boolean,"betaling_bekraeftet"?: boolean,"betalingsmelding_venter"?: boolean,"betalingspaamindelse"?: boolean,"bode_modtaget"?: boolean,"user_id": string
                   }
                   Update: {
-                    "anke_afstemning"?: boolean,"anke_resultat"?: boolean,"automatisk_gebyr"?: boolean,"betaling_bekraeftet"?: boolean,"betalingsmelding_venter"?: boolean,"betalingspaamindelse"?: boolean,"bode_modtaget"?: boolean,"user_id"?: string
+                    "andres_aktivitet"?: boolean,"anke_afstemning"?: boolean,"anke_resultat"?: boolean,"automatisk_gebyr"?: boolean,"betaling_bekraeftet"?: boolean,"betalingsmelding_venter"?: boolean,"betalingspaamindelse"?: boolean,"bode_modtaget"?: boolean,"user_id"?: string
                   }
                   Relationships: [
                     
@@ -2904,7 +2904,7 @@ isOneToOne: false
                            }
           }
           Enums: {
-            "anke_afgoerelse": "modtager_vandt"|"giver_vandt"|"ikke_afgjort","engangs_pris_mode": "fri"|"fast"|"loft","gebyr_art": "oprettelse"|"engangsbode"|"anke"|"frikob"|"placering"|"fravaer"|"dos_bonus"|"catch_up"|"sen_betaling"|"tilbagevendende","melding_status": "afventer"|"bekraeftet"|"afvist"|"trukket","push_art": "bode_modtaget"|"anke_afstemning"|"anke_resultat"|"betalingsmelding_venter"|"betaling_bekraeftet"|"automatisk_gebyr"|"betalingspaamindelse","tilbagevendende_frekvens": "uge"|"maaned"
+            "anke_afgoerelse": "modtager_vandt"|"giver_vandt"|"ikke_afgjort","engangs_pris_mode": "fri"|"fast"|"loft","gebyr_art": "oprettelse"|"engangsbode"|"anke"|"frikob"|"placering"|"fravaer"|"dos_bonus"|"catch_up"|"sen_betaling"|"tilbagevendende","melding_status": "afventer"|"bekraeftet"|"afvist"|"trukket","push_art": "bode_modtaget"|"anke_afstemning"|"anke_resultat"|"betalingsmelding_venter"|"betaling_bekraeftet"|"automatisk_gebyr"|"betalingspaamindelse"|"andres_aktivitet","tilbagevendende_frekvens": "uge"|"maaned"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -3020,7 +3020,7 @@ export type CompositeTypes<
 export const Constants = {
   "public": {
           Enums: {
-            "anke_afgoerelse": ["modtager_vandt", "giver_vandt", "ikke_afgjort"],"engangs_pris_mode": ["fri", "fast", "loft"],"gebyr_art": ["oprettelse", "engangsbode", "anke", "frikob", "placering", "fravaer", "dos_bonus", "catch_up", "sen_betaling", "tilbagevendende"],"melding_status": ["afventer", "bekraeftet", "afvist", "trukket"],"push_art": ["bode_modtaget", "anke_afstemning", "anke_resultat", "betalingsmelding_venter", "betaling_bekraeftet", "automatisk_gebyr", "betalingspaamindelse"],"tilbagevendende_frekvens": ["uge", "maaned"]
+            "anke_afgoerelse": ["modtager_vandt", "giver_vandt", "ikke_afgjort"],"engangs_pris_mode": ["fri", "fast", "loft"],"gebyr_art": ["oprettelse", "engangsbode", "anke", "frikob", "placering", "fravaer", "dos_bonus", "catch_up", "sen_betaling", "tilbagevendende"],"melding_status": ["afventer", "bekraeftet", "afvist", "trukket"],"push_art": ["bode_modtaget", "anke_afstemning", "anke_resultat", "betalingsmelding_venter", "betaling_bekraeftet", "automatisk_gebyr", "betalingspaamindelse", "andres_aktivitet"],"tilbagevendende_frekvens": ["uge", "maaned"]
           }
         }
 } as const

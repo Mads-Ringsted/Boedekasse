@@ -211,6 +211,7 @@ export const da = {
   'mere.admin': 'Admin',
   'mere.kasserer': 'Kasserer',
   'mere.skift': 'Skift Bødekasse',
+  'mere.sletKonto': 'Slet konto',
 
   // Medlem profile (yours and others')
   'profil.manglerAtBetale': 'Mangler at betale',
@@ -223,7 +224,6 @@ export const da = {
   'profil.kunAdmin': 'Kun Admin',
   'profil.kunPenge': 'Admin og Kasserer',
   'profil.historik': 'Historik',
-  'profil.sletKonto': 'Slet konto',
   'profil.findesIkke': 'Medlemmet findes ikke i Bødekassen.',
   'profil.tag.admin': 'Admin',
   'profil.tag.kasserer': 'Kasserer',
@@ -462,6 +462,7 @@ export const da = {
   'saeson.tidligere.aktivitet': 'Aktivitet',
   'saeson.tidligere.findesIkke': 'Sæsonen findes ikke.',
   'profil.overfoert': 'Overført fra sidste sæson',
+  'profil.venterPaaDig': 'Venter på dig',
   'profil.overfoertTilGode': '{beloeb} til gode',
 
   // Medlemmer, Tilføj Medlem and your own name
@@ -896,6 +897,8 @@ export const da = {
 
   // Push notifications (#81): Profil section and the install guide
   'notifikationer.titel': 'Notifikationer',
+  'notifikationer.til': 'Til',
+  'notifikationer.fra': 'Fra',
   'notifikationer.installerTitel': 'Installér appen for at få notifikationer',
   'notifikationer.installerTekst': 'Notifikationer virker kun i appen på hjemmeskærmen.',
   'notifikationer.slaaTilTitel': 'Slå notifikationer til',
@@ -914,6 +917,9 @@ export const da = {
   'notifikationer.art.betaling_bekraeftet': 'Din betaling er bekræftet',
   'notifikationer.art.automatisk_gebyr': 'Automatiske gebyrer',
   'notifikationer.art.betalingspaamindelse': 'Påmindelser om betaling',
+  'notifikationer.art.andres_aktivitet': 'Aktivitet fra andre',
+  'notifikationer.art.andres_aktivitetUnder':
+    'Valgfri. Få besked om alt, hvad de andre gør i dine bødekasser. Det kan blive til mange notifikationer.',
   'fejl.abonnementUgyldigt': 'Enheden kunne ikke slå notifikationer til. Prøv igen.',
   'aktivitet.fikCatchUp': '{hvem} fik catch-up for {maaned}',
   'aktivitet.catchUpLinje': 'Blandt de laveste i sæsonen · {total} i alt',

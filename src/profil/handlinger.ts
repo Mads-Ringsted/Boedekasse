@@ -1,10 +1,9 @@
 import type { ComponentType } from 'react';
-import { KanAnkesKort } from '../anke/profilDel.tsx';
 import { FrikobKort, KoebFrikobKnap } from '../frikob/profilDele.tsx';
 import { AdminHandlingerKnap } from '../medlemmer/AdminHandlinger.tsx';
-import { NotifikationerKort } from '../push/Notifikationer.tsx';
-import { BetalKnap, GivBoedeKnap, MinMeldingProfilKort, RegistrerIndbetalingKnap } from './knapper.tsx';
+import { BetalKnap, GivBoedeKnap, RegistrerIndbetalingKnap } from './knapper.tsx';
 import type { Profil, ProfilVisning } from './profil.ts';
+import { VenterPaaDigKort } from './VenterPaaDigKort.tsx';
 
 /** What every part added to a profile gets. */
 export interface ProfilDelProps {
@@ -28,19 +27,19 @@ export type ProfilDel = ComponentType<ProfilDelProps>;
 /**
  * The action buttons under the figures, in a 2-column grid (a lone button
  * fills the row). Render each with `<ProfilKnap>` from `knapper.tsx`.
+ * - Your own: Betal and Køb Frikøb (when Frikøb is on), then Giv bøde as the secondary one.
  * - Someone else: Giv bøde, then Registrér indbetaling (Admin or Kasserer).
- * - Your own: Betal, then Køb Frikøb (when Frikøb is on).
- * - Someone else, Admin: Registrér frikøb (the same Frikøb part).
  */
-export const PROFIL_KNAPPER: readonly ProfilDel[] = [GivBoedeKnap, RegistrerIndbetalingKnap, BetalKnap, KoebFrikobKnap];
+export const PROFIL_KNAPPER: readonly ProfilDel[] = [BetalKnap, KoebFrikobKnap, GivBoedeKnap, RegistrerIndbetalingKnap];
 
 /**
  * Cards between the buttons and Historik, top to bottom. Use the
  * `.profil__kort` and `.profil__sektion` classes from `Profil.css`.
- * Your own report that afventer (#60), "Frikøb i sæson …" chips (#65), then
- * "Kan ankes" (#63, own profile), then Notifikationer (#81, own profile).
+ * "Venter på dig" (own profile: your Betalingsmelding that afventer and the
+ * Bøder you can appeal), then the "Frikøb i sæson …" chips (#65). Nothing
+ * goes below Historik.
  */
-export const PROFIL_KORT: readonly ProfilDel[] = [MinMeldingProfilKort, FrikobKort, KanAnkesKort, NotifikationerKort];
+export const PROFIL_KORT: readonly ProfilDel[] = [VenterPaaDigKort, FrikobKort];
 
 /**
  * Small buttons at the top right, beside the back button.

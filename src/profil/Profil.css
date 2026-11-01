@@ -237,12 +237,9 @@
   gap: 10px;
 }
 
-/* ---------- Own profile ---------- */
-.profil__slet-konto {
-  align-self: center;
-  min-height: var(--size-touch);
-  margin-top: 12px;
-  padding: 0 16px;
-  font-size: 15px;
-  color: var(--color-danger);
+/* "Venter på dig" (own profile): the heading, then a card per thing. */
+.profil__venter {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
