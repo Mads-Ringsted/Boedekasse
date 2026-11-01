@@ -958,6 +958,12 @@ export const da = {
   'fejl.frekvensUgyldig': 'Vælg en ugedag eller en dag fra 1 til 28.',
   'fejl.medlemmerMangler': 'Vælg mindst ét medlem.',
   'fejl.tilbagevendendeStoppet': 'Gebyret er stoppet og kan ikke rettes.',
+  // Beskær Profilbillede (#102)
+  'profilbillede.beskaer': 'Billedet i den runde ramme',
+  'profilbillede.beskaerHjaelp': 'Træk for at flytte billedet. Knib eller brug skyderen for at zoome.',
+  'profilbillede.zoom': 'Zoom',
+  'profilbillede.gem': 'Gem',
+  'profilbillede.vaelgAndet': 'Vælg et andet billede',
   // Profilbillede (#100)
   'fejl.billedeUgyldigt': 'Billedet kunne ikke gemmes. Vælg det igen.',
   'fejl.billedeFindesIkke': 'Billedet blev ikke uploadet. Prøv igen.',
