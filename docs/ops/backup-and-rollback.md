@@ -63,8 +63,16 @@ Copy the folder somewhere off your laptop too, for example an encrypted cloud dr
    supabase db push
    ```
 
-4. Deploy the frontend after the database: merge to `main` and let Vercel build. Additive migrations work with the old frontend, so this order is always safe.
-5. Open the app on your phone. Check that the home screen, Giv bøde and Saldo still work.
+4. Deploy any Edge Function the ticket adds or changes, after the migrations. Each one has its own setup doc with its secrets:
+   - `send-push`: [push-setup.md](push-setup.md)
+   - `ryd-billeder` (Profilbillede cleanup, spec #99): [billede-oprydning-setup.md](billede-oprydning-setup.md)
+
+   ```bash
+   supabase functions deploy <name> --project-ref <project-ref> --no-verify-jwt
+   ```
+
+5. Deploy the frontend after the database: merge to `main` and let Vercel build. Additive migrations work with the old frontend, so this order is always safe.
+6. Open the app on your phone. Check that the home screen, Giv bøde and Saldo still work.
 
 ## 4. Roll back
 
@@ -107,7 +115,9 @@ Restore into a **fresh** project rather than wiping production. The broken proje
 4. In the new project, redo the dashboard settings that live outside the database:
    - Auth site URL and redirect URLs
    - Email templates and SMTP
-   - Edge Function secrets, such as the VAPID key once push exists
+   - Edge Function secrets, such as the VAPID key once push exists and `RYD_BILLEDER_SECRET`, and deploy the Edge Functions again
+   - Vault secrets (`push_send_*`, `ryd_billeder_*`), because they point at the old project's URL
+   - Storage files, such as Profilbilleder: the database dump doesn't hold them
    - Enabled extensions, such as `pg_cron` and `pg_net`, if `schema.sql` didn't enable them
 5. In Vercel, set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` to the new project, then redeploy.
 6. Everyone must sign in again, because the new project has new auth keys. Tell the group.

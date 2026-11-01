@@ -407,6 +407,11 @@ deno_version = 2
 [functions.send-push]
 verify_jwt = false
 
+# The Profilbillede cleanup (#104). The database calls it with a shared secret
+# (RYD_BILLEDER_SECRET), not a user JWT; see docs/ops/billede-oprydning-setup.md.
+[functions.ryd-billeder]
+verify_jwt = false
+
 [analytics]
 enabled = false
 port = 54327
