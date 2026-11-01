@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Plus, RefreshCw, Share } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router';
-import { useBilleder } from '../billeder/BilledProvider.tsx';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { delInvitation } from '../bodekasse/delInvitation.ts';
 import { Avatar } from '../components/Avatar.tsx';
@@ -145,7 +144,6 @@ function MedlemLinje({
   frikob?: readonly { bodekategoriNavn: string }[];
   onClick: () => void;
 }) {
-  const { billede } = useBilleder();
   const beloeb =
     m.saldo < 0 ? (
       <span className="medlem-linje__beloeb medlem-linje__beloeb--til-gode">
@@ -159,7 +157,7 @@ function MedlemLinje({
 
   return (
     <button type="button" className={`medlem-linje${m.egen ? ' medlem-linje--egen' : ''}`} onClick={onClick}>
-      <Avatar navn={m.navn} size={36} egen={m.egen} stiplet={!m.loggetInd} billede={billede(m.id)} />
+      <Avatar navn={m.navn} size={36} egen={m.egen} stiplet={!m.loggetInd} medlemId={m.id} />
       <span className="medlem-linje__tekst">
         <span className="medlem-linje__navn">
           <span className="medlem-linje__navn-tekst">{m.egen ? t('medlemmer.dig') : m.navn}</span>

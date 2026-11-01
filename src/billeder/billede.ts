@@ -58,9 +58,10 @@ export function kopiStier(
 
 /**
  * Picture or initials. Initials when there is no URL, for a Medlem who
- * hasn't signed up (dashed style), and when this URL failed to load.
+ * hasn't signed up (dashed style), and when this URL failed to load. An
+ * Udmeldt Medlem keeps the picture (greyed out by CSS).
  */
-export function visBillede(a: { url?: string; stiplet?: boolean; tidligere?: boolean; fejletUrl?: string }): boolean {
+export function visBillede(a: { url?: string; stiplet?: boolean; fejletUrl?: string }): boolean {
   return Boolean(a.url) && !a.stiplet && a.url !== a.fejletUrl;
 }
 

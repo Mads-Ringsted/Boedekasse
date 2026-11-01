@@ -211,7 +211,7 @@ Follows [Frikøb per Bødekategori](https://github.com/Mads-Ringsted/Boedekasse/
 Logo **2a** is the app icon: an isometric box in three blues (`#8AA6FF` lid, `#3B68F5` and `#1E50E6` sides) with a slot on the lid and a white "$" on the right side, on navy `#0E1220`. The master is [app-icon.svg](app-icon.svg) (square; iOS rounds the corners). It is used on the install guide and the log-in screen. The "$" is a text glyph in the SVG; convert it to a path before exporting PNGs so it doesn't depend on fonts.
 
 ### 16. Small patterns
-- Avatars are initials on a pale-blue circle. A Medlem who has not logged in yet has a dashed avatar. A former Medlem has a grey avatar.
+- Avatars show the Medlem's Profilbillede when they have set one in this box, cropped to a circle. Without one, or when it fails to load, they show initials on a pale-blue circle. A Medlem who has not logged in yet has a dashed avatar and never a picture. A former (Udmeldt) Medlem has a grey avatar; their picture stays but is greyed out.
 - Your own row is highlighted in blue and labelled "Dig".
 - Admin-only actions carry a small "Kun Admin" or "Admin" label in the mocks; in the app they are hidden from ordinary Medlemmer.
 - Destructive confirmations use a red-outlined or red-filled button and say plainly that it can't be undone.

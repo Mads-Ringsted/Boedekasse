@@ -1,6 +1,5 @@
 import { useRef, useState, type FormEvent } from 'react';
 import { Receipt } from 'lucide-react';
-import { useBilleder } from '../billeder/BilledProvider.tsx';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Field } from '../components/Field.tsx';
@@ -40,7 +39,6 @@ const MAKS_GRUND = 100;
  */
 export function EngangsboedeSheet({ open, onOpenChange, modtagere, onTilfoej }: EngangsboedeSheetProps) {
   const { bodekasseId } = useBodekasse();
-  const { billede } = useBilleder();
   const [grund, setGrund] = useState('');
   const [beloeb, setBeloeb] = useState('');
   const grundFelt = useRef<HTMLInputElement>(null);
@@ -89,7 +87,7 @@ export function EngangsboedeSheet({ open, onOpenChange, modtagere, onTilfoej }: 
         <div className="engangs__til">
           <span className="giv__stak" aria-hidden="true">
             {modtagere.slice(0, 4).map((m) => (
-              <Avatar key={m.id} navn={m.navn} size={32} stiplet={!m.loggetInd} billede={billede(m.id)} />
+              <Avatar key={m.id} navn={m.navn} size={32} stiplet={!m.loggetInd} medlemId={m.id} />
             ))}
           </span>
           <span>

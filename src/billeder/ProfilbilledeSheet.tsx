@@ -41,6 +41,11 @@ export function ProfilbilledeSheet({ open, onOpenChange }: { open: boolean; onOp
   // "Brug også i mine andre bødekasser": off each time the sheet opens.
   const [brugOgsaa, setBrugOgsaa] = useState(false);
   const filFelt = useRef<HTMLInputElement>(null);
+  // One klient id per RPC, kept until the call succeeds: a retry after a
+  // lost answer gets the first answer back instead of running it twice.
+  const [saetId, setSaetId] = useState(() => crypto.randomUUID());
+  const [kopiId, setKopiId] = useState(() => crypto.randomUUID());
+  const [fjernId, setFjernId] = useState(() => crypto.randomUUID());
 
   const url = billede(medlemId);
   const busy = trin.trin === 'gemmer' || trin.trin === 'fjerner';
@@ -108,15 +113,17 @@ export function ProfilbilledeSheet({ open, onOpenChange }: { open: boolean; onOp
       fejlede(t('fejl.billedeUpload'));
       return;
     }
-    const { error } = await saetMitBillede(crypto.randomUUID(), bodekasseId, sti);
+    const { error } = await saetMitBillede(saetId, bodekasseId, sti);
     if (error) {
       void sletUpload(sti);
       fejlede(rpcErrorText(error));
       return;
     }
+    setSaetId(crypto.randomUUID());
     if (brugOgsaa && andre.length > 0) {
       const til = kopiStier(mine, bodekasseId, tegnet.type);
-      const kopi = await kopierMitBillede(crypto.randomUUID(), bodekasseId, sti, til);
+      const kopi = await kopierMitBillede(kopiId, bodekasseId, sti, til);
+      if (!kopi.error) setKopiId(crypto.randomUUID());
       if (kopi.error || kopi.mangler > 0) {
         // Saved here, but not everywhere: show the new picture and say so.
         opdater();
@@ -130,11 +137,12 @@ export function ProfilbilledeSheet({ open, onOpenChange }: { open: boolean; onOp
   async function fjern() {
     setFejl(null);
     setTrin({ trin: 'fjerner' });
-    const { error } = await fjernMitBillede(crypto.randomUUID(), bodekasseId);
+    const { error } = await fjernMitBillede(fjernId, bodekasseId);
     if (error) {
       fejlede(rpcErrorText(error));
       return;
     }
+    setFjernId(crypto.randomUUID());
     faerdig();
   }
 
@@ -216,7 +224,7 @@ export function ProfilbilledeSheet({ open, onOpenChange }: { open: boolean; onOp
       }
     >
       <div className="profilbillede__forhaand">
-        <Avatar navn={navn} size={120} egen billede={url} />
+        <Avatar navn={navn} size={120} egen medlemId={medlemId} />
       </div>
       <p className="profilbillede__note">{t('profilbillede.note', { bodekasse: bodekasseNavn })}</p>
       {filInput}

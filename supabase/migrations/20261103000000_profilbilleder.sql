@@ -72,6 +72,23 @@ begin
   return v_gammel;
 end $$;
 
+-- The checks every new picture path gets once its folder is known to be
+-- right: the file name is <letters, digits, _ or ->.<webp|jpg|jpeg|png>,
+-- and the file is uploaded. Used by saet_mit_billede and kopier_mit_billede.
+-- Errors: billede_sti_ugyldig, billede_findes_ikke.
+create function private.tjek_billede_sti(p_sti text) returns void
+language plpgsql stable security definer set search_path = '' as $$
+begin
+  if p_sti is null or split_part(p_sti, '/', 3) !~ '^[A-Za-z0-9_-]+\.(webp|jpe?g|png)$' then
+    raise exception 'billede_sti_ugyldig';
+  end if;
+  if not exists (select 1 from storage.objects where bucket_id = 'profilbilleder' and name = p_sti) then
+    raise exception 'billede_findes_ikke';
+  end if;
+end $$;
+
+revoke execute on function private.tjek_billede_sti(text) from public, anon, authenticated;
+
 -- Sets your picture in one box, after the client uploaded the file. The path
 -- must be a file directly in your own Medlem's folder in that box, and the
 -- file must exist. No feed entry. Returns {"billede_sti": text}.
@@ -85,14 +102,10 @@ declare
 begin
   v_tidligere := private.start_kald(p_klient_id, 'saet_mit_billede');
   if v_tidligere is not null then return v_tidligere; end if;
-  if p_sti is null
-     or private.billedmappe(p_sti) is distinct from p_bodekasse::text || '/' || v_mig::text
-     or split_part(p_sti, '/', 3) !~ '^[A-Za-z0-9_-]+\.(webp|jpe?g|png)$' then
+  if private.billedmappe(p_sti) is distinct from p_bodekasse::text || '/' || v_mig::text then
     raise exception 'billede_sti_ugyldig';
   end if;
-  if not exists (select 1 from storage.objects where bucket_id = 'profilbilleder' and name = p_sti) then
-    raise exception 'billede_findes_ikke';
-  end if;
+  perform private.tjek_billede_sti(p_sti);
   perform private.skift_billede(v_mig, p_sti);
   return private.afslut_kald(p_klient_id, jsonb_build_object('billede_sti', p_sti));
 end $$;

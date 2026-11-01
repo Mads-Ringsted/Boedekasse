@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowLeftRight, CircleDollarSign, Users } from 'lucide-react';
 import type { Boede } from '../aktivitet/haendelse.ts';
 import { siden } from '../aktivitet/tid.ts';
-import { useBilleder } from '../billeder/BilledProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Sheet, SheetTitle } from '../components/Sheet.tsx';
 import { kortNavne } from '../giv/navne.ts';
@@ -39,7 +38,6 @@ interface AnkeSheetProps {
  */
 export function AnkeSheet({ open, onOpenChange, boede, regler, stacked = false, onSendt }: AnkeSheetProps) {
   const [klientId] = useState(() => crypto.randomUUID());
-  const { billede } = useBilleder();
   const [busy, setBusy] = useState(false);
   const [fejl, setFejl] = useState<string | null>(null);
   const [svar, setSvar] = useState<Svar | null>(null);
@@ -127,7 +125,7 @@ export function AnkeSheet({ open, onOpenChange, boede, regler, stacked = false, 
       }
     >
       <div className="anke-boede">
-        <Avatar navn={boede.giverNavn} size={40} billede={billede(boede.giverId)} />
+        <Avatar navn={boede.giverNavn} size={40} medlemId={boede.giverId} />
         <span className="anke-boede__tekst">
           <span className="anke-boede__navn">{boede.navn}</span>
           <span className="anke-boede__fra">{t('anke.fra', { giver, siden: siden(boede.givet) })}</span>

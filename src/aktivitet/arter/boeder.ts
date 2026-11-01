@@ -3,6 +3,7 @@ import { formatKr, t } from '../../strings/index.ts';
 import type { Boede } from '../haendelse.ts';
 import { hvem, hvemObjekt } from '../navne.ts';
 import type { Beskriver, BoedeLinje, Tag } from '../visning.ts';
+import { avatarIkon } from './faelles.ts';
 
 const dansk = new Intl.Collator('da', { sensitivity: 'base', numeric: true });
 
@@ -63,7 +64,7 @@ export const boederGivet: Beskriver = (h, ctx) => {
   }
 
   return {
-    ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId, medlemId: h.modtagerId },
+    ikon: avatarIkon(h.modtagerId, h.modtagerNavn, ctx),
     titel,
     tag,
     linje: dele.join(' · '),

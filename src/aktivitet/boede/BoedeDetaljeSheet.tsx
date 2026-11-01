@@ -1,7 +1,6 @@
 import { X } from 'lucide-react';
 import { ankeVindue } from '../../anke/anke.ts';
 import { hentAnkeRegler } from '../../anke/hentAnke.ts';
-import { useBilleder } from '../../billeder/BilledProvider.tsx';
 import { useBodekasse } from '../../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../../components/Avatar.tsx';
 import { Sheet, SheetClose, SheetTitle } from '../../components/Sheet.tsx';
@@ -30,7 +29,6 @@ interface BoedeDetaljeSheetProps {
  */
 export function BoedeDetaljeSheet({ boedeId, open, onOpenChange, onAendret }: BoedeDetaljeSheetProps) {
   const { medlemId, erAdmin, bodekasseId } = useBodekasse();
-  const { billede } = useBilleder();
   const hentet = useHent(
     () => Promise.all([hentBoede(boedeId), hentSenesteSaeson(bodekasseId), hentAnkeRegler(bodekasseId)]),
     [boedeId, bodekasseId],
@@ -47,7 +45,7 @@ export function BoedeDetaljeSheet({ boedeId, open, onOpenChange, onAendret }: Bo
       <div className="boede-detalje__fra">
         {boede && (
           <>
-            <Avatar navn={boede.giverNavn} size={28} egen={boede.giverId === medlemId} billede={billede(boede.giverId)} />
+            <Avatar navn={boede.giverNavn} size={28} egen={boede.giverId === medlemId} medlemId={boede.giverId} />
             <span>{fraTil(boede, ctx)}</span>
           </>
         )}

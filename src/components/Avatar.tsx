@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
 import { BilledFejlContext } from '../billeder/billedFejl.ts';
+import { useBilleder } from '../billeder/BilledProvider.tsx';
 import { visBillede } from '../billeder/billede.ts';
 import { initialer } from './initialer.ts';
 import './Avatar.css';
@@ -14,16 +15,17 @@ interface AvatarProps {
   stiplet?: boolean;
   /** A former (Udmeldt) Medlem: grey (a picture is greyed out). */
   tidligere?: boolean;
-  /** The Medlem's Profilbillede URL: `useBilleder().billede(medlemId)`. Initials without one. */
-  billede?: string;
+  /** Whose Profilbillede to show (from `BilledProvider`). Initials without one. */
+  medlemId?: string | null;
 }
 
 /** A Medlem's picture, or their initials, on a round tile. Initials if the picture fails to load. */
-export function Avatar({ navn, size = 44, egen = false, stiplet = false, tidligere = false, billede }: AvatarProps) {
+export function Avatar({ navn, size = 44, egen = false, stiplet = false, tidligere = false, medlemId }: AvatarProps) {
   const [fejletUrl, setFejletUrl] = useState<string>();
   const meldFejl = useContext(BilledFejlContext);
+  const billede = useBilleder().billede(medlemId);
   const variant = egen ? ' avatar--egen' : stiplet ? ' avatar--stiplet' : tidligere ? ' avatar--tidligere' : '';
-  const medBillede = visBillede({ url: billede, stiplet, tidligere, fejletUrl });
+  const medBillede = visBillede({ url: billede, stiplet, fejletUrl });
   return (
     <span
       className={`avatar${variant}${medBillede ? ' avatar--billede' : ''}`}

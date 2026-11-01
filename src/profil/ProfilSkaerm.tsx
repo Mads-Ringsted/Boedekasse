@@ -5,7 +5,6 @@ import { Feed } from '../aktivitet/Feed.tsx';
 import { useBoedeDetalje } from '../aktivitet/boede/BoedeDetaljeProvider.tsx';
 import { TagMaerke } from '../aktivitet/TagMaerke.tsx';
 import type { Tag } from '../aktivitet/visning.ts';
-import { useBilleder } from '../billeder/BilledProvider.tsx';
 import { ProfilbilledeSheet } from '../billeder/ProfilbilledeSheet.tsx';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
@@ -140,7 +139,6 @@ function Tags({ tags }: { tags: ProfilTag[] }) {
 /** Someone else's profile: centred avatar and name, then "Mangler at betale" large. */
 function AndensToppen({ profil, visning }: { profil: Profil; visning: ProfilVisning }) {
   const tilGode = visning.status.art === 'tilGode';
-  const { billede } = useBilleder();
   return (
     <>
       <div className="profil__hoved">
@@ -149,7 +147,7 @@ function AndensToppen({ profil, visning }: { profil: Profil; visning: ProfilVisn
           size={80}
           stiplet={!profil.loggetInd}
           tidligere={profil.udmeldt}
-          billede={billede(profil.id)}
+          medlemId={profil.id}
         />
         <h1 className="profil__navn">{profil.navn}</h1>
         <Tags tags={visning.tags} />
@@ -176,7 +174,6 @@ function EgenToppen({ profil, visning, navn }: { profil: Profil; visning: Profil
   const [retterNavn, setRetterNavn] = useState(false);
   const [vaelgerBillede, setVaelgerBillede] = useState(false);
   const tilGode = visning.status.art === 'tilGode';
-  const { billede } = useBilleder();
   return (
     <>
       <div className="profil__hoved profil__hoved--egen">
@@ -186,7 +183,7 @@ function EgenToppen({ profil, visning, navn }: { profil: Profil; visning: Profil
           aria-label={t('profilbillede.skift')}
           onClick={() => setVaelgerBillede(true)}
         >
-          <Avatar navn={navn} size={64} egen billede={billede(profil.id)} />
+          <Avatar navn={navn} size={64} egen medlemId={profil.id} />
           <span className="profil__avatar-maerke" aria-hidden="true">
             <Camera size={13} strokeWidth={2.4} />
           </span>

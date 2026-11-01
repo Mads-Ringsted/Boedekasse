@@ -44,14 +44,10 @@ begin
        and private.billedmappe(v_sti) = m.bodekasse_id::text || '/' || m.id::text
        and m.user_id = (select auth.uid()) and m.udmeldt is null
        and m.bodekasse_id <> p_bodekasse;
-    if v_maal is null
-       or v_maal = any (v_sat)
-       or split_part(v_sti, '/', 3) !~ '^[A-Za-z0-9_-]+\.(webp|jpe?g|png)$' then
+    if v_maal is null or v_maal = any (v_sat) then
       raise exception 'billede_sti_ugyldig';
     end if;
-    if not exists (select 1 from storage.objects where bucket_id = 'profilbilleder' and name = v_sti) then
-      raise exception 'billede_findes_ikke';
-    end if;
+    perform private.tjek_billede_sti(v_sti);
     perform private.skift_billede(v_maal, v_sti);
     v_sat := v_sat || v_maal;
   end loop;
