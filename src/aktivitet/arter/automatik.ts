@@ -71,3 +71,45 @@ export const dosBonus: Beskriver = (h, ctx) => {
     annulleret: false,
   };
 };
+
+const dagNavn = new Intl.DateTimeFormat('da', { day: 'numeric', month: 'long', timeZone: 'UTC' });
+
+/** "6. februar" for '2026-02-06'; '' when missing. */
+function langDato(dato: string): string {
+  return dato ? dagNavn.format(new Date(`${dato}T00:00:00Z`)) : '';
+}
+
+/**
+ * 'sen_betaling' {dag, beloeb, skyldig, betalt} (#80): on `dag`, after the
+ * Betalingsdag, the payer still hadn't paid what they owed at the end of last
+ * month (`skyldig`); `betalt` is what had come in this month by then. An
+ * Admin or a Kasserer may annul that one day from the row while it stands.
+ */
+export const senBetaling: Beskriver = (h, ctx) => {
+  const beloeb = dataTal(h, 'beloeb');
+  return {
+    ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId },
+    titel: t('aktivitet.fikSenBetaling', {
+      hvem: hvem(h.modtagerId, h.modtagerNavn, ctx),
+      dag: langDato(dataTekst(h, 'dag')),
+    }),
+    linje: t('aktivitet.senBetalingLinje', {
+      skyldig: formatKr(dataTal(h, 'skyldig')),
+      betalt: formatKr(dataTal(h, 'betalt')),
+    }),
+    beloeb: { tekst: formatKr(beloeb) },
+    annulleret: false,
+    ...(h.refId && h.modtagerId && !h.annullering
+      ? {
+          annullerGebyr: {
+            id: h.refId,
+            art: 'sen_betaling',
+            beloeb,
+            medlemId: h.modtagerId,
+            medlemNavn: h.modtagerNavn ?? '',
+            annullering: null,
+          },
+        }
+      : {}),
+  };
+};
