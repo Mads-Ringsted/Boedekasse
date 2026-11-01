@@ -5,7 +5,8 @@ import { Sheet } from '../components/Sheet.tsx';
 import { SheetAction } from '../components/SheetAction.tsx';
 import { t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
-import { midterKvadrat, type Kvadrat } from './beskaering.ts';
+import { startBeskaering, synligKvadrat, type Beskaering, type Kvadrat } from './beskaering.ts';
+import { BeskaerFoto } from './BeskaerFoto.tsx';
 import { useBilleder } from './BilledProvider.tsx';
 import { fjernMitBillede, saetMitBillede, sletUpload, uploadBillede } from './billeder.ts';
 import { aabnFoto, tegnKvadrat, type Foto } from './tegnBillede.ts';
@@ -14,15 +15,20 @@ import './ProfilbilledeSheet.css';
 /**
  * Where the sheet is.
  * - `valg`: your picture now, "Vælg billede" and "Fjern billede".
+ * - `beskaer`: the picked photo in the round crop; Gem calls `gem`.
  * - `gemmer` / `fjerner`: busy.
- * #102 adds `{ trin: 'beskaer'; foto: Foto }` between picking and `gem`.
  */
-type Trin = { trin: 'valg' } | { trin: 'gemmer' } | { trin: 'fjerner' };
+type Trin =
+  | { trin: 'valg' }
+  | { trin: 'beskaer'; foto: Foto; beskaering: Beskaering }
+  | { trin: 'gemmer' }
+  | { trin: 'fjerner' };
 
 /**
  * Your own Profilbillede in this box (opened from your avatar on your
- * profile). Picking a photo centre-crops it to a square, shrinks it to about
- * 512 px, uploads it and sets it. "Fjern billede" goes back to initials.
+ * profile). Picking a photo opens the round crop; Gem draws the visible
+ * square at about 512 px, uploads it and sets it. "Fjern billede" goes back
+ * to initials.
  */
 export function ProfilbilledeSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const { bodekasseId, bodekasseNavn, medlemId, navn } = useBodekasse();
@@ -32,10 +38,17 @@ export function ProfilbilledeSheet({ open, onOpenChange }: { open: boolean; onOp
   const filFelt = useRef<HTMLInputElement>(null);
 
   const url = billede(medlemId);
-  const busy = trin.trin !== 'valg';
+  const busy = trin.trin === 'gemmer' || trin.trin === 'fjerner';
 
   function skift(aaben: boolean) {
-    if (!aaben) setFejl(null);
+    if (!aaben) {
+      setFejl(null);
+      // Closed mid-crop: nothing is saved, so free the photo.
+      if (trin.trin === 'beskaer') {
+        trin.foto.luk();
+        setTrin({ trin: 'valg' });
+      }
+    }
     onOpenChange(aaben);
   }
 
@@ -56,6 +69,8 @@ export function ProfilbilledeSheet({ open, onOpenChange }: { open: boolean; onOp
     event.target.value = '';
     if (!fil) return;
     setFejl(null);
+    // "Vælg et andet billede" from the crop: the old photo is done with.
+    if (trin.trin === 'beskaer') trin.foto.luk();
     setTrin({ trin: 'gemmer' });
     let foto: Foto;
     try {
@@ -64,8 +79,7 @@ export function ProfilbilledeSheet({ open, onOpenChange }: { open: boolean; onOp
       fejlede(t('fejl.billedeAabn'));
       return;
     }
-    // #102: go to `{ trin: 'beskaer', foto }` here; its Gem calls `gem` with the crop.
-    await gem(foto, midterKvadrat(foto.bredde, foto.hoejde));
+    setTrin({ trin: 'beskaer', foto, beskaering: startBeskaering(foto) });
   }
 
   /** Draws, uploads and sets the chosen square of the photo. */
@@ -106,6 +120,41 @@ export function ProfilbilledeSheet({ open, onOpenChange }: { open: boolean; onOp
     faerdig();
   }
 
+  // No `capture`: iOS and Android then offer both the library and the camera.
+  const filInput = (
+    <input ref={filFelt} type="file" accept="image/*" hidden tabIndex={-1} onChange={(e) => void valgtFil(e)} />
+  );
+
+  if (trin.trin === 'beskaer') {
+    const { foto, beskaering } = trin;
+    return (
+      <Sheet
+        open={open}
+        onOpenChange={skift}
+        height="partial"
+        title={t('profilbillede.titel')}
+        dirty
+        footer={
+          <>
+            <SheetAction error={fejl} onClick={() => void gem(foto, synligKvadrat(beskaering, foto))}>
+              {t('profilbillede.gem')}
+            </SheetAction>
+            <button type="button" className="profilbillede__andet" onClick={() => filFelt.current?.click()}>
+              {t('profilbillede.vaelgAndet')}
+            </button>
+          </>
+        }
+      >
+        <BeskaerFoto
+          foto={foto}
+          beskaering={beskaering}
+          onChange={(ny) => setTrin({ trin: 'beskaer', foto, beskaering: ny })}
+        />
+        {filInput}
+      </Sheet>
+    );
+  }
+
   return (
     <Sheet
       open={open}
@@ -134,15 +183,7 @@ export function ProfilbilledeSheet({ open, onOpenChange }: { open: boolean; onOp
         <Avatar navn={navn} size={120} egen billede={url} />
       </div>
       <p className="profilbillede__note">{t('profilbillede.note', { bodekasse: bodekasseNavn })}</p>
-      {/* No `capture`: iOS and Android then offer both the library and the camera. */}
-      <input
-        ref={filFelt}
-        type="file"
-        accept="image/*"
-        hidden
-        tabIndex={-1}
-        onChange={(e) => void valgtFil(e)}
-      />
+      {filInput}
     </Sheet>
   );
 }
