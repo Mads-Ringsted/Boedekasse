@@ -3,7 +3,7 @@
 -- up to the end of last month pay the Catch-up Gebyr, ties at the Nth included.
 begin;
 \ir _hjaelpere.psql
-select plan(20);
+select plan(24);
 
 -- A Bøde given at a chosen time.
 create function tests.bode_givet(p_giver uuid, p_modtager uuid, p_pris int, p_givet timestamptz)
@@ -199,6 +199,66 @@ select is_empty(format($$ select 1 from public.gebyr where art = 'catch_up' and 
 select results_eq(format($$ select * from tests.catch_up_navne(%L) $$, :'marts'),
   $$ values ('Vera') $$,
   'a Sæson that runs on both the last day and the 1st gets its Catch-up');
+
+-- ---------- A missed 1st catches up (spec #74 review) ----------
+-- Spec #74: "A missed run catches up on the next one." Each run also looks at
+-- the last 7 local days (today and the 6 before). The Catch-up keeps its own
+-- date's rules: the Sæson on the 1st, who was active on the 1st, and the
+-- totals up to the end of last month.
+-- tests.taendt_fra_januar: as if Catch-up was switched on on 1 January.
+create function tests.taendt_fra_januar(p_kasse uuid) returns void language sql as $$
+  update public.bodekasse set catch_up_til_siden = '2026-01-01 00:00 Europe/Copenhagen' where id = p_kasse
+$$;
+
+-- No run on 1 March at all; the next one is on 3 March. Fie (10) is lowest.
+-- Gry (20) was Udmeldt on 2 March, so she was active on the 1st and pays too
+-- (N = 2). Hal (90) pays nothing.
+select tests.kasse_fra_januar('Glemt den 1.') as glemt \gset
+select tests.taendt_fra_januar(:'glemt');
+select tests.opret_medlem(:'glemt', 'Hal', null, true) as hal \gset
+select tests.opret_medlem(:'glemt', 'Fie') as fie \gset
+select tests.opret_medlem(:'glemt', 'Gry') as gry \gset
+select tests.bode_givet(:'fie', :'hal', 90, '2026-02-10 20:00 Europe/Copenhagen');
+select tests.bode_givet(:'hal', :'fie', 10, '2026-02-10 20:00 Europe/Copenhagen');
+select tests.bode_givet(:'hal', :'gry', 20, '2026-02-10 20:00 Europe/Copenhagen');
+update public.medlem set udmeldt = '2026-03-02 12:00 Europe/Copenhagen' where id = :'gry';
+insert into public.haendelse (bodekasse_id, saeson_id, tid, art, modtager_id, ref_tabel, ref_id)
+values (:'glemt', private.seneste_saeson(:'glemt'), '2026-03-02 12:00 Europe/Copenhagen',
+        'medlem_udmeldt', :'gry', 'medlem', :'gry');
+
+select private.koer_automatik('2026-03-03 09:00 Europe/Copenhagen');
+select results_eq(
+  format($$ select m.navn, g.udloeser, g.oprettet from public.gebyr g join public.medlem m on m.id = g.medlem_id
+             where g.bodekasse_id = %L and g.art = 'catch_up' order by m.navn $$, :'glemt'),
+  $$ values ('Fie', '2026-02-01'::date, '2026-02-28 23:59:59.999999 Europe/Copenhagen'::timestamptz),
+            ('Gry', '2026-02-01'::date, '2026-02-28 23:59:59.999999 Europe/Copenhagen'::timestamptz) $$,
+  'a run that missed the 1st is caught up within 7 days, by the 1st''s own rules and dated to the end of last month');
+
+select tests.kasse_fra_januar('For sent opdaget') as sent \gset
+select tests.taendt_fra_januar(:'sent');
+select tests.opret_medlem(:'sent', 'Ib', null, true);
+select private.koer_automatik('2026-03-08 09:00 Europe/Copenhagen');
+select is_empty(format($$ select 1 from public.gebyr where art = 'catch_up' and bodekasse_id = %L $$, :'sent'),
+  'a 1st more than 7 days back is not caught up');
+
+-- Switched on on 2 March: the 1st came before it.
+select tests.kasse_fra_januar('Slået til den 2.') as sen_til \gset
+update public.bodekasse set catch_up_til_siden = '2026-03-02 10:00 Europe/Copenhagen' where id = :'sen_til';
+select tests.opret_medlem(:'sen_til', 'Jo', null, true);
+select private.koer_automatik('2026-03-03 09:00 Europe/Copenhagen');
+select is_empty(format($$ select 1 from public.gebyr where art = 'catch_up' and bodekasse_id = %L $$, :'sen_til'),
+  'turning Catch-up on after the 1st charges nothing for that 1st');
+
+-- A Pause on the 1st: the Sæson ended in February, the next started on 2 March.
+select tests.kasse_fra_januar('Pause den 1.') as p1 \gset
+select tests.taendt_fra_januar(:'p1');
+select tests.opret_medlem(:'p1', 'Kim', null, true);
+update public.saeson set slutdato = '2026-02-28' where bodekasse_id = :'p1';
+insert into public.saeson (bodekasse_id, navn, startet)
+values (:'p1', 'Sæson 2', '2026-03-02 08:00 Europe/Copenhagen');
+select private.koer_automatik('2026-03-03 09:00 Europe/Copenhagen');
+select is_empty(format($$ select 1 from public.gebyr where art = 'catch_up' and bodekasse_id = %L $$, :'p1'),
+  'a caught-up 1st still needs a Sæson running on it');
 
 -- ---------- Settings ----------
 select tests.log_ind_som_medlem(:'std_anna');

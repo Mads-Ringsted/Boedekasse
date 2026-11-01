@@ -5,7 +5,7 @@
 -- a Bøde, an Anke verdict that moves a Bøde, and Fortryd.
 begin;
 \ir _hjaelpere.psql
-select plan(43);
+select plan(49);
 
 select tests.opret_bodekasse() as kasse \gset
 select tests.opret_medlem_med_login(:'kasse', 'Anna', true) as anna \gset
@@ -209,11 +209,52 @@ select results_eq(
   $$ values (1) $$,
   'the newest Dos-bonuses go first');
 
+-- ---------- Annulled by hand (spec #74 review) ----------
+-- Spec #74: "an annulled automatic Gebyr is never charged again". An Admin or
+-- a Kasserer may annul a Dos-bonus on its own; the recompute then counts it
+-- as charged, and still annuls any surplus by itself.
+select tests.opret_medlem_med_login(:'kasse', 'Uma') as uma \gset
+select tests.opret_medlem_med_login(:'kasse', 'Kaj') as kaj \gset
+update public.medlem set er_kasserer = true where id = :'kaj';
+select tests.log_ind_som_medlem(:'bo');
+select tests.giv(:'uma', format('[["%s", 2]]', :'oel')::jsonb);
+select id as uma_dos from public.gebyr where medlem_id = :'uma' and art = 'dos_bonus' \gset
+
+select tests.log_ind_som_medlem(:'uma');
+select throws_ok(format($$ select public.annuller_gebyr(gen_random_uuid(), %L) $$, :'uma_dos'),
+  '42501', 'ikke_kasserer', 'a plain Medlem can''t annul a Dos-bonus');
+select tests.log_ind_som_medlem(:'kaj');
+select public.annuller_gebyr(gen_random_uuid(), :'uma_dos', 'Tilgivet');
+select results_eq(format($$ select * from tests.dos(%L) $$, :'uma'), $$ values (0, 1) $$,
+  'a Kasserer annuls a Dos-bonus on its own');
+select tests.log_ud();
+select results_eq(
+  format($$ select data->>'art', (data->>'beloeb')::int, aktoer_id from public.haendelse
+             where art = 'gebyr_annulleret' and modtager_id = %L $$, :'uma'),
+  format($$ values ('dos_bonus', 10, %L::uuid) $$, :'kaj'),
+  'the annulment gets a feed entry naming the Dos-bonus');
+
+select tests.log_ind_som_medlem(:'bo');
+select tests.giv(:'uma', format('[["%s", 1]]', :'oel')::jsonb);
+select results_eq(format($$ select * from tests.dos(%L) $$, :'uma'), $$ values (0, 1) $$,
+  'the next recompute counts the annulled-by-hand Dos-bonus as charged: it is never charged again');
+
+select tests.giv(:'uma', format('[["%s", 1]]', :'oel')::jsonb);
+select results_eq(format($$ select * from tests.dos(%L) $$, :'uma'), $$ values (2, 1) $$,
+  'a new pair charges only what is new: four of a kind is 2 + 1 = 3, one already forgiven');
+
 select tests.log_ind_som_medlem(:'anna');
-select throws_ok(
-  format($$ select public.annuller_gebyr(gen_random_uuid(), %L) $$,
-         (select id from public.gebyr where medlem_id = :'gus' and art = 'dos_bonus' and annulleret is null)),
-  'P0001', 'kan_ikke_annulleres', 'a Dos-bonus goes with its pair: it can''t be annulled on its own');
+select public.annuller_gebyr(gen_random_uuid(),
+  (select id from public.gebyr where medlem_id = :'uma' and art = 'dos_bonus' and annulleret is null
+    order by dos_nr desc limit 1));
+select results_eq(format($$ select * from tests.dos(%L) $$, :'uma'), $$ values (1, 2) $$,
+  'an Admin annuls a Dos-bonus on its own too');
+
+select public.annuller_bode(gen_random_uuid(),
+  (select id from public.bode where modtager_id = :'uma' and annulleret is null limit 1));
+select results_eq(format($$ select * from tests.dos(%L) $$, :'uma'), $$ values (0, 3) $$,
+  'a broken pair still annuls the surplus automatically: three of a kind is 1, already forgiven');
+select tests.log_ud();
 
 -- ---------- Anke ----------
 select tests.log_ind_som_medlem(:'anna');

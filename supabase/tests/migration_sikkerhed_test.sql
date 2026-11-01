@@ -4,7 +4,7 @@
 -- Later #74 tickets add their own default-box checks here.
 begin;
 \ir _hjaelpere.psql
-select plan(7);
+select plan(9);
 
 select tests.opret_bodekasse('Kasse A') as kasse \gset
 select tests.opret_medlem_med_login(:'kasse', 'Mads', true) as admin \gset
@@ -74,6 +74,17 @@ select is_empty(
   format($$ select art from public.push_udbakke
              where bodekasse_id = %L and art in ('betalingspaamindelse', 'automatisk_gebyr') $$, :'kasse'),
   'a default box queues no payment reminder and no automatic-Gebyr push');
+
+-- Spec #74 review: the new columns start empty. A default box has no
+-- switch-on stamps (so a run catches nothing up), and no Gebyr is marked as
+-- annulled by hand.
+select results_eq(
+  format($$ select catch_up_til_siden, sen_betaling_til_siden from public.bodekasse where id = %L $$, :'kasse'),
+  $$ values (null::timestamptz, null::timestamptz) $$,
+  'a default box has no Catch-up or Sen betaling switch-on stamp');
+select is_empty(
+  format($$ select 1 from public.gebyr where bodekasse_id = %L and annulleret_manuelt $$, :'kasse'),
+  'no Gebyr in a default box is marked as annulled by hand');
 
 select * from finish();
 rollback;

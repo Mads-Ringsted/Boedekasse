@@ -4,7 +4,7 @@
 -- 2026-03-02 is a Monday. Summer time starts on Sunday 29 March 2026.
 begin;
 \ir _hjaelpere.psql
-select plan(39);
+select plan(45);
 
 -- A box whose first Sæson started on 1 January 2026.
 create function tests.kasse_fra_januar(p_navn text)
@@ -79,12 +79,15 @@ select is((select count(*)::int from public.haendelse where bodekasse_id = :'uge
 select private.koer_automatik('2026-03-03 12:00 Europe/Copenhagen');
 select private.koer_automatik('2026-03-08 12:00 Europe/Copenhagen');
 select private.koer_automatik('2026-03-29 21:30+00');   -- 23:30 on Sunday 29 March
-select is((select count(*)::int from public.gebyr where tilbagevendende_id = :'kontingent'), 2,
-  'no charge on other weekdays, by the Copenhagen calendar');
+-- That run also catches up the missed Monday 23 March (within 7 days), but not 16 March.
+select results_eq(
+  format($$ select * from tests.betalt(%L) where udloeser > '2026-03-02' $$, :'kontingent'),
+  $$ values ('Anna', '2026-03-23'::date, 25), ('Bo', '2026-03-23'::date, 25) $$,
+  'no charge on other weekdays, by the Copenhagen calendar: 23:30 on Sunday is not Monday yet');
 
 select private.koer_automatik('2026-03-29 22:30+00');   -- 00:30 on Monday 30 March (summer time)
 select results_eq(
-  format($$ select * from tests.betalt(%L) where udloeser > '2026-03-02' $$, :'kontingent'),
+  format($$ select * from tests.betalt(%L) where udloeser > '2026-03-23' $$, :'kontingent'),
   $$ values ('Anna', '2026-03-30'::date, 25), ('Bo', '2026-03-30'::date, 25) $$,
   'the next Monday charges again, also across the change to summer time');
 
@@ -125,6 +128,69 @@ select results_eq(format($$ select * from tests.betalt(%L) where navn = 'Sif' $$
   'an Udmeldt Medlem pays nothing, and once brought back pays from then on, not for the gap');
 select is((select count(*)::int from public.gebyr where tilbagevendende_id = :'kaffe' and medlem_id = :'rie'), 4,
   'the others still pay every week');
+
+-- ---------- A missed occurrence catches up (spec #74 review) ----------
+-- Spec #74: "A missed run catches up on the next one." Each run also charges
+-- occurrences of the last 7 local days (today and the 6 before) that are
+-- still uncharged, each by its own day's rules: a Sæson running at its start,
+-- the rule unchanged since before it and not stopped during it, and the
+-- Medlem active on it. 2026-03-09 is a Monday; the first run is on Wednesday
+-- 11 March, so Monday 2 March is too far back.
+select tests.kasse_fra_januar('Glemt') as gl \gset
+select tests.opret_medlem_med_login(:'gl', 'Gert', true) as gert \gset
+select tests.opret_medlem(:'gl', 'Hanne') as hanne \gset
+select tests.opret_medlem(:'gl', 'Ivan') as ivan \gset
+select tests.regel(:'gert', 'Glemt', 10, 'uge', 1, array[:'gert', :'hanne', :'ivan']::uuid[]) as glemt \gset
+-- Hanne was Udmeldt on 5 March and brought back on 10 March.
+update public.medlem set udmeldt = null where id = :'hanne';
+insert into public.haendelse (bodekasse_id, saeson_id, tid, art, modtager_id, ref_tabel, ref_id)
+values (:'gl', private.seneste_saeson(:'gl'), '2026-03-05 12:00 Europe/Copenhagen',
+        'medlem_udmeldt', :'hanne', 'medlem', :'hanne'),
+       (:'gl', private.seneste_saeson(:'gl'), '2026-03-10 12:00 Europe/Copenhagen',
+        'medlem_genoptaget', :'hanne', 'medlem', :'hanne');
+-- Ivan was Udmeldt on 10 March, after the missed Monday.
+update public.medlem set udmeldt = '2026-03-10 12:00 Europe/Copenhagen' where id = :'ivan';
+insert into public.haendelse (bodekasse_id, saeson_id, tid, art, modtager_id, ref_tabel, ref_id)
+values (:'gl', private.seneste_saeson(:'gl'), '2026-03-10 12:00 Europe/Copenhagen',
+        'medlem_udmeldt', :'ivan', 'medlem', :'ivan');
+-- Rules made, edited or stopped around the missed day.
+select tests.regel(:'gert', 'Ny', 7, 'uge', 1, array[:'gert']::uuid[]) as gl_ny \gset
+update public.tilbagevendende set aendret = '2026-03-10 08:00 Europe/Copenhagen' where id = :'gl_ny';
+select tests.regel(:'gert', 'Stoppet', 7, 'uge', 1, array[:'gert']::uuid[]) as gl_stop \gset
+update public.tilbagevendende set stoppet = '2026-03-09 15:00 Europe/Copenhagen', stoppet_af = :'gert'
+ where id = :'gl_stop';
+select tests.regel(:'gert', 'Stoppet efter', 7, 'uge', 1, array[:'gert']::uuid[]) as gl_efter \gset
+update public.tilbagevendende set stoppet = '2026-03-10 15:00 Europe/Copenhagen', stoppet_af = :'gert'
+ where id = :'gl_efter';
+
+select private.koer_automatik('2026-03-11 09:00 Europe/Copenhagen');
+select results_eq(format($$ select * from tests.betalt(%L) $$, :'glemt'),
+  $$ values ('Gert', '2026-03-09'::date, 10), ('Ivan', '2026-03-09'::date, 10) $$,
+  'a run catches up a missed occurrence within 7 days, for who was active on that day');
+select results_eq(
+  format($$ select distinct oprettet from public.gebyr where tilbagevendende_id = %L $$, :'glemt'),
+  $$ values ('2026-03-09 00:00 Europe/Copenhagen'::timestamptz) $$,
+  'the caught-up Gebyr is dated to the start of its own day');
+select is_empty(format($$ select 1 from public.gebyr where tilbagevendende_id in (%L, %L) $$, :'gl_ny', :'gl_stop'),
+  'a rule made after the missed day, or stopped during it, charges nothing for it');
+select results_eq(format($$ select * from tests.betalt(%L) $$, :'gl_efter'),
+  $$ values ('Gert', '2026-03-09'::date, 7) $$,
+  'a rule stopped after the missed day still charges it');
+
+select private.koer_automatik('2026-03-11 10:00 Europe/Copenhagen');
+select is((select count(*)::int from public.gebyr where bodekasse_id = :'gl' and art = 'tilbagevendende'), 3,
+  'catching up is idempotent');
+
+-- A Pause on the missed day: the Sæson ended on 8 March, the next began on 10 March.
+select tests.kasse_fra_januar('Glemt i pause') as glp \gset
+select tests.opret_medlem_med_login(:'glp', 'Jens', true) as jens \gset
+select tests.regel(:'jens', 'Pause', 10, 'uge', 1, array[:'jens']::uuid[]) as glp_regel \gset
+update public.saeson set slutdato = '2026-03-08' where bodekasse_id = :'glp';
+insert into public.saeson (bodekasse_id, navn, startet)
+values (:'glp', 'Sæson 2', '2026-03-10 08:00 Europe/Copenhagen');
+select private.koer_automatik('2026-03-11 09:00 Europe/Copenhagen');
+select is_empty(format($$ select 1 from public.gebyr where tilbagevendende_id = %L $$, :'glp_regel'),
+  'a missed day in a Pause is not caught up');
 
 -- ---------- Admin only, and the fields are checked ----------
 select tests.log_ind_som_medlem(:'bo');
@@ -218,13 +284,14 @@ select results_eq(format($$ select * from tests.betalt(%L) where udloeser = '202
   $$ values ('Eva', '2026-05-11'::date, 30), ('Finn', '2026-05-11'::date, 30) $$,
   'the next occurrence uses the edited amount and Medlemmer');
 
--- A rule created during a day first charges on the next occurrence.
+-- A rule created during a day first charges on the next occurrence. (Runs
+-- stay before 18 May: a later run would catch up that Monday of 'Bane'.)
 select tests.regel(:'dan', 'Ny', 7, 'uge', 2, array[:'eva']::uuid[]) as ny \gset
-update public.tilbagevendende set aendret = '2026-05-12 08:00 Europe/Copenhagen' where id = :'ny';
-select private.koer_automatik('2026-05-12 09:00 Europe/Copenhagen');
-select private.koer_automatik('2026-05-19 00:00 Europe/Copenhagen');
+update public.tilbagevendende set aendret = '2026-05-05 08:00 Europe/Copenhagen' where id = :'ny';
+select private.koer_automatik('2026-05-05 09:00 Europe/Copenhagen');
+select private.koer_automatik('2026-05-12 00:00 Europe/Copenhagen');
 select results_eq(format($$ select * from tests.betalt(%L) $$, :'ny'),
-  $$ values ('Eva', '2026-05-19'::date, 7) $$,
+  $$ values ('Eva', '2026-05-12'::date, 7) $$,
   'a rule made on an occurrence day starts with the next one');
 
 -- ---------- An annulled occurrence is never charged again ----------
