@@ -3,10 +3,9 @@
 --
 -- 1. Settings on public.bodekasse: dos_bonus_til (off) and dos_bonus_beloeb
 --    (10 kr), registered in private.indstilling.
--- 2. public.gebyr: the Dos-bonus trigger columns dos_dag + dos_nr, unique
+-- 2. public.gebyr: the Dos-bonus day in #78's udloeser plus dos_nr, unique
 --    per Medlem, day and sequence number (annulled rows included), and
---    dos_batch_id (the Giv batch that charged it, for Fortryd). The cause
---    checks now let the four automatic kinds (#74) have no legacy cause.
+--    dos_batch_id (the Giv batch that charged it, for Fortryd).
 -- 3. private.genberegn_dos_bonus: the recompute for one Medlem and one day.
 -- 4. Every RPC that changes which Bøder a Medlem bears on a day calls it:
 --    giv_boeder, annuller_bode, private.saet_afgoerelse (afgoer_anke and
@@ -37,48 +36,26 @@ alter table public.bodekasse
 insert into private.indstilling (noegle) values ('dos_bonus_til'), ('dos_bonus_beloeb');
 
 -- ---------- 2. The Gebyr's trigger ----------
+-- Builds on #78 (20261101170100_automatik_catch_up.sql): gebyr.udloeser is
+-- the Dos-bonus day, gebyr_aarsag_check already lets the automatic kinds
+-- through, and each kind adds its own named check and unique index.
+-- dos_nr: the sequence number within the Medlem's day (a day can have
+-- several). dos_batch_id: the Giv batch that charged it, so Fortryd can
+-- take it back.
 alter table public.gebyr
-  add column dos_dag      date,
   add column dos_nr       int check (dos_nr > 0),
-  add column dos_batch_id uuid,
-  add constraint gebyr_dos_bonus_check check (
-    ((art = 'dos_bonus') = (dos_dag is not null))
-    and ((dos_dag is null) = (dos_nr is null))
-    and (dos_batch_id is null or dos_dag is not null));
+  add column dos_batch_id uuid;
 
-create unique index gebyr_dos_bonus_idx on public.gebyr (medlem_id, dos_dag, dos_nr)
-  where dos_dag is not null;
-
--- The v1 cause checks demanded exactly one legacy cause per Gebyr. The four
--- automatic kinds have none (their trigger sits in their own columns), so
--- the checks are replaced by one that says so. Found by definition, as they
--- were created unnamed.
-do $$
-declare v_navn name;
-begin
-  for v_navn in
-    select conname from pg_constraint
-     where conrelid = 'public.gebyr'::regclass and contype = 'c'
-       and (pg_get_constraintdef(oid) like '%num_nonnulls%'
-            or pg_get_constraintdef(oid) like '%CASE art%')
-  loop
-    execute format('alter table public.gebyr drop constraint %I', v_navn);
-  end loop;
-end $$;
-
-alter table public.gebyr add constraint gebyr_aarsag_check check (
-  case
-    when art in ('dos_bonus', 'catch_up', 'sen_betaling', 'tilbagevendende')
-      then num_nonnulls(bodekategori_id, bode_id, anke_id, frikob_id, konkurrence_id) = 0
-    else num_nonnulls(bodekategori_id, bode_id, anke_id, frikob_id, konkurrence_id) = 1
-         and case art
-               when 'oprettelse'  then bodekategori_id is not null
-               when 'engangsbode' then bode_id is not null
-               when 'anke'        then anke_id is not null
-               when 'frikob'      then frikob_id is not null
-               else                    konkurrence_id is not null
-             end
+alter table public.gebyr add constraint gebyr_dos_bonus_check check (
+  case when art = 'dos_bonus'
+       then udloeser is not null and dos_nr is not null
+            and num_nonnulls(bodekategori_id, bode_id, anke_id, frikob_id, konkurrence_id) = 0
+       else dos_nr is null and dos_batch_id is null
   end);
+
+-- Unique per Medlem, day and sequence number, annulled rows included.
+create unique index gebyr_dos_bonus_unik
+  on public.gebyr (medlem_id, udloeser, dos_nr) where art = 'dos_bonus';
 
 -- ---------- 3. The recompute ----------
 
@@ -130,12 +107,12 @@ begin
   end loop;
 
   select count(*) into v_har from public.gebyr
-   where medlem_id = p_medlem and dos_dag = p_dag and annulleret is null;
+   where medlem_id = p_medlem and art = 'dos_bonus' and udloeser = p_dag and annulleret is null;
 
   if v_har > v_maal then
     update public.gebyr set annulleret = now(), annulleret_af = p_aktoer
      where id in (select id from public.gebyr
-                   where medlem_id = p_medlem and dos_dag = p_dag and annulleret is null
+                   where medlem_id = p_medlem and art = 'dos_bonus' and udloeser = p_dag and annulleret is null
                    order by dos_nr desc
                    limit v_har - v_maal);
     return;
@@ -151,11 +128,11 @@ begin
 
   -- Sequence numbers count annulled rows too, so they never repeat.
   select coalesce(max(dos_nr), 0) into v_nr from public.gebyr
-   where medlem_id = p_medlem and dos_dag = p_dag;
+   where medlem_id = p_medlem and art = 'dos_bonus' and udloeser = p_dag;
 
   for i in 1 .. v_maal - v_har loop
     insert into public.gebyr (bodekasse_id, saeson_id, medlem_id, art, beloeb,
-                              dos_dag, dos_nr, dos_batch_id)
+                              udloeser, dos_nr, dos_batch_id)
     values (p_bodekasse, v_saeson, p_medlem, 'dos_bonus', v_kasse.dos_bonus_beloeb,
             p_dag, v_nr + i, p_batch)
     returning id into v_id;

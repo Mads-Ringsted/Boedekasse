@@ -5,7 +5,7 @@
 -- a Bøde, an Anke verdict that moves a Bøde, and Fortryd.
 begin;
 \ir _hjaelpere.psql
-select plan(42);
+select plan(43);
 
 select tests.opret_bodekasse() as kasse \gset
 select tests.opret_medlem_med_login(:'kasse', 'Anna', true) as anna \gset
@@ -77,7 +77,7 @@ select tests.giv(:'dan', format('[["%s", 2]]', :'for_sent')::jsonb);
 select tests.log_ud();
 select results_eq(
   format($$ select art::text, beloeb, saeson_id = private.aktiv_saeson(%L),
-                   dos_dag = ((now() at time zone 'Europe/Copenhagen') - interval '6 hours')::date
+                   udloeser = ((now() at time zone 'Europe/Copenhagen') - interval '6 hours')::date
               from public.gebyr where medlem_id = %L and art = 'dos_bonus' $$, :'kasse', :'dan'),
   $$ values ('dos_bonus', 10, true, true) $$,
   'two Bøder from one Bødekategori on one day give one Dos-bonus, in the running Sæson, for that day');
@@ -144,7 +144,7 @@ update public.bode set givet = (:'d'::date + 1 + time '02:00') at time zone 'Eur
 select tests.log_ind_som_medlem(:'bo');
 select tests.giv(:'jens', format('[["%s", 1]]', :'tale')::jsonb);
 select results_eq(
-  format($$ select count(*)::int, min(dos_dag) from public.gebyr where medlem_id = %L and art = 'dos_bonus' $$, :'jens'),
+  format($$ select count(*)::int, min(udloeser) from public.gebyr where medlem_id = %L and art = 'dos_bonus' $$, :'jens'),
   format($$ values (1, %L::date) $$, :'d'),
   'Bøder at 23:30 and 02:00 the night after are the same day');
 
@@ -208,6 +208,12 @@ select results_eq(
   format($$ select dos_nr from public.gebyr where medlem_id = %L and art = 'dos_bonus' and annulleret is null $$, :'gus'),
   $$ values (1) $$,
   'the newest Dos-bonuses go first');
+
+select tests.log_ind_som_medlem(:'anna');
+select throws_ok(
+  format($$ select public.annuller_gebyr(gen_random_uuid(), %L) $$,
+         (select id from public.gebyr where medlem_id = :'gus' and art = 'dos_bonus' and annulleret is null)),
+  'P0001', 'kan_ikke_annulleres', 'a Dos-bonus goes with its pair: it can''t be annulled on its own');
 
 -- ---------- Anke ----------
 select tests.log_ind_som_medlem(:'anna');

@@ -43,9 +43,9 @@ const GEBYR: Record<GebyrArt, PlainStringId> = {
   frikob: 'eksport.gebyr.frikob',
   placering: 'eksport.gebyr.placering',
   fravaer: 'eksport.gebyr.fravaer',
-  dos_bonus: 'eksport.gebyr.dos_bonus',
-  catch_up: 'eksport.gebyr.catch_up',
-  sen_betaling: 'eksport.gebyr.sen_betaling',
+  dos_bonus: 'eksport.gebyr.dosBonus',
+  catch_up: 'eksport.gebyr.catchUp',
+  sen_betaling: 'eksport.gebyr.senBetaling',
   tilbagevendende: 'eksport.gebyr.tilbagevendende',
 };
 
