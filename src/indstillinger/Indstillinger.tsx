@@ -4,6 +4,7 @@ import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { BackButton } from '../components/BackButton.tsx';
 import { Screen } from '../components/Screen.tsx';
 import { EksportSheet } from '../eksport/EksportSheet.tsx';
+import { engangsPris } from '../giv/engangsPris.ts';
 import { SaesonRaekker } from '../saeson/SaesonRaekker.tsx';
 import { SletBodekasseSheet } from '../slet/SletBodekasseSheet.tsx';
 import { parsePris } from '../kategorier/kategoriListe.ts';
@@ -17,6 +18,7 @@ import {
   type IndstillingAendringer,
   type Indstillinger as IndstillingerData,
 } from './indstillinger.ts';
+import { EngangsPrisSheet } from './EngangsPrisSheet.tsx';
 import { Gruppe, LinkRaekke, SwitchRaekke } from './raekker.tsx';
 import { RetIndstillingSheet, type RetIndhold, type Tjek } from './RetIndstillingSheet.tsx';
 import { useIndstillinger } from './useIndstillinger.ts';
@@ -57,6 +59,14 @@ const tjekBeloeb: Tjek<number> = (tekst) => {
   return beloeb === null ? { ok: false, fejl: t('indstillinger.beloebUgyldig') } : { ok: true, vaerdi: beloeb };
 };
 
+/** The Engangsbøde price row's value: "Fri", "Fast · 30 kr" or "Højst 50 kr". */
+function engangsPrisVaerdi(ind: Pick<IndstillingerData, 'engangs_pris_mode' | 'engangs_pris'>): string {
+  const pris = engangsPris(ind);
+  if (pris.mode === 'fast') return t('indstillinger.engangsVaerdi.fast', { beloeb: formatKr(pris.beloeb) });
+  if (pris.mode === 'loft') return t('indstillinger.engangsVaerdi.loft', { beloeb: formatKr(pris.loft) });
+  return t('indstillinger.engangsMode.fri');
+}
+
 /**
  * Indstillinger (Admin only): the box's name and MobilePay Box number, the
  * Særlige regler and Sæson og data. Every change goes through
@@ -78,6 +88,7 @@ function IndstillingerSkaerm() {
   const [fejl, setFejl] = useState<string | null>(null);
   const [sheet, setSheet] = useState<{ n: number; open: boolean; indhold: SheetIndhold } | null>(null);
   const [eksport, setEksport] = useState<{ n: number; open: boolean } | null>(null);
+  const [engangsPris, setEngangsPris] = useState<{ n: number; open: boolean } | null>(null);
   // Slet Bødekasse: each opening mounts a fresh sheet (new one-time ID).
   const [sletter, setSletter] = useState(0);
 
@@ -172,6 +183,23 @@ function IndstillingerSkaerm() {
             />
           </Gruppe>
 
+          <Gruppe titel={t('indstillinger.engangsboede')}>
+            <LinkRaekke
+              label={t('indstillinger.engangsPris')}
+              vaerdi={engangsPrisVaerdi(ind)}
+              onClick={() => setEngangsPris((e) => ({ n: (e?.n ?? 0) + 1, open: true }))}
+            />
+            <SwitchRaekke
+              label={t('indstillinger.engangsGebyr')}
+              under={formatKr(ind.engangsgebyr)}
+              til={ind.engangsgebyr_til}
+              onSkift={(til) => skift({ engangsgebyr_til: til })}
+              onAabn={() =>
+                retBeloeb('engangsgebyr', t('indstillinger.engangsgebyr'), t('indstillinger.engangsgebyrNote'))
+              }
+            />
+          </Gruppe>
+
           <Gruppe titel={t('indstillinger.saerligeRegler')}>
             <SwitchRaekke
               label={t('indstillinger.oprettelsesgebyr')}
@@ -180,15 +208,6 @@ function IndstillingerSkaerm() {
               onSkift={(til) => skift({ oprettelsesgebyr_til: til })}
               onAabn={() =>
                 retBeloeb('oprettelsesgebyr', t('indstillinger.oprettelsesgebyr'), t('indstillinger.oprettelsesgebyrNote'))
-              }
-            />
-            <SwitchRaekke
-              label={t('indstillinger.engangsgebyr')}
-              under={formatKr(ind.engangsgebyr)}
-              til={ind.engangsgebyr_til}
-              onSkift={(til) => skift({ engangsgebyr_til: til })}
-              onAabn={() =>
-                retBeloeb('engangsgebyr', t('indstillinger.engangsgebyr'), t('indstillinger.engangsgebyrNote'))
               }
             />
             <SwitchRaekke
@@ -305,6 +324,17 @@ function IndstillingerSkaerm() {
           key={eksport.n}
           open={eksport.open}
           onOpenChange={(open) => setEksport((e) => e && { ...e, open })}
+        />
+      )}
+
+      {engangsPris && ind && (
+        <EngangsPrisSheet
+          key={engangsPris.n}
+          open={engangsPris.open}
+          onOpenChange={(open) => setEngangsPris((e) => e && { ...e, open })}
+          mode={ind.engangs_pris_mode}
+          pris={ind.engangs_pris}
+          onGem={gem}
         />
       )}
 

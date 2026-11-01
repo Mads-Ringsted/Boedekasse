@@ -45,7 +45,7 @@ select public.haev(gen_random_uuid(), :'kasse', 40, 'Pokal') ->> 'haevning_id' a
 select tests.log_ind_som_medlem(:'bo');
 select throws_ok(
   format($$ select public.annuller_haevning(gen_random_uuid(), %L) $$, :'h3'),
-  '42501', 'ikke_admin', 'a plain Medlem cannot annul a Hævning');
+  '42501', 'ikke_kasserer', 'a plain Medlem cannot annul a Hævning');
 
 -- In a Pause the ended Sæson is still the latest, so annulling works.
 select tests.log_ud();

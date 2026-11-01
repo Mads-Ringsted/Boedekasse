@@ -1,5 +1,5 @@
--- Betalingsmelding (#60): a Medlem reports "Jeg har betalt"; another Medlem
--- confirms or rejects it (an Admin may confirm their own). Confirming creates
+-- Betalingsmelding (#60): a Medlem reports "Jeg har betalt"; an Admin or a
+-- Kasserer (#75) confirms or rejects it (only an Admin may confirm their own). Confirming creates
 -- exactly one Indbetaling with the reported amount. The reporter can withdraw
 -- it while it afventer. No feed entry while it afventer. Works in a Pause.
 begin;
@@ -10,6 +10,8 @@ select tests.opret_bodekasse() as kasse \gset
 select tests.opret_medlem_med_login(:'kasse', 'Anna', true) as anna \gset
 select tests.opret_medlem_med_login(:'kasse', 'Bo') as bo \gset
 select tests.opret_medlem_med_login(:'kasse', 'Cille') as cille \gset
+-- Bo and Cille are Kasserere (plain Medlemmer: see kasserer_test.sql).
+update public.medlem set er_kasserer = true where id in (:'bo', :'cille');
 select tests.giv_bode(:'anna', :'bo', 120);
 select (select seneste_saeson_id from public.bodekasse_saeson where bodekasse_id = :'kasse') as s1 \gset
 
@@ -41,7 +43,7 @@ select throws_ok(
 
 -- ---------- Confirming ----------
 
--- Bo can't confirm his own report: he isn't an Admin.
+-- Bo can't confirm his own report: he is Kasserer, not Admin.
 select tests.log_ind_som_medlem(:'bo');
 select throws_ok(
   format($$ select public.behandl_betalingsmelding(gen_random_uuid(), %L, true) $$, :'m1'),
@@ -50,7 +52,7 @@ select throws_ok(
   format($$ select public.behandl_betalingsmelding(gen_random_uuid(), %L, false) $$, :'m1'),
   'P0001', 'egen_melding', '... nor reject it');
 
--- Cille (a plain Medlem) confirms it, with a one-time ID she then repeats.
+-- Cille (a Kasserer) confirms it, with a one-time ID she then repeats.
 select tests.log_ind_som_medlem(:'cille');
 select gen_random_uuid() as k1 \gset
 select public.behandl_betalingsmelding(:'k1', :'m1', true) as svar1 \gset

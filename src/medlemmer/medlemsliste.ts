@@ -3,6 +3,7 @@ export interface MedlemRaekke {
   id: string;
   navn: string;
   er_admin: boolean;
+  er_kasserer: boolean;
   user_id: string | null;
   udmeldt: string | null;
   konto_slettet: string | null;
@@ -19,6 +20,7 @@ export interface Medlemslinje {
   id: string;
   navn: string;
   erAdmin: boolean;
+  erKasserer: boolean;
   /** False for a pre-added Medlem who has not logged in yet (dashed avatar). */
   loggetInd: boolean;
   /** Their login was deleted (Slet konto). */
@@ -40,6 +42,7 @@ export function medlemsliste(medlemmer: MedlemRaekke[], saldi: SaldoRaekke[], mi
       id: m.id,
       navn: m.navn,
       erAdmin: m.er_admin,
+      erKasserer: m.er_kasserer,
       loggetInd: m.user_id !== null,
       kontoSlettet: m.konto_slettet !== null,
       egen: m.id === mitId,

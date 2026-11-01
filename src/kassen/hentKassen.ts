@@ -13,7 +13,7 @@ export interface KassenData {
 }
 
 /** Everything Kassen shows: the box figures and every Indbetaling and Hævning, newest first. */
-export async function hentKassen(bodekasseId: string, erAdmin: boolean): Promise<KassenData> {
+export async function hentKassen(bodekasseId: string, kanHaandterePenge: boolean): Promise<KassenData> {
   const [kassen, indbetalinger, haevninger, medlemmer, saeson] = await Promise.all([
     supabase
       .from('kassen')
@@ -49,14 +49,14 @@ export async function hentKassen(bodekasseId: string, erAdmin: boolean): Promise
         // First names, unless two share one.
         navne: new Map(kortNavne(medlemmer.data.map((m) => m.navn)).map((n, i) => [medlemmer.data[i]!.id, n])),
         senesteSaesonId: saeson.data?.seneste_saeson_id ?? null,
-        erAdmin,
+        kanHaandterePenge,
       },
       haevninger.data,
     ),
   };
 }
 
-/** Everyone an Admin can register an Indbetaling from (Udmeldte too), with their Saldo. */
+/** Everyone an Admin or Kasserer can register an Indbetaling from (Udmeldte too), with their Saldo. */
 export async function hentBetalere(bodekasseId: string): Promise<{ aktive: Betaler[]; udmeldte: Betaler[] }> {
   const [medlemmer, saldi] = await Promise.all([
     supabase.from('medlem').select('id, navn, udmeldt').eq('bodekasse_id', bodekasseId),
