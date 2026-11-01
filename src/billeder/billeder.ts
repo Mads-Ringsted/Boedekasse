@@ -71,6 +71,37 @@ export function saetMitBillede(klientId: string, bodekasseId: string, sti: strin
   return supabase.rpc('saet_mit_billede', { p_klient_id: klientId, p_bodekasse: bodekasseId, p_sti: sti });
 }
 
+/**
+ * "Brug også i mine andre bødekasser": after `saetMitBillede` set `fra` in
+ * `bodekasseId`, copies that file in Storage to each path in `til` (from
+ * `kopiStier`) and sets the copies with one `kopier_mit_billede` call.
+ * A box whose Storage copy fails is skipped; the others are still set.
+ * `error` is the RPC's error (map with `rpcErrorText`); `mangler` counts the
+ * boxes that didn't get the picture.
+ */
+export async function kopierMitBillede(
+  klientId: string,
+  bodekasseId: string,
+  fra: string,
+  til: readonly string[],
+) {
+  const lager = supabase.storage.from(BUCKET);
+  const kopier = await Promise.all(til.map(async (sti) => ((await lager.copy(fra, sti)).error ? null : sti)));
+  const kopieret = kopier.filter((sti): sti is string => sti !== null);
+  if (kopieret.length === 0) return { error: null, mangler: til.length };
+  const { error } = await supabase.rpc('kopier_mit_billede', {
+    p_klient_id: klientId,
+    p_bodekasse: bodekasseId,
+    p_stier: kopieret,
+  });
+  if (error) {
+    // Nothing was set: don't leave the copies waiting in the folders.
+    await lager.remove(kopieret).catch(() => {});
+    return { error, mangler: til.length };
+  }
+  return { error: null, mangler: til.length - kopieret.length };
+}
+
 /** Removes your picture in this box. Afterwards call `opdater()` from `useBilleder()`. */
 export function fjernMitBillede(klientId: string, bodekasseId: string) {
   return supabase.rpc('fjern_mit_billede', { p_klient_id: klientId, p_bodekasse: bodekasseId });

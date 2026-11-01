@@ -102,6 +102,8 @@ const BY_KEY: Record<string, PlainStringId> = {
   // Profilbillede (#100)
   billede_sti_ugyldig: 'fejl.billedeUgyldigt',
   billede_findes_ikke: 'fejl.billedeFindesIkke',
+  // Brug også i mine andre bødekasser (#103)
+  intet_billede: 'fejl.intetBillede',
 };
 
 /**

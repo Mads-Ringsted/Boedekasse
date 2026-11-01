@@ -1,5 +1,5 @@
 import { useRef, useState, type ChangeEvent } from 'react';
-import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
+import { useBodekasse, useMedlemskaber } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Sheet } from '../components/Sheet.tsx';
 import { SheetAction } from '../components/SheetAction.tsx';
@@ -8,8 +8,10 @@ import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import { startBeskaering, synligKvadrat, type Beskaering, type Kvadrat } from './beskaering.ts';
 import { BeskaerFoto } from './BeskaerFoto.tsx';
 import { useBilleder } from './BilledProvider.tsx';
-import { fjernMitBillede, saetMitBillede, sletUpload, uploadBillede } from './billeder.ts';
+import { andreKasser, kopiStier } from './billede.ts';
+import { fjernMitBillede, kopierMitBillede, saetMitBillede, sletUpload, uploadBillede } from './billeder.ts';
 import { aabnFoto, tegnKvadrat, type Foto } from './tegnBillede.ts';
+import '../styles/valg-liste.css';
 import './ProfilbilledeSheet.css';
 
 /**
@@ -32,17 +34,24 @@ type Trin =
  */
 export function ProfilbilledeSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const { bodekasseId, bodekasseNavn, medlemId, navn } = useBodekasse();
+  const { load } = useMedlemskaber();
   const { billede, opdater } = useBilleder();
   const [trin, setTrin] = useState<Trin>({ trin: 'valg' });
   const [fejl, setFejl] = useState<string | null>(null);
+  // "Brug også i mine andre bødekasser": off each time the sheet opens.
+  const [brugOgsaa, setBrugOgsaa] = useState(false);
   const filFelt = useRef<HTMLInputElement>(null);
 
   const url = billede(medlemId);
   const busy = trin.trin === 'gemmer' || trin.trin === 'fjerner';
+  // Your active Medlemmer (Udmeldt ones aren't loaded).
+  const mine = load.status === 'ready' ? load.medlemskaber : [];
+  const andre = andreKasser(mine, bodekasseId);
 
   function skift(aaben: boolean) {
     if (!aaben) {
       setFejl(null);
+      setBrugOgsaa(false);
       // Closed mid-crop: nothing is saved, so free the photo.
       if (trin.trin === 'beskaer') {
         trin.foto.luk();
@@ -105,7 +114,16 @@ export function ProfilbilledeSheet({ open, onOpenChange }: { open: boolean; onOp
       fejlede(rpcErrorText(error));
       return;
     }
-    // #103: when "Brug også i mine andre bødekasser" is ticked, copy it here.
+    if (brugOgsaa && andre.length > 0) {
+      const til = kopiStier(mine, bodekasseId, tegnet.type);
+      const kopi = await kopierMitBillede(crypto.randomUUID(), bodekasseId, sti, til);
+      if (kopi.error || kopi.mangler > 0) {
+        // Saved here, but not everywhere: show the new picture and say so.
+        opdater();
+        fejlede(t('fejl.billedeKopi'));
+        return;
+      }
+    }
     faerdig();
   }
 
@@ -150,6 +168,24 @@ export function ProfilbilledeSheet({ open, onOpenChange }: { open: boolean; onOp
           beskaering={beskaering}
           onChange={(ny) => setTrin({ trin: 'beskaer', foto, beskaering: ny })}
         />
+        {/* "Brug også i mine andre bødekasser": only with other active boxes; Gem copies. */}
+        {andre.length > 0 && (
+          <div className="valg-liste profilbillede__andre">
+            <button
+              type="button"
+              role="checkbox"
+              aria-checked={brugOgsaa}
+              className={`valg-liste__raekke${brugOgsaa ? ' valg-liste__raekke--valgt' : ''}`}
+              onClick={() => setBrugOgsaa(!brugOgsaa)}
+            >
+              <span className="valg-liste__radio profilbillede__boks" aria-hidden="true" />
+              <span className="valg-liste__tekst">
+                <span className="valg-liste__navn">{t('profilbillede.brugOgsaa')}</span>
+                <span className="valg-liste__under">{andre.map((m) => m.bodekasseNavn).join(', ')}</span>
+              </span>
+            </button>
+          </div>
+        )}
         {filInput}
       </Sheet>
     );
