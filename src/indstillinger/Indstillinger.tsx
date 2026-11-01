@@ -9,6 +9,7 @@ import { FRA_INDSTILLINGER } from '../screens/Medlemmer.tsx';
 import { SletBodekasseSheet } from '../slet/SletBodekasseSheet.tsx';
 import { t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
+import { gebyrerStatus } from './gebyrer.ts';
 import { rensMobilePay } from './indstillinger.ts';
 import { Gruppe, LinkRaekke, RegelRaekke } from './raekker.tsx';
 import type { Regel } from './regel.ts';
@@ -34,7 +35,8 @@ const tjekMobilePay: Tjek<string | null> = (tekst) => {
  * `useIndstillinger().gem` (the `opdater_indstillinger` RPC).
  *
  * Adding a rule: write a `Regel` with a status helper in `regler.ts` and add
- * it to `REGLER`, or to the Gebyrer page. Its row and sheet come for free.
+ * it to `REGLER`, or to a group in `gebyrer.ts` for the Gebyrer page. Its
+ * row and sheet come for free.
  */
 export function Indstillinger() {
   const { erAdmin } = useBodekasse();
@@ -118,7 +120,11 @@ function IndstillingerSkaerm() {
           </Gruppe>
 
           <Gruppe>
-            <LinkRaekke label={t('indstillinger.gebyrer')} onClick={() => void navigate('/indstillinger/gebyrer')} />
+            <RegelRaekke
+              label={t('indstillinger.gebyrer')}
+              status={gebyrerStatus(ind)}
+              onClick={() => void navigate('/indstillinger/gebyrer')}
+            />
           </Gruppe>
 
           <Gruppe titel={t('indstillinger.saeson')}>
