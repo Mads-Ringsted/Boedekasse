@@ -397,14 +397,14 @@ isOneToOne: false
                   ]
                 },"bodekasse": {
                   Row: {
-                    "anke_max_gange": number,"anke_min": number,"anke_til": boolean,"anke_vindue_timer": number,"engangsgebyr": number,"engangsgebyr_til": boolean,"fravaersgebyr": number,"frikob_pris": number,"frikob_til": boolean,"id": string,"konkurrence_til": boolean,"mobilepay_box": string | null,"navn": string,"oprettelsesgebyr": number,"oprettelsesgebyr_til": boolean,"oprettet": string,"placeringer": (number)[]
+                    "anke_max_gange": number,"anke_min": number,"anke_til": boolean,"anke_vindue_timer": number,"engangs_pris": number | null,"engangs_pris_mode": Database["public"]['Enums']["engangs_pris_mode"],"engangsgebyr": number,"engangsgebyr_til": boolean,"fravaersgebyr": number,"frikob_pris": number,"frikob_til": boolean,"id": string,"konkurrence_til": boolean,"mobilepay_box": string | null,"navn": string,"oprettelsesgebyr": number,"oprettelsesgebyr_til": boolean,"oprettet": string,"placeringer": (number)[]
                   }
                   ComputedFields: never
                   Insert: {
-                    "anke_max_gange"?: number,"anke_min"?: number,"anke_til"?: boolean,"anke_vindue_timer"?: number,"engangsgebyr"?: number,"engangsgebyr_til"?: boolean,"fravaersgebyr"?: number,"frikob_pris"?: number,"frikob_til"?: boolean,"id"?: string,"konkurrence_til"?: boolean,"mobilepay_box"?: string | null,"navn": string,"oprettelsesgebyr"?: number,"oprettelsesgebyr_til"?: boolean,"oprettet"?: string,"placeringer"?: (number)[]
+                    "anke_max_gange"?: number,"anke_min"?: number,"anke_til"?: boolean,"anke_vindue_timer"?: number,"engangs_pris"?: number | null,"engangs_pris_mode"?: Database["public"]['Enums']["engangs_pris_mode"],"engangsgebyr"?: number,"engangsgebyr_til"?: boolean,"fravaersgebyr"?: number,"frikob_pris"?: number,"frikob_til"?: boolean,"id"?: string,"konkurrence_til"?: boolean,"mobilepay_box"?: string | null,"navn": string,"oprettelsesgebyr"?: number,"oprettelsesgebyr_til"?: boolean,"oprettet"?: string,"placeringer"?: (number)[]
                   }
                   Update: {
-                    "anke_max_gange"?: number,"anke_min"?: number,"anke_til"?: boolean,"anke_vindue_timer"?: number,"engangsgebyr"?: number,"engangsgebyr_til"?: boolean,"fravaersgebyr"?: number,"frikob_pris"?: number,"frikob_til"?: boolean,"id"?: string,"konkurrence_til"?: boolean,"mobilepay_box"?: string | null,"navn"?: string,"oprettelsesgebyr"?: number,"oprettelsesgebyr_til"?: boolean,"oprettet"?: string,"placeringer"?: (number)[]
+                    "anke_max_gange"?: number,"anke_min"?: number,"anke_til"?: boolean,"anke_vindue_timer"?: number,"engangs_pris"?: number | null,"engangs_pris_mode"?: Database["public"]['Enums']["engangs_pris_mode"],"engangsgebyr"?: number,"engangsgebyr_til"?: boolean,"fravaersgebyr"?: number,"frikob_pris"?: number,"frikob_til"?: boolean,"id"?: string,"konkurrence_til"?: boolean,"mobilepay_box"?: string | null,"navn"?: string,"oprettelsesgebyr"?: number,"oprettelsesgebyr_til"?: boolean,"oprettet"?: string,"placeringer"?: (number)[]
                   }
                   Relationships: [
                     
@@ -2619,7 +2619,7 @@ isOneToOne: false
                            }
           }
           Enums: {
-            "anke_afgoerelse": "modtager_vandt"|"giver_vandt"|"ikke_afgjort","gebyr_art": "oprettelse"|"engangsbode"|"anke"|"frikob"|"placering"|"fravaer","melding_status": "afventer"|"bekraeftet"|"afvist"|"trukket"
+            "anke_afgoerelse": "modtager_vandt"|"giver_vandt"|"ikke_afgjort","engangs_pris_mode": "fri"|"fast"|"loft","gebyr_art": "oprettelse"|"engangsbode"|"anke"|"frikob"|"placering"|"fravaer","melding_status": "afventer"|"bekraeftet"|"afvist"|"trukket"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -2735,7 +2735,7 @@ export type CompositeTypes<
 export const Constants = {
   "public": {
           Enums: {
-            "anke_afgoerelse": ["modtager_vandt", "giver_vandt", "ikke_afgjort"],"gebyr_art": ["oprettelse", "engangsbode", "anke", "frikob", "placering", "fravaer"],"melding_status": ["afventer", "bekraeftet", "afvist", "trukket"]
+            "anke_afgoerelse": ["modtager_vandt", "giver_vandt", "ikke_afgjort"],"engangs_pris_mode": ["fri", "fast", "loft"],"gebyr_art": ["oprettelse", "engangsbode", "anke", "frikob", "placering", "fravaer"],"melding_status": ["afventer", "bekraeftet", "afvist", "trukket"]
           }
         }
 } as const

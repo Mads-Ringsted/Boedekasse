@@ -5,10 +5,10 @@ import { Avatar } from '../components/Avatar.tsx';
 import { Sheet } from '../components/Sheet.tsx';
 import { T } from '../components/T.tsx';
 import { hentIndstillinger } from '../indstillinger/hentIndstillinger.ts';
-import { parsePris } from '../kategorier/kategoriListe.ts';
 import { formatKr, t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import { useHent } from '../supabase/useHent.ts';
+import { begraensBeloeb, engangsBeloeb, engangsPris } from './engangsPris.ts';
 import type { Modtager } from './hentGiv.ts';
 import { navneliste } from './tekst.ts';
 import '../kategorier/Kategorier.css';
@@ -29,7 +29,9 @@ const MAKS_GRUND = 100;
 
 /**
  * Engangsbøde: who, Hvorfor, a large amount, and a note about the giver's
- * Gebyr and that Frikøb doesn't cover it. Stacks on Giv bøder. Mount it with a
+ * Gebyr and that Frikøb doesn't cover it. The amount follows the box's price
+ * mode (#76): typed in Fri, fixed with no field in Fast, typed up to the cap
+ * in Loft. Stacks on Giv bøder. Mount it with a
  * new `key` per opening so the fields start empty.
  */
 export function EngangsboedeSheet({ open, onOpenChange, modtagere, onTilfoej }: EngangsboedeSheetProps) {
@@ -41,8 +43,9 @@ export function EngangsboedeSheet({ open, onOpenChange, modtagere, onTilfoej }: 
   const regler = useHent(() => hentIndstillinger(bodekasseId), [bodekasseId]);
   const ind = regler.status === 'ready' ? regler.data.indstillinger : null;
   const gebyr = ind?.engangsgebyr_til ? ind.engangsgebyr : null;
+  const pris = ind ? engangsPris(ind) : ({ mode: 'fri' } as const);
 
-  const beloebTal = parsePris(beloeb);
+  const beloebTal = engangsBeloeb(pris, beloeb);
   const kanTilfoeje = grund.trim() !== '' && beloebTal !== null && ind !== null;
   const flere = modtagere.length > 1;
 
@@ -102,20 +105,38 @@ export function EngangsboedeSheet({ open, onOpenChange, modtagere, onTilfoej }: 
 
         <div className="engangs__beloeb">
           <span className="engangs__beloeb-label">{t('giv.engangs.beloeb')}</span>
-          <label className="engangs__beloeb-felt">
-            <input
-              type="text"
-              inputMode="numeric"
-              placeholder="0"
-              value={beloeb}
-              onChange={(e) => setBeloeb(e.target.value)}
-              aria-label={t('giv.engangs.beloebLabel')}
-              autoComplete="off"
-            />
-            <span>{t('kategori.kr')}</span>
-          </label>
-          {beloeb.trim() !== '' && beloebTal === null && (
-            <span className="kategori-form__hint">{t('fejl.beloebUgyldig')}</span>
+          {pris.mode === 'fast' ? (
+            <>
+              <span className="engangs__beloeb-felt">
+                <span className="engangs__beloeb-fast">{pris.beloeb}</span>
+                <span>{t('kategori.kr')}</span>
+              </span>
+              <span className="engangs__beloeb-note">{t('giv.engangs.fast')}</span>
+            </>
+          ) : (
+            <>
+              <label className="engangs__beloeb-felt">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="0"
+                  value={beloeb}
+                  onChange={(e) => setBeloeb((forrige) => begraensBeloeb(pris, forrige, e.target.value))}
+                  aria-label={t('giv.engangs.beloebLabel')}
+                  autoComplete="off"
+                />
+                <span>{t('kategori.kr')}</span>
+              </label>
+              {beloeb.trim() !== '' && beloebTal === null ? (
+                <span className="kategori-form__hint">{t('fejl.beloebUgyldig')}</span>
+              ) : (
+                pris.mode === 'loft' && (
+                  <span className="engangs__beloeb-note">
+                    {t('giv.engangs.loft', { beloeb: formatKr(pris.loft) })}
+                  </span>
+                )
+              )}
+            </>
           )}
         </div>
 

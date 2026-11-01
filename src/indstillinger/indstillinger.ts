@@ -1,4 +1,5 @@
-import type { Tables } from '../supabase/database.types.ts';
+import { parsePris } from '../kategorier/kategoriListe.ts';
+import type { Enums, Tables } from '../supabase/database.types.ts';
 
 /** A box's settings: the columns of `bodekasse` (box name included). */
 export type Indstillinger = Tables<'bodekasse'>;
@@ -47,4 +48,25 @@ export function parseGange(input: string): number | null {
 /** The Anke max multiple with a Danish decimal comma: "1,5". */
 export function gangeTekst(gange: number): string {
   return String(gange).replace('.', ',');
+}
+
+/** How an Engangsbøde is priced: Fri, Fast or Loft. */
+export type EngangsPrisMode = Enums<'engangs_pris_mode'>;
+
+/**
+ * The Engangsbøde price as an Admin saves it. Fri needs no amount (the stored
+ * one stays for next time); Fast and Loft need whole kroner above 0. Mirrors
+ * the server's check on `bodekasse`.
+ */
+export function tjekEngangsPris(
+  mode: EngangsPrisMode,
+  tekst: string,
+):
+  | { ok: true; aendringer: Pick<IndstillingAendringer, 'engangs_pris_mode' | 'engangs_pris'> }
+  | { ok: false; fejl: 'mangler' | 'ugyldig' } {
+  if (mode === 'fri') return { ok: true, aendringer: { engangs_pris_mode: mode } };
+  if (tekst.trim() === '') return { ok: false, fejl: 'mangler' };
+  const beloeb = parsePris(tekst);
+  if (beloeb === null) return { ok: false, fejl: 'ugyldig' };
+  return { ok: true, aendringer: { engangs_pris_mode: mode, engangs_pris: beloeb } };
 }
