@@ -12,11 +12,18 @@ export const PUSH_ARTER: readonly PushArt[] = [
   'betaling_bekraeftet',
   'automatisk_gebyr',
   'betalingspaamindelse',
+  'andres_aktivitet',
 ];
 
-/** The person's toggles. Missing ones (no row stored yet) are on. */
+/** Opt-in kinds: off until the person turns them on (`private.push_til`). */
+const OPT_IN: ReadonlySet<PushArt> = new Set(['andres_aktivitet']);
+
+/** The person's toggles. Missing ones (no row stored yet) take their default: on, except opt-in kinds. */
 export function praeferencer(gemt: Partial<Record<PushArt, boolean>> | null): Record<PushArt, boolean> {
-  return Object.fromEntries(PUSH_ARTER.map((art) => [art, gemt?.[art] ?? true])) as Record<PushArt, boolean>;
+  return Object.fromEntries(PUSH_ARTER.map((art) => [art, gemt?.[art] ?? !OPT_IN.has(art)])) as Record<
+    PushArt,
+    boolean
+  >;
 }
 
 /** What this device can do about push right now. */
