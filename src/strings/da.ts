@@ -386,6 +386,14 @@ export const da = {
   'indstillinger.frikobPrisLabel': 'Pris pr. bødekategori',
   'indstillinger.gangeBoeden': '× bøden',
 
+  // Gebyrer sub-page (#95)
+  'indstillinger.gebyrerSlaaetTil': '{antal} slået til',
+  'indstillinger.gebyrerIngenSlaaetTil': 'Ingen slået til',
+  'indstillinger.gebyrerNaarNogen': 'Når nogen gør noget',
+  'indstillinger.gebyrerAutomatiske': 'Automatiske',
+  'indstillinger.gebyrerTilbagevendende': 'Tilbagevendende',
+  'indstillinger.senBetalingBeloeb': 'Beløb pr. dag',
+
   // Sæson: end date, Pause and Start ny sæson (#67)
   'saeson.slutter': '{saeson} slutter',
   'saeson.ingenSlutdato': 'Ingen dato',
@@ -891,7 +899,8 @@ export const da = {
   'aktivitet.fikCatchUp': '{hvem} fik catch-up for {maaned}',
   'aktivitet.catchUpLinje': 'Blandt de laveste i sæsonen · {total} i alt',
   'indstillinger.catchUp': 'Catch-up',
-  'indstillinger.catchUpUnder': '{antal} laveste · {beloeb} hver måned',
+  'indstillinger.catchUpResume': 'De {antal} laveste betaler {beloeb} d. 1.',
+  'indstillinger.catchUpResumeEn': 'Den laveste betaler {beloeb} d. 1.',
   'indstillinger.catchUpNote': 'Den 1. i hver måned betaler de medlemmer med den laveste sæsontotal gebyret. Alle, der står lige med den sidste, betaler også. Intet gebyr i en pause.',
   'indstillinger.catchUpAntal': 'Antal medlemmer',
   'indstillinger.catchUpAntalLabel': 'Laveste sæsontotaler',
@@ -902,8 +911,8 @@ export const da = {
   'aktivitet.fikSenBetaling': '{hvem} fik gebyr for sen betaling {dag}',
   'aktivitet.senBetalingLinje': 'Skyldte {skyldig} fra sidste måned · {betalt} betalt',
   'indstillinger.senBetaling': 'Sen betaling',
-  'indstillinger.senBetalingUnder': '{beloeb} pr. dag efter den {dag}.',
-  'indstillinger.senBetalingUnderLoft': '{beloeb} pr. dag efter den {dag}. · højst {loft} om måneden',
+  'indstillinger.senBetalingResume': '{beloeb} pr. dag efter den {dag}.',
+  'indstillinger.senBetalingResumeLoft': '{beloeb} pr. dag efter den {dag}., højst {loft} om måneden',
   'indstillinger.senBetalingNote': 'Hver dag efter betalingsdagen betaler et medlem gebyret, indtil det har betalt det, det skyldte ved sidste måneds udgang. En betalingsmelding stopper gebyret, så snart den er sendt. Intet gebyr i en pause.',
   'indstillinger.betalingsdag': 'Betalingsdag',
   'indstillinger.betalingsdagVaerdi': 'Den {dag}.',
