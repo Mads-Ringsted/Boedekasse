@@ -867,6 +867,22 @@ export const da = {
   'indstillinger.catchUpAntalLabel': 'Laveste sæsontotaler',
   'indstillinger.catchUpAntalNote': 'Så mange medlemmer med den laveste sæsontotal betaler catch-up hver måned, plus alle, der står lige med den sidste.',
   'indstillinger.catchUpAntalUgyldig': 'Skriv et helt antal medlemmer over 0.',
+  // Sen betaling (#80)
+  'aktivitet.gebyrSenBetaling': 'Sen betaling',
+  'aktivitet.fikSenBetaling': '{hvem} fik gebyr for sen betaling {dag}',
+  'aktivitet.senBetalingLinje': 'Skyldte {skyldig} fra sidste måned · {betalt} betalt',
+  'indstillinger.senBetaling': 'Sen betaling',
+  'indstillinger.senBetalingUnder': '{beloeb} pr. dag efter den {dag}.',
+  'indstillinger.senBetalingUnderLoft': '{beloeb} pr. dag efter den {dag}. · højst {loft} om måneden',
+  'indstillinger.senBetalingNote': 'Hver dag efter betalingsdagen betaler et medlem gebyret, indtil det har betalt det, det skyldte ved sidste måneds udgang. En betalingsmelding stopper gebyret, så snart den er sendt. Intet gebyr i en pause.',
+  'indstillinger.betalingsdag': 'Betalingsdag',
+  'indstillinger.betalingsdagVaerdi': 'Den {dag}.',
+  'indstillinger.betalingsdagLabel': 'Dag i måneden',
+  'indstillinger.betalingsdagNote': 'Den dag i måneden, hvor medlemmerne senest betaler det, de skyldte ved sidste måneds udgang. Vælg 1–28.',
+  'indstillinger.betalingsdagUgyldig': 'Skriv en dag fra 1 til 28.',
+  'indstillinger.senBetalingLoft': 'Loft pr. måned',
+  'indstillinger.senBetalingLoftIngen': 'Intet loft',
+  'indstillinger.senBetalingLoftNote': 'Gebyrerne for sen betaling i én måned bliver aldrig højere end loftet. Lad feltet stå tomt for intet loft.',
 } as const;
 
 export type Catalogue = typeof da;

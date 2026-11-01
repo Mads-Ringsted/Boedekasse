@@ -29,7 +29,10 @@ interface FeedRaekkeProps {
   /** Appended to the second line, e.g. "35 min" for today's rows. */
   tid?: string;
   onAabnBoede: (boedeId: string) => void;
-  /** Admins only: a row with `annullerGebyr` (and no Bøde) opens "Annullér gebyr". */
+  /**
+   * Only when the viewer may annul this row's Gebyr (`maaAnnullereGebyr`): a
+   * row with `annullerGebyr` (and no Bøde) opens "Annullér gebyr".
+   */
   onAnnullerGebyr?: (raekke: Raekke) => void;
 }
 

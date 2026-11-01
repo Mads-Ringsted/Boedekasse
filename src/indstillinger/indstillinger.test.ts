@@ -1,5 +1,39 @@
 import { describe, expect, it } from 'vitest';
-import { gangeTekst, gebyrVedOprettelse, parseGange, rensMobilePay, tjekEngangsPris } from './indstillinger.ts';
+import {
+  gangeTekst,
+  gebyrVedOprettelse,
+  parseBetalingsdag,
+  parseGange,
+  rensLoft,
+  rensMobilePay,
+  tjekEngangsPris,
+} from './indstillinger.ts';
+
+describe('parseBetalingsdag', () => {
+  it('takes a whole day 1–28', () => {
+    expect(parseBetalingsdag('1')).toBe(1);
+    expect(parseBetalingsdag(' 28 ')).toBe(28);
+  });
+
+  it('rejects anything else, 29–31 included', () => {
+    expect(parseBetalingsdag('0')).toBeNull();
+    expect(parseBetalingsdag('29')).toBeNull();
+    expect(parseBetalingsdag('5,5')).toBeNull();
+    expect(parseBetalingsdag('')).toBeNull();
+  });
+});
+
+describe('rensLoft (the optional monthly cap on late fees)', () => {
+  it('empty means no cap', () => {
+    expect(rensLoft('  ')).toEqual({ ok: true, vaerdi: null });
+  });
+
+  it('takes whole kroner above 0', () => {
+    expect(rensLoft(' 200 ')).toEqual({ ok: true, vaerdi: 200 });
+    expect(rensLoft('0')).toEqual({ ok: false });
+    expect(rensLoft('abc')).toEqual({ ok: false });
+  });
+});
 
 describe('tjekEngangsPris (saving the Engangsbøde price mode)', () => {
   it('Fri needs no amount and keeps the stored one for later', () => {
