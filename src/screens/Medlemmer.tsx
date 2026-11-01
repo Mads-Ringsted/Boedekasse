@@ -155,6 +155,7 @@ function MedlemLinje({
         <span className="medlem-linje__navn">
           <span className="medlem-linje__navn-tekst">{m.egen ? t('medlemmer.dig') : m.navn}</span>
           {m.erAdmin && <span className="medlem-linje__tag">{t('mere.admin')}</span>}
+          {m.erKasserer && <span className="medlem-linje__tag">{t('mere.kasserer')}</span>}
           {frikob.length > 0 && (
             <span className="medlem-linje__tag">
               {t('frikob.medlemTag', { navne: frikob.map((f) => f.bodekategoriNavn).join(', ') })}

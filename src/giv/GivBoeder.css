@@ -595,6 +595,24 @@
   outline: none;
 }
 
+/* Fast (#76): the fixed amount, styled like the field but not editable. */
+.engangs__beloeb-felt .engangs__beloeb-fast {
+  min-width: 160px;
+  color: var(--color-text);
+  font-size: 60px;
+  font-weight: 700;
+  letter-spacing: -2px;
+  text-align: right;
+  font-variant-numeric: var(--font-numeric);
+}
+
+.engangs__beloeb-note {
+  padding: 0 4px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
 .engangs__beloeb-felt input::placeholder {
   color: var(--color-text-muted);
 }

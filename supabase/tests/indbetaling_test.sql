@@ -60,11 +60,11 @@ select results_eq(
   $$ values (-70) $$,
   '... and records the Indbetaling only once');
 
--- Only Admins; amounts are whole kroner over 0; the Medlem must be in the box.
+-- Only Admins and Kasserere; amounts are whole kroner over 0; the Medlem must be in the box.
 select tests.log_ind_som_medlem(:'bo');
 select throws_ok(
   format($$ select public.registrer_indbetaling(gen_random_uuid(), %L, %L, 50) $$, :'kasse', :'bo'),
-  '42501', 'ikke_admin', 'a plain Medlem cannot register an Indbetaling');
+  '42501', 'ikke_kasserer', 'a plain Medlem cannot register an Indbetaling');
 
 select tests.log_ud();
 select tests.opret_bodekasse('Anden') as anden \gset

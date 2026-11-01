@@ -3,12 +3,16 @@ import { useUser } from '../auth/AuthProvider.tsx';
 import { supabase } from '../supabase/index.ts';
 import { destinationAfterLogin, type Destination } from './destination.ts';
 import { loadLastUsed, saveLastUsed } from './lastUsed.ts';
+import { kanHaandterePenge } from './roller.ts';
 
 /** The logged-in person's spot in one box. */
 export interface Medlemskab {
   medlemId: string;
   navn: string;
   erAdmin: boolean;
+  erKasserer: boolean;
+  /** Admin or Kasserer: may handle the money (see `kanHaandterePenge`). */
+  kanHaandterePenge: boolean;
   bodekasseId: string;
   bodekasseNavn: string;
 }
@@ -33,7 +37,7 @@ const MedlemskaberContext = createContext<MedlemskaberValue | null>(null);
 async function fetchMedlemskaber(userId: string): Promise<Medlemskab[]> {
   const { data, error } = await supabase
     .from('medlem')
-    .select('id, navn, er_admin, bodekasse_id, bodekasse!medlem_bodekasse_id_fkey(navn)')
+    .select('id, navn, er_admin, er_kasserer, bodekasse_id, bodekasse!medlem_bodekasse_id_fkey(navn)')
     .eq('user_id', userId)
     .is('udmeldt', null)
     .order('oprettet');
@@ -42,6 +46,8 @@ async function fetchMedlemskaber(userId: string): Promise<Medlemskab[]> {
     medlemId: m.id,
     navn: m.navn,
     erAdmin: m.er_admin,
+    erKasserer: m.er_kasserer,
+    kanHaandterePenge: kanHaandterePenge({ erAdmin: m.er_admin, erKasserer: m.er_kasserer }),
     bodekasseId: m.bodekasse_id,
     bodekasseNavn: m.bodekasse.navn,
   }));

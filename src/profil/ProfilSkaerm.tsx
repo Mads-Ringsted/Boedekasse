@@ -26,6 +26,7 @@ const saldoKlasse = (v: ProfilVisning) =>
 
 const TAGS: Record<ProfilTag, Tag> = {
   admin: { tekst: t('profil.tag.admin'), tone: 'blaa' },
+  kasserer: { tekst: t('profil.tag.kasserer'), tone: 'blaa' },
   ikkeLoggetInd: { tekst: t('profil.tag.ikkeLoggetInd'), tone: 'graa' },
   kontoSlettet: { tekst: t('profil.tag.kontoSlettet'), tone: 'graa' },
   udmeldt: { tekst: t('profil.tag.udmeldt'), tone: 'graa' },
@@ -47,7 +48,7 @@ export function ProfilRute() {
  * their history. Your own profile also has Ret navn and Slet konto.
  */
 function ProfilSkaerm({ medlemId }: { medlemId: string }) {
-  const { bodekasseId, medlemId: migId, erAdmin, navn: mitNavn } = useBodekasse();
+  const { bodekasseId, medlemId: migId, erAdmin, kanHaandterePenge, navn: mitNavn } = useBodekasse();
   const { label, tilbage } = useProfilTilbage();
   const { version: givVersion } = useGivBoeder();
   const { version: boedeVersion } = useBoedeDetalje();
@@ -62,7 +63,7 @@ function ProfilSkaerm({ medlemId }: { medlemId: string }) {
       ? {
           profil,
           visning,
-          mig: { medlemId: migId, erAdmin },
+          mig: { medlemId: migId, erAdmin, kanHaandterePenge },
           opdater: () => {
             hentet.reload();
             setRunde((n) => n + 1);

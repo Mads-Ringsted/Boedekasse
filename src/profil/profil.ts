@@ -6,6 +6,7 @@ export interface Profil {
   id: string;
   navn: string;
   erAdmin: boolean;
+  erKasserer: boolean;
   /** False for a pre-added Medlem who has not logged in yet. */
   loggetInd: boolean;
   /** Their login was deleted (Slet konto): an unclaimed spot that once was claimed. */
@@ -22,7 +23,7 @@ export interface Profil {
 }
 
 /** The small tags under a profile's name, in display order. */
-export type ProfilTag = 'admin' | 'ikkeLoggetInd' | 'kontoSlettet' | 'udmeldt';
+export type ProfilTag = 'admin' | 'kasserer' | 'ikkeLoggetInd' | 'kontoSlettet' | 'udmeldt';
 
 export interface ProfilVisning {
   /** Your own profile. */
@@ -44,6 +45,7 @@ export function profilVisning(p: Profil, migId: string): ProfilVisning {
   const status = minStatus(p.saldo);
   const tags: ProfilTag[] = [];
   if (p.erAdmin) tags.push('admin');
+  if (p.erKasserer) tags.push('kasserer');
   if (p.kontoSlettet) tags.push('kontoSlettet');
   else if (!p.loggetInd) tags.push('ikkeLoggetInd');
   if (p.udmeldt) tags.push('udmeldt');
