@@ -1,25 +1,25 @@
 import { supabase } from '../supabase/index.ts';
-import type { Regel } from './tilbagevendende.ts';
+import type { TilbagevendendeGebyr } from './tilbagevendende.ts';
 
-/** A Medlem a rule can hit. */
-export interface RegelMedlem {
+/** A Medlem a Tilbagevendende Gebyr can hit. */
+export interface TilbagevendendeMedlem {
   id: string;
   navn: string;
   udmeldt: boolean;
 }
 
 export interface TilbagevendendeData {
-  /** The rules still running (not stopped), oldest first. */
-  regler: Regel[];
+  /** The Tilbagevendende Gebyrer still running (not stopped), oldest first. */
+  tilbagevendende: TilbagevendendeGebyr[];
   /** Every Medlem of the box, by name. */
-  medlemmer: RegelMedlem[];
+  medlemmer: TilbagevendendeMedlem[];
 }
 
 const danskOrden = new Intl.Collator('da');
 
 /** The box's running Tilbagevendende Gebyrer and its Medlemmer (any Medlem may read them). */
 export async function hentTilbagevendende(bodekasseId: string): Promise<TilbagevendendeData> {
-  const [regler, rm, medlemmer] = await Promise.all([
+  const [tilbagevendende, rm, medlemmer] = await Promise.all([
     supabase
       .from('tilbagevendende')
       .select('id, navn, beloeb, frekvens, dag')
@@ -29,11 +29,11 @@ export async function hentTilbagevendende(bodekasseId: string): Promise<Tilbagev
     supabase.from('tilbagevendende_medlem').select('tilbagevendende_id, medlem_id').eq('bodekasse_id', bodekasseId),
     supabase.from('medlem').select('id, navn, udmeldt').eq('bodekasse_id', bodekasseId),
   ]);
-  if (regler.error) throw regler.error;
+  if (tilbagevendende.error) throw tilbagevendende.error;
   if (rm.error) throw rm.error;
   if (medlemmer.error) throw medlemmer.error;
   return {
-    regler: regler.data.map((r) => ({
+    tilbagevendende: tilbagevendende.data.map((r) => ({
       ...r,
       medlemmer: rm.data.filter((x) => x.tilbagevendende_id === r.id).map((x) => x.medlem_id),
     })),
@@ -44,31 +44,35 @@ export async function hentTilbagevendende(bodekasseId: string): Promise<Tilbagev
 }
 
 /**
- * Admin only: creates a rule (`regelId` null) or edits one. Throws the RPC
- * error (show it with `rpcErrorText`). One `klientId` per opening of the form.
+ * Admin only: creates a Tilbagevendende Gebyr (`tilbagevendendeId` null) or
+ * edits one. Throws the RPC error (show it with `rpcErrorText`). One
+ * `klientId` per opening of the form.
  */
 export async function gemTilbagevendende(
   klientId: string,
   bodekasseId: string,
-  regelId: string | null,
-  regel: Omit<Regel, 'id'>,
+  tilbagevendendeId: string | null,
+  tilbagevendende: Omit<TilbagevendendeGebyr, 'id'>,
 ): Promise<void> {
   const felter = {
     p_klient_id: klientId,
-    p_navn: regel.navn,
-    p_beloeb: regel.beloeb,
-    p_frekvens: regel.frekvens,
-    p_dag: regel.dag,
-    p_medlemmer: regel.medlemmer,
+    p_navn: tilbagevendende.navn,
+    p_beloeb: tilbagevendende.beloeb,
+    p_frekvens: tilbagevendende.frekvens,
+    p_dag: tilbagevendende.dag,
+    p_medlemmer: tilbagevendende.medlemmer,
   };
-  const { error } = regelId
-    ? await supabase.rpc('ret_tilbagevendende', { ...felter, p_tilbagevendende: regelId })
+  const { error } = tilbagevendendeId
+    ? await supabase.rpc('ret_tilbagevendende', { ...felter, p_tilbagevendende: tilbagevendendeId })
     : await supabase.rpc('opret_tilbagevendende', { ...felter, p_bodekasse: bodekasseId });
   if (error) throw error;
 }
 
-/** Admin only: stops a rule. Throws the RPC error. */
-export async function stopTilbagevendende(klientId: string, regelId: string): Promise<void> {
-  const { error } = await supabase.rpc('stop_tilbagevendende', { p_klient_id: klientId, p_tilbagevendende: regelId });
+/** Admin only: stops a Tilbagevendende Gebyr. Throws the RPC error. */
+export async function stopTilbagevendende(klientId: string, tilbagevendendeId: string): Promise<void> {
+  const { error } = await supabase.rpc('stop_tilbagevendende', {
+    p_klient_id: klientId,
+    p_tilbagevendende: tilbagevendendeId,
+  });
   if (error) throw error;
 }

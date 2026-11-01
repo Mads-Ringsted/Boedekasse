@@ -5,7 +5,7 @@
 -- paid by the end of D−1 < owed, gets one late-day Gebyr.
 begin;
 \ir _hjaelpere.psql
-select plan(29);
+select plan(32);
 
 -- A Bøde given at a chosen time.
 create function tests.bode_givet(p_giver uuid, p_modtager uuid, p_pris int, p_givet timestamptz)
@@ -270,8 +270,12 @@ select tests.bode_givet(:'jon', :'kai', 20, '2026-01-20 20:00 Europe/Copenhagen'
 select tests.bode_givet(:'kai', :'jon', 20, '2026-01-20 20:00 Europe/Copenhagen');
 update public.medlem set udmeldt = '2026-02-01 12:00 Europe/Copenhagen' where id = :'jon';
 select private.koer_automatik('2026-02-03 00:30 Europe/Copenhagen');
--- Kai is udmeldt on 3 Feb at 12:00 and brought back on 6 Feb at 10:00.
+-- Kai is udmeldt on 3 Feb at 12:00 and brought back on 6 Feb at 10:00. Like
+-- udmeld and genoptag, each writes a feed entry.
 update public.medlem set udmeldt = '2026-02-03 12:00 Europe/Copenhagen' where id = :'kai';
+insert into public.haendelse (bodekasse_id, saeson_id, tid, art, modtager_id, ref_tabel, ref_id)
+values (:'udm', private.seneste_saeson(:'udm'), '2026-02-03 12:00 Europe/Copenhagen',
+        'medlem_udmeldt', :'kai', 'medlem', :'kai');
 select private.koer_automatik('2026-02-05 00:30 Europe/Copenhagen');
 update public.medlem set udmeldt = null where id = :'kai';
 insert into public.haendelse (bodekasse_id, saeson_id, tid, art, modtager_id, ref_tabel, ref_id)
@@ -283,6 +287,53 @@ select is_empty(format($$ select 1 from public.gebyr where medlem_id = %L and ar
 select results_eq(format($$ select * from tests.sene_dage(%L) $$, :'kai'),
   $$ values ('2026-02-02'::date), ('2026-02-03'), ('2026-02-07'), ('2026-02-08') $$,
   'a Medlem brought back is charged again from then, with nothing for the gap');
+
+-- Spec #74: "A Medlem who is brought back is included again from that day,
+-- with nothing charged for the gap." Only the gap: Mads was late from 21 Oct,
+-- Udmeldt on 26 Oct at 12:00 and brought back on 28 Oct at 10:00, and no run
+-- happened until 30 Oct. The days before he left are still back-charged.
+select tests.kasse_fra_januar('Tilbage igen', true, 20) as tig \gset
+select tests.opret_medlem(:'tig', 'Lone', null, true) as lone \gset
+select tests.opret_medlem(:'tig', 'Mads') as mads \gset
+select tests.bode_givet(:'lone', :'mads', 40, '2026-09-20 20:00 Europe/Copenhagen');
+insert into public.haendelse (bodekasse_id, saeson_id, tid, art, modtager_id, ref_tabel, ref_id)
+values (:'tig', private.seneste_saeson(:'tig'), '2026-10-26 12:00 Europe/Copenhagen',
+        'medlem_udmeldt', :'mads', 'medlem', :'mads'),
+       (:'tig', private.seneste_saeson(:'tig'), '2026-10-28 10:00 Europe/Copenhagen',
+        'medlem_genoptaget', :'mads', 'medlem', :'mads');
+select private.koer_automatik('2026-10-30 00:30 Europe/Copenhagen');
+select results_eq(format($$ select * from tests.sene_dage(%L) $$, :'mads'),
+  $$ values ('2026-10-21'::date), ('2026-10-22'), ('2026-10-23'), ('2026-10-24'), ('2026-10-25'),
+            ('2026-10-26'), ('2026-10-29'), ('2026-10-30') $$,
+  'a Medlem brought back is charged for the days before they left and from the day after they returned, not the gap');
+
+-- ---------- A missed run across the month end (spec #74 review) ----------
+-- Spec #74: "A missed run catches up on the next one." No run on 28 February;
+-- the next is on 2 March. The last 7 local days reach back into February, so
+-- 28 February is charged by February's rules. A box that switched Sen
+-- betaling on on 1 March gets nothing for February.
+select tests.kasse_fra_januar('Månedsskifte') as ms \gset
+update public.bodekasse set sen_betaling_til_siden = '2026-01-01 00:00 Europe/Copenhagen' where id = :'ms';
+select tests.opret_medlem(:'ms', 'Nis', null, true) as nis \gset
+select tests.bode_givet(:'nis', :'nis', 20, '2026-01-20 20:00 Europe/Copenhagen');
+select private.koer_automatik('2026-02-27 12:00 Europe/Copenhagen');
+select private.koer_automatik('2026-03-02 00:30 Europe/Copenhagen');
+select results_eq(
+  format($$ select udloeser, oprettet from public.gebyr where medlem_id = %L and art = 'sen_betaling'
+             and udloeser >= '2026-02-27' order by udloeser $$, :'nis'),
+  $$ values ('2026-02-27'::date, '2026-02-27 00:00 Europe/Copenhagen'::timestamptz),
+            ('2026-02-28', '2026-02-28 00:00 Europe/Copenhagen'),
+            ('2026-03-02', '2026-03-02 00:00 Europe/Copenhagen') $$,
+  'a missed last day of the month is caught up in the next month, dated to its own day');
+
+select tests.kasse_fra_januar('Slået til 1. marts') as m1 \gset
+update public.bodekasse set sen_betaling_til_siden = '2026-03-01 08:00 Europe/Copenhagen' where id = :'m1';
+select tests.opret_medlem(:'m1', 'Ole', null, true) as m1_ole \gset
+select tests.bode_givet(:'m1_ole', :'m1_ole', 20, '2026-01-20 20:00 Europe/Copenhagen');
+select private.koer_automatik('2026-03-02 00:30 Europe/Copenhagen');
+select results_eq(format($$ select * from tests.sene_dage(%L) $$, :'m1_ole'),
+  $$ values ('2026-03-02'::date) $$,
+  'days of last month before Sen betaling was switched on are not charged');
 
 -- ---------- Settings ----------
 select tests.log_ind_som_medlem(:'std_anna');

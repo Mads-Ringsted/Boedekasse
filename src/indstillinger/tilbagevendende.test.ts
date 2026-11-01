@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { frekvensTekst, naesteForekomst, tjekRegel } from './tilbagevendende.ts';
+import { frekvensTekst, naesteForekomst, tjekTilbagevendende } from './tilbagevendende.ts';
 
 describe('frekvensTekst', () => {
-  it('names the weekday of a weekly rule (1 = mandag)', () => {
+  it('names the weekday of a weekly Tilbagevendende Gebyr (1 = mandag)', () => {
     expect(frekvensTekst('uge', 1)).toBe('Hver mandag');
     expect(frekvensTekst('uge', 7)).toBe('Hver søndag');
   });
 
-  it('names the day of a monthly rule', () => {
+  it('names the day of a monthly Tilbagevendende Gebyr', () => {
     expect(frekvensTekst('maaned', 15)).toBe('Den 15. hver måned');
   });
 });
@@ -16,7 +16,7 @@ describe('naesteForekomst (the next charge, by the Copenhagen calendar)', () => 
   // Monday 2 March 2026, 12:00 in Copenhagen.
   const mandag = new Date('2026-03-02T11:00:00Z');
 
-  it('is never today: a rule made or edited today counts from tomorrow', () => {
+  it('is never today: one made or edited today counts from tomorrow', () => {
     expect(naesteForekomst('uge', 1, mandag)).toBe('2026-03-09');
     expect(naesteForekomst('maaned', 2, mandag)).toBe('2026-04-02');
   });
@@ -39,32 +39,32 @@ describe('naesteForekomst (the next charge, by the Copenhagen calendar)', () => 
   });
 });
 
-describe('tjekRegel (saving a Tilbagevendende Gebyr)', () => {
+describe('tjekTilbagevendende (saving a Tilbagevendende Gebyr)', () => {
   const gyldig = { navn: ' Kontingent ', beloeb: '1.000', frekvens: 'uge', dag: 1, medlemmer: ['a', 'b'] } as const;
 
   it('trims the name and reads the amount', () => {
-    expect(tjekRegel(gyldig)).toEqual({
+    expect(tjekTilbagevendende(gyldig)).toEqual({
       ok: true,
       vaerdi: { navn: 'Kontingent', beloeb: 1000, frekvens: 'uge', dag: 1, medlemmer: ['a', 'b'] },
     });
   });
 
   it('needs a name', () => {
-    expect(tjekRegel({ ...gyldig, navn: '  ' })).toEqual({ ok: false, fejl: 'navn' });
+    expect(tjekTilbagevendende({ ...gyldig, navn: '  ' })).toEqual({ ok: false, fejl: 'navn' });
   });
 
   it('needs whole kroner above 0', () => {
-    expect(tjekRegel({ ...gyldig, beloeb: '0' })).toEqual({ ok: false, fejl: 'beloeb' });
-    expect(tjekRegel({ ...gyldig, beloeb: '12,5' })).toEqual({ ok: false, fejl: 'beloeb' });
+    expect(tjekTilbagevendende({ ...gyldig, beloeb: '0' })).toEqual({ ok: false, fejl: 'beloeb' });
+    expect(tjekTilbagevendende({ ...gyldig, beloeb: '12,5' })).toEqual({ ok: false, fejl: 'beloeb' });
   });
 
   it('needs a weekday 1-7 or a day of the month 1-28', () => {
-    expect(tjekRegel({ ...gyldig, dag: 8 })).toEqual({ ok: false, fejl: 'dag' });
-    expect(tjekRegel({ ...gyldig, frekvens: 'maaned', dag: 28 }).ok).toBe(true);
-    expect(tjekRegel({ ...gyldig, frekvens: 'maaned', dag: 29 })).toEqual({ ok: false, fejl: 'dag' });
+    expect(tjekTilbagevendende({ ...gyldig, dag: 8 })).toEqual({ ok: false, fejl: 'dag' });
+    expect(tjekTilbagevendende({ ...gyldig, frekvens: 'maaned', dag: 28 }).ok).toBe(true);
+    expect(tjekTilbagevendende({ ...gyldig, frekvens: 'maaned', dag: 29 })).toEqual({ ok: false, fejl: 'dag' });
   });
 
   it('needs at least one Medlem', () => {
-    expect(tjekRegel({ ...gyldig, medlemmer: [] })).toEqual({ ok: false, fejl: 'medlemmer' });
+    expect(tjekTilbagevendende({ ...gyldig, medlemmer: [] })).toEqual({ ok: false, fejl: 'medlemmer' });
   });
 });

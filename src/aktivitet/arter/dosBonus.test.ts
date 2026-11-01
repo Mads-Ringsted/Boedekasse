@@ -47,5 +47,34 @@ describe('a Dos-bonus row', () => {
       { migId: 'mig' },
     );
     expect(r).toMatchObject({ annulleret: true, linje: 'For sent, Øl · dagen 30. okt · annulleret af Anna' });
+    expect(r?.annullerGebyr).toBeUndefined();
+  });
+
+  it('offers to annul a standing Dos-bonus from the row (an Admin or a Kasserer)', () => {
+    expect(beskrivRaekke(haendelse(), { migId: 'mig' })?.annullerGebyr).toEqual({
+      id: 'g1',
+      art: 'dos_bonus',
+      beloeb: 10,
+      medlemId: KASPER,
+      medlemNavn: 'Kasper Nørgaard',
+      annullering: null,
+    });
+  });
+});
+
+describe('a Dos-bonus annulment row', () => {
+  it('names a Dos-bonus as the kind', () => {
+    const r = beskrivRaekke(
+      haendelse({
+        art: 'gebyr_annulleret',
+        aktoerId: 'anna',
+        aktoerNavn: 'Anna Holm',
+        refTabel: null,
+        refId: null,
+        data: { gebyr_id: 'g1', art: 'dos_bonus', navn: null, beloeb: 10, note: null },
+      }),
+      { migId: 'mig' },
+    );
+    expect(r?.linje).toBe('Dos-bonus · 10 kr');
   });
 });

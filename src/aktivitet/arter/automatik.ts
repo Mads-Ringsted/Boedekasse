@@ -56,10 +56,12 @@ function kategorier(v: unknown): string {
  * recompute in the RPCs (not the scheduler) when the payer bore two Bøder
  * from one Bødekategori on Dos-bonus day `dag` (YYYY-MM-DD, 06:00 to 06:00).
  * `kategorier` are the day's paired Bødekategorier. Annulled (struck through)
- * when its pair is broken; it can't be annulled by hand.
+ * when its pair is broken. An Admin or a Kasserer may also annul it from the
+ * row while it stands; it then still counts as charged, so it never returns.
  */
 export const dosBonus: Beskriver = (h, ctx) => {
   const dag = dataTekst(h, 'dag');
+  const beloeb = dataTal(h, 'beloeb');
   return {
     ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId },
     titel: t('aktivitet.fikDosBonus', { hvem: hvem(h.modtagerId, h.modtagerNavn, ctx) }),
@@ -67,8 +69,20 @@ export const dosBonus: Beskriver = (h, ctx) => {
     linje: [kategorier(h.data.kategorier), dag && t('aktivitet.dosBonusDag', { dag: kortDato(`${dag}T12:00:00Z`) })]
       .filter(Boolean)
       .join(' · '),
-    beloeb: { tekst: formatKr(dataTal(h, 'beloeb')) },
+    beloeb: { tekst: formatKr(beloeb) },
     annulleret: false,
+    ...(h.refId && h.modtagerId && !h.annullering
+      ? {
+          annullerGebyr: {
+            id: h.refId,
+            art: 'dos_bonus',
+            beloeb,
+            medlemId: h.modtagerId,
+            medlemNavn: h.modtagerNavn ?? '',
+            annullering: null,
+          },
+        }
+      : {}),
   };
 };
 

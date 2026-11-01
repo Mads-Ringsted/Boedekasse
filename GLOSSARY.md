@@ -76,6 +76,10 @@ _Avoid_: Rykkergebyr, strafrente
 The day of the month by which each Medlem pays what they owed at the end of the previous month.
 _Avoid_: Deadline, forfaldsdag
 
+**Betalingspåmindelse** (Payment reminder):
+A push sent at 10:00 to a Medlem who hasn't yet paid what they owed at the end of last month: 2 days before the Betalingsdag, on the Betalingsdag, and on each late day. At most one a day. Only while Sen betaling is on, and never in a Pause.
+_Avoid_: Rykker, påmindelse
+
 **Tilbagevendende Gebyr** (Recurring fee):
 A Gebyr an Admin sets up to hit chosen Medlemmer on a fixed weekly or monthly schedule.
 _Avoid_: Fast gebyr, abonnement

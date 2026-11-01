@@ -35,7 +35,8 @@ export const bodeAnnulleret: Beskriver = (h, ctx) => {
 /**
  * 'gebyr_annulleret' {gebyr_id, art, navn, beloeb, note}: an Admin (aktoer)
  * annulled a creation, Anke, Catch-up or Tilbagevendende Gebyr that modtager
- * paid, or an Admin or a Kasserer annulled a late day (Sen betaling).
+ * paid, or an Admin or a Kasserer annulled a late day (Sen betaling) or a
+ * Dos-bonus.
  */
 export const gebyrAnnulleret: Beskriver = (h, ctx) => {
   const navn = dataTekst(h, 'navn');
@@ -51,7 +52,9 @@ export const gebyrAnnulleret: Beskriver = (h, ctx) => {
             ? t('aktivitet.gebyrSenBetaling')
             : art === 'tilbagevendende'
               ? t('aktivitet.gebyrTilbagevendende', { navn })
-              : t('aktivitet.gebyrAndet');
+              : art === 'dos_bonus'
+                ? t('dosBonus.tag')
+                : t('aktivitet.gebyrAndet');
   return {
     ikon: { slags: 'avatar', navn: h.aktoerNavn ?? '', egen: h.aktoerId === ctx.migId },
     titel: t('aktivitet.annulleredeGebyr', {

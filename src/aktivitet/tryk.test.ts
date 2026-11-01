@@ -39,6 +39,12 @@ describe('maaAnnullereGebyr (who may annul a Gebyr from its row)', () => {
     expect(maaAnnullereGebyr('sen_betaling', medlem)).toBe(false);
   });
 
+  it('lets an Admin or a Kasserer annul a Dos-bonus', () => {
+    expect(maaAnnullereGebyr('dos_bonus', admin)).toBe(true);
+    expect(maaAnnullereGebyr('dos_bonus', kasserer)).toBe(true);
+    expect(maaAnnullereGebyr('dos_bonus', medlem)).toBe(false);
+  });
+
   it('keeps every other kind Admin-only', () => {
     expect(maaAnnullereGebyr('catch_up', admin)).toBe(true);
     expect(maaAnnullereGebyr('catch_up', kasserer)).toBe(false);
