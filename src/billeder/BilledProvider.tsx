@@ -98,8 +98,8 @@ export function BilledProvider({ children }: { children: ReactNode }) {
 }
 
 /**
- * `billede(medlemId)` gives the URL to pass to `<Avatar billede>`, and
- * `opdater()` reloads after a change. Outside the provider: no pictures.
+ * `billede(medlemId)` gives a Medlem's picture URL (`<Avatar medlemId>` uses
+ * it), and `opdater()` reloads after a change. Outside the provider: no pictures.
  */
 export function useBilleder(): BillederValue {
   return useContext(BillederContext);

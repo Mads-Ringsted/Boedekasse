@@ -1,7 +1,7 @@
 import { formatKr, t } from '../../strings/index.ts';
 import { ejer, hvem, hvemObjekt } from '../navne.ts';
 import type { Beskriver } from '../visning.ts';
-import { annullerbartGebyr, dataTal, dataTekst, gebyrTekst } from './faelles.ts';
+import { annullerbartGebyr, avatarIkon, dataTal, dataTekst, gebyrTekst } from './faelles.ts';
 
 // Anke entries: filed (#63) and the verdict (#64).
 
@@ -14,7 +14,7 @@ import { annullerbartGebyr, dataTal, dataTekst, gebyrTekst } from './faelles.ts'
 export const ankeIndgivet: Beskriver = (h, ctx) => {
   const bodeId = dataTekst(h, 'bode_id');
   return {
-    ikon: { slags: 'avatar', navn: h.aktoerNavn ?? '', egen: h.aktoerId === ctx.migId, medlemId: h.aktoerId },
+    ikon: avatarIkon(h.aktoerId, h.aktoerNavn, ctx),
     titel: t('aktivitet.ankede', {
       hvem: hvem(h.aktoerId, h.aktoerNavn, ctx),
       ejer: ejer(h.modtagerId, h.modtagerNavn, h.aktoerId, ctx, 'n'),
@@ -45,7 +45,7 @@ export const ankeAfgjort: Beskriver = (h, ctx) => {
   };
   const af = hvemObjekt(h.aktoerId, h.aktoerNavn, ctx);
   return {
-    ikon: { slags: 'avatar', navn: appellantNavn, egen: appellantId === ctx.migId, medlemId: appellantId },
+    ikon: avatarIkon(appellantId, appellantNavn, ctx),
     titel: vandt ? t('aktivitet.ankeVandt', parter) : t('aktivitet.ankeTabt', parter),
     tag: vandt ? { tekst: t('boede.tag.vundet'), tone: 'groen' } : { tekst: t('boede.tag.tabt'), tone: 'roed' },
     linje: [

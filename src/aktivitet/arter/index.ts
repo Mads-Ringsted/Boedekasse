@@ -15,7 +15,7 @@ import { bodekasseOprettet, saesonAfsluttet, saesonStartet } from './saeson.ts';
  * kind not listed here is left out of the feed.
  *
  * To add a kind: write a `Beskriver` in its own file here (see `kategorier.ts`;
- * `faelles.ts` has data and Gebyr helpers), then add one line below.
+ * `faelles.ts` has data, avatar and Gebyr helpers), then add one line below.
  * `beskrivRaekke` adds the generic parts: when the row the entry points at
  * (ref_tabel/ref_id) is annulled, it is struck through, tagged Annulleret,
  * with "annulleret af X · note".

@@ -1,7 +1,6 @@
 import { useState, type ComponentType } from 'react';
 import { ArrowUpRight, CalendarDays, ChevronDown, Tag as TagIkon, Trophy } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router';
-import { useBilleder } from '../billeder/BilledProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { TagMaerke } from './TagMaerke.tsx';
 import { trykPaaRaekke } from './tryk.ts';
@@ -16,8 +15,7 @@ const SYMBOLER: Record<Symbol, ComponentType<{ size?: number; strokeWidth?: numb
 };
 
 function RaekkeIkon({ ikon }: { ikon: Ikon }) {
-  const { billede } = useBilleder();
-  if (ikon.slags === 'avatar') return <Avatar navn={ikon.navn} size={40} egen={ikon.egen} billede={billede(ikon.medlemId)} />;
+  if (ikon.slags === 'avatar') return <Avatar navn={ikon.navn} size={40} egen={ikon.egen} medlemId={ikon.medlemId} />;
   const Symbol = SYMBOLER[ikon.symbol];
   return (
     <span className={`feed-raekke__symbol feed-raekke__symbol--${ikon.tone ?? 'graa'}`} aria-hidden="true">

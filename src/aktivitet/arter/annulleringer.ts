@@ -1,7 +1,7 @@
 import { formatKr, t } from '../../strings/index.ts';
 import { ejer, hvem, hvemObjekt } from '../navne.ts';
 import type { Beskriver } from '../visning.ts';
-import { dataTal, dataTekst } from './faelles.ts';
+import { avatarIkon, dataTal, dataTekst } from './faelles.ts';
 
 // Annulment entries (#62). They have no ref, so they never show struck
 // through themselves; the annulled row elsewhere in the feed does.
@@ -20,7 +20,7 @@ export const bodeAnnulleret: Beskriver = (h, ctx) => {
   };
   const bodeId = dataTekst(h, 'bode_id');
   return {
-    ikon: { slags: 'avatar', navn: h.aktoerNavn ?? '', egen: h.aktoerId === ctx.migId, medlemId: h.aktoerId },
+    ikon: avatarIkon(h.aktoerId, h.aktoerNavn, ctx),
     titel:
       h.data.engangsbode === true
         ? t('aktivitet.annulleredeEngangsboede', vaerdier)
@@ -56,7 +56,7 @@ export const gebyrAnnulleret: Beskriver = (h, ctx) => {
                 ? t('dosBonus.tag')
                 : t('aktivitet.gebyrAndet');
   return {
-    ikon: { slags: 'avatar', navn: h.aktoerNavn ?? '', egen: h.aktoerId === ctx.migId, medlemId: h.aktoerId },
+    ikon: avatarIkon(h.aktoerId, h.aktoerNavn, ctx),
     titel: t('aktivitet.annulleredeGebyr', {
       hvem: hvem(h.aktoerId, h.aktoerNavn, ctx),
       ejer: ejer(h.modtagerId, h.modtagerNavn, h.aktoerId, ctx, 't'),

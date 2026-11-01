@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { ChevronRight, Ellipsis } from 'lucide-react';
-import { useBilleder } from '../billeder/BilledProvider.tsx';
 import { useBodekasse, useMedlemskaber } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Sheet } from '../components/Sheet.tsx';
@@ -233,7 +232,6 @@ function AdminListe({
   data: AdminData | null;
   vaelg: (art: Art) => void;
 }) {
-  const { billede } = useBilleder();
   const { hoved, farlig } = adminHandlinger(
     { erAdmin: profil.erAdmin, erKasserer: profil.erKasserer, loggetInd: profil.loggetInd, udmeldt: profil.udmeldt, email: data?.email ?? null },
     { egen: visning.egen, sletGrund: data?.sletGrund ?? null, frikob: data?.frikob.kanKoebe ?? false },
@@ -258,7 +256,7 @@ function AdminListe({
           size={44}
           stiplet={!profil.loggetInd}
           tidligere={profil.udmeldt}
-          billede={billede(profil.id)}
+          medlemId={profil.id}
         />
         <span className="admin-liste__hvem-tekst">
           <span className="admin-liste__navn">{profil.navn}</span>

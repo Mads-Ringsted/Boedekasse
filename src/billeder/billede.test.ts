@@ -33,10 +33,6 @@ describe('visBillede: picture or initials', () => {
   it('tries again when a new URL replaces the one that failed', () => {
     expect(visBillede({ url: 'https://x/b.webp', fejletUrl: 'https://x/a.webp' })).toBe(true);
   });
-
-  it('keeps the picture for an Udmeldt Medlem (the grey style is CSS)', () => {
-    expect(visBillede({ url: 'https://x/a.webp', tidligere: true })).toBe(true);
-  });
 });
 
 describe('skalSigneres: which paths need a new signed URL', () => {

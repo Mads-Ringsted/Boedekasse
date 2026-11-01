@@ -1,7 +1,7 @@
 import { formatKr, t } from '../../strings/index.ts';
 import { hvem, hvemObjekt } from '../navne.ts';
 import type { Beskriver } from '../visning.ts';
-import { dataTal, dataTekst } from './faelles.ts';
+import { avatarIkon, dataTal, dataTekst } from './faelles.ts';
 
 // Frikøb entries (#65).
 
@@ -11,7 +11,7 @@ import { dataTal, dataTekst } from './faelles.ts';
  * an annulment strikes it through. The amount is its Frikøbsgebyr.
  */
 export const frikobKoebt: Beskriver = (h, ctx) => ({
-  ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId, medlemId: h.modtagerId },
+  ikon: avatarIkon(h.modtagerId, h.modtagerNavn, ctx),
   titel: t('aktivitet.koebteFrikob', { hvem: hvem(h.modtagerId, h.modtagerNavn, ctx) }),
   tag: { tekst: t('frikob.tag'), tone: 'blaa' },
   linje: [
@@ -26,7 +26,7 @@ export const frikobKoebt: Beskriver = (h, ctx) => ({
 
 /** 'frikob_annulleret' {frikob_id, navn, beloeb, note}: an Admin (aktoer) annulled it. No ref. */
 export const frikobAnnulleret: Beskriver = (h, ctx) => ({
-  ikon: { slags: 'avatar', navn: h.aktoerNavn ?? '', egen: h.aktoerId === ctx.migId, medlemId: h.aktoerId },
+  ikon: avatarIkon(h.aktoerId, h.aktoerNavn, ctx),
   titel: t('aktivitet.annulleredeFrikob', { hvem: hvem(h.aktoerId, h.aktoerNavn, ctx) }),
   linje: [
     t('aktivitet.frikobTil', { hvem: hvemObjekt(h.modtagerId, h.modtagerNavn, ctx) }),
