@@ -1,5 +1,8 @@
 import { useRef, useState, type FormEvent } from 'react';
+import { Field } from '../components/Field.tsx';
+import { primaryAction, typedRequirement, visibleError } from '../components/field.ts';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import '../medlemmer/felter.css';
@@ -20,7 +23,7 @@ export interface RetIndstillingSheetProps<V> {
   onGem: (vaerdi: V, klientId: string) => Promise<void>;
   /** Shown after the field, e.g. "kr". */
   enhed?: string;
-  inputMode?: 'text' | 'numeric';
+  inputMode?: 'text' | 'numeric' | 'decimal';
   note?: string;
 }
 
@@ -53,7 +56,11 @@ export function RetIndstillingSheet<V>({
   const felt = useRef<HTMLInputElement>(null);
 
   const resultat = tjek(tekst);
-  const kanGemme = resultat.ok && tekst !== start && !busy;
+  const handling = primaryAction(
+    [typedRequirement(tekst, resultat.ok, t('aarsag.skrivVaerdi'), t('aarsag.retVaerdien'))],
+    { busy, unchanged: tekst === start },
+  );
+  const kanGemme = handling.enabled;
 
   async function gem(event: FormEvent) {
     event.preventDefault();
@@ -71,7 +78,7 @@ export function RetIndstillingSheet<V>({
   }
 
   // Only complain once something has been typed.
-  const hint = !resultat.ok && tekst.trim() !== '' ? resultat.fejl : null;
+  const hint = visibleError(tekst, resultat.ok ? null : resultat.fejl);
 
   return (
     <Sheet
@@ -82,35 +89,22 @@ export function RetIndstillingSheet<V>({
       initialFocus={felt}
       dirty={tekst !== start}
       footer={
-        <button type="submit" form={FORM_ID} className="felt-knap" disabled={!kanGemme}>
+        <SheetAction form={FORM_ID} disabled={!kanGemme} reason={handling.reason} error={fejl}>
           {t('indstillinger.gem')}
-        </button>
+        </SheetAction>
       }
     >
       <form id={FORM_ID} onSubmit={(e) => void gem(e)}>
-        <label className="felt">
-          <span className="felt__label">{label}</span>
-          <span className="indst-felt">
-            <input
-              ref={felt}
-              className="felt__input indst-felt__input"
-              type="text"
-              inputMode={inputMode}
-              value={tekst}
-              onChange={(e) => setTekst(e.target.value)}
-              autoComplete="off"
-              enterKeyHint="done"
-            />
-            {enhed && <span className="indst-felt__enhed">{enhed}</span>}
-          </span>
-        </label>
-        {hint && <p className="felt-fejl">{hint}</p>}
-        {note && <p className="felt-note">{note}</p>}
-        {fejl && (
-          <p className="felt-fejl" role="alert">
-            {fejl}
-          </p>
-        )}
+        <Field
+          ref={felt}
+          label={label}
+          kind={inputMode === 'numeric' ? 'integer' : inputMode}
+          unit={enhed}
+          value={tekst}
+          onChange={setTekst}
+          error={hint}
+          note={note}
+        />
       </form>
     </Sheet>
   );

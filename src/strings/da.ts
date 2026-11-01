@@ -572,7 +572,9 @@ export const da = {
   'aarsag.vaelgMedlem': 'Vælg et medlem.',
   'aarsag.vaelgMedlemmer': 'Vælg mindst ét medlem.',
   'aarsag.vaelgKategori': 'Vælg en bødekategori.',
+  'aarsag.skrivVaerdi': 'Skriv en værdi.',
   'aarsag.retVaerdien': 'Ret værdien.',
+  'aarsag.retFelt': 'Ret feltet {felt}.',
   'aarsag.skrivKassenavn': 'Skriv Bødekassens navn for at slette den.',
   'aarsag.kassenavnPasserIkke': 'Navnet passer ikke endnu.',
 

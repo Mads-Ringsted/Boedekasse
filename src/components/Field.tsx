@@ -21,6 +21,8 @@ interface FieldProps {
   unit?: string;
   /** What is wrong, shown under the field in red and linked with aria-describedby. Use `visibleError` for typed input. */
   error?: string | null;
+  /** The error came from the server: VoiceOver reads it out at once (role="alert"). */
+  errorIsAlert?: boolean;
   /** A muted line under the field, also linked with aria-describedby. */
   note?: ReactNode;
   /** The enter key's label. Defaults to the kind's ("done", or "search"). Use "next" when another field follows. */
@@ -59,6 +61,7 @@ export function Field({
   variant = 'box',
   unit,
   error,
+  errorIsAlert = false,
   note,
   enterKeyHint,
   rows,
@@ -124,7 +127,7 @@ export function Field({
         </span>
       </label>
       {error && (
-        <p id={errorId} className="field__error">
+        <p id={errorId} className="field__error" role={errorIsAlert ? 'alert' : undefined}>
           {error}
         </p>
       )}
