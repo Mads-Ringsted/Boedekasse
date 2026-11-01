@@ -1,4 +1,5 @@
 import { useMemo, useState, type FormEvent } from 'react';
+import { useBilleder } from '../billeder/BilledProvider.tsx';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Field } from '../components/Field.tsx';
@@ -34,6 +35,7 @@ const dansk = new Intl.Collator('da', { sensitivity: 'base' });
  */
 export function KonkurrenceSheet({ open, onOpenChange, konkurrence, onGemt }: KonkurrenceSheetProps) {
   const { bodekasseId, medlemId } = useBodekasse();
+  const { billede } = useBilleder();
   const hentet = useHent(
     () => Promise.all([hentRegler(bodekasseId), hentDeltagbare(bodekasseId)]),
     [bodekasseId],
@@ -176,7 +178,7 @@ export function KonkurrenceSheet({ open, onOpenChange, konkurrence, onGemt }: Ko
                     className="kny__person"
                     onClick={() => setRaekkefoelge((x) => tryk(x, d.medlemId))}
                   >
-                    <Avatar navn={d.navn} size={36} egen={d.medlemId === medlemId} stiplet={!d.loggetInd} />
+                    <Avatar navn={d.navn} size={36} egen={d.medlemId === medlemId} stiplet={!d.loggetInd} billede={billede(d.medlemId)} />
                     <span className="kny__navn">{navn(d)}</span>
                     <span className="kny__beloeb">{formatKr(gebyrForPlads(plads, regler.placeringer))}</span>
                   </button>
@@ -191,7 +193,7 @@ export function KonkurrenceSheet({ open, onOpenChange, konkurrence, onGemt }: Ko
                   className="kny__person"
                   onClick={() => setRaekkefoelge((x) => tryk(x, d.medlemId))}
                 >
-                  <Avatar navn={d.navn} size={36} egen={d.medlemId === medlemId} stiplet={!d.loggetInd} />
+                  <Avatar navn={d.navn} size={36} egen={d.medlemId === medlemId} stiplet={!d.loggetInd} billede={billede(d.medlemId)} />
                   <span className="kny__navn kny__navn--fravaer">{navn(d)}</span>
                   <span className="kny__fravaer">
                     {t('konkurrence.fravaerendeBeloeb', { beloeb: formatKr(regler.fravaersgebyr) })}

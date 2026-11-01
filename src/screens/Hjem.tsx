@@ -5,6 +5,7 @@ import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { SkiftBodekasseSheet } from '../bodekasse/SkiftBodekasseSheet.tsx';
 import { AfventerKort } from '../betal/AfventerKort.tsx';
 import { BetalSheet } from '../betal/BetalSheet.tsx';
+import { useBilleder } from '../billeder/BilledProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Screen } from '../components/Screen.tsx';
 import { useGivBoeder } from '../giv/GivBoederProvider.tsx';
@@ -29,6 +30,7 @@ import './hjem/Hjem.css';
  */
 export function Hjem() {
   const { bodekasseId, bodekasseNavn, medlemId, navn, erAdmin } = useBodekasse();
+  const { billede } = useBilleder();
   const navigate = useNavigate();
   const aabnProfil = useAabnProfil('tab.hjem');
   const [skifter, setSkifter] = useState(false);
@@ -67,7 +69,7 @@ export function Hjem() {
           aria-label={t('hjem.dinProfil')}
           onClick={() => aabnProfil(medlemId)}
         >
-          <Avatar navn={navn} egen />
+          <Avatar navn={navn} egen billede={billede(medlemId)} />
         </button>
       </header>
 

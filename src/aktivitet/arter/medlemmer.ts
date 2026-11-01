@@ -6,7 +6,7 @@ import type { Beskriver } from '../visning.ts';
 
 /** 'medlem_tilfoejet': an Admin (aktoer) added the Medlem (modtager). */
 export const medlemTilfoejet: Beskriver = (h, ctx) => ({
-  ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId },
+  ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId, medlemId: h.modtagerId },
   titel: t('aktivitet.medlemTilfoejet', {
     hvem: hvem(h.aktoerId, h.aktoerNavn, ctx),
     medlem: hvemObjekt(h.modtagerId, h.modtagerNavn, ctx),
@@ -17,7 +17,7 @@ export const medlemTilfoejet: Beskriver = (h, ctx) => ({
 
 /** 'medlem_tilmeldt': the Medlem (aktoer) joined with the code. */
 export const medlemTilmeldt: Beskriver = (h, ctx) => ({
-  ikon: { slags: 'avatar', navn: h.aktoerNavn ?? '', egen: h.aktoerId === ctx.migId },
+  ikon: { slags: 'avatar', navn: h.aktoerNavn ?? '', egen: h.aktoerId === ctx.migId, medlemId: h.aktoerId },
   titel: t('aktivitet.medlemTilmeldt', { hvem: hvem(h.aktoerId, h.aktoerNavn, ctx) }),
   linje: t('aktivitet.medlemTilmeldtLinje'),
   annulleret: false,
@@ -25,7 +25,7 @@ export const medlemTilmeldt: Beskriver = (h, ctx) => ({
 
 /** 'medlem_udmeldt': an Admin (aktoer) meldte the Medlem (modtager) ud. */
 export const medlemUdmeldt: Beskriver = (h, ctx) => ({
-  ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId },
+  ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId, medlemId: h.modtagerId },
   titel: t('aktivitet.medlemUdmeldt', {
     hvem: hvem(h.aktoerId, h.aktoerNavn, ctx),
     medlem: hvemObjekt(h.modtagerId, h.modtagerNavn, ctx),
@@ -36,7 +36,7 @@ export const medlemUdmeldt: Beskriver = (h, ctx) => ({
 
 /** 'medlem_genoptaget': an Admin (aktoer) brought the Medlem (modtager) back. */
 export const medlemGenoptaget: Beskriver = (h, ctx) => ({
-  ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId },
+  ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId, medlemId: h.modtagerId },
   titel: t('aktivitet.medlemGenoptaget', {
     hvem: hvem(h.aktoerId, h.aktoerNavn, ctx),
     medlem: hvemObjekt(h.modtagerId, h.modtagerNavn, ctx),

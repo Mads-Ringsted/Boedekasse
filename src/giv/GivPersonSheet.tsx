@@ -1,3 +1,4 @@
+import { useBilleder } from '../billeder/BilledProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { FrikobTag } from '../frikob/FrikobTag.tsx';
 import { Sheet, SheetTitle } from '../components/Sheet.tsx';
@@ -43,6 +44,7 @@ export function GivPersonSheet({
   sum,
 }: GivPersonSheetProps) {
   const luk = () => onOpenChange(false);
+  const { billede } = useBilleder();
   return (
     <Sheet
       open={open}
@@ -53,7 +55,7 @@ export function GivPersonSheet({
       header={
         <header className="giv-person__header">
           <span className="giv-person__hvem">
-            <Avatar navn={modtager.navn} stiplet={!modtager.loggetInd} />
+            <Avatar navn={modtager.navn} stiplet={!modtager.loggetInd} billede={billede(modtager.id)} />
             <span className="giv-person__navne">
               <span className="giv-person__kun">{t('giv.kunTil')}</span>
               <SheetTitle className="giv-person__navn">{modtager.kortNavn}</SheetTitle>

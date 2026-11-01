@@ -20,7 +20,7 @@ export const bodeAnnulleret: Beskriver = (h, ctx) => {
   };
   const bodeId = dataTekst(h, 'bode_id');
   return {
-    ikon: { slags: 'avatar', navn: h.aktoerNavn ?? '', egen: h.aktoerId === ctx.migId },
+    ikon: { slags: 'avatar', navn: h.aktoerNavn ?? '', egen: h.aktoerId === ctx.migId, medlemId: h.aktoerId },
     titel:
       h.data.engangsbode === true
         ? t('aktivitet.annulleredeEngangsboede', vaerdier)
@@ -56,7 +56,7 @@ export const gebyrAnnulleret: Beskriver = (h, ctx) => {
                 ? t('dosBonus.tag')
                 : t('aktivitet.gebyrAndet');
   return {
-    ikon: { slags: 'avatar', navn: h.aktoerNavn ?? '', egen: h.aktoerId === ctx.migId },
+    ikon: { slags: 'avatar', navn: h.aktoerNavn ?? '', egen: h.aktoerId === ctx.migId, medlemId: h.aktoerId },
     titel: t('aktivitet.annulleredeGebyr', {
       hvem: hvem(h.aktoerId, h.aktoerNavn, ctx),
       ejer: ejer(h.modtagerId, h.modtagerNavn, h.aktoerId, ctx, 't'),

@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { Check, Copy, X } from 'lucide-react';
+import { useBilleder } from '../billeder/BilledProvider.tsx';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Field } from '../components/Field.tsx';
@@ -33,6 +34,7 @@ const FORM_ID = 'betal';
  */
 export function BetalSheet({ open, onOpenChange, onAendret }: BetalSheetProps) {
   const { bodekasseId, medlemId, erAdmin } = useBodekasse();
+  const { billede } = useBilleder();
   const betal = useHent(() => hentBetal(bodekasseId, medlemId), [bodekasseId, medlemId]);
   const data = betal.status === 'ready' ? betal.data : null;
   const [beloeb, setBeloeb] = useState<string | null>(null);
@@ -137,7 +139,7 @@ export function BetalSheet({ open, onOpenChange, onAendret }: BetalSheetProps) {
               <ul className="betal__admins-liste">
                 {data.admins.map((a) => (
                   <li key={a.id} className="betal__admin">
-                    <Avatar navn={a.navn} size={36} egen={a.id === medlemId} />
+                    <Avatar navn={a.navn} size={36} egen={a.id === medlemId} billede={billede(a.id)} />
                     {a.navn}
                   </li>
                 ))}

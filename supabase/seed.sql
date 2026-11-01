@@ -29,16 +29,20 @@ values ('0e1a0000-0000-4000-8000-000000000001',
         'Sæson ' || extract(year from now() at time zone 'Europe/Copenhagen'));
 
 -- The claim trigger links each Medlem to the login with the same email.
-insert into public.medlem (bodekasse_id, navn, email, er_admin)
-select '0e1a0000-0000-4000-8000-000000000001', navn, email, er_admin
-  from (values ('Mads Ringsted',   'mads@example.com',      true),
-               ('Jonas Holm',      'jonas@example.com',     false),
-               ('Frederik Lund',   'frederik@example.com',  true),
-               ('Oliver Krogh',    'oliver@example.com',    false),
-               ('Emil Bach',       'emil@example.com',      false),
-               ('Kasper Nørgaard', 'kasper@example.com',    false),
-               ('Lucas Berg',      'lucas@example.com',     false),
-               ('Sebastian Juhl',  'sebastian@example.com', false)) m(navn, email, er_admin);
+-- Mads, Jonas and Frederik have fixed ids and a Profilbillede: `db reset`
+-- uploads the files in supabase/seed/profilbilleder/<bodekasse>/<medlem>/.
+insert into public.medlem (id, bodekasse_id, navn, email, er_admin, billede_sti)
+select coalesce(id, gen_random_uuid()), '0e1a0000-0000-4000-8000-000000000001', navn, email,
+       er_admin, case when billede is not null
+                      then '0e1a0000-0000-4000-8000-000000000001/' || id || '/' || billede end
+  from (values ('0e1a0000-0000-4000-8000-000000000101'::uuid, 'Mads Ringsted', 'mads@example.com', true, 'mads.webp'),
+               ('0e1a0000-0000-4000-8000-000000000102', 'Jonas Holm',      'jonas@example.com',     false, 'jonas.webp'),
+               ('0e1a0000-0000-4000-8000-000000000103', 'Frederik Lund',   'frederik@example.com',  true,  'frederik.webp'),
+               (null, 'Oliver Krogh',    'oliver@example.com',    false, null),
+               (null, 'Emil Bach',       'emil@example.com',      false, null),
+               (null, 'Kasper Nørgaard', 'kasper@example.com',    false, null),
+               (null, 'Lucas Berg',      'lucas@example.com',     false, null),
+               (null, 'Sebastian Juhl',  'sebastian@example.com', false, null)) m(id, navn, email, er_admin, billede);
 
 insert into public.bodekategori (bodekasse_id, navn, pris, beskrivelse, oprettet_af)
 select m.bodekasse_id, k.navn, k.pris, k.beskrivelse, m.id

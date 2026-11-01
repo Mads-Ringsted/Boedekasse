@@ -1461,14 +1461,14 @@ isOneToOne: false
                   ]
                 },"medlem": {
                   Row: {
-                    "bodekasse_id": string,"email": string | null,"er_admin": boolean,"er_kasserer": boolean,"id": string,"konto_slettet": string | null,"navn": string,"oprettet": string,"udmeldt": string | null,"user_id": string | null
+                    "billede_sti": string | null,"bodekasse_id": string,"email": string | null,"er_admin": boolean,"er_kasserer": boolean,"id": string,"konto_slettet": string | null,"navn": string,"oprettet": string,"udmeldt": string | null,"user_id": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "bodekasse_id": string,"email"?: string | null,"er_admin"?: boolean,"er_kasserer"?: boolean,"id"?: string,"konto_slettet"?: string | null,"navn": string,"oprettet"?: string,"udmeldt"?: string | null,"user_id"?: string | null
+                    "billede_sti"?: string | null,"bodekasse_id": string,"email"?: string | null,"er_admin"?: boolean,"er_kasserer"?: boolean,"id"?: string,"konto_slettet"?: string | null,"navn": string,"oprettet"?: string,"udmeldt"?: string | null,"user_id"?: string | null
                   }
                   Update: {
-                    "bodekasse_id"?: string,"email"?: string | null,"er_admin"?: boolean,"er_kasserer"?: boolean,"id"?: string,"konto_slettet"?: string | null,"navn"?: string,"oprettet"?: string,"udmeldt"?: string | null,"user_id"?: string | null
+                    "billede_sti"?: string | null,"bodekasse_id"?: string,"email"?: string | null,"er_admin"?: boolean,"er_kasserer"?: boolean,"id"?: string,"konto_slettet"?: string | null,"navn"?: string,"oprettet"?: string,"udmeldt"?: string | null,"user_id"?: string | null
                   }
                   Relationships: [
                     {
@@ -2762,6 +2762,9 @@ isOneToOne: false
 "find_bodekasse_med_kode":
 { Args: { "p_kode": string }; Returns: Json
                            },
+"fjern_mit_billede":
+{ Args: { "p_bodekasse": string,"p_klient_id": string }; Returns: Json
+                           },
 "forny_join_kode":
 { Args: { "p_bodekasse": string,"p_klient_id": string }; Returns: Json
                            },
@@ -2845,6 +2848,9 @@ isOneToOne: false
                            },
 "saet_kasserer":
 { Args: { "p_bodekasse": string,"p_er_kasserer": boolean,"p_klient_id": string,"p_medlem": string }; Returns: Json
+                           },
+"saet_mit_billede":
+{ Args: { "p_bodekasse": string,"p_klient_id": string,"p_sti": string }; Returns: Json
                            },
 "saet_push_praeference":
 { Args: { "p_art": Database["public"]['Enums']["push_art"],"p_til": boolean }; Returns: Json

@@ -4,7 +4,7 @@
 -- Later #74 tickets add their own default-box checks here.
 begin;
 \ir _hjaelpere.psql
-select plan(9);
+select plan(11);
 
 select tests.opret_bodekasse('Kasse A') as kasse \gset
 select tests.opret_medlem_med_login(:'kasse', 'Mads', true) as admin \gset
@@ -85,6 +85,14 @@ select results_eq(
 select is_empty(
   format($$ select 1 from public.gebyr where bodekasse_id = %L and annulleret_manuelt $$, :'kasse'),
   'no Gebyr in a default box is marked as annulled by hand');
+
+-- Profilbilleder (#100): nobody has a picture until they set one, so every
+-- avatar shows initials as before, and the new bucket is private.
+select is_empty(
+  format($$ select 1 from public.medlem where bodekasse_id = %L and billede_sti is not null $$, :'kasse'),
+  'no Medlem in a default box has a Profilbillede, so avatars show initials');
+select is((select public from storage.buckets where id = 'profilbilleder'), false,
+  'the Profilbillede bucket is private');
 
 select * from finish();
 rollback;

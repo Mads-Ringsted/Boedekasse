@@ -63,7 +63,7 @@ export const boederGivet: Beskriver = (h, ctx) => {
   }
 
   return {
-    ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId },
+    ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId, medlemId: h.modtagerId },
     titel,
     tag,
     linje: dele.join(' · '),
