@@ -4,6 +4,16 @@ How to switch on Web Push (#81) in production, and how to check it on a real pho
 
 Until you do this, nothing breaks. The database still writes pushes to its outbox, but it never calls the sender. The app shows "Notifikationer virker ikke på denne enhed" instead of "Slå notifikationer til".
 
+## The quick way
+
+Run the wizard from a checkout of `spec/74-v1` (or `main` once merged). It does the backup, the migrations, every step below and the phone checks, and asks before each production command:
+
+```bash
+scripts/ship-push-wizard.sh
+```
+
+It keeps the keys in `supabase/functions/.env.production.local` (gitignored). Keep a copy of that file with your backups.
+
 ## How it fits together
 
 1. An event (today: Bøder given) writes a row to `public.push_udbakke` in the same transaction.
