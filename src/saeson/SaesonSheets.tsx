@@ -1,6 +1,9 @@
 import { useState, type FormEvent } from 'react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
+import { Field } from '../components/Field.tsx';
+import { primaryAction, typedRequirement, visibleError } from '../components/field.ts';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { t } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
@@ -131,6 +134,10 @@ export function SlutdatoSheet({ open, onOpenChange }: SheetProps) {
   const start = saeson?.slutdato ?? '';
   const [dato, setDato] = useState(start);
   const resultat = tjekSlutdato(dato);
+  const handling = primaryAction(
+    [typedRequirement(dato, resultat.ok, t('aarsag.vaelgDato'), t('aarsag.retDato'))],
+    { busy, unchanged: dato === start },
+  );
 
   const gem = (slutdato: string | null) =>
     kald((id) =>
@@ -140,7 +147,7 @@ export function SlutdatoSheet({ open, onOpenChange }: SheetProps) {
 
   function submit(event: FormEvent) {
     event.preventDefault();
-    if (resultat.ok && dato !== start && !busy) void gem(resultat.vaerdi);
+    if (resultat.ok && handling.enabled) void gem(resultat.vaerdi);
   }
 
   return (
@@ -152,14 +159,9 @@ export function SlutdatoSheet({ open, onOpenChange }: SheetProps) {
       dirty={dato !== start}
       footer={
         <>
-          <button
-            type="submit"
-            form={SLUTDATO_FORM}
-            className="felt-knap"
-            disabled={!resultat.ok || dato === start || busy}
-          >
+          <SheetAction form={SLUTDATO_FORM} disabled={!handling.enabled} reason={handling.reason} error={fejl}>
             {t('indstillinger.gem')}
-          </button>
+          </SheetAction>
           {start !== '' && (
             <button type="button" className="saeson-fjern" disabled={busy} onClick={() => void gem(null)}>
               {t('saeson.fjernSlutdato')}
@@ -169,19 +171,15 @@ export function SlutdatoSheet({ open, onOpenChange }: SheetProps) {
       }
     >
       <form id={SLUTDATO_FORM} onSubmit={submit}>
-        <label className="felt">
-          <span className="felt__label">{t('saeson.slutdatoLabel')}</span>
-          <input
-            className="felt__input saeson-dato"
-            type="date"
-            min={iDagIKoebenhavn()}
-            value={dato}
-            onChange={(e) => setDato(e.target.value)}
-          />
-        </label>
-        {!resultat.ok && dato !== '' && <p className="felt-fejl">{resultat.fejl}</p>}
-        <p className="felt-note">{t('saeson.slutdatoNote')}</p>
-        <Fejl fejl={fejl} />
+        <Field
+          label={t('saeson.slutdatoLabel')}
+          kind="date"
+          min={iDagIKoebenhavn()}
+          value={dato}
+          onChange={setDato}
+          error={visibleError(dato, resultat.ok ? null : resultat.fejl)}
+          note={t('saeson.slutdatoNote')}
+        />
       </form>
     </Sheet>
   );

@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from 'react';
+import { Field } from '../components/Field.tsx';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { kortNavne } from '../giv/navne.ts';
 import { formatKr, t } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
@@ -54,9 +56,9 @@ export function AnnullerFrikobSheet({ open, onOpenChange, frikob, onAnnulleret }
       title={t('frikob.annullerTitel', { navn: frikob.bodekategoriNavn })}
       dirty={note !== ''}
       footer={
-        <button type="submit" form={FORM_ID} className="felt-knap frikob-annuller__knap" disabled={busy}>
+        <SheetAction form={FORM_ID} className="felt-knap frikob-annuller__knap" disabled={busy} error={fejl}>
           {t('frikob.annuller')}
-        </button>
+        </SheetAction>
       }
     >
       <form id={FORM_ID} onSubmit={(e) => void annuller(e)}>
@@ -67,15 +69,7 @@ export function AnnullerFrikobSheet({ open, onOpenChange, frikob, onAnnulleret }
             beloeb: formatKr(frikob.pris),
           })}
         </p>
-        <label className="felt">
-          <span className="felt__label">{t('frikob.note')}</span>
-          <input className="felt__input" value={note} onChange={(e) => setNote(e.target.value)} autoComplete="off" />
-        </label>
-        {fejl && (
-          <p className="felt-fejl" role="alert">
-            {fejl}
-          </p>
-        )}
+        <Field label={t('frikob.note')} value={note} onChange={setNote} />
       </form>
     </Sheet>
   );

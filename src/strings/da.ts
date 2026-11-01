@@ -556,6 +556,28 @@ export const da = {
   'sletKonto.sidsteAdmin': 'Du er eneste Admin i {kasser}. Gør en anden til Admin først, eller slet Bødekassen.',
   'fejl.navnPasserIkke': 'Navnet passer ikke. Skriv det præcis som Bødekassen hedder.',
 
+  // Why a sheet's primary action is off (SheetAction, #92)
+  'aarsag.skrivNavn': 'Skriv et navn.',
+  'aarsag.skrivGrund': 'Skriv hvorfor.',
+  'aarsag.skrivBeloeb': 'Skriv et beløb.',
+  'aarsag.retBeloeb': 'Ret beløbet.',
+  'aarsag.skrivPris': 'Skriv en pris.',
+  'aarsag.retPris': 'Ret prisen.',
+  'aarsag.skrivEmail': 'Skriv en email.',
+  'aarsag.retEmail': 'Ret emailen.',
+  'aarsag.vaelgDag': 'Vælg en dag.',
+  'aarsag.vaelgDato': 'Vælg en dato.',
+  'aarsag.placerDeltager': 'Tryk på mindst én deltager.',
+  'aarsag.retDato': 'Ret datoen.',
+  'aarsag.vaelgMedlem': 'Vælg et medlem.',
+  'aarsag.vaelgMedlemmer': 'Vælg mindst ét medlem.',
+  'aarsag.vaelgKategori': 'Vælg en bødekategori.',
+  'aarsag.skrivVaerdi': 'Skriv en værdi.',
+  'aarsag.retVaerdien': 'Ret værdien.',
+  'aarsag.retFelt': 'Ret feltet {felt}.',
+  'aarsag.skrivKassenavn': 'Skriv Bødekassens navn for at slette den.',
+  'aarsag.kassenavnPasserIkke': 'Navnet passer ikke endnu.',
+
   // General
   'fejl.ukendt': 'Noget gik galt. Prøv igen.',
   'fejl.navnMangler': 'Skriv et navn til Bødekassen.',

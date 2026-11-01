@@ -4,13 +4,6 @@
   color: var(--color-on-accent);
 }
 
-.saeson-dato {
-  appearance: none;
-  width: 100%;
-  box-sizing: border-box;
-  text-align: left;
-}
-
 .saeson-fjern {
   width: 100%;
   height: var(--size-button);

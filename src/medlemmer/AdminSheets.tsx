@@ -1,5 +1,8 @@
 import { useRef, useState, type FormEvent } from 'react';
+import { Field } from '../components/Field.tsx';
+import { primaryAction } from '../components/field.ts';
 import { Sheet } from '../components/Sheet.tsx';
+import { SheetAction } from '../components/SheetAction.tsx';
 import { t } from '../strings/index.ts';
 import { rpcErrorText } from '../supabase/rpcErrors.ts';
 import './felter.css';
@@ -89,7 +92,11 @@ export function RetFeltSheet({ open, onOpenChange, titel, label, type, start, no
   const [busy, setBusy] = useState(false);
   const [fejl, setFejl] = useState<string | null>(null);
   const felt = useRef<HTMLInputElement>(null);
-  const kanGemme = vaerdi.trim() !== '' && vaerdi.trim() !== start && !busy;
+  const handling = primaryAction([[vaerdi.trim() !== '', t(type === 'email' ? 'aarsag.skrivEmail' : 'aarsag.skrivNavn')]], {
+    busy,
+    unchanged: vaerdi.trim() === start,
+  });
+  const kanGemme = handling.enabled;
 
   async function gem(event: FormEvent) {
     event.preventDefault();
@@ -114,32 +121,20 @@ export function RetFeltSheet({ open, onOpenChange, titel, label, type, start, no
       initialFocus={felt}
       dirty={vaerdi !== start}
       footer={
-        <button type="submit" form={FORM_ID} className="felt-knap" disabled={!kanGemme}>
+        <SheetAction form={FORM_ID} disabled={!kanGemme} reason={handling.reason} error={fejl}>
           {t('adminHandlinger.gem')}
-        </button>
+        </SheetAction>
       }
     >
       <form id={FORM_ID} onSubmit={(e) => void gem(e)}>
-        <label className="felt">
-          <span className="felt__label">{label}</span>
-          <input
-            ref={felt}
-            className="felt__input"
-            type={type}
-            value={vaerdi}
-            onChange={(e) => setVaerdi(e.target.value)}
-            autoComplete="off"
-            autoCapitalize={type === 'email' ? 'none' : 'words'}
-            inputMode={type === 'email' ? 'email' : 'text'}
-            enterKeyHint="done"
-          />
-        </label>
-        {note && <p className="felt-note">{note}</p>}
-        {fejl && (
-          <p className="felt-fejl" role="alert">
-            {fejl}
-          </p>
-        )}
+        <Field
+          ref={felt}
+          label={label}
+          kind={type === 'email' ? 'email' : 'name'}
+          value={vaerdi}
+          onChange={setVaerdi}
+          note={note}
+        />
       </form>
     </Sheet>
   );

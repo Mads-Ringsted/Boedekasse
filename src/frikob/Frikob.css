@@ -52,35 +52,8 @@
   color: var(--color-text-muted);
 }
 
-.frikob__soeg {
+.field.frikob__soeg {
   margin: 14px 0 12px;
-  height: 44px;
-  border-radius: 12px;
-  background: var(--color-surface-raised);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 12px;
-  color: var(--color-text-muted);
-}
-
-.frikob__soeg input {
-  flex-grow: 1;
-  min-width: 0;
-  border: 0;
-  background: none;
-  color: var(--color-text);
-  font: inherit;
-  font-size: 16px;
-  outline: none;
-}
-
-.frikob__soeg input::placeholder {
-  color: var(--color-text-muted);
-}
-
-.frikob__fejl {
-  margin: 0 4px 10px;
 }
 
 .frikob-valg {
