@@ -113,3 +113,34 @@ export const senBetaling: Beskriver = (h, ctx) => {
       : {}),
   };
 };
+
+/**
+ * 'tilbagevendende' {navn, beloeb, dato} (#79): an occurrence on `dato` of
+ * the Tilbagevendende Gebyr `navn` charged the payer. An Admin may annul that
+ * one occurrence from the row while it stands.
+ */
+export const tilbagevendende: Beskriver = (h, ctx) => {
+  const beloeb = dataTal(h, 'beloeb');
+  return {
+    ikon: { slags: 'avatar', navn: h.modtagerNavn ?? '', egen: h.modtagerId === ctx.migId },
+    titel: t('aktivitet.fikTilbagevendende', {
+      hvem: hvem(h.modtagerId, h.modtagerNavn, ctx),
+      navn: dataTekst(h, 'navn'),
+    }),
+    linje: t('aktivitet.tilbagevendendeLinje', { dato: langDato(dataTekst(h, 'dato')) }),
+    beloeb: { tekst: formatKr(beloeb) },
+    annulleret: false,
+    ...(h.refId && h.modtagerId && !h.annullering
+      ? {
+          annullerGebyr: {
+            id: h.refId,
+            art: 'tilbagevendende',
+            beloeb,
+            medlemId: h.modtagerId,
+            medlemNavn: h.modtagerNavn ?? '',
+            annullering: null,
+          },
+        }
+      : {}),
+  };
+};

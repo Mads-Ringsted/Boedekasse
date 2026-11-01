@@ -669,14 +669,14 @@ isOneToOne: false
                   ]
                 },"gebyr": {
                   Row: {
-                    "anke_id": string | null,"annulleret": string | null,"annulleret_af": string | null,"annulleret_note": string | null,"art": Database["public"]['Enums']["gebyr_art"],"beloeb": number,"bode_id": string | null,"bodekasse_id": string,"bodekategori_id": string | null,"dos_batch_id": string | null,"dos_nr": number | null,"frikob_id": string | null,"id": string,"konkurrence_id": string | null,"medlem_id": string,"oprettet": string,"saeson_id": string,"udloeser": string | null
+                    "anke_id": string | null,"annulleret": string | null,"annulleret_af": string | null,"annulleret_note": string | null,"art": Database["public"]['Enums']["gebyr_art"],"beloeb": number,"bode_id": string | null,"bodekasse_id": string,"bodekategori_id": string | null,"dos_batch_id": string | null,"dos_nr": number | null,"frikob_id": string | null,"id": string,"konkurrence_id": string | null,"medlem_id": string,"oprettet": string,"saeson_id": string,"tilbagevendende_id": string | null,"udloeser": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "anke_id"?: string | null,"annulleret"?: string | null,"annulleret_af"?: string | null,"annulleret_note"?: string | null,"art": Database["public"]['Enums']["gebyr_art"],"beloeb": number,"bode_id"?: string | null,"bodekasse_id": string,"bodekategori_id"?: string | null,"dos_batch_id"?: string | null,"dos_nr"?: number | null,"frikob_id"?: string | null,"id"?: string,"konkurrence_id"?: string | null,"medlem_id": string,"oprettet"?: string,"saeson_id": string,"udloeser"?: string | null
+                    "anke_id"?: string | null,"annulleret"?: string | null,"annulleret_af"?: string | null,"annulleret_note"?: string | null,"art": Database["public"]['Enums']["gebyr_art"],"beloeb": number,"bode_id"?: string | null,"bodekasse_id": string,"bodekategori_id"?: string | null,"dos_batch_id"?: string | null,"dos_nr"?: number | null,"frikob_id"?: string | null,"id"?: string,"konkurrence_id"?: string | null,"medlem_id": string,"oprettet"?: string,"saeson_id": string,"tilbagevendende_id"?: string | null,"udloeser"?: string | null
                   }
                   Update: {
-                    "anke_id"?: string | null,"annulleret"?: string | null,"annulleret_af"?: string | null,"annulleret_note"?: string | null,"art"?: Database["public"]['Enums']["gebyr_art"],"beloeb"?: number,"bode_id"?: string | null,"bodekasse_id"?: string,"bodekategori_id"?: string | null,"dos_batch_id"?: string | null,"dos_nr"?: number | null,"frikob_id"?: string | null,"id"?: string,"konkurrence_id"?: string | null,"medlem_id"?: string,"oprettet"?: string,"saeson_id"?: string,"udloeser"?: string | null
+                    "anke_id"?: string | null,"annulleret"?: string | null,"annulleret_af"?: string | null,"annulleret_note"?: string | null,"art"?: Database["public"]['Enums']["gebyr_art"],"beloeb"?: number,"bode_id"?: string | null,"bodekasse_id"?: string,"bodekategori_id"?: string | null,"dos_batch_id"?: string | null,"dos_nr"?: number | null,"frikob_id"?: string | null,"id"?: string,"konkurrence_id"?: string | null,"medlem_id"?: string,"oprettet"?: string,"saeson_id"?: string,"tilbagevendende_id"?: string | null,"udloeser"?: string | null
                   }
                   Relationships: [
                     {
@@ -834,6 +834,12 @@ isOneToOne: false
       columns: ["bodekasse_id","saeson_id"]
 isOneToOne: false
       referencedRelation: "saeson_status"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
+      foreignKeyName: "gebyr_tilbagevendende_fkey"
+      columns: ["bodekasse_id","tilbagevendende_id"]
+isOneToOne: false
+      referencedRelation: "tilbagevendende"
       referencedColumns: ["bodekasse_id","id"]
     }
                   ]
@@ -1605,6 +1611,154 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "sidste_admin_kasse"
       referencedColumns: ["bodekasse_id"]
+    }
+                  ]
+                },"tilbagevendende": {
+                  Row: {
+                    "aendret": string,"beloeb": number,"bodekasse_id": string,"dag": number,"frekvens": Database["public"]['Enums']["tilbagevendende_frekvens"],"id": string,"navn": string,"oprettet": string,"oprettet_af": string,"stoppet": string | null,"stoppet_af": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "aendret"?: string,"beloeb": number,"bodekasse_id": string,"dag": number,"frekvens": Database["public"]['Enums']["tilbagevendende_frekvens"],"id"?: string,"navn": string,"oprettet"?: string,"oprettet_af": string,"stoppet"?: string | null,"stoppet_af"?: string | null
+                  }
+                  Update: {
+                    "aendret"?: string,"beloeb"?: number,"bodekasse_id"?: string,"dag"?: number,"frekvens"?: Database["public"]['Enums']["tilbagevendende_frekvens"],"id"?: string,"navn"?: string,"oprettet"?: string,"oprettet_af"?: string,"stoppet"?: string | null,"stoppet_af"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "tilbagevendende_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "bodekasse"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "tilbagevendende_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "bodekasse_saeson"
+      referencedColumns: ["bodekasse_id"]
+    },{
+      foreignKeyName: "tilbagevendende_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "kassen"
+      referencedColumns: ["bodekasse_id"]
+    },{
+      foreignKeyName: "tilbagevendende_bodekasse_id_fkey"
+      columns: ["bodekasse_id"]
+isOneToOne: false
+      referencedRelation: "sidste_admin_kasse"
+      referencedColumns: ["bodekasse_id"]
+    },{
+      foreignKeyName: "tilbagevendende_bodekasse_id_oprettet_af_fkey"
+      columns: ["bodekasse_id","oprettet_af"]
+isOneToOne: false
+      referencedRelation: "medlem"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
+      foreignKeyName: "tilbagevendende_bodekasse_id_oprettet_af_fkey"
+      columns: ["bodekasse_id","oprettet_af"]
+isOneToOne: false
+      referencedRelation: "medlem_saeson_tal"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "tilbagevendende_bodekasse_id_oprettet_af_fkey"
+      columns: ["bodekasse_id","oprettet_af"]
+isOneToOne: false
+      referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "tilbagevendende_bodekasse_id_oprettet_af_fkey"
+      columns: ["bodekasse_id","oprettet_af"]
+isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "tilbagevendende_bodekasse_id_oprettet_af_fkey"
+      columns: ["bodekasse_id","oprettet_af"]
+isOneToOne: false
+      referencedRelation: "topliste"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "tilbagevendende_bodekasse_id_stoppet_af_fkey"
+      columns: ["bodekasse_id","stoppet_af"]
+isOneToOne: false
+      referencedRelation: "medlem"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
+      foreignKeyName: "tilbagevendende_bodekasse_id_stoppet_af_fkey"
+      columns: ["bodekasse_id","stoppet_af"]
+isOneToOne: false
+      referencedRelation: "medlem_saeson_tal"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "tilbagevendende_bodekasse_id_stoppet_af_fkey"
+      columns: ["bodekasse_id","stoppet_af"]
+isOneToOne: false
+      referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "tilbagevendende_bodekasse_id_stoppet_af_fkey"
+      columns: ["bodekasse_id","stoppet_af"]
+isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "tilbagevendende_bodekasse_id_stoppet_af_fkey"
+      columns: ["bodekasse_id","stoppet_af"]
+isOneToOne: false
+      referencedRelation: "topliste"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    }
+                  ]
+                },"tilbagevendende_medlem": {
+                  Row: {
+                    "bodekasse_id": string,"medlem_id": string,"tilbagevendende_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "bodekasse_id": string,"medlem_id": string,"tilbagevendende_id": string
+                  }
+                  Update: {
+                    "bodekasse_id"?: string,"medlem_id"?: string,"tilbagevendende_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "tilbagevendende_medlem_bodekasse_id_medlem_id_fkey"
+      columns: ["bodekasse_id","medlem_id"]
+isOneToOne: false
+      referencedRelation: "medlem"
+      referencedColumns: ["bodekasse_id","id"]
+    },{
+      foreignKeyName: "tilbagevendende_medlem_bodekasse_id_medlem_id_fkey"
+      columns: ["bodekasse_id","medlem_id"]
+isOneToOne: false
+      referencedRelation: "medlem_saeson_tal"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "tilbagevendende_medlem_bodekasse_id_medlem_id_fkey"
+      columns: ["bodekasse_id","medlem_id"]
+isOneToOne: false
+      referencedRelation: "medlem_saldo"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "tilbagevendende_medlem_bodekasse_id_medlem_id_fkey"
+      columns: ["bodekasse_id","medlem_id"]
+isOneToOne: false
+      referencedRelation: "medlem_slet_grund"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "tilbagevendende_medlem_bodekasse_id_medlem_id_fkey"
+      columns: ["bodekasse_id","medlem_id"]
+isOneToOne: false
+      referencedRelation: "topliste"
+      referencedColumns: ["bodekasse_id","medlem_id"]
+    },{
+      foreignKeyName: "tilbagevendende_medlem_bodekasse_id_tilbagevendende_id_fkey"
+      columns: ["bodekasse_id","tilbagevendende_id"]
+isOneToOne: false
+      referencedRelation: "tilbagevendende"
+      referencedColumns: ["bodekasse_id","id"]
     }
                   ]
                 }
@@ -2650,6 +2804,9 @@ isOneToOne: false
 "opret_bodekategori":
 { Args: { "p_beskrivelse"?: string,"p_bodekasse": string,"p_klient_id": string,"p_navn": string,"p_pris": number }; Returns: Json
                            },
+"opret_tilbagevendende":
+{ Args: { "p_beloeb": number,"p_bodekasse": string,"p_dag": number,"p_frekvens": Database["public"]['Enums']["tilbagevendende_frekvens"],"p_klient_id": string,"p_medlemmer": (string)[],"p_navn": string }; Returns: Json
+                           },
 "push_fjern_abonnement":
 { Args: { "p_endpoint": string }; Returns: undefined
                            },
@@ -2680,6 +2837,9 @@ isOneToOne: false
 "ret_mit_navn":
 { Args: { "p_bodekasse": string,"p_klient_id": string,"p_navn": string }; Returns: Json
                            },
+"ret_tilbagevendende":
+{ Args: { "p_beloeb": number,"p_dag": number,"p_frekvens": Database["public"]['Enums']["tilbagevendende_frekvens"],"p_klient_id": string,"p_medlemmer": (string)[],"p_navn": string,"p_tilbagevendende": string }; Returns: Json
+                           },
 "saet_admin":
 { Args: { "p_bodekasse": string,"p_er_admin": boolean,"p_klient_id": string,"p_medlem": string }; Returns: Json
                            },
@@ -2704,6 +2864,9 @@ isOneToOne: false
 "start_saeson":
 { Args: { "p_bodekasse": string,"p_klient_id": string }; Returns: Json
                            },
+"stop_tilbagevendende":
+{ Args: { "p_klient_id": string,"p_tilbagevendende": string }; Returns: Json
+                           },
 "tilfoej_medlem":
 { Args: { "p_bodekasse": string,"p_email": string,"p_klient_id": string,"p_navn": string }; Returns: Json
                            },
@@ -2715,7 +2878,7 @@ isOneToOne: false
                            }
           }
           Enums: {
-            "anke_afgoerelse": "modtager_vandt"|"giver_vandt"|"ikke_afgjort","engangs_pris_mode": "fri"|"fast"|"loft","gebyr_art": "oprettelse"|"engangsbode"|"anke"|"frikob"|"placering"|"fravaer"|"dos_bonus"|"catch_up"|"sen_betaling"|"tilbagevendende","melding_status": "afventer"|"bekraeftet"|"afvist"|"trukket","push_art": "bode_modtaget"|"anke_afstemning"|"anke_resultat"|"betalingsmelding_venter"|"betaling_bekraeftet"|"automatisk_gebyr"|"betalingspaamindelse"
+            "anke_afgoerelse": "modtager_vandt"|"giver_vandt"|"ikke_afgjort","engangs_pris_mode": "fri"|"fast"|"loft","gebyr_art": "oprettelse"|"engangsbode"|"anke"|"frikob"|"placering"|"fravaer"|"dos_bonus"|"catch_up"|"sen_betaling"|"tilbagevendende","melding_status": "afventer"|"bekraeftet"|"afvist"|"trukket","push_art": "bode_modtaget"|"anke_afstemning"|"anke_resultat"|"betalingsmelding_venter"|"betaling_bekraeftet"|"automatisk_gebyr"|"betalingspaamindelse","tilbagevendende_frekvens": "uge"|"maaned"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -2831,7 +2994,7 @@ export type CompositeTypes<
 export const Constants = {
   "public": {
           Enums: {
-            "anke_afgoerelse": ["modtager_vandt", "giver_vandt", "ikke_afgjort"],"engangs_pris_mode": ["fri", "fast", "loft"],"gebyr_art": ["oprettelse", "engangsbode", "anke", "frikob", "placering", "fravaer", "dos_bonus", "catch_up", "sen_betaling", "tilbagevendende"],"melding_status": ["afventer", "bekraeftet", "afvist", "trukket"],"push_art": ["bode_modtaget", "anke_afstemning", "anke_resultat", "betalingsmelding_venter", "betaling_bekraeftet", "automatisk_gebyr", "betalingspaamindelse"]
+            "anke_afgoerelse": ["modtager_vandt", "giver_vandt", "ikke_afgjort"],"engangs_pris_mode": ["fri", "fast", "loft"],"gebyr_art": ["oprettelse", "engangsbode", "anke", "frikob", "placering", "fravaer", "dos_bonus", "catch_up", "sen_betaling", "tilbagevendende"],"melding_status": ["afventer", "bekraeftet", "afvist", "trukket"],"push_art": ["bode_modtaget", "anke_afstemning", "anke_resultat", "betalingsmelding_venter", "betaling_bekraeftet", "automatisk_gebyr", "betalingspaamindelse"],"tilbagevendende_frekvens": ["uge", "maaned"]
           }
         }
 } as const

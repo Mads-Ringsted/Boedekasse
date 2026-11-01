@@ -23,6 +23,7 @@ import {
 import { EngangsPrisSheet } from './EngangsPrisSheet.tsx';
 import { Gruppe, LinkRaekke, SwitchRaekke } from './raekker.tsx';
 import { RetIndstillingSheet, type RetIndhold, type Tjek } from './RetIndstillingSheet.tsx';
+import { TilbagevendendeGruppe } from './TilbagevendendeGruppe.tsx';
 import { useIndstillinger } from './useIndstillinger.ts';
 import './Indstillinger.css';
 
@@ -404,6 +405,8 @@ function IndstillingerSkaerm() {
               </>
             )}
           </Gruppe>
+
+          <TilbagevendendeGruppe />
 
           <Gruppe titel={t('indstillinger.saesonOgData')}>
             <SaesonRaekker />

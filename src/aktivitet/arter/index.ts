@@ -1,7 +1,7 @@
 import type { Beskriver } from '../visning.ts';
 import { ankeAfgjort, ankeIndgivet } from './anke.ts';
 import { bodeAnnulleret, gebyrAnnulleret } from './annulleringer.ts';
-import { catchUp, dosBonus, senBetaling } from './automatik.ts';
+import { catchUp, dosBonus, senBetaling, tilbagevendende } from './automatik.ts';
 import { boederGivet } from './boeder.ts';
 import { frikobAnnulleret, frikobKoebt } from './frikob.ts';
 import { bodekategoriArkiveret, bodekategoriOmpriset, bodekategoriOprettet } from './kategorier.ts';
@@ -49,4 +49,5 @@ export const ARTER: Record<string, Beskriver> = {
   catch_up: catchUp,
   dos_bonus: dosBonus,
   sen_betaling: senBetaling,
+  tilbagevendende,
 };
