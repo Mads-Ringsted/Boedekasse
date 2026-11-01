@@ -189,12 +189,12 @@
   color: var(--color-accent-text);
 }
 
-.frikob-valg__radio.tilb__boks,
-.frikob-valg__raekke--valgt .tilb__boks::after {
+.valg-liste__radio.tilb__boks,
+.valg-liste__raekke--valgt .tilb__boks::after {
   border-radius: 6px;
 }
 
-.frikob-valg__raekke--valgt .tilb__boks::after {
+.valg-liste__raekke--valgt .tilb__boks::after {
   border-radius: 2px;
 }
 

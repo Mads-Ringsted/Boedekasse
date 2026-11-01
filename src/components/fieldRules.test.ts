@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fieldKeyboard, primaryAction, typedRequirement, visibleError, type Requirement } from './field.ts';
+import { fieldKeyboard, primaryAction, typedRequirement, visibleError, type Requirement } from './fieldRules.ts';
 
 describe('fieldKeyboard (which keyboard a field opens)', () => {
   it('opens the number pad for whole kroner', () => {

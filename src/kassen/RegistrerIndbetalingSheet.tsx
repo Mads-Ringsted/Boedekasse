@@ -4,7 +4,7 @@ import { useBilleder } from '../billeder/BilledProvider.tsx';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Field } from '../components/Field.tsx';
-import { primaryAction, typedRequirement, visibleError } from '../components/field.ts';
+import { primaryAction, typedRequirement, visibleError } from '../components/fieldRules.ts';
 import { Sheet } from '../components/Sheet.tsx';
 import { SheetAction } from '../components/SheetAction.tsx';
 import { kortNavne } from '../giv/navne.ts';
@@ -59,7 +59,6 @@ export function RegistrerIndbetalingSheet({ open, onOpenChange, medlemId, onRegi
     ],
     { busy },
   );
-  const kanRegistrere = valgt && handling.enabled;
 
   function vaelg(b: Betaler) {
     setValgtId(b.id);
@@ -69,7 +68,7 @@ export function RegistrerIndbetalingSheet({ open, onOpenChange, medlemId, onRegi
 
   async function registrer(event: FormEvent) {
     event.preventDefault();
-    if (!kanRegistrere || kr === null) return;
+    if (!handling.enabled || !valgt || kr === null) return;
     setBusy(true);
     setFejl(null);
     const { error } = await supabase.rpc('registrer_indbetaling', {
@@ -99,7 +98,7 @@ export function RegistrerIndbetalingSheet({ open, onOpenChange, medlemId, onRegi
       dirty={beloeb !== null || note !== ''}
       footer={
         !vaelger && (
-          <SheetAction form={FORM_ID} disabled={!kanRegistrere} reason={handling.reason} error={fejl}>
+          <SheetAction form={FORM_ID} disabled={!handling.enabled} reason={handling.reason} error={fejl}>
             {kr !== null ? t('registrer.knap', { beloeb: formatKr(kr) }) : t('registrer.knapUdenBeloeb')}
           </SheetAction>
         )

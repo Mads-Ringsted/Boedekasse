@@ -3,7 +3,7 @@ import { useBilleder } from '../billeder/BilledProvider.tsx';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Avatar } from '../components/Avatar.tsx';
 import { Field } from '../components/Field.tsx';
-import { primaryAction } from '../components/field.ts';
+import { primaryAction } from '../components/fieldRules.ts';
 import { Sheet } from '../components/Sheet.tsx';
 import { SheetAction } from '../components/SheetAction.tsx';
 import { formatKr, t } from '../strings/index.ts';

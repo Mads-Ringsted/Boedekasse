@@ -1,6 +1,6 @@
 import { useId, type ReactNode, type Ref } from 'react';
 import { Search } from 'lucide-react';
-import { fieldKeyboard, type EnterKeyHint, type FieldKind } from './field.ts';
+import { fieldKeyboard, type EnterKeyHint, type FieldKind } from './fieldRules.ts';
 import './Field.css';
 
 interface FieldProps {

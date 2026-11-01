@@ -2,7 +2,7 @@ import { useRef, useState, type FormEvent } from 'react';
 import { Receipt } from 'lucide-react';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { Field } from '../components/Field.tsx';
-import { primaryAction, typedRequirement, visibleError } from '../components/field.ts';
+import { primaryAction, typedRequirement, visibleError } from '../components/fieldRules.ts';
 import { Sheet } from '../components/Sheet.tsx';
 import { SheetAction } from '../components/SheetAction.tsx';
 import { T } from '../components/T.tsx';
