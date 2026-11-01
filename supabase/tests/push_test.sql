@@ -144,12 +144,12 @@ select throws_ok('select public.push_hent_klar(10)', '42501', null, 'the app can
 select tests.log_ud();
 
 set local role service_role;
-select results_eq('select x ->> ''id'', x ->> ''titel'', x -> ''abonnementer'' from public.push_hent_klar(10) x',
+select results_eq('select x ->> ''id'', x ->> ''titel'', x -> ''abonnementer'' from jsonb_array_elements(public.push_hent_klar(10)) x',
   format($$ values (%L, 'Nu', '[{"endpoint": "https://push.example/kasper-1", "p256dh": "p1", "auth": "a1"},
                                {"endpoint": "https://push.example/kasper-2", "p256dh": "p2", "auth": "a2"}]'::jsonb) $$,
          :'klar_id'),
   'the sender gets due rows with every device of the login, not rows that must wait');
-select is_empty('select * from public.push_hent_klar(10)', 'a claimed row is not handed out twice');
+select is(public.push_hent_klar(10), '[]'::jsonb, 'a claimed row is not handed out twice');
 select public.push_marker(:'klar_id', null);
 select public.push_fjern_abonnement('https://push.example/kasper-2');
 reset role;
@@ -160,7 +160,7 @@ select is((select count(*)::int from public.push_abonnement where user_id = :'ka
 
 update public.push_udbakke set send_efter = now() where id = :'senere_id';
 set local role service_role;
-select is((select count(*)::int from public.push_hent_klar(10)), 1, 'a waiting row is due once its time comes');
+select is(jsonb_array_length(public.push_hent_klar(10)), 1, 'a waiting row is due once its time comes');
 select public.push_marker(:'senere_id', '410 Gone');
 reset role;
 select results_eq(format('select sendt, fejl from public.push_udbakke where id = %L', :'senere_id'),

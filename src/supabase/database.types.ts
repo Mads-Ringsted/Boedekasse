@@ -2654,7 +2654,7 @@ isOneToOne: false
 { Args: { "p_endpoint": string }; Returns: undefined
                            },
 "push_hent_klar":
-{ Args: { "p_max"?: number }; Returns: Json[]
+{ Args: { "p_max"?: number }; Returns: Json
                            },
 "push_marker":
 { Args: { "p_fejl"?: string,"p_id": number }; Returns: undefined

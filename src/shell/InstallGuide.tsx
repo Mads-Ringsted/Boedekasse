@@ -1,5 +1,6 @@
 import { ArrowDown, Share, SquarePlus } from 'lucide-react';
 import { T } from '../components/T.tsx';
+import { InstallerNotifikationerKort } from '../push/Notifikationer.tsx';
 import { t } from '../strings/index.ts';
 import './InstallGuide.css';
 
@@ -42,6 +43,10 @@ export function InstallGuide() {
       </ol>
 
       <p className="install__req">{t('installer.krav')}</p>
+
+      <div className="install__notif">
+        <InstallerNotifikationerKort />
+      </div>
 
       <p className="install__pointer">
         {t('installer.delKnappen')}

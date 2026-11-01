@@ -89,6 +89,8 @@ const BY_KEY: Record<string, PlainStringId> = {
   allerede_afgjort: 'fejl.alleredeAfgjort',
   anke_ikke_afgjort: 'fejl.ankeIkkeAfgjort',
   samme_afgoerelse: 'fejl.sammeAfgoerelse',
+  // Push (#81)
+  abonnement_ugyldigt: 'fejl.abonnementUgyldigt',
 };
 
 /**

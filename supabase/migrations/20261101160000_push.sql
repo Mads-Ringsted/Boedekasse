@@ -305,15 +305,13 @@ grant execute on function public.saet_push_praeference(public.push_art, boolean)
 
 -- ---------- RPCs for the sender (service_role only) ----------
 
--- Claims up to p_max due rows and returns them with the login's subscriptions:
--- {id, titel, tekst, url, art, abonnementer: [{endpoint, p256dh, auth}]}.
+-- Claims up to p_max due rows and returns them, with the login's subscriptions,
+-- as one JSON array of {id, titel, tekst, url, art, abonnementer: [{endpoint, p256dh, auth}]}.
 -- A row is due when unsent, not failed, past send_efter and not claimed in the
 -- last 5 minutes. Concurrent runs never get the same row.
 create function public.push_hent_klar(p_max int default 50)
-returns setof jsonb
-language plpgsql volatile security definer set search_path = '' as $$
-begin
-  return query
+returns jsonb
+language sql volatile security definer set search_path = '' as $$
   with klar as (
     select id from public.push_udbakke
      where sendt is null and fejl is null and send_efter <= now()
@@ -326,15 +324,15 @@ begin
       from klar where u.id = klar.id
     returning u.*
   )
-  select jsonb_build_object(
+  select coalesce(jsonb_agg(jsonb_build_object(
            'id', t.id, 'art', t.art, 'titel', t.titel, 'tekst', t.tekst, 'url', t.url,
            'abonnementer', coalesce(
              (select jsonb_agg(jsonb_build_object('endpoint', a.endpoint, 'p256dh', a.p256dh,
                                                   'auth', a.auth) order by a.oprettet)
                 from public.push_abonnement a where a.user_id = t.user_id),
-             '[]'::jsonb))
-    from taget t order by t.id;
-end $$;
+             '[]'::jsonb)) order by t.id), '[]'::jsonb)
+    from taget t
+$$;
 
 -- Marks a claimed row done: sent when p_fejl is null, else failed with it.
 create function public.push_marker(p_id bigint, p_fejl text default null)
