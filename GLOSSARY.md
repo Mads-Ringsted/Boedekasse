@@ -73,11 +73,11 @@ An automatic Gebyr given on the 1st of each month to the Medlemmer with the lowe
 _Avoid_: Minimumsgebyr
 
 **Sen betaling** (Late payment):
-An automatic Gebyr for each day after the Betalingsdag that a Medlem still hasn't paid what they owed at the end of last month. A Betalingsmelding stops it from the day it is reported.
+An automatic Gebyr, charged at 09:00 each day after the Betalingsdag, while a Medlem still hasn't paid what they owed 2 days before the end of last month. Bøder and Gebyrer from the last 2 days of a month wait for the next month's payment. A Betalingsmelding stops it from when it is reported.
 _Avoid_: Rykkergebyr, strafrente
 
 **Betalingsdag** (Payment day):
-The day of the month by which each Medlem pays what they owed at the end of the previous month.
+The day of the month by which each Medlem pays what they owed 2 days before the end of the previous month.
 _Avoid_: Deadline, forfaldsdag
 
 **Betalingspåmindelse** (Payment reminder):

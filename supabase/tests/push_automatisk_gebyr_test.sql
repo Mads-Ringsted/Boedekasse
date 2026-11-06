@@ -88,13 +88,13 @@ select tests.opret_medlem_med_login(:'sen', 'Dan') as dan \gset
 update public.bodekasse set sen_betaling_til = true, betalingsdag = 5, sen_betaling_beloeb = 25 where id = :'sen';
 select tests.bode_givet(:'eva', :'dan', 100, '2026-01-20 20:00 Europe/Copenhagen');
 
-select private.koer_automatik('2026-02-08 00:30 Europe/Copenhagen');
+select private.koer_automatik('2026-02-08 09:00 Europe/Copenhagen');
 select results_eq(
   format($$ select navn, titel, tekst from tests.gebyr_push(%L) $$, :'sen'),
   $$ values ('Dan', '3 nye gebyrer i Sen holdet', 'Sen betaling ×3 · 75 kr') $$,
   'three late days charged in one run give one push');
 
-select private.koer_automatik('2026-02-09 00:30 Europe/Copenhagen');
+select private.koer_automatik('2026-02-09 09:00 Europe/Copenhagen');
 select results_eq(
   format($$ select navn, titel, tekst from tests.gebyr_push(%L) $$, :'sen'),
   $$ values ('Dan', '3 nye gebyrer i Sen holdet', 'Sen betaling ×3 · 75 kr'),
