@@ -61,6 +61,8 @@
   --color-chart-bar: #E3E6EE;       /* a bar that isn't picked out */
   --color-klovn-naese: #FF4D5A;     /* the clown makeover only */
   --color-klovn-glans: #FFB3B9;
+  --color-klovn-hat: #E8343F;       /* the clown hat's red stripes */
+  --color-klovn-kvast: #FFD84D;     /* the clown hat's pompom */
 
   /* Type */
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;

@@ -1,6 +1,38 @@
 import { StatAvatar } from './dele.tsx';
 
 /**
+ * A party-style clown hat: red and white stripes fanning out from the tip,
+ * a scalloped bottom edge and a yellow pompom. Drawn with its tip at
+ * (cx, top) and its bottom edge at y = bund, `bredde` wide.
+ */
+function Hat({ cx, top, bund, bredde }: { cx: number; top: number; bund: number; bredde: number }) {
+  const striber = 5;
+  const venstre = cx - bredde / 2;
+  const del = bredde / striber;
+  const bue = del * 0.45;
+  const kvast = bredde * 0.2;
+  return (
+    <g>
+      {Array.from({ length: striber }, (_, i) => {
+        const x1 = venstre + i * del;
+        const x2 = x1 + del;
+        return (
+          <path
+            key={i}
+            d={`M${cx} ${top} L${x1} ${bund} Q${(x1 + x2) / 2} ${bund + bue} ${x2} ${bund} Z`}
+            fill={i % 2 === 0 ? 'var(--color-klovn-hat)' : '#FFFFFF'}
+            stroke="var(--color-klovn-hat)"
+            strokeWidth={bredde * 0.012}
+            strokeLinejoin="round"
+          />
+        );
+      })}
+      <circle cx={cx} cy={top} r={kvast} fill="var(--color-klovn-kvast)" />
+    </g>
+  );
+}
+
+/**
  * A Medlem's avatar with the Barometer's clown makeover: 1 = full clown
  * (rainbow wig, hat, red nose, smile), 2 = hat and nose, 3 = nose, 0 = none.
  * `size` is the avatar's diameter; the hat and wig stick out around it.
@@ -23,12 +55,7 @@ export function KlovnAvatar({ medlemId, niveau, size }: { medlemId: string; nive
           <StatAvatar medlemId={medlemId} size={size} />
         </span>
         <svg className="klovn__lag" width={150 * k} height={138 * k} viewBox="0 0 150 138" aria-hidden="true">
-          <polygon points="75,0 98,42 52,42" fill="var(--color-guld)" />
-          <circle cx="70" cy="22" r="3" fill="#FFFFFF" />
-          <circle cx="81" cy="32" r="3" fill="#FFFFFF" />
-          <circle cx="64" cy="36" r="3" fill="#FFFFFF" />
-          <circle cx="75" cy="2" r="7" fill="#FFFFFF" />
-          <rect x="48" y="38" width="54" height="8" rx="4" fill="#FFFFFF" />
+          <Hat cx={75} top={6} bund={46} bredde={30} />
           <circle cx="75" cy="92" r="11" fill="var(--color-klovn-naese)" />
           <circle cx="72" cy="89" r="3" fill="var(--color-klovn-glans)" />
           <path d="M58 106 Q75 118 92 106" fill="none" stroke="var(--color-klovn-naese)" strokeWidth="4" strokeLinecap="round" />
@@ -45,9 +72,7 @@ export function KlovnAvatar({ medlemId, niveau, size }: { medlemId: string; nive
           <StatAvatar medlemId={medlemId} size={size} />
         </span>
         <svg className="klovn__lag" width={44 * k} height={56 * k} viewBox="0 0 44 56" aria-hidden="true">
-          <polygon points="22,1 32,17 12,17" fill="var(--color-guld)" />
-          <circle cx="22" cy="2" r="3" fill="#FFFFFF" />
-          <rect x="10" y="15" width="24" height="4" rx="2" fill="#FFFFFF" />
+          <Hat cx={22} top={4} bund={19} bredde={14} />
           <circle cx="22" cy="40" r="5" fill="var(--color-klovn-naese)" />
         </svg>
       </span>
