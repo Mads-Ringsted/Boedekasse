@@ -215,6 +215,14 @@ export const da = {
   'mere.skift': 'Skift Bødekasse',
   'mere.sletKonto': 'Slet konto',
 
+  // Mere → Udseende (per device)
+  'udseende.titel': 'Udseende',
+  'udseende.beskrivelse': 'Vælg lyst eller mørkt udseende på denne enhed.',
+  'udseende.auto': 'Automatisk',
+  'udseende.autoHint': 'Følger telefonen',
+  'udseende.lys': 'Lys',
+  'udseende.moerk': 'Mørk',
+
   // Medlem profile (yours and others')
   'profil.manglerAtBetale': 'Mangler at betale',
   'profil.mangler': 'Mangler',
