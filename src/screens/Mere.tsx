@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { ArrowLeftRight, Bell, ChevronRight, Coins, LogOut, Scale, Settings, Trophy, Users, type LucideIcon } from 'lucide-react';
+import { ArrowLeftRight, Bell, ChevronRight, Coins, LogOut, Scale, Settings, Tag, Trophy, Users, type LucideIcon } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { hentAntalAabneAnker } from '../anke/hentAnke.ts';
 import { useAuth } from '../auth/AuthProvider.tsx';
@@ -18,7 +18,12 @@ import './Mere.css';
 
 /** The numbers shown at the end of Mere's rows. */
 async function hentMere(bodekasseId: string) {
-  const [medlemmer, kassen, kasse, aabneAnker] = await Promise.all([
+  const [kategorier, medlemmer, kassen, kasse, aabneAnker] = await Promise.all([
+    supabase
+      .from('bodekategori')
+      .select('id', { count: 'exact', head: true })
+      .eq('bodekasse_id', bodekasseId)
+      .is('arkiveret', null),
     supabase
       .from('medlem')
       .select('id', { count: 'exact', head: true })
@@ -28,10 +33,12 @@ async function hentMere(bodekasseId: string) {
     supabase.from('bodekasse').select('konkurrence_til').eq('id', bodekasseId).maybeSingle(),
     hentAntalAabneAnker(bodekasseId),
   ]);
+  if (kategorier.error) throw kategorier.error;
   if (medlemmer.error) throw medlemmer.error;
   if (kassen.error) throw kassen.error;
   if (kasse.error) throw kasse.error;
   return {
+    antalKategorier: kategorier.count ?? 0,
     antalMedlemmer: medlemmer.count ?? 0,
     iBoedekassen: kassen.data?.beloeb ?? 0,
     konkurrencer: kasse.data?.konkurrence_til ?? false,
@@ -45,12 +52,14 @@ interface RowProps {
   onClick: () => void;
   /** Shown before the chevron: a count, an amount or a tag. */
   trailing?: ReactNode;
+  /** Blue icon tile (Bødekategorier, the box's own rules). */
+  fremhaevet?: boolean;
 }
 
-function Row({ Icon, label, onClick, trailing }: RowProps) {
+function Row({ Icon, label, onClick, trailing, fremhaevet = false }: RowProps) {
   return (
     <button type="button" className="mere__row" onClick={onClick}>
-      <span className="mere__icon">
+      <span className={`mere__icon${fremhaevet ? ' mere__icon--fremhaevet' : ''}`}>
         <Icon size={18} strokeWidth={2} aria-hidden="true" />
       </span>
       <span className="mere__label">{t(label)}</span>
@@ -88,6 +97,13 @@ export function Mere() {
       </button>
 
       <div className="mere__gruppe">
+        <Row
+          Icon={Tag}
+          label="mere.kategorier"
+          fremhaevet
+          onClick={() => void navigate('/kategorier')}
+          trailing={data && <span className="mere__vaerdi">{data.antalKategorier}</span>}
+        />
         <Row
           Icon={Users}
           label="mere.medlemmer"

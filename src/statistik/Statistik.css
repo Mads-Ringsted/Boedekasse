@@ -1,0 +1,1006 @@
+/* ---------- Statistik ---------- */
+
+/* Title, period pill and segments stay put while the cards scroll. */
+.stat-top {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  margin: calc(-16px - env(safe-area-inset-top)) -16px 0;
+  padding: calc(env(safe-area-inset-top) + 16px) 16px 10px;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stat-top__raekke {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-right: 4px;
+}
+
+.stat-periode {
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 17px;
+  background: var(--color-surface);
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.stat-periode svg {
+  color: var(--color-text-muted);
+}
+
+.stat-faner {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  background: var(--color-surface);
+  border-radius: 12px;
+  padding: 3px;
+}
+
+.stat-faner__fane {
+  height: 36px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.stat-faner__fane[aria-selected='true'] {
+  background: var(--color-fill-strong);
+  color: var(--color-text);
+}
+
+.stat-indhold {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ---------- Colours ---------- */
+.stat-farve--rose {
+  background: var(--color-rose);
+}
+.stat-farve--blaa {
+  background: var(--color-accent);
+}
+.stat-tekst--rose {
+  color: var(--color-rose);
+}
+.stat-tekst--blaa {
+  color: var(--color-accent-text);
+}
+.stat-tekst--groen {
+  color: var(--color-success);
+}
+.stat-tekst--graa {
+  color: var(--color-text-secondary);
+}
+
+.stat-dim {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+.stat-dim--lille {
+  font-size: 12px;
+}
+.stat-lille-tekst {
+  font-size: 13px;
+}
+
+/* ---------- Cards ---------- */
+.stat-kort {
+  width: 100%;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.stat-kort--liste {
+  gap: 10px;
+}
+.stat-kort--luft {
+  gap: 12px;
+}
+.stat-kort--taet {
+  padding: 12px 16px;
+  gap: 8px;
+}
+.stat-kort--stor {
+  border-radius: 22px;
+  padding: 16px;
+  gap: 12px;
+}
+.stat-kort--tabel {
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+}
+
+.stat-kort__titel {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+
+.stat-kort__titel-tekst {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.stat-kort__link {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 13px;
+  color: var(--color-accent-text);
+  align-self: center;
+}
+
+.stat-kort__ekstra {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.stat-to {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.stat-to--luft {
+  gap: 16px;
+}
+
+.stat-tom {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  padding: 4px 0;
+}
+
+/* Fået / Givet */
+.stat-tal__label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+.stat-prik {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+}
+.stat-tal__antal {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+}
+.stat-tal__kr {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.stat-split {
+  display: flex;
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+  gap: 2px;
+}
+
+/* Nemesis / Skydeskive tiles */
+.stat-person {
+  padding: 14px;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+.stat-person--rose {
+  background: var(--color-rose-tint);
+  box-shadow: inset 0 0 0 1px var(--color-rose-line);
+}
+.stat-person--rose .stat-person__rolle {
+  color: var(--color-rose);
+}
+.stat-person--blaa {
+  background: var(--color-accent-tint);
+  box-shadow: inset 0 0 0 1px var(--color-accent-tint-line);
+}
+.stat-person--blaa .stat-person__rolle {
+  color: var(--color-accent-text);
+}
+.stat-person__rolle {
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.stat-person__navn {
+  font-size: 16px;
+  font-weight: 600;
+}
+.stat-person__under {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* Simple bars */
+.stat-bjaelke {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  font-size: 14px;
+}
+.stat-bjaelke__label {
+  width: 64px;
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.stat-bjaelke--bred .stat-bjaelke__label {
+  width: 120px;
+}
+.stat-bjaelke__spor {
+  flex-grow: 1;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--color-bg);
+  display: flex;
+}
+.stat-bjaelke__fyld {
+  border-radius: 4px;
+}
+.stat-bjaelke__tal {
+  min-width: 18px;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* ---------- Pushed pages ---------- */
+.stat-side__hoved {
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.stat-side__titel {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+.stat-side__under {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.stat-stort {
+  border-radius: 22px;
+  padding: 16px;
+  gap: 12px;
+}
+.stat-stort--rose {
+  background: var(--color-rose-tint);
+  box-shadow: inset 0 0 0 1px var(--color-rose-line);
+}
+.stat-stort--blaa {
+  background: var(--color-accent-tint);
+  box-shadow: inset 0 0 0 1px var(--color-accent-tint-line);
+}
+.stat-stort__top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.stat-stort__tekst {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.stat-stort__rolle {
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+.stat-stort__navn {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+.stat-stort__under {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+.stat-stort__mellem {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.stat-stort__mellem-tekst {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+.stat-stort__linje {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+.stat-stort__linje strong {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.stat-ring {
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+}
+.stat-ring--rose {
+  box-shadow: 0 0 0 3px var(--color-rose);
+}
+
+.stat-skive {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.stat-skive svg {
+  position: absolute;
+  inset: 0;
+}
+
+.stat-knap {
+  height: 46px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.stat-knap--rose {
+  background: var(--color-rose);
+  color: var(--color-on-rose);
+}
+.stat-knap--pille {
+  height: 40px;
+  margin-top: 6px;
+  padding: 0 18px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.stat-fliser {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.stat-flise {
+  border-radius: 12px;
+  background: var(--color-bg);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.stat-flise__label {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+.stat-flise__vaerdi {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+/* Butterfly chart */
+.stat-sommerfugl {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 76px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+.stat-sommerfugl--bred {
+  grid-template-columns: minmax(0, 1fr) 100px minmax(0, 1fr);
+}
+.stat-sommerfugl--hoved {
+  font-size: 12px;
+}
+.stat-sommerfugl__venstre {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+}
+.stat-sommerfugl__hoejre {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.stat-sommerfugl__bar {
+  height: 14px;
+  border-radius: 4px;
+}
+.stat-sommerfugl__midte {
+  text-align: center;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.stat-sommerfugl--bred .stat-sommerfugl__midte {
+  white-space: normal;
+  font-size: 12px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.stat-sommerfugl__nul {
+  color: var(--color-text-faint);
+}
+
+.stat-rolle {
+  padding: 12px 14px;
+  gap: 6px;
+}
+.stat-rolle__rolle {
+  font-size: 12px;
+  font-weight: 600;
+}
+.stat-rolle__person {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.stat-rolle__navn {
+  font-size: 15px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.stat-rolle__under {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.stat-lille {
+  border-radius: 16px;
+  padding: 12px 14px;
+}
+.stat-lille__label {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+.stat-lille__vaerdi {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ---------- Holdet ---------- */
+.stat-tabel__hoved {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 14px 16px 4px;
+}
+.stat-tabel__hoved--flad {
+  padding: 0;
+}
+.stat-tabel__tom {
+  padding: 4px 16px 12px;
+}
+
+.stat-rang {
+  padding: 8px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.stat-rang__linje {
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+}
+.stat-rang__nr {
+  width: 14px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+.stat-rang__nr--1 {
+  color: var(--color-rose);
+}
+.stat-rang__nr--2 {
+  color: var(--color-text-secondary);
+}
+.stat-rang__navn {
+  flex-grow: 1;
+  min-width: 0;
+}
+.stat-rang__spor {
+  margin-left: 24px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-bg);
+  display: flex;
+}
+.stat-rang__fyld {
+  border-radius: 3px;
+}
+
+.stat-fold {
+  height: 44px;
+  margin-top: 4px;
+  border-top: 1px solid var(--color-line);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-accent-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-callout {
+  border-radius: 14px;
+  background: var(--color-bg);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.stat-callout__ikon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--color-rose-tint);
+  color: var(--color-rose);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.stat-callout__tekst {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.stat-callout__label {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+.stat-callout__vaerdi {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.stat-graf__label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  padding-top: 4px;
+}
+.stat-graf__label--luft {
+  padding-top: 8px;
+}
+
+.stat-soejler {
+  display: grid;
+  align-items: end;
+  height: 80px;
+}
+.stat-soejler--7 {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+.stat-soejler--24 {
+  grid-template-columns: repeat(24, minmax(0, 1fr));
+  gap: 2px;
+}
+.stat-soejle {
+  border-radius: 5px 5px 2px 2px;
+  background: var(--color-chart-bar);
+}
+.stat-soejle--tynd {
+  border-radius: 2px;
+}
+.stat-soejle--top {
+  background: var(--color-accent);
+}
+
+.stat-akse {
+  display: grid;
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+.stat-akse--7 {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+  text-align: center;
+}
+.stat-akse--4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.stat-akse--spredt {
+  display: flex;
+  justify-content: space-between;
+}
+.stat-akse--valgt {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.stat-top3 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+.stat-top3__label {
+  font-size: 12px;
+  font-weight: 600;
+}
+.stat-top3__raekke {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.stat-top3__navn {
+  flex-grow: 1;
+  min-width: 0;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.stat-top3__tal {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Scrolls sideways, edge to edge of the card. */
+.stat-rul {
+  overflow-x: auto;
+  margin: 0 -16px;
+  padding: 0 16px;
+  scrollbar-width: none;
+}
+.stat-rul::-webkit-scrollbar {
+  display: none;
+}
+.stat-rul svg {
+  display: block;
+}
+
+.stat-chips {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  margin: 0 -16px;
+  padding: 0 16px;
+  scrollbar-width: none;
+}
+.stat-chips::-webkit-scrollbar {
+  display: none;
+}
+.stat-chip {
+  flex-shrink: 0;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 17px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+}
+.stat-chip[aria-pressed='true'] {
+  background: var(--color-rose);
+  color: var(--color-on-rose);
+}
+
+.stat-stak {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 10px;
+  align-items: end;
+  height: 176px;
+}
+.stat-stak__uge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  height: 100%;
+}
+.stat-stak__total {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+.stat-stak__total--top {
+  color: var(--color-text);
+}
+.stat-stak__soejle {
+  width: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 2px;
+}
+.stat-stak__del {
+  width: 100%;
+  border-radius: 3px;
+}
+.stat-stak__label {
+  font-size: 10px;
+  color: var(--color-text-muted);
+}
+.stat-stak--blaa {
+  background: var(--color-accent);
+}
+.stat-stak--blaa-lys {
+  background: var(--color-accent-text);
+}
+.stat-stak--groen {
+  background: var(--color-success);
+}
+.stat-stak--graa-lys {
+  background: var(--color-text-secondary);
+}
+.stat-stak--andre {
+  background: var(--color-line-strong);
+}
+
+.stat-forklaring {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+.stat-forklaring__punkt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.stat-forklaring__farve {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.stat-rival {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+.stat-rival__avatarer,
+.stat-stablede {
+  display: flex;
+  flex-shrink: 0;
+}
+.stat-rival__avatarer > .avatar,
+.stat-stablede > .avatar {
+  box-shadow: 0 0 0 2px var(--color-surface);
+}
+.stat-rival__avatarer > .avatar + .avatar {
+  margin-left: -10px;
+}
+.stat-stablede > .avatar + .avatar {
+  margin-left: -8px;
+}
+.stat-rival__tekst {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+/* ---------- Barometer ---------- */
+.stat-klovn {
+  border-radius: 22px;
+  background: var(--color-rose-tint);
+  box-shadow: inset 0 0 0 1px var(--color-rose-line);
+  padding: 18px 16px 16px;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+.stat-klovn__titel {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-rose);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+.stat-klovn__navn {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+.stat-klovn__under {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.klovn {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.klovn__lag {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.klovn__avatar {
+  position: absolute;
+  display: flex;
+}
+/* Initials sit high, so the nose doesn't cover them. */
+.klovn .avatar:not(.avatar--billede) {
+  align-items: flex-start;
+  padding-top: 15%;
+}
+.klovn__naese {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--color-klovn-naese);
+}
+
+.stat-termo-kort {
+  border-radius: 22px;
+  padding: 16px;
+  gap: 8px;
+}
+.stat-termo__label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-rose);
+  padding-left: 4px;
+}
+.stat-termo {
+  position: relative;
+}
+.stat-termo__roer {
+  position: absolute;
+  left: 14px;
+  top: 0;
+  bottom: 0;
+  width: 18px;
+  border-radius: 9px;
+  background: var(--color-bg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.stat-termo__fyld {
+  background: var(--color-rose);
+  border-radius: 9px;
+}
+.stat-termo__kugle {
+  position: absolute;
+  left: 6px;
+  bottom: -6px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-rose);
+}
+.stat-termo__raekke {
+  position: absolute;
+  left: 48px;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.stat-termo__streg {
+  width: 18px;
+  flex-shrink: 0;
+  border-top: 2px dotted var(--color-text-faint);
+}
+.stat-termo__gruppe {
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--color-text-muted);
+}
+.stat-termo__tekst {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.stat-termo__navn {
+  font-size: 15px;
+  font-weight: 600;
+}
+.stat-termo__navn--top {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.stat-linje {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+}
+.stat-linje + .stat-linje {
+  border-top: 1px solid var(--color-line);
+}
+.stat-tabel__hoved + .stat-linje {
+  padding-top: 8px;
+}
+.stat-linje__tekst {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.stat-linje__navn {
+  font-size: 15px;
+  font-weight: 500;
+}
+.stat-linje__vaerdi {
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ---------- Rekorder ---------- */
+.stat-rekord__ikon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background: var(--color-fill);
+  color: var(--color-rose);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.stat-kassen__ialt {
+  font-size: 15px;
+  font-weight: 700;
+}
+.stat-kassen__graf {
+  width: 100%;
+  height: 80px;
+  display: block;
+}

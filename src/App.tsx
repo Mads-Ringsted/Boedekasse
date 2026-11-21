@@ -9,6 +9,8 @@ import { Kassen } from './kassen/Kassen.tsx';
 import { Gebyrer } from './indstillinger/Gebyrer.tsx';
 import { Indstillinger } from './indstillinger/Indstillinger.tsx';
 import { Kategorier } from './kategorier/Kategorier.tsx';
+import { Statistik, StatistikFaner } from './statistik/Statistik.tsx';
+import { DigOgDeAndre, DineBoedetyper, NemesisSide } from './statistik/DigSider.tsx';
 import { KonkurrenceDetalje } from './konkurrence/KonkurrenceDetalje.tsx';
 import { Konkurrencer } from './konkurrence/Konkurrencer.tsx';
 import { StatusScreen } from './components/StatusScreen.tsx';
@@ -44,9 +46,19 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Hjem /> },
       { path: 'aktivitet', element: <Aktivitet /> },
-      { path: 'kategorier', element: <Kategorier /> },
+      {
+        path: 'statistik',
+        element: <Statistik />,
+        children: [
+          { index: true, element: <StatistikFaner /> },
+          { path: 'nemesis', element: <NemesisSide /> },
+          { path: 'andre', element: <DigOgDeAndre /> },
+          { path: 'typer', element: <DineBoedetyper /> },
+        ],
+      },
       { path: 'mere', element: <Mere /> },
       // Pushed from Mere; each ticket replaces its stand-in.
+      { path: 'kategorier', element: <Kategorier /> },
       { path: 'profil', element: <ProfilRute /> },
       { path: 'medlem/:medlemId', element: <ProfilRute /> },
       { path: 'medlemmer', element: <Medlemmer /> },

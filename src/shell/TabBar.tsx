@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router';
-import { Clock, House, Menu, Plus, Tag, type LucideIcon } from 'lucide-react';
+import { ChartColumn, Clock, House, Menu, Plus, type LucideIcon } from 'lucide-react';
 import { t, type PlainStringId } from '../strings/index.ts';
 import './TabBar.css';
 
@@ -7,7 +7,7 @@ const tabs: Array<{ to: string; label: PlainStringId; Icon: LucideIcon } | 'fab'
   { to: '/', label: 'tab.hjem', Icon: House },
   { to: '/aktivitet', label: 'tab.aktivitet', Icon: Clock },
   'fab',
-  { to: '/kategorier', label: 'tab.kategorier', Icon: Tag },
+  { to: '/statistik', label: 'tab.statistik', Icon: ChartColumn },
   { to: '/mere', label: 'tab.mere', Icon: Menu },
 ];
 
@@ -18,7 +18,7 @@ interface TabBarProps {
   giveDisabled?: boolean;
 }
 
-/** Hjem · Aktivitet · raised + · Kategorier · Mere. */
+/** Hjem · Aktivitet · raised + · Statistik · Mere. */
 export function TabBar({ onGive, giveDisabled = false }: TabBarProps) {
   return (
     <nav className="tabbar" aria-label={t('tab.faner')}>
@@ -36,7 +36,7 @@ export function TabBar({ onGive, giveDisabled = false }: TabBarProps) {
             </button>
           </div>
         ) : (
-          <NavLink key={tab.to} to={tab.to} end className="tabbar__tab">
+          <NavLink key={tab.to} to={tab.to} end={tab.to !== '/statistik'} className="tabbar__tab">
             <tab.Icon size={26} strokeWidth={2} aria-hidden="true" />
             {t(tab.label)}
           </NavLink>

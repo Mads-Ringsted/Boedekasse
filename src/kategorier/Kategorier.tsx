@@ -3,6 +3,7 @@ import { Plus, Search, Tag } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router';
 import { useBodekasse } from '../bodekasse/BodekasseProvider.tsx';
 import { useGivBoeder } from '../giv/GivBoederProvider.tsx';
+import { BackButton } from '../components/BackButton.tsx';
 import { Screen } from '../components/Screen.tsx';
 import { formatKr, t } from '../strings/index.ts';
 import { useHent } from '../supabase/useHent.ts';
@@ -18,7 +19,7 @@ export const AABN_NY = { ny: true } as const;
 type Form = { kategori?: Kategori };
 
 /**
- * The Kategorier tab: search, Navn/Pris sort, "Ofte brugt" on the top 5 this
+ * Bødekategorier, pushed from Mere (or Hjem's "Kom i gang"): search, Navn/Pris sort, "Ofte brugt" on the top 5 this
  * Sæson, archived ones in a small line at the bottom. Tapping a row opens
  * its detail sheet; + opens Ny bødekategori.
  */
@@ -56,6 +57,8 @@ export function Kategorier() {
   }
 
   const kommerFraHjem = (location.state as typeof AABN_NY | null)?.ny === true;
+  // Remembered, since the state is cleared once Ny bødekategori opens.
+  const [fraHjem] = useState(kommerFraHjem);
   useEffect(() => {
     if (!kommerFraHjem) return;
     aabnForm({});
@@ -68,6 +71,10 @@ export function Kategorier() {
 
   return (
     <Screen>
+      <BackButton
+        label={t(fraHjem ? 'tab.hjem' : 'tab.mere')}
+        onClick={() => void navigate(fraHjem ? '/' : '/mere')}
+      />
       <div className="kategorier__top">
         <h1 className="screen__title">{t('skaerm.kategorier')}</h1>
         <button type="button" className="kategorier__ny" aria-label={t('kategorier.ny')} onClick={() => aabnForm({})}>
