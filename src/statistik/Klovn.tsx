@@ -55,7 +55,7 @@ export function KlovnAvatar({ medlemId, niveau, size }: { medlemId: string; nive
           <StatAvatar medlemId={medlemId} size={size} />
         </span>
         <svg className="klovn__lag" width={150 * k} height={138 * k} viewBox="0 0 150 138" aria-hidden="true">
-          <Hat cx={75} top={6} bund={46} bredde={30} />
+          <Hat cx={75} top={6} bund={46} bredde={38} />
           <circle cx="75" cy="92" r="11" fill="var(--color-klovn-naese)" />
           <circle cx="72" cy="89" r="3" fill="var(--color-klovn-glans)" />
           <path d="M58 106 Q75 118 92 106" fill="none" stroke="var(--color-klovn-naese)" strokeWidth="4" strokeLinecap="round" />
@@ -72,7 +72,7 @@ export function KlovnAvatar({ medlemId, niveau, size }: { medlemId: string; nive
           <StatAvatar medlemId={medlemId} size={size} />
         </span>
         <svg className="klovn__lag" width={44 * k} height={56 * k} viewBox="0 0 44 56" aria-hidden="true">
-          <Hat cx={22} top={4} bund={19} bredde={14} />
+          <Hat cx={22} top={4} bund={19} bredde={18} />
           <circle cx="22" cy="40" r="5" fill="var(--color-klovn-naese)" />
         </svg>
       </span>
