@@ -303,13 +303,20 @@ export function stakKategorier(boeder: readonly StatBoede[], slut: string, antal
 }
 
 /**
- * "Hvem får hvilke bøder": one Bødekategori over the last weeks, stacked per
- * Medlem who got it (the top 4 by name, the rest as Andre).
+ * "Hvem får hvilke bøder": one Bødekategori (or 'alle' Bøder) over the last
+ * weeks, stacked per Medlem who got it (the top 4 by name, the rest as Andre).
  */
-export function stablet(boeder: readonly StatBoede[], kategoriId: string, slut: string, antalUger = 8): Stablet {
+export function stablet(
+  boeder: readonly StatBoede[],
+  kategoriId: string | 'alle',
+  slut: string,
+  antalUger = 8,
+): Stablet {
   const sidste = mandag(lokal(slut).dato);
   const ugeListe = Array.from({ length: antalUger }, (_, i) => plusDage(sidste, -7 * (antalUger - 1 - i)));
-  const mine = boeder.filter((b) => b.kategoriId === kategoriId && lokal(b.givet).dato >= ugeListe[0]);
+  const mine = boeder.filter(
+    (b) => (kategoriId === 'alle' || b.kategoriId === kategoriId) && lokal(b.givet).dato >= ugeListe[0],
+  );
   const ialt = [...tael(mine, (b) => b.modtagerId)].sort((a, b) => b[1] - a[1]);
   const personer = ialt.slice(0, 4).map(([id]) => id);
   const medAndre = ialt.length > 4;

@@ -170,12 +170,7 @@ function Termometer({ pladser }: { pladser: BarometerPlads[] }) {
                     {s.navn(r.plads.medlemId)}
                   </span>
                   <span className={r.plads.klovn === 1 ? 'stat-tekst--rose stat-lille-tekst' : 'stat-dim'}>
-                    {r.plads.klovn === 0
-                      ? gange(r.plads.antal)
-                      : t('stat.gangeMakeover', {
-                          gange: gange(r.plads.antal),
-                          makeover: t(r.plads.klovn === 1 ? 'stat.klovn.fuld' : r.plads.klovn === 2 ? 'stat.klovn.hat' : 'stat.klovn.naese'),
-                        })}
+                    {gange(r.plads.antal)}
                   </span>
                 </span>
               </>

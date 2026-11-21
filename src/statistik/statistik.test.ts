@@ -197,6 +197,9 @@ describe('Holdet', () => {
     ]);
     expect(s.uger[5].total).toBe(1);
     expect(s.top).toEqual({ medlemId: 'a', antal: 7 });
+    const alle = stablet(many, 'alle', '2026-11-20T10:00:00Z');
+    expect(alle.uger[7].total).toBe(22);
+    expect(alle.top).toEqual({ medlemId: 'a', antal: 8 });
     expect(stakKategorier(many, '2026-11-20T10:00:00Z')).toEqual(['sent', 'tlf']);
   });
 

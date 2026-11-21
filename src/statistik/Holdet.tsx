@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react';
-import { TriangleAlert } from 'lucide-react';
+import { Swords, TriangleAlert } from 'lucide-react';
 import { t, type PlainStringId } from '../strings/index.ts';
-import { Kort, KortTitel, StatAvatar, Tom } from './dele.tsx';
+import { KortTitel, StatAvatar, Tom } from './dele.tsx';
 import { barometerKategori } from './Barometer.tsx';
 import {
   hvornaar,
@@ -281,10 +281,11 @@ const STAK_FARVER = ['blaa', 'blaa-lys', 'groen', 'graa-lys'] as const;
 
 function HvemFaarHvilke() {
   const s = useStat();
-  const chips = stakKategorier(s.boeder, s.slut);
-  const [valgt, setValgt] = useState<string | null>(null);
-  const kategori = chips.includes(valgt ?? '') ? (valgt as string) : chips[0];
-  if (!kategori) return null;
+  const chips: string[] = ['alle', ...stakKategorier(s.boeder, s.slut)];
+  const [valgt, setValgt] = useState('alle');
+  const kategori = chips.includes(valgt) ? valgt : 'alle';
+  const navn = (k: string) => (k === 'alle' ? t('stat.alle') : s.kategoriNavn(k));
+  const iTekst = kategori === 'alle' ? t('stat.boederSmaat') : s.kategoriNavn(kategori);
 
   const data = stablet(s.boeder, kategori, s.slut);
   const max = Math.max(1, ...data.uger.map((u) => u.total));
@@ -299,11 +300,11 @@ function HvemFaarHvilke() {
       <div className="stat-chips" role="group" aria-label={t('stat.vaelgBoede')}>
         {chips.map((k) => (
           <button key={k} type="button" className="stat-chip" aria-pressed={k === kategori} onClick={() => setValgt(k)}>
-            {s.kategoriNavn(k)}
+            {navn(k)}
           </button>
         ))}
       </div>
-      <div className="stat-stak" role="img" aria-label={t('stat.stakLabel', { kategori: s.kategoriNavn(kategori) })}>
+      <div className="stat-stak" role="img" aria-label={t('stat.stakLabel', { kategori: navn(kategori) })}>
         {data.uger.map((u, i) => (
           <span key={u.mandag} className="stat-stak__uge">
             <span className={`stat-stak__total${i === top ? ' stat-stak__total--top' : ''}`}>{u.total}</span>
@@ -339,32 +340,45 @@ function HvemFaarHvilke() {
       {data.top && (
         <span className="stat-dim stat-dim--lille">
           {data.top.medlemId === s.migId
-            ? t('stat.stakNoteDig', { kategori: s.kategoriNavn(kategori), antal: data.top.antal })
-            : t('stat.stakNote', { navn: s.navn(data.top.medlemId), kategori: s.kategoriNavn(kategori), antal: data.top.antal })}
+            ? t('stat.stakNoteDig', { kategori: iTekst, antal: data.top.antal })
+            : t('stat.stakNote', { navn: s.navn(data.top.medlemId), kategori: iTekst, antal: data.top.antal })}
         </span>
       )}
     </div>
   );
 }
 
+/**
+ * Sæsonens rivaleri as a duel: the two who fined each other most both ways,
+ * each with how many Bøder they gave the other.
+ */
 function Rivaleri() {
   const s = useStat();
   const r = rivaleri(s.boeder);
   if (!r) return null;
-  // You go second: "Jonas og dig".
-  const [a, b, x, y] = r.a === s.migId ? [r.b, r.a, r.bTilA, r.aTilB] : [r.a, r.b, r.aTilB, r.bTilA];
+  // You stand on the left.
+  const [a, b, x, y] = r.b === s.migId ? [r.b, r.a, r.bTilA, r.aTilB] : [r.a, r.b, r.aTilB, r.bTilA];
+  const side = (id: string, gav: number, vinder: boolean) => (
+    <span className="stat-duel__side">
+      <span className={`stat-duel__ring${vinder ? ' stat-duel__ring--vinder' : ''}`}>
+        <StatAvatar medlemId={id} size={52} />
+      </span>
+      <span className="stat-duel__navn">{s.navn(id)}</span>
+      <span className="stat-duel__tal">{gav}</span>
+      <span className="stat-dim stat-dim--lille">{t('stat.rivaleriGav')}</span>
+    </span>
+  );
   return (
-    <Kort className="stat-rival">
-      <span className="stat-rival__avatarer">
-        <StatAvatar medlemId={a} size={36} />
-        <StatAvatar medlemId={b} size={36} />
-      </span>
-      <span className="stat-rival__tekst">
-        <span className="stat-kort__titel-tekst">{t('stat.rivaleri')}</span>
-        <span className="stat-dim">
-          {t('stat.rivaleriLinje', { a: s.navn(a), b: s.navnObjekt(b), x, y })}
+    <div className="stat-kort stat-duel">
+      <span className="stat-kort__titel-tekst">{t('stat.rivaleri')}</span>
+      <div className="stat-duel__arena" role="img" aria-label={t('stat.rivaleriLinje', { a: s.navn(a), b: s.navnObjekt(b), x, y })}>
+        {side(a, x, x > y)}
+        <span className="stat-duel__svaerd" aria-hidden="true">
+          <Swords size={30} strokeWidth={2} />
         </span>
-      </span>
-    </Kort>
+        {side(b, y, y > x)}
+      </div>
+      <span className="stat-dim stat-dim--lille stat-duel__forklaring">{t('stat.rivaleriForklaring')}</span>
+    </div>
   );
 }

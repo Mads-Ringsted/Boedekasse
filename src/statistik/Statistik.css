@@ -803,31 +803,15 @@
   border-radius: 3px;
 }
 
-.stat-rival {
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-}
-.stat-rival__avatarer,
 .stat-stablede {
   display: flex;
   flex-shrink: 0;
 }
-.stat-rival__avatarer > .avatar,
 .stat-stablede > .avatar {
   box-shadow: 0 0 0 2px var(--color-surface);
 }
-.stat-rival__avatarer > .avatar + .avatar {
-  margin-left: -10px;
-}
 .stat-stablede > .avatar + .avatar {
   margin-left: -8px;
-}
-.stat-rival__tekst {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
 }
 
 /* ---------- Barometer ---------- */
@@ -1003,4 +987,58 @@
   width: 100%;
   height: 80px;
   display: block;
+}
+
+/* Sæsonens rivaleri: a duel, crossed swords in the middle. */
+.stat-duel {
+  gap: 12px;
+}
+.stat-duel__arena {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+}
+.stat-duel__side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+.stat-duel__ring {
+  display: flex;
+  border-radius: 50%;
+  margin-bottom: 4px;
+  box-shadow: 0 0 0 2px var(--color-line-strong);
+}
+.stat-duel__ring--vinder {
+  box-shadow: 0 0 0 3px var(--color-rose);
+}
+.stat-duel__navn {
+  font-size: 15px;
+  font-weight: 600;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.stat-duel__tal {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+  line-height: 1.1;
+}
+.stat-duel__svaerd {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  color: var(--color-rose);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.stat-duel__forklaring {
+  text-align: center;
 }
