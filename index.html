@@ -15,6 +15,21 @@
     <link rel="icon" href="/app-icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" sizes="180x180" />
     <title>Bødekasse</title>
+    <script>
+      // Udseende before first paint, so a forced theme never flashes. Mirrors
+      // src/udseende/udseende.ts; udseende.test.ts checks they agree.
+      (function () {
+        var tema;
+        try {
+          tema = { lys: 'light', moerk: 'dark' }[localStorage.getItem('boedekasse.udseende')];
+        } catch (e) {}
+        if (!tema) return;
+        document.documentElement.setAttribute('data-theme', tema);
+        var farve = tema === 'dark' ? '#0A0C12' : '#F2F3F8';
+        var tags = document.querySelectorAll('meta[name="theme-color"]');
+        for (var i = 0; i < tags.length; i++) tags[i].setAttribute('content', farve);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

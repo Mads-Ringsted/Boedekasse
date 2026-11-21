@@ -1,5 +1,17 @@
 import { useState, type ReactNode } from 'react';
-import { ArrowLeftRight, Bell, ChevronRight, Coins, LogOut, Scale, Settings, Trophy, Users, type LucideIcon } from 'lucide-react';
+import {
+  ArrowLeftRight,
+  Bell,
+  ChevronRight,
+  Coins,
+  LogOut,
+  Scale,
+  Settings,
+  SunMoon,
+  Trophy,
+  Users,
+  type LucideIcon,
+} from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { hentAntalAabneAnker } from '../anke/hentAnke.ts';
 import { useAuth } from '../auth/AuthProvider.tsx';
@@ -14,6 +26,7 @@ import { SletKontoSheet } from '../slet/SletKontoSheet.tsx';
 import { formatKr, t, type PlainStringId } from '../strings/index.ts';
 import { supabase } from '../supabase/index.ts';
 import { useHent } from '../supabase/useHent.ts';
+import { UDSEENDE_NAVN, UdseendeSheet, useUdseende } from '../udseende/UdseendeSheet.tsx';
 import './Mere.css';
 
 /** The numbers shown at the end of Mere's rows. */
@@ -62,7 +75,7 @@ function Row({ Icon, label, onClick, trailing }: RowProps) {
 
 /**
  * Mere: your profile row, the box's screens, then the person-level items:
- * Notifikationer, Skift Bødekasse, Log ud and Slet konto.
+ * Notifikationer, Udseende, Skift Bødekasse, Log ud and Slet konto.
  */
 export function Mere() {
   const { logOut } = useAuth();
@@ -70,6 +83,8 @@ export function Mere() {
   const navigate = useNavigate();
   const aabnProfil = useAabnProfil('tab.mere');
   const [skifter, setSkifter] = useState(false);
+  const [udseende, setUdseende] = useUdseende();
+  const [vaelgerUdseende, setVaelgerUdseende] = useState(false);
   // Each opening mounts a fresh Slet konto sheet (new one-time ID).
   const [sletAabning, setSletAabning] = useState(0);
   const tal = useHent(() => hentMere(bodekasseId), [bodekasseId]);
@@ -134,6 +149,12 @@ export function Mere() {
             notifikationer.status === 'ready' && <span className="mere__vaerdi">{notifikationer.data}</span>
           }
         />
+        <Row
+          Icon={SunMoon}
+          label="udseende.titel"
+          onClick={() => setVaelgerUdseende(true)}
+          trailing={<span className="mere__vaerdi">{t(UDSEENDE_NAVN[udseende])}</span>}
+        />
         <Row Icon={ArrowLeftRight} label="mere.skift" onClick={() => setSkifter(true)} />
       </div>
 
@@ -146,6 +167,12 @@ export function Mere() {
       </button>
 
       <SkiftBodekasseSheet open={skifter} onOpenChange={setSkifter} />
+      <UdseendeSheet
+        open={vaelgerUdseende}
+        onOpenChange={setVaelgerUdseende}
+        valg={udseende}
+        onVaelg={setUdseende}
+      />
       {sletAabning > 0 && (
         <SletKontoSheet key={sletAabning} open onOpenChange={(aaben) => !aaben && setSletAabning(0)} />
       )}
