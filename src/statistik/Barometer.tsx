@@ -117,7 +117,7 @@ function Klovnen({ plads, kategori }: { plads: BarometerPlads; kategori: string 
           senest: plads.seneste ? smaat(dagOverskrift(plads.seneste)) : '',
         })}
       </span>
-      <button type="button" className="stat-knap stat-knap--rose stat-knap--pille" onClick={() => void del()}>
+      <button type="button" className="stat-knap stat-knap--guld stat-knap--pille" onClick={() => void del()}>
         <Share size={16} strokeWidth={2.4} aria-hidden="true" />
         {kopieret ? t('stat.klovn.kopieret') : t('stat.klovn.del')}
       </button>
@@ -169,7 +169,7 @@ function Termometer({ pladser }: { pladser: BarometerPlads[] }) {
                   <span className={`stat-termo__navn${r.plads.klovn === 1 ? ' stat-termo__navn--top' : ''}`}>
                     {s.navn(r.plads.medlemId)}
                   </span>
-                  <span className={r.plads.klovn === 1 ? 'stat-tekst--rose stat-lille-tekst' : 'stat-dim'}>
+                  <span className={r.plads.klovn === 1 ? 'stat-tekst--guld stat-lille-tekst' : 'stat-dim'}>
                     {gange(r.plads.antal)}
                   </span>
                 </span>

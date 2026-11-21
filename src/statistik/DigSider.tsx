@@ -61,13 +61,13 @@ export function NemesisSide() {
     <Side>
       {!nem && !skyd && <Tom>{t('stat.ingenEndnu')}</Tom>}
       {nem && (
-        <div className="stat-kort stat-stort stat-stort--rose">
+        <div className="stat-kort stat-stort stat-stort--guld">
           <div className="stat-stort__top">
-            <span className="stat-ring stat-ring--rose">
+            <span className="stat-ring stat-ring--guld">
               <StatAvatar medlemId={nem.medlemId} size={72} />
             </span>
             <div className="stat-stort__tekst">
-              <span className="stat-stort__rolle stat-tekst--rose">
+              <span className="stat-stort__rolle stat-tekst--guld">
                 <Skull size={14} strokeWidth={2} aria-hidden="true" />
                 {t('stat.dinBoedeNemesis')}
               </span>
@@ -84,12 +84,12 @@ export function NemesisSide() {
             </div>
             <div className="stat-split" aria-hidden="true">
               {nem.gav > 0 && <span className="stat-farve--blaa" style={{ flex: nem.gav }} />}
-              <span className="stat-farve--rose" style={{ flex: nem.fik }} />
+              <span className="stat-farve--guld" style={{ flex: nem.fik }} />
             </div>
           </div>
           <Favorit giverId={nem.medlemId} modtagerId={s.migId} navn={genitiv(s.navn(nem.medlemId))} />
           {s.koerer && !pause && !s.erUdmeldt(nem.medlemId) && (
-            <button type="button" className="stat-knap stat-knap--rose" onClick={() => aabn({ medlemId: nem.medlemId })}>
+            <button type="button" className="stat-knap stat-knap--guld" onClick={() => aabn({ medlemId: nem.medlemId })}>
               <Swords size={18} strokeWidth={2.2} aria-hidden="true" />
               {t('stat.tagHaevn', { navn: s.navn(nem.medlemId) })}
             </button>
@@ -186,7 +186,7 @@ export function DigOgDeAndre() {
       <div className="stat-to">
         {nem && (
           <RolleKort
-            farve="rose"
+            farve="guld"
             rolle={t('stat.dinNemesis')}
             medlemId={nem.medlemId}
             under={t('stat.tilOgFra', { til: nem.fik, fra: nem.gav })}
@@ -220,7 +220,7 @@ function RolleKort({
   under,
   onClick,
 }: {
-  farve: 'rose' | 'blaa' | 'groen' | 'graa';
+  farve: 'guld' | 'blaa' | 'groen' | 'graa';
   rolle: string;
   medlemId: string;
   under: string;
@@ -237,7 +237,7 @@ function RolleKort({
       <span className="stat-rolle__under">{under}</span>
     </>
   );
-  const klasse = `stat-kort stat-rolle${farve === 'rose' ? ' stat-person--rose' : farve === 'blaa' ? ' stat-person--blaa' : ''}`;
+  const klasse = `stat-kort stat-rolle${farve === 'guld' ? ' stat-person--guld' : farve === 'blaa' ? ' stat-person--blaa' : ''}`;
   return onClick ? (
     <button type="button" className={klasse} onClick={onClick}>
       {indhold}

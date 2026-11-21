@@ -74,7 +74,7 @@ function MestGivne() {
           </span>
           <span className="stat-rang__spor">
             <span
-              className={`stat-rang__fyld stat-farve--${r.kategoriId === dum ? 'rose' : 'blaa'}`}
+              className={`stat-rang__fyld stat-farve--${r.kategoriId === dum ? 'guld' : 'blaa'}`}
               style={{ width: `${Math.max(3, Math.round((r.antal / raekker[0].antal) * 100))}%` }}
             />
           </span>
@@ -182,7 +182,7 @@ function GiverOgFaar() {
           {liste(top.givere)}
         </div>
         <div className="stat-top3">
-          <span className="stat-top3__label stat-tekst--rose">{t('stat.faarFlest')}</span>
+          <span className="stat-top3__label stat-tekst--guld">{t('stat.faarFlest')}</span>
           {liste(top.modtagere)}
         </div>
       </div>

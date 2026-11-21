@@ -63,7 +63,7 @@ export function Dig() {
       <div className="stat-to">
         <div className="stat-kort stat-tal">
           <span className="stat-tal__label">
-            <span className="stat-prik stat-farve--rose" />
+            <span className="stat-prik stat-farve--guld" />
             {t('stat.faaet')}
           </span>
           <span className="stat-tal__antal">{tal.faaet.antal}</span>
@@ -82,7 +82,7 @@ export function Dig() {
         {(tal.givet.antal > 0 || tal.faaet.antal > 0) && (
           <div className="stat-split" aria-hidden="true">
             {tal.givet.antal > 0 && <span className="stat-farve--blaa" style={{ flex: tal.givet.antal }} />}
-            {tal.faaet.antal > 0 && <span className="stat-farve--rose" style={{ flex: tal.faaet.antal }} />}
+            {tal.faaet.antal > 0 && <span className="stat-farve--guld" style={{ flex: tal.faaet.antal }} />}
           </div>
         )}
         <span className="stat-dim">{forholdTekst(forhold(tal.givet.antal, tal.faaet.antal))}</span>
@@ -91,7 +91,7 @@ export function Dig() {
       {(nem || skyd) && (
         <div className="stat-to">
           {nem ? (
-            <button type="button" className="stat-kort stat-person stat-person--rose" onClick={() => aabn('nemesis')}>
+            <button type="button" className="stat-kort stat-person stat-person--guld" onClick={() => aabn('nemesis')}>
               <span className="stat-person__rolle">
                 <Skull size={14} strokeWidth={2} aria-hidden="true" />
                 {t('stat.dinNemesis')}
@@ -102,7 +102,7 @@ export function Dig() {
             </button>
           ) : (
             <div className="stat-kort stat-person">
-              <span className="stat-person__rolle stat-tekst--rose">
+              <span className="stat-person__rolle stat-tekst--guld">
                 <Skull size={14} strokeWidth={2} aria-hidden="true" />
                 {t('stat.dinNemesis')}
               </span>

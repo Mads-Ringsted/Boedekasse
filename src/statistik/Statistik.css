@@ -67,14 +67,14 @@
 }
 
 /* ---------- Colours ---------- */
-.stat-farve--rose {
-  background: var(--color-rose);
+.stat-farve--guld {
+  background: var(--color-guld);
 }
 .stat-farve--blaa {
   background: var(--color-accent);
 }
-.stat-tekst--rose {
-  color: var(--color-rose);
+.stat-tekst--guld {
+  color: var(--color-guld);
 }
 .stat-tekst--blaa {
   color: var(--color-accent-text);
@@ -210,12 +210,12 @@
   gap: 6px;
   text-align: center;
 }
-.stat-person--rose {
-  background: var(--color-rose-tint);
-  box-shadow: inset 0 0 0 1px var(--color-rose-line);
+.stat-person--guld {
+  background: var(--color-guld-tint);
+  box-shadow: inset 0 0 0 1px var(--color-guld-line);
 }
-.stat-person--rose .stat-person__rolle {
-  color: var(--color-rose);
+.stat-person--guld .stat-person__rolle {
+  color: var(--color-guld);
 }
 .stat-person--blaa {
   background: var(--color-accent-tint);
@@ -296,9 +296,9 @@
   padding: 16px;
   gap: 12px;
 }
-.stat-stort--rose {
-  background: var(--color-rose-tint);
-  box-shadow: inset 0 0 0 1px var(--color-rose-line);
+.stat-stort--guld {
+  background: var(--color-guld-tint);
+  box-shadow: inset 0 0 0 1px var(--color-guld-line);
 }
 .stat-stort--blaa {
   background: var(--color-accent-tint);
@@ -359,8 +359,8 @@
   border-radius: 50%;
   display: flex;
 }
-.stat-ring--rose {
-  box-shadow: 0 0 0 3px var(--color-rose);
+.stat-ring--guld {
+  box-shadow: 0 0 0 3px var(--color-guld);
 }
 
 .stat-skive {
@@ -387,9 +387,9 @@
   justify-content: center;
   gap: 6px;
 }
-.stat-knap--rose {
-  background: var(--color-rose);
-  color: var(--color-on-rose);
+.stat-knap--guld {
+  background: var(--color-guld);
+  color: var(--color-on-guld);
 }
 .stat-knap--pille {
   height: 40px;
@@ -541,7 +541,7 @@
   color: var(--color-text-muted);
 }
 .stat-rang__nr--1 {
-  color: var(--color-rose);
+  color: var(--color-guld);
 }
 .stat-rang__nr--2 {
   color: var(--color-text-secondary);
@@ -585,8 +585,8 @@
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: var(--color-rose-tint);
-  color: var(--color-rose);
+  background: var(--color-guld-tint);
+  color: var(--color-guld);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -728,8 +728,8 @@
   color: var(--color-text-muted);
 }
 .stat-chip[aria-pressed='true'] {
-  background: var(--color-rose);
-  color: var(--color-on-rose);
+  background: var(--color-guld);
+  color: var(--color-on-guld);
 }
 
 .stat-stak {
@@ -817,8 +817,8 @@
 /* ---------- Barometer ---------- */
 .stat-klovn {
   border-radius: 22px;
-  background: var(--color-rose-tint);
-  box-shadow: inset 0 0 0 1px var(--color-rose-line);
+  background: var(--color-guld-tint);
+  box-shadow: inset 0 0 0 1px var(--color-guld-line);
   padding: 18px 16px 16px;
   align-items: center;
   gap: 6px;
@@ -827,7 +827,7 @@
 .stat-klovn__titel {
   font-size: 12px;
   font-weight: 700;
-  color: var(--color-rose);
+  color: var(--color-guld);
   text-transform: uppercase;
   letter-spacing: 0.6px;
 }
@@ -874,7 +874,7 @@
 .stat-termo__label {
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-rose);
+  color: var(--color-guld);
   padding-left: 4px;
 }
 .stat-termo {
@@ -894,7 +894,7 @@
   justify-content: flex-end;
 }
 .stat-termo__fyld {
-  background: var(--color-rose);
+  background: var(--color-guld);
   border-radius: 9px;
 }
 .stat-termo__kugle {
@@ -904,7 +904,7 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: var(--color-rose);
+  background: var(--color-guld);
 }
 .stat-termo__raekke {
   position: absolute;
@@ -974,7 +974,7 @@
   flex-shrink: 0;
   border-radius: 9px;
   background: var(--color-fill);
-  color: var(--color-rose);
+  color: var(--color-guld);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1013,7 +1013,7 @@
   box-shadow: 0 0 0 2px var(--color-line-strong);
 }
 .stat-duel__ring--vinder {
-  box-shadow: 0 0 0 3px var(--color-rose);
+  box-shadow: 0 0 0 3px var(--color-guld);
 }
 .stat-duel__navn {
   font-size: 15px;
@@ -1034,7 +1034,7 @@
   height: 56px;
   border-radius: 50%;
   background: var(--color-bg);
-  color: var(--color-rose);
+  color: var(--color-guld);
   display: flex;
   align-items: center;
   justify-content: center;

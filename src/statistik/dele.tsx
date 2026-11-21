@@ -53,13 +53,13 @@ export function Bjaelke({
   label,
   antal,
   max,
-  farve = 'rose',
+  farve = 'guld',
   bred = false,
 }: {
   label: ReactNode;
   antal: number;
   max: number;
-  farve?: 'rose' | 'blaa';
+  farve?: 'guld' | 'blaa';
   bred?: boolean;
 }) {
   return (
@@ -103,7 +103,7 @@ export function Sommerfugl({
       <span className="stat-sommerfugl__hoejre">
         {fik > 0 ? (
           <>
-            <span className="stat-sommerfugl__bar stat-farve--rose" style={{ width: `${pct(fik, max)}%` }} />
+            <span className="stat-sommerfugl__bar stat-farve--guld" style={{ width: `${pct(fik, max)}%` }} />
             {fik}
           </>
         ) : (
@@ -121,7 +121,7 @@ export function SommerfuglHoved({ venstre, hoejre, bred = false }: { venstre: st
         {venstre}
       </span>
       <span />
-      <span className="stat-tekst--rose">{hoejre}</span>
+      <span className="stat-tekst--guld">{hoejre}</span>
     </div>
   );
 }

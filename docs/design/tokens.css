@@ -51,11 +51,11 @@
   --color-warning-pale: rgba(163, 95, 0, 0.10);
   --color-coin: #FFC94D;            /* app icon and illustrations only */
 
-  /* Rosé (Statistik): "fået", Nemesis, Barometer, picked chips. Blue stays "givet". */
-  --color-rose: #D9415E;
-  --color-rose-tint: #FDECEF;       /* tinted card */
-  --color-rose-line: #F6C9D2;       /* tinted card border */
-  --color-on-rose: #FFFFFF;         /* text on a Rosé button */
+  /* Guld (Statistik): "fået", Nemesis, Barometer, picked chips. Blue stays "givet". */
+  --color-guld: #B57F00;
+  --color-guld-tint: #FFF6DC;       /* tinted card */
+  --color-guld-line: #F0DC9E;       /* tinted card border */
+  --color-on-guld: #2A1F05;         /* text on a Guld button */
   --color-accent-tint: #EEF2FD;     /* Skydeskive card */
   --color-accent-tint-line: #CCD8FA;
   --color-chart-bar: #E3E6EE;       /* a bar that isn't picked out */
@@ -123,10 +123,10 @@
     --color-warning: #FFB547;
     --color-warning-pale: rgba(255, 181, 71, 0.14);
 
-    --color-rose: #FF7A90;
-    --color-rose-tint: #2A141A;
-    --color-rose-line: #4F2431;
-    --color-on-rose: #2A0710;
+    --color-guld: #FFC94D;
+    --color-guld-tint: #2A2410;
+    --color-guld-line: #4D4116;
+    --color-on-guld: #2A1F05;
     --color-accent-tint: #10162A;
     --color-accent-tint-line: #1F2D5C;
     --color-chart-bar: #2C3246;
@@ -171,10 +171,10 @@
   --color-warning: #FFB547;
   --color-warning-pale: rgba(255, 181, 71, 0.14);
 
-  --color-rose: #FF7A90;
-  --color-rose-tint: #2A141A;
-  --color-rose-line: #4F2431;
-  --color-on-rose: #2A0710;
+  --color-guld: #FFC94D;
+  --color-guld-tint: #2A2410;
+  --color-guld-line: #4D4116;
+  --color-on-guld: #2A1F05;
   --color-accent-tint: #10162A;
   --color-accent-tint-line: #1F2D5C;
   --color-chart-bar: #2C3246;

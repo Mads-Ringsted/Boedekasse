@@ -23,7 +23,7 @@ export function KlovnAvatar({ medlemId, niveau, size }: { medlemId: string; nive
           <StatAvatar medlemId={medlemId} size={size} />
         </span>
         <svg className="klovn__lag" width={150 * k} height={138 * k} viewBox="0 0 150 138" aria-hidden="true">
-          <polygon points="75,0 98,42 52,42" fill="var(--color-rose)" />
+          <polygon points="75,0 98,42 52,42" fill="var(--color-guld)" />
           <circle cx="70" cy="22" r="3" fill="#FFFFFF" />
           <circle cx="81" cy="32" r="3" fill="#FFFFFF" />
           <circle cx="64" cy="36" r="3" fill="#FFFFFF" />
@@ -45,7 +45,7 @@ export function KlovnAvatar({ medlemId, niveau, size }: { medlemId: string; nive
           <StatAvatar medlemId={medlemId} size={size} />
         </span>
         <svg className="klovn__lag" width={44 * k} height={56 * k} viewBox="0 0 44 56" aria-hidden="true">
-          <polygon points="22,1 32,17 12,17" fill="var(--color-rose)" />
+          <polygon points="22,1 32,17 12,17" fill="var(--color-guld)" />
           <circle cx="22" cy="2" r="3" fill="#FFFFFF" />
           <rect x="10" y="15" width="24" height="4" rx="2" fill="#FFFFFF" />
           <circle cx="22" cy="40" r="5" fill="var(--color-klovn-naese)" />
