@@ -35,7 +35,7 @@ function Hat({ cx, top, bund, bredde }: { cx: number; top: number; bund: number;
 
 /**
  * A Medlem's avatar with the Barometer's clown makeover: 1 = full clown
- * (rainbow wig, hat, red nose, smile), 2 = hat and nose, 3 = nose, 0 = none.
+ * (rainbow wig, hat, red nose; no painted mouth, since a Profilbillede has a real one), 2 = hat and nose, 3 = nose, 0 = none.
  * `size` is the avatar's diameter; the hat and wig stick out around it.
  */
 export function KlovnAvatar({ medlemId, niveau, size }: { medlemId: string; niveau: 0 | 1 | 2 | 3; size: number }) {
@@ -59,7 +59,6 @@ export function KlovnAvatar({ medlemId, niveau, size }: { medlemId: string; nive
           <Hat cx={75} top={9} bund={46} bredde={54} />
           <circle cx="75" cy="92" r="11" fill="var(--color-klovn-naese)" />
           <circle cx="72" cy="89" r="3" fill="var(--color-klovn-glans)" />
-          <path d="M58 106 Q75 118 92 106" fill="none" stroke="var(--color-klovn-naese)" strokeWidth="4" strokeLinecap="round" />
         </svg>
       </span>
     );
