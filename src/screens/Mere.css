@@ -123,3 +123,8 @@
   align-items: center;
   justify-content: center;
 }
+
+.mere__icon--fremhaevet {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
