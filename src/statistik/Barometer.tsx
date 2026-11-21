@@ -138,19 +138,22 @@ function Termometer({ pladser }: { pladser: BarometerPlads[] }) {
     ...enkelte.map((p): Raekke => ({ art: 'en', plads: p, hoejde: HOEJDE[p.klovn] })),
     ...(resten.length > 0 ? [{ art: 'gruppe' as const, pladser: resten, hoejde: GRUPPE }] : []),
   ];
-  // The shared row always sits at the bottom.
-  const antal = raekker.map((r) => (r.art === 'en' ? r.plads.antal : 0));
+  // The shared row sits by its highest count, always last.
+  const antal = raekker.map((r) => (r.art === 'en' ? r.plads.antal : Math.max(0, ...r.pladser.map((p) => p.antal))));
   const tops = placer(
     antal,
     raekker.map((r) => r.hoejde + LUFT),
     SOEJLE + LUFT,
   );
-  const fyld = raekker.length > 0 && antal[0] > 0 ? SOEJLE - (tops[0] + raekker[0].hoejde / 2) : 0;
+  // The column ends at the last row, so there is no empty stretch below it.
+  const sidste = raekker.length - 1;
+  const hoejde = sidste >= 0 ? Math.min(SOEJLE, tops[sidste] + raekker[sidste].hoejde) : SOEJLE;
+  const fyld = raekker.length > 0 && antal[0] > 0 ? hoejde - (tops[0] + raekker[0].hoejde / 2) : 0;
 
   return (
     <div className="stat-kort stat-termo-kort">
       <span className="stat-termo__label">{t('stat.barometer.top')}</span>
-      <div className="stat-termo" style={{ height: SOEJLE }}>
+      <div className="stat-termo" style={{ height: hoejde }}>
         <div className="stat-termo__roer" aria-hidden="true">
           <span className="stat-termo__fyld" style={{ height: Math.max(0, fyld) }} />
         </div>
