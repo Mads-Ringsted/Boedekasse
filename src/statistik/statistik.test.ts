@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   ankeKongen,
+  ankeTaberen,
   barometer,
   digTal,
   dyresteAften,
@@ -282,5 +283,15 @@ describe('Rekorder', () => {
   it('crowns the Anke-konge', () => {
     expect(ankeKongen(boeder)).toEqual({ medlemId: 'kasper', vundet: 1, afgjort: 1 });
     expect(ankeKongen([])).toBeNull();
+  });
+
+  it('finds the Anke-taber: worst share won, then most lost', () => {
+    expect(ankeTaberen(boeder)).toEqual({ medlemId: 'emil', vundet: 0, afgjort: 1 });
+    const tab = (modtager: string, afgoerelse: StatBoede['afgoerelse']) =>
+      b('x', modtager, null, '2026-11-01T10:00:00', { anket: true, afgoerelse });
+    expect(
+      ankeTaberen([tab('a', 'giver_vandt'), tab('b', 'giver_vandt'), tab('b', 'giver_vandt'), tab('c', 'modtager_vandt')]),
+    ).toEqual({ medlemId: 'b', vundet: 0, afgjort: 2 });
+    expect(ankeTaberen([tab('c', 'modtager_vandt'), tab('d', 'ikke_afgjort')])).toBeNull();
   });
 });

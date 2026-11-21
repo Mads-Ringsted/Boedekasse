@@ -6,6 +6,7 @@ import { decimal, StatAvatar, Tom } from './dele.tsx';
 import { antalBoeder } from './Dig.tsx';
 import {
   ankeKongen,
+  ankeTaberen,
   dyresteAften,
   dyresteDagForEn,
   flestPaaEnAften,
@@ -30,6 +31,7 @@ export function Rekorder() {
   const uden = s.saeson ? laengstUden(s.boeder, s.medlemmer, s.saeson.startet, s.slut, s.koerer) : null;
   const hurtig = hurtigstTilAtBetale(s.charges, s.indbetalinger);
   const konge = ankeKongen(s.boeder);
+  const taber = ankeTaberen(s.boeder);
 
   return (
     <>
@@ -89,6 +91,18 @@ export function Rekorder() {
             titel={t('stat.rek.ankeKongen')}
             under={t('stat.rek.vundet', { navn: s.navn(konge.medlemId), vundet: konge.vundet, afgjort: konge.afgjort })}
             vaerdi={`${Math.round((konge.vundet / konge.afgjort) * 100)}%`}
+          />
+        )}
+        {taber && (
+          <Rekord
+            ikon={<StatAvatar medlemId={taber.medlemId} size={32} />}
+            titel={t('stat.rek.ankeTaberen')}
+            under={t('stat.rek.tabt', {
+              navn: s.navn(taber.medlemId),
+              tabt: taber.afgjort - taber.vundet,
+              afgjort: taber.afgjort,
+            })}
+            vaerdi={`${Math.round((taber.vundet / taber.afgjort) * 100)}%`}
           />
         )}
       </div>

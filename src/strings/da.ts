@@ -1147,6 +1147,8 @@ export const da = {
   'stat.rek.hurtigst': 'Hurtigst til at betale',
   'stat.rek.iSnit': '{navn} · i snit',
   'stat.rek.ankeKongen': 'Anke-kongen',
+  'stat.rek.ankeTaberen': 'Anke-taberen',
+  'stat.rek.tabt': '{navn} · {tabt} af {afgjort} tabt',
   'stat.rek.vundet': '{navn} · {vundet} af {afgjort} vundet',
 } as const;
 

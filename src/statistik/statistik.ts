@@ -554,3 +554,23 @@ export function ankeKongen(boeder: readonly StatBoede[]): { medlemId: string; vu
   }
   return bedst;
 }
+
+/**
+ * Anke-taberen, the opposite of Anke-kongen: the worst share of decided Anker
+ * won (then most lost). Needs one loss.
+ */
+export function ankeTaberen(boeder: readonly StatBoede[]): { medlemId: string; vundet: number; afgjort: number } | null {
+  const afgjorte = boeder.filter((b) => b.afgoerelse === 'modtager_vandt' || b.afgoerelse === 'giver_vandt');
+  const afgjort = tael(afgjorte, (b) => b.modtagerId);
+  const vundet = tael(afgjorte, (b) => (b.afgoerelse === 'modtager_vandt' ? b.modtagerId : null));
+  let bedst: { medlemId: string; vundet: number; afgjort: number } | null = null;
+  for (const [id, a] of afgjort) {
+    const v = vundet.get(id) ?? 0;
+    if (v === a) continue;
+    const tabt = a - v;
+    if (!bedst || v / a < bedst.vundet / bedst.afgjort || (v / a === bedst.vundet / bedst.afgjort && tabt > bedst.afgjort - bedst.vundet)) {
+      bedst = { medlemId: id, vundet: v, afgjort: a };
+    }
+  }
+  return bedst;
+}
